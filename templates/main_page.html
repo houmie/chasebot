@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Chasebot - Home{% endblock %}
+{% block head %}Welcome to Chasebot{% endblock %}
+{% block external %}
+{% endblock %}
+{% block content %}
+{% if user.username %}
+    <p>Welcome {{ user.username }}! </p>
+{% else %}
+    <p>Welcome anonymous user! You need to <a href ="/login/">login</a> before you can use Chasebot.</p>
+{% endif %}
+{% endblock %}

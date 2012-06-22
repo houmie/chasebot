@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Django Bookmarks - user login{% endblock %}
+{% block head %}User login{% endblock %}
+{% block content %}{% if form.errors %}
+<p>Your username and password didn't match</p>
+{% endif %}
+<form action="." method="post">
+    <p>
+        <label for="id_username">Username:</label>{{ form.username }}
+    </p>
+    <p>
+        <label for="id_password">Password:</label>{{ form.password }}
+    </p>
+    {% csrf_token %}
+    <input type="hidden" name="next" value="/" />
+    <input type="submit" value="login" />
+</form>{% endblock %}
+

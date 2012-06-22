@@ -1,4 +1,16 @@
 # Django settings for Chasebot project.
+import os
+
+LOGIN_URL = '/login/'
+
+SITE_HOST = '127.0.0.1:8000'
+DEFAULT_FROM_EMAIL = 'Chasebot <info@chasebot.com>'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '587'
+EMAIL_HOST_USER = 'info@chasebot.com'
+EMAIL_HOST_PASSWORD = 'Rahil2503'
+EMAIL_USE_TLS = True
+SERVER_EMAIL = 'houmie@gmail.com'
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -11,10 +23,10 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': '',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'ChasebotDB',                      # Or path to database file if using sqlite3.
+        'USER': 'houmie',                      # Not used with sqlite3.
+        'PASSWORD': 'houmie123',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
@@ -27,7 +39,7 @@ DATABASES = {
 # timezone as the operating system.
 # If running in a Windows environment this must be set to the same as your
 # system time zone.
-TIME_ZONE = 'America/Chicago'
+TIME_ZONE = 'Europe/London'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -48,7 +60,8 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = ''
+MEDIA_ROOT = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../site_media')
+
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -105,7 +118,9 @@ ROOT_URLCONF = 'Chasebot.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'Chasebot.wsgi.application'
 
-TEMPLATE_DIRS = ('/home/houman/Projects/Chasebot/templates',)
+TEMPLATE_DIRS = (
+        os.path.join(os.path.dirname(__file__), '../templates'),
+    )
 
 INSTALLED_APPS = (
     'django.contrib.auth',
