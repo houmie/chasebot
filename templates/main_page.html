@@ -5,7 +5,7 @@
 {% endblock %}
 {% block content %}
 {% if user.username %}
-    <p>Welcome {{ user.username }}! </p>
+    <p>Welcome {{ user.username }} from the company {{ company_name }}! </p>
 {% else %}
     <p>Welcome anonymous user! You need to <a href ="/login/">login</a> before you can use Chasebot.</p>
 {% endif %}

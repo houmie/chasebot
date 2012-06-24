@@ -12,11 +12,13 @@ EMAIL_HOST_PASSWORD = 'Rahil2503'
 EMAIL_USE_TLS = True
 SERVER_EMAIL = 'houmie@gmail.com'
 
+AUTH_PROFILE_MODULE = 'Chasebot_App.UserProfile'
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+     ('Houman', 'houman@venuscloud.com'),
 )
 
 MANAGERS = ADMINS

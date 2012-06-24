@@ -1,15 +1,25 @@
+
+
 __author__ = 'houman'
 
 from django import forms
 import re
 from django.contrib.auth.models import User
+from django.forms import ModelForm
+from Chasebot_App.models import UserProfile
 from django.utils.translation import ugettext_lazy as _
 
-class RegistrationForm(forms.Form):
-    username = forms.CharField(label=u'Username', max_length=30)
-    email = forms.EmailField(label=u'Email')
-    password1 = forms.CharField(label=u'Password', widget=forms.PasswordInput())
-    password2 = forms.CharField(label = u'Password (Again)', widget=forms.PasswordInput())
+class RegistrationForm(ModelForm):
+    username        = forms.CharField(label=u'Username', max_length=30)
+    company_name    = forms.CharField(label=u'Company', max_length=50)
+    company_email   = forms.EmailField(label=u'Company Email')
+    email           = forms.EmailField(label=u'Email')
+    password1       = forms.CharField(label=u'Password', widget=forms.PasswordInput(render_value=False))
+    password2       = forms.CharField(label = u'Password (Again)', widget=forms.PasswordInput(render_value=False))
+
+    class Meta:
+        model = UserProfile
+        exclude = ('user', 'company', 'company_id')
 
     def clean_password2(self):
         if 'password1' in self.cleaned_data:
@@ -30,9 +40,8 @@ class RegistrationForm(forms.Form):
         raise forms.ValidationError('Username is already taken.')
 
     def clean_email(self):
-        return self.cleaned_data.get('email')
-#        users = User.objects.all()
-#        for user in users:
-#            if user.email == email:
-#                raise forms.ValidationError('Email is already taken.')
-#        return email
+        email = self.cleaned_data['email']
+        users = User.objects.filter(email=email)
+        if users.count() > 0:
+            raise forms.ValidationError("That email is already taken, please select another.")
+        return email

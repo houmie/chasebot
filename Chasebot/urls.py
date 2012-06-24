@@ -9,31 +9,23 @@ from Chasebot_App.views import main_page_view, logout_page_view, register_page_v
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'Chasebot.views.home', name='home'),
-    # url(r'^Chasebot/', include('Chasebot.foo.urls')),
 
     # Session management
     (r'^login/$', 'django.contrib.auth.views.login'),
     (r'^logout/$', logout_page_view),
-
     (r'^change-password/$', 'django.contrib.auth.views.password_change'),
     (r'^password-changed/$', 'django.contrib.auth.views.password_change_done'),
-
-    #(r'^password_reset/$', 'django.contrib.auth.views.password_reset'),
-    #(r'^password_reset_confirm/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$', 'django.contrib.auth.views.password_reset_confirm'),
-    #(r'^password_reset_done/$', 'django.contrib.auth.views.password_reset_done'),
-
     (r'^password_reset/$','django.contrib.auth.views.password_reset'),
     (r'^password_reset_done/$','django.contrib.auth.views.password_reset_done'),
     (r'^password_reset_confirm/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$','django.contrib.auth.views.password_reset_confirm'),
     (r'^password_reset_complete/$','django.contrib.auth.views.password_reset_complete'),
-
-
     (r'^register/$', register_page_view),
     (r'^register/success/$', direct_to_template, {'template': 'registration/register_success.html'}),
 
+    #Browsing
     (r'^$', main_page_view),
+
+    #i18n
 
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
