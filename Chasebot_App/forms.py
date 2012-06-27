@@ -6,27 +6,27 @@ from django import forms
 import re
 from django.contrib.auth.models import User
 from django.forms import ModelForm
-from Chasebot_App.models import UserProfile
+from Chasebot_App.models import UserProfile, Contact, ContactType, Country, MaritalStatus
 from django.utils.translation import ugettext_lazy as _
 
 class RegistrationForm(ModelForm):
-    username        = forms.CharField(label=u'Username', max_length=30)
-    company_name    = forms.CharField(label=u'Company', max_length=50)
-    company_email   = forms.EmailField(label=u'Company Email')
-    email           = forms.EmailField(label=u'Email')
-    password1       = forms.CharField(label=u'Password', widget=forms.PasswordInput(render_value=False))
-    password2       = forms.CharField(label = u'Password (Again)', widget=forms.PasswordInput(render_value=False))
+    username        = forms.CharField(label = _(u'Username'), max_length=30)
+    company_name    = forms.CharField(label = _(u'Company'), max_length=50)
+    company_email   = forms.EmailField(label= _(u'Company Email'))
+    email           = forms.EmailField(label= _(u'Email'))
+    password        = forms.CharField(label = _(u'Password'), widget=forms.PasswordInput(render_value=False))
+    password2       = forms.CharField(label = _(u'Password (Again)'), widget=forms.PasswordInput(render_value=False))
 
     class Meta:
         model = UserProfile
-        exclude = ('user', 'company', 'company_id')
+        exclude = ('user', 'company')
 
     def clean_password2(self):
-        if 'password1' in self.cleaned_data:
-            password1 = self.cleaned_data['password1']
+        if 'password' in self.cleaned_data:
+            password = self.cleaned_data['password']
             password2 = self.cleaned_data['password2']
-            if password1 == password2:
-                return password2
+            if password == password2:
+                return password
         raise forms.ValidationError('Passwords do not match.')
 
     def clean_username(self):
@@ -45,3 +45,26 @@ class RegistrationForm(ModelForm):
         if users.count() > 0:
             raise forms.ValidationError("That email is already taken, please select another.")
         return email
+
+
+class ContactsForm(ModelForm):
+    #contact_type    = forms.ModelChoiceField(queryset=ContactType.objects.all(), label=_(u'Contact Type'))
+
+    class Meta:
+        model = Contact
+        #exclude = ('contact_type',)
+
+class CountryForm(ModelForm):
+    class Meta:
+        model = Country
+
+
+class MaritalStatusForm(ModelForm):
+    class Meta:
+        model = MaritalStatus
+
+class ContactTypeForm(ModelForm):
+    class Meta:
+        model = ContactType
+
+
