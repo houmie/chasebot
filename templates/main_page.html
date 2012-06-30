@@ -6,6 +6,39 @@
 {% block content %}
 {% if user.username %}
     <p>Welcome {{ user.username }} from the company {{ company_name }}! </p>
+    {% if contacts %}
+
+            <table border="1">
+                <tr>
+                    <th>Last Name</th>
+                    <th>First Name</th>
+                    <th>Dear</th>
+                    <th>Company</th>
+                    <th>Email</th>
+                    <th>Work Phone</th>
+                    <th>Cell Phone</th>
+                    <th>Last Conversation</th>
+                    <th>Deals</th>
+                    <th>Past Sales</th>
+                    <th>Important Client</th>
+                </tr>
+                {% for item in contacts %}
+                <tr>
+                    <td><a href="/contact/edit/{{ item.id }}">{{ item.last_name }}</a></td>
+                    <td>{{ item.first_name }}</td>
+                    <td>{{ item.dear }}</td>
+                    <td>{{ item.company_name }}</td>
+                    <td>{{ item.email }}</td>
+                    <td>{{ item.work_phone }}</td>
+                    <td>{{ item.mobile_phone }}</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                {% endfor %}
+            </table>
+    {% endif %}
 {% else %}
     <p>Welcome anonymous user! You need to <a href ="/login/">login</a> before you can use Chasebot.</p>
 {% endif %}

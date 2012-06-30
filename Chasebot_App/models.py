@@ -9,7 +9,6 @@ from django.utils.translation import ugettext as _
 class Company(models.Model):
     company_name        = models.CharField(max_length=50)
     company_email       = models.EmailField()
-
     def __unicode__(self):
         return self.company_name
 
@@ -18,7 +17,6 @@ class Company(models.Model):
 class UserProfile(models.Model):
     user                = models.OneToOneField(User)
     company             = models.ForeignKey(Company)
-
     def __unicode__(self):
         return u'%s, %s' % (self.user.username, self.company.company_name)
 
@@ -38,14 +36,14 @@ class UserProfile(models.Model):
 
 class ContactType(models.Model):
     contact_type = models.CharField(_(u"Contact Type"), max_length=30)
-
+    company      = models.ForeignKey(Company)
     def __unicode__(self):
         return self.contact_type
 
 
 class MaritalStatus(models.Model):
     martial_status_type = models.CharField(_(u"Marital Status"), max_length=30)
-
+    #company             = models.ForeignKey(Company)
     def __unicode__(self):
         return self.martial_status_type
 
@@ -53,7 +51,7 @@ class MaritalStatus(models.Model):
 class Country(models.Model):
     country_code = models.CharField(_(u"Country Code"), max_length=2)
     country_name = models.CharField(_(u"Country"), max_length=40)
-
+    #company      = models.ForeignKey(Company)
     def __unicode__(self):
         return self.country_name
 
@@ -91,7 +89,7 @@ class Contact(models.Model):
     spouses_interests   = models.TextField(_(u"Spouse's Interests"),     blank=True)
     children_names      = models.CharField(_(u"Children Names"),         max_length=75, blank=True)
     home_town           = models.CharField(_(u"Home Town"),              max_length=30, blank=True)
-
+    company             = models.ForeignKey(Company)
     #call = models.ManyToOneRel
 
     def __unicode__(self):
@@ -104,6 +102,6 @@ class ConversationHistory(models.Model):
     contact_time        = models.DateTimeField(_(u"Conversation Time"),  blank=True)
     subject             = models.CharField(_(u"Conversation Subject"),   max_length=50, blank=True)
     notes               = models.TextField(_(u"Conversation Notes"),     blank=True)
-
+    company             = models.ForeignKey(Company)
     def __unicode__(self):
         return self.subject

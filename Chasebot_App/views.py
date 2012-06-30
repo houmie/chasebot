@@ -1,24 +1,24 @@
 # Create your views here.
-from ufw.applications import get_profiles
+from django.http import Http404
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
 from Chasebot_App.forms import RegistrationForm, ContactsForm, ContactTypeForm, MaritalStatusForm, CountryForm
-#from Chasebot_App.models import UserProfile
 from Chasebot_App.models import Company, Contact, ContactType, MaritalStatus, Country
 from Chasebot_App.models import UserProfile
+from django.utils.translation import ugettext as _
 
+
+@login_required
 def main_page_view(request):
-    if request.user.is_authenticated():
-        profile = request.user.get_profile()
-        company_name = profile.company.company_name
-    else:
-        company_name = ''
-    company = {'company_name': company_name}
-    variables = RequestContext(request, company)
+    profile = request.user.get_profile()
+    company_name = profile.company.company_name
+    contacts= profile.company.contact_set.all().order_by('last_name')[:10]
+    vars = {'company_name': company_name, 'contacts' : contacts}
+    variables = RequestContext(request, vars)
     return render_to_response('main_page.html', variables)
 
 def logout_page_view(request):
@@ -72,85 +72,64 @@ def register_page_view(request):
     variables = RequestContext(request, {'form':form})
     return render_to_response('registration/register.html', variables)
 
-@login_required
-def new_contact_view(request):
-    if request.method == 'POST':
-        form = ContactsForm(request.POST)
-        if form.is_valid():
-            contact = Contact.objects.create(
-                first_name=form.cleaned_data['first_name'],
-                last_name=form.cleaned_data['last_name'],
-                dear=form.cleaned_data['dear'],
-                address=form.cleaned_data['address'],
-                city=form.cleaned_data['city'],
-                state=form.cleaned_data['state'],
-                postcode=form.cleaned_data['postcode'],
-                country=form.cleaned_data['country'],
-                company_name=form.cleaned_data['company_name'],
-                title=form.cleaned_data['title'],
-                work_phone=form.cleaned_data['work_phone'],
-                home_phone=form.cleaned_data['home_phone'],
-                mobile_phone=form.cleaned_data['mobile_phone'],
-                fax_number=form.cleaned_data['fax_number'],
-                email=form.cleaned_data['email'],
-                birth_date=form.cleaned_data['birth_date'],
-                prev_meeting_places=form.cleaned_data['prev_meeting_places'],
-                contact_type=form.cleaned_data['contact_type'],
-                referred_by=form.cleaned_data['referred_by'],
-                contact_notes=form.cleaned_data['contact_notes'],
-                marital_status=form.cleaned_data['marital_status'],
-                contacts_interests=form.cleaned_data['contacts_interests'],
-                spouse_first_name=form.cleaned_data['spouse_first_name'],
-                spouse_last_name=form.cleaned_data['spouse_last_name'],
-                spouses_interests=form.cleaned_data['spouses_interests'],
-                children_names=form.cleaned_data['children_names'],
-                home_town=form.cleaned_data['home_town']
-            )
-            contact.save()
-            return HttpResponseRedirect('/')
-    else:
-        form = ContactsForm()
-    variables = RequestContext(request, {'form':form})
-    return render_to_response('contact_add.html', variables)
 
 @login_required
-def new_contact_type_view(request):
-    if request.method == 'POST':
-        form = ContactTypeForm(request.POST)
+def contact_view(request, contact_id=None):
+    profile = request.user.get_profile()
+    if contact_id is None:
+        contact = Contact(company=profile.company)
+        template_title = _(u'Add Contact')
+    else:
+        contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
+        template_title = _(u'Edit Contact')
+    if request.POST:
+        form = ContactsForm(profile.company, request.POST, instance=contact)
         if form.is_valid():
-            contact_type = ContactType.objects.create(contact_type = form.cleaned_data['contact_type'])
-            contact_type.save()
+            contact = form.save()
             return HttpResponseRedirect('/')
     else:
-        form = ContactTypeForm()
-    variables = RequestContext(request, {'form': form})
-    return render_to_response('contact_type_add.html', variables)
+        form = ContactsForm(instance=contact, company=profile.company)
+    variables = RequestContext(request, {'form':form, 'template_title': template_title})
+    return render_to_response("contact.html", variables)
 
 @login_required
-def new_marital_status_view(request):
-    if request.method == 'POST':
-        form = MaritalStatusForm(request.POST)
-        if form.is_valid():
-            marital_status = MaritalStatus.objects.create(martial_status_type = form.cleaned_data['martial_status_type'])
-            marital_status.save()
-            return HttpResponseRedirect('/')
+def delete_contact_view(request, contact_id):
+    if contact_id is None:
+        raise Http404(_(u'Contact not found'))
     else:
-        form = MaritalStatusForm()
-    variables = RequestContext(request, {'form':form})
-    return render_to_response('marital_status_add.html', variables)
+        profile = request.user.get_profile()
+        contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
+        contact.delete()
+    return HttpResponseRedirect('/')
 
 @login_required
-def new_country_view(request):
-    if request.method == 'POST':
-        form = CountryForm(request.POST)
+def contact_type_view(request, contact_type_id=None):
+    profile = request.user.get_profile()
+    if contact_type_id is None:
+        contact_type = ContactType(company=profile.company)
+        template_title = _(u'Add Contact Type')
+    else:
+        contact_type = get_object_or_404(profile.company.contacttype_set.all(), pk=contact_type_id)
+        template_title = _(u'Edit Contact Type')
+
+    if request.POST:
+        form = ContactTypeForm(request.POST, instance=contact_type)
         if form.is_valid():
-            country = Country.objects.create(
-                country_code = form.cleaned_data['country_code'],
-                country_name = form.cleaned_data['country_name']
-            )
-            country.save()
+            contact_type = form.save()
             return HttpResponseRedirect('/')
     else:
-        form = CountryForm()
-    variables = RequestContext(request, {'form' : form})
-    return render_to_response('country_add.html', variables)
+        form = ContactTypeForm(instance=contact_type)
+    variables = RequestContext(request, {'form': form, 'template_title': template_title})
+    return render_to_response('contact_type.html', variables)
+
+@login_required
+def delete_contact_type_view(request, contact_type_id):
+    if contact_type_id is None:
+        raise Http404(_(u'Contact Type not found'))
+    else:
+        profile = request.user.get_profile()
+        contact_type = get_object_or_404(profile.company.contacttype_set.all(), pk=contact_type_id)
+        contact_type.delete()
+        return HttpResponseRedirect('/')
+
+

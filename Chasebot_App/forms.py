@@ -48,11 +48,14 @@ class RegistrationForm(ModelForm):
 
 
 class ContactsForm(ModelForm):
-    #contact_type    = forms.ModelChoiceField(queryset=ContactType.objects.all(), label=_(u'Contact Type'))
+    def __init__(self, company, *args, **kwargs):
+        super(ContactsForm, self).__init__(*args, **kwargs)
+        # limit selection list to just items for this account
+        self.fields['contact_type'].queryset = ContactType.objects.filter(company=company)
 
     class Meta:
         model = Contact
-        #exclude = ('contact_type',)
+        exclude = ('company')
 
 class CountryForm(ModelForm):
     class Meta:
@@ -66,5 +69,6 @@ class MaritalStatusForm(ModelForm):
 class ContactTypeForm(ModelForm):
     class Meta:
         model = ContactType
+        exclude = ('company')
 
 

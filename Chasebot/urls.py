@@ -4,7 +4,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.views.generic.simple import direct_to_template
 from Chasebot import settings
-from Chasebot_App.views import main_page_view, logout_page_view, register_page_view, new_contact_view, new_contact_type_view, new_marital_status_view, new_country_view
+from Chasebot_App.views import main_page_view, logout_page_view, register_page_view, contact_type_view, contact_view, delete_contact_view, delete_contact_type_view
 
 admin.autodiscover()
 
@@ -24,10 +24,12 @@ urlpatterns = patterns('',
 
     #Browsing
     (r'^$', main_page_view),
-    (r'^contact/add/$', new_contact_view),
-    (r'^contact_type/add/$', new_contact_type_view),
-    (r'^marital_status/add/$', new_marital_status_view),
-    (r'^country/add/$', new_country_view),
+    (r'^contact/delete/(?P<contact_id>\d+)/$', delete_contact_view),
+    (r'^contact/edit/(?P<contact_id>\d+)/$', contact_view),
+    (r'^contact/add/', contact_view),
+    (r'^contact_type/add/$', contact_type_view),
+    (r'^contact_type/edit/(?P<contact_type_id>\d+)/$', contact_type_view),
+    (r'^contact_type/delete/(?P<contact_type_id>\d+)/$', delete_contact_type_view),
 
     #i18n
 
