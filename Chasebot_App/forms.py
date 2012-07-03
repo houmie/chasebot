@@ -1,4 +1,4 @@
-
+from django.forms.widgets import TextInput
 
 __author__ = 'houman'
 
@@ -56,6 +56,10 @@ class ContactsForm(ModelForm):
     class Meta:
         model = Contact
         exclude = ('company')
+        widgets = {
+                'first_name': TextInput(attrs={'placeholder': 'Enter first name here'}),
+
+            }
 
 class CountryForm(ModelForm):
     class Meta:

@@ -55,6 +55,14 @@ class Country(models.Model):
     def __unicode__(self):
         return self.country_name
 
+
+class Gender(models.Model):
+    gender       = models.CharField(_(u"Sex"), max_length=10)
+    #company      = models.ForeignKey(Company)
+    def __unicode__(self):
+        return self.gender
+
+
 #CONTACT_TYPE_CHOICES = (
 #    ('S', 'Single')
 #)
@@ -70,7 +78,7 @@ class Contact(models.Model):
     postcode            = models.CharField(_(u"Zip Code"),               max_length=30, blank=True)
     country             = models.ForeignKey(Country,                     null=True, blank=True, verbose_name=_(u'Country'))
     company_name        = models.CharField(_(u"Company Name"),           max_length=30, blank=True)
-    title               = models.CharField(_(u"Title"),                  max_length=10, blank=True)
+    position            = models.CharField(_(u"Position"),               max_length=10, blank=True)
     work_phone          = models.CharField(_(u"Work Phone"),             max_length=30, blank=True)
     home_phone          = models.CharField(_(u"Home Phone"),             max_length=30, blank=True)
     mobile_phone        = models.CharField(_(u"Cell Phone"),             max_length=30, blank=True)
@@ -82,7 +90,7 @@ class Contact(models.Model):
     referred_by         = models.CharField(_(u"Referred By"),            max_length=50, blank=True)
     contact_notes       = models.TextField(_(u"Personality Notes"),      blank=True)
     marital_status      = models.ForeignKey(MaritalStatus,               null=True, blank=True, verbose_name=_(u'Marital Status'))
-
+    gender              = models.ForeignKey(Gender,                      null=True, blank=True, verbose_name=_(u'Sex'))
     contacts_interests  = models.TextField(_(u"Contact's Interests"),    blank=True)
     spouse_first_name   = models.CharField(_(u"Spouse's First Name"),    max_length=30, blank=True)
     spouse_last_name    = models.CharField(_(u"Spouse's Last Name"),     max_length=50, blank=True)

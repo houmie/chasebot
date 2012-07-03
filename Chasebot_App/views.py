@@ -1,4 +1,5 @@
 # Create your views here.
+from __builtin__ import id
 from django.http import Http404
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
@@ -83,14 +84,21 @@ def contact_view(request, contact_id=None):
         contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
         template_title = _(u'Edit Contact')
     if request.POST:
+        if request.POST.get('cancel', None):
+            return HttpResponseRedirect('/')
         form = ContactsForm(profile.company, request.POST, instance=contact)
         if form.is_valid():
             contact = form.save()
             return HttpResponseRedirect('/')
     else:
         form = ContactsForm(instance=contact, company=profile.company)
-    variables = RequestContext(request, {'form':form, 'template_title': template_title})
-    return render_to_response("contact.html", variables)
+    variables = RequestContext(request, {'form':form, 'template_title': template_title, 'contact_id' : contact_id})
+#    return render_to_response("contact.html", variables)
+#    if request.GET.has_key('ajax'):
+    #return render_to_response('contact_modal.html', variables)
+ #   else:
+    return render_to_response('contact.html', variables)
+
 
 @login_required
 def delete_contact_view(request, contact_id):
