@@ -57,8 +57,29 @@ class ContactsForm(ModelForm):
         model = Contact
         exclude = ('company')
         widgets = {
-                'first_name': TextInput(attrs={'placeholder': 'Enter first name here'}),
-
+                'first_name': forms.TextInput(attrs={'placeholder': 'Enter first name here'}),
+                'last_name': forms.TextInput(attrs={'placeholder': 'Enter last name here'}),
+                'dear': forms.TextInput(attrs={'placeholder': 'Enter the preferred short name'}),
+                'city': forms.TextInput(attrs={'placeholder': 'Enter the city here'}),
+                'state': forms.TextInput(attrs={'placeholder': 'Enter the state here'}),
+                'postcode': forms.TextInput(attrs={'placeholder': 'Enter the zip code here'}),
+                'company_name': forms.TextInput(attrs={'placeholder': 'Add a company'}),
+                'position': forms.TextInput(attrs={'placeholder': 'Add a position'}),
+                'work_phone': forms.TextInput(attrs={'placeholder': 'Add a work phone'}),
+                'home_phone': forms.TextInput(attrs={'placeholder': 'Add a home phone'}),
+                'mobile_phone': forms.TextInput(attrs={'placeholder': 'Add a cell phone'}),
+                'fax_number': forms.TextInput(attrs={'placeholder': 'Add a fax number'}),
+                'email': forms.TextInput(attrs={'placeholder': 'Add an email'}),
+                'birth_date': forms.TextInput(attrs={'placeholder': 'Add the day of birth'}),
+                'referred_by': forms.TextInput(attrs={'placeholder': '...was referred by?'}),
+                'spouse_first_name': forms.TextInput(attrs={'placeholder': 'What is the spouse\'s name?'}),
+                'children_names': forms.TextInput(attrs={'placeholder': 'What are the children names?'}),
+                'home_town': forms.TextInput(attrs={'placeholder': 'Enter the home town'}),
+                'address': forms.Textarea(attrs={'rows':4, 'placeholder': 'Add an address'}),
+                'contact_notes': forms.Textarea(attrs={'rows':4, 'placeholder': 'What is the personality like?'}),
+                'contacts_interests': forms.Textarea(attrs={'rows':4, 'placeholder': 'Any particular interests?'}),
+                'spouses_interests': forms.Textarea(attrs={'rows':4, 'placeholder': 'Does the spouse have any particular interest?'}),
+                'prev_meeting_places': forms.Textarea(attrs={'rows':4, 'placeholder': 'Where did you meet so far?'}),
             }
 
 class CountryForm(ModelForm):

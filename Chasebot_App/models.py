@@ -85,7 +85,7 @@ class Contact(models.Model):
     fax_number          = models.CharField(_(u"Fax Number"),             max_length=30, blank=True)
     email               = models.EmailField(_(u"Email"),                 blank=True)
     birth_date          = models.DateField(_(u"Day Of Birth"),           null=True, blank=True)
-    prev_meeting_places = models.CharField(_(u"Previous meetings"),      max_length=50, blank=True)
+    prev_meeting_places = models.TextField(_(u"Previous meetings"),      max_length=50, blank=True)
     contact_type        = models.ForeignKey(ContactType,                 verbose_name=_(u'Contact Type'))
     referred_by         = models.CharField(_(u"Referred By"),            max_length=50, blank=True)
     contact_notes       = models.TextField(_(u"Personality Notes"),      blank=True)
