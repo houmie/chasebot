@@ -5,6 +5,7 @@ out.write("INSERT INTO Chasebot_App_company (company_name, company_email) VALUES
 out.write("INSERT INTO Chasebot_App_userprofile (user_id, company_id) VALUES (1, 1);\n")
 
 out.write("INSERT INTO Chasebot_App_contacttype (contact_type, company_id) VALUES ('Buyer', 1),('Seller', 1);\n")
+out.write("INSERT INTO Chasebot_App_gender (gender) VALUES ('Female'),('Male');\n")
 out.write("INSERT INTO Chasebot_App_maritalstatus (martial_status_type) VALUES ('Single'),('Married'),('Domestic partnership'),('Civil Union'),('Divorced'),('Widowed');\n")
 out.write("INSERT INTO Chasebot_App_country (country_code, country_name) VALUES \n")
 count = 0

@@ -16,6 +16,7 @@
                 </td>
                 <td>
                     {{form.last_name}}
+                    {% if  form.last_name.required %}(*){% endif %}
                 </td>
             </tr>
             <tr>

@@ -6,5 +6,8 @@ body {
     border-top: 0;
 }
 
-
+input[type="text"]
+{
+    color: #999999;
+}
 ​
