@@ -50,7 +50,7 @@ class MaritalStatus(models.Model):
 
 class Country(models.Model):
     country_code = models.CharField(_(u"Country Code"), max_length=2)
-    country_name = models.CharField(_(u"Country"), max_length=40)
+    country_name = models.CharField(_(u"Country"), max_length=50)
     #company      = models.ForeignKey(Company)
     def __unicode__(self):
         return self.country_name

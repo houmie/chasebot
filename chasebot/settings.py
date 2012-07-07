@@ -12,7 +12,7 @@ EMAIL_HOST_PASSWORD = 'Rahil2503'
 EMAIL_USE_TLS = True
 SERVER_EMAIL = 'houmie@gmail.com'
 
-AUTH_PROFILE_MODULE = 'Chasebot_App.UserProfile'
+AUTH_PROFILE_MODULE = 'chasebot_app.UserProfile'
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -25,11 +25,11 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'ChasebotDB',                      # Or path to database file if using sqlite3.
-        'USER': 'houmie',                      # Not used with sqlite3.
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'Ch4s3b0tDB',                      # Or path to database file if using sqlite3.
+        'USER': 'django_user',                      # Not used with sqlite3.
         'PASSWORD': 'houmie123',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+        'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
@@ -115,10 +115,10 @@ MIDDLEWARE_CLASSES = (
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'Chasebot.urls'
+ROOT_URLCONF = 'chasebot.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
-WSGI_APPLICATION = 'Chasebot.wsgi.application'
+WSGI_APPLICATION = 'chasebot.wsgi.application'
 
 TEMPLATE_DIRS = (
         os.path.join(os.path.dirname(__file__), '../templates'),
@@ -135,7 +135,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'Chasebot_App',
+    'chasebot_app',
 )
 
 # A sample logging configuration. The only tangible logging

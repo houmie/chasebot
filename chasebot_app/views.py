@@ -7,9 +7,9 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
-from Chasebot_App.forms import RegistrationForm, ContactsForm, ContactTypeForm, MaritalStatusForm, CountryForm
-from Chasebot_App.models import Company, Contact, ContactType, MaritalStatus, Country
-from Chasebot_App.models import UserProfile
+from chasebot_app.forms import RegistrationForm, ContactsForm, ContactTypeForm, MaritalStatusForm, CountryForm
+from chasebot_app.models import Company, Contact, ContactType, MaritalStatus, Country
+from chasebot_app.models import UserProfile
 from django.utils.translation import ugettext as _
 
 

@@ -6,7 +6,7 @@ from django import forms
 import re
 from django.contrib.auth.models import User
 from django.forms import ModelForm
-from Chasebot_App.models import UserProfile, Contact, ContactType, Country, MaritalStatus
+from chasebot_app.models import UserProfile, Contact, ContactType, Country, MaritalStatus
 from django.utils.translation import ugettext_lazy as _
 
 class RegistrationForm(ModelForm):
