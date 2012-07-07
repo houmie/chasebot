@@ -3,43 +3,73 @@
         <table class="table edit_table">
             <tbody>
                 <tr>
-                    <td>
-                        {{form.birth_date.label}}:
+                    <td>                        
+                        {{form.birth_date.label}}: {% if  form.birth_date.field.required %} *{% endif %}
                     </td>
-                    <td>
-                        {{form.birth_date}}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        {{form.home_town.label}}:
-                    </td>
-                    <td>
-                        {{form.home_town}}
+                    <td>                        
+                        {% if form.birth_date.errors %}
+	                	<div class="field field_error">
+	                    	{{form.birth_date}} {{form.birth_date.errors}}                   	
+	                	</div>
+	                	{% else %}
+	                		{{form.birth_date}}
+	                	{% endif %}                        
                     </td>
                 </tr>
                 <tr>
-                    <td>
-                        {{form.referred_by.label}}:
+                    <td>                        
+                        {{form.home_town.label}}: {% if  form.home_town.field.required %} *{% endif %}
                     </td>
-                    <td>
-                        {{form.referred_by}}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        {{form.contacts_interests.label}}:
-                    </td>
-                    <td>
-                        {{form.contacts_interests}}
+                    <td>                        
+                        {% if form.home_town.errors %}
+	                	<div class="field field_error">
+	                    	{{form.home_town}} {{form.home_town.errors}}                   	
+	                	</div>
+	                	{% else %}
+	                		{{form.home_town}}
+	                	{% endif %}                        
                     </td>
                 </tr>
                 <tr>
-                    <td>
-                        {{form.contact_notes.label}}:
+                    <td>                        
+                        {{form.referred_by.label}}: {% if  form.referred_by.field.required %} *{% endif %}
+                    </td>
+                    <td>                        
+                        {% if form.referred_by.errors %}
+	                	<div class="field field_error">
+	                    	{{form.referred_by}} {{form.referred_by.errors}}                   	
+	                	</div>
+	                	{% else %}
+	                		{{form.referred_by}}
+	                	{% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>                        
+                        {{form.contacts_interests.label}}: {% if  form.contacts_interests.field.required %} *{% endif %}
                     </td>
                     <td>
-                        {{form.contact_notes}}
+                    	{% if form.contacts_interests.errors %}
+	                	<div class="field field_error">
+	                    	{{form.contacts_interests}} {{form.contacts_interests.errors}}                   	
+	                	</div>
+	                	{% else %}
+	                		{{form.contacts_interests}}
+	                	{% endif %}                        
+                    </td>
+                </tr>
+                <tr>
+                    <td>                        
+                        {{form.contact_notes.label}}: {% if  form.contact_notes.field.required %} *{% endif %}
+                    </td>
+                    <td>                        
+                        {% if form.contact_notes.errors %}
+	                	<div class="field field_error">
+	                    	{{form.contact_notes}} {{form.contact_notes.errors}}                   	
+	                	</div>
+	                	{% else %}
+	                		{{form.contact_notes}}
+	                	{% endif %}
                     </td>
                 </tr>
             </tbody>
@@ -49,43 +79,73 @@
         <table class="table edit_table">
             <tbody>
                 <tr>
-                    <td>
-                        {{form.marital_status.label}}:
+                    <td>                        
+                        {{form.marital_status.label}}: {% if  form.marital_status.field.required %} *{% endif %}
                     </td>
                     <td>
-                        {{form.marital_status}}
+                    	{% if form.marital_status.errors %}
+	                	<div class="field field_error">
+	                    	{{form.marital_status}} {{form.marital_status.errors}}                   	
+	                	</div>
+	                	{% else %}
+	                		{{form.marital_status}}
+	                	{% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>                        
+                        {{form.spouse_first_name.label}}: {% if  form.spouse_first_name.field.required %} *{% endif %}
+                    </td>
+                    <td>
+                    	{% if form.spouse_first_name.errors %}
+	                	<div class="field field_error">
+	                    	{{form.spouse_first_name}} {{form.spouse_first_name.errors}}                   	
+	                	</div>
+	                	{% else %}
+	                		{{form.spouse_first_name}}
+	                	{% endif %}                        
+                    </td>
+                </tr>
+                <tr>
+                    <td>                        
+                        {{form.spouses_interests.label}}: {% if  form.spouses_interests.field.required %} *{% endif %}
+                    </td>
+                    <td>                        
+                        {% if form.spouses_interests.errors %}
+	                	<div class="field field_error">
+	                    	{{form.spouses_interests}} {{form.spouses_interests.errors}}                   	
+	                	</div>
+	                	{% else %}
+	                		{{form.spouses_interests}}
+	                	{% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>                        
+                        {{form.children_names.label}}: {% if  form.children_names.field.required %} *{% endif %}
+                    </td>
+                    <td>                        
+                        {% if form.children_names.errors %}
+	                	<div class="field field_error">
+	                    	{{form.children_names}} {{form.children_names.errors}}                   	
+	                	</div>
+	                	{% else %}
+	                		{{form.children_names}}
+	                	{% endif %}
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        {{form.spouse_first_name.label}}:
+                    	{{form.prev_meeting_places.label}}: {% if  form.prev_meeting_places.field.required %} *{% endif %}                        
                     </td>
                     <td>
-                        {{form.spouse_first_name}}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        {{form.spouses_interests.label}}:
-                    </td>
-                    <td>
-                        {{form.spouses_interests}}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        {{form.children_names.label}}:
-                    </td>
-                    <td>
-                        {{form.children_names}}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        {{form.prev_meeting_places.label}}:
-                    </td>
-                    <td>
-                        {{form.prev_meeting_places}}
+                        {% if form.prev_meeting_places.errors %}
+	                	<div class="field field_error">
+	                    	{{form.prev_meeting_places}} {{form.prev_meeting_places.errors}}                   	
+	                	</div>
+	                	{% else %}
+	                		{{form.prev_meeting_places}}
+	                	{% endif %}
                     </td>
                 </tr>
             </tbody>

@@ -4,35 +4,58 @@
             <tbody>
             <tr>
                 <td>
-                    {{form.first_name.label}}:
+                    {{form.first_name.label}}: {% if  form.first_name.field.required %} *{% endif %}
                 </td>
-                <td>
-                    {{form.first_name}}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    {{form.last_name.label}}:
-                </td>
-                <td>
-                    {{form.last_name}}
-                    {% if  form.last_name.required %}(*){% endif %}
+                <td>                	
+                    {% if form.first_name.errors %}
+                	<div class="field field_error">
+                    	{{form.first_name}} {{form.first_name.errors}}                   	
+                	</div>
+                	{% else %}
+                		{{form.first_name}}
+                	{% endif %}
                 </td>
             </tr>
             <tr>
                 <td>
-                    {{form.dear.label}}:
+                    {{form.last_name.label}}: {% if  form.last_name.field.required %} *{% endif %}
                 </td>
-                <td>
-                    {{form.dear}}
+                <td>                	
+                    {% if form.last_name.errors %}
+                	<div class="field field_error">
+                    	{{form.last_name}} {{form.last_name.errors}}                   	
+                	</div>
+                	{% else %}
+                		{{form.last_name}}
+                	{% endif %}                	
                 </td>
             </tr>
             <tr>
                 <td>
-                    {{form.company_name.label}}:
+                    {{form.dear.label}}: {% if  form.dear.field.required %} *{% endif %}
                 </td>
                 <td>
-                    {{form.company_name}}
+                	{% if form.dear.errors %}
+                	<div class="field field_error">
+                    	{{form.dear}} {{form.dear.errors}}                   	
+                	</div>
+                	{% else %}
+                		{{form.dear}}
+                	{% endif %}                	
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{form.company_name.label}}: {% if  form.company_name.field.required %} *{% endif %}
+                </td>
+                <td>
+                	{% if form.company_name.errors %}
+                	<div class="field field_error">
+                    	{{form.company_name}} {{form.company_name.errors}}                   	
+                	</div>
+                	{% else %}
+                		{{form.company_name}}
+                	{% endif %}                	
                 </td>
             </tr>
             <tr>
@@ -42,34 +65,58 @@
             </tr>
             <tr>
                 <td>
-                    {{form.work_phone.label}}:
+                    {{form.work_phone.label}}: {% if  form.work_phone.field.required %} *{% endif %}
                 </td>
                 <td>
-                    {{form.work_phone}}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    {{form.mobile_phone.label}}:
-                </td>
-                <td>
-                    {{form.mobile_phone}}
+                	{% if form.work_phone.errors %}
+                	<div class="field field_error">
+                    	{{form.work_phone}} {{form.work_phone.errors}}                   	
+                	</div>
+                	{% else %}
+                		{{form.work_phone}}
+                	{% endif %}                	
                 </td>
             </tr>
             <tr>
                 <td>
-                    {{form.home_phone.label}}:
+                    {{form.mobile_phone.label}}: {% if  form.mobile_phone.field.required %} *{% endif %}
                 </td>
                 <td>
-                    {{form.home_phone}}
+                	{% if form.mobile_phone.errors %}
+                	<div class="field field_error">
+                    	{{form.mobile_phone}} {{form.mobile_phone.errors}}                   	
+                	</div>
+                	{% else %}
+                		{{form.mobile_phone}}
+                	{% endif %}                	
                 </td>
             </tr>
             <tr>
                 <td>
-                    {{form.fax_number.label}}:
+                    {{form.home_phone.label}}: {% if  form.home_phone.field.required %} *{% endif %}
                 </td>
                 <td>
-                    {{form.fax_number}}
+                	{% if form.home_phone.errors %}
+                	<div class="field field_error">
+                    	{{form.home_phone}} {{form.home_phone.errors}}                   	
+                	</div>
+                	{% else %}
+                		{{form.home_phone}}
+                	{% endif %}                	
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{form.fax_number.label}}: {% if  form.fax_number.field.required %} *{% endif %}
+                </td>
+                <td>
+                	{% if form.fax_number.errors %}
+                	<div class="field field_error">
+                    	{{form.fax_number}} {{form.fax_number.errors}}                   	
+                	</div>
+                	{% else %}
+                		{{form.fax_number}}
+                	{% endif %}                	
                 </td>
             </tr>
             </tbody>
@@ -81,74 +128,128 @@
             <tbody>
             <tr>
                 <td>
-                    {{form.email.label}}:
+                    {{form.email.label}}: {% if  form.email.field.required %} *{% endif %}
                 </td>
                 <td>
-                    {{form.email}}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    {{form.contact_type.label}}:
-                </td>
-                <td>
-                    {{form.contact_type}}
+                	{% if form.email.errors %}
+                	<div class="field field_error">
+                    	{{form.email}} {{form.email.errors}}                   	
+                	</div>
+                	{% else %}
+                		{{form.email}}
+                	{% endif %}
                 </td>
             </tr>
             <tr>
                 <td>
-                    {{form.position.label}}:
+                    {{form.contact_type.label}}: {% if  form.contact_type.field.required %} *{% endif %}
                 </td>
                 <td>
-                    {{form.position}}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    {{form.gender.label}}:
-                </td>
-                <td>
-                    {{form.gender}}
+                	{% if form.contact_type.errors %}
+                	<div class="field field_error">
+                    	{{form.contact_type}} {{form.contact_type.errors}}                   	
+                	</div>
+                	{% else %}
+                		{{form.contact_type}}
+                	{% endif %}
                 </td>
             </tr>
             <tr>
                 <td>
-                    {{form.address.label}}:
+                    {{form.position.label}}: {% if  form.position.field.required %} *{% endif %}
                 </td>
                 <td>
-                    {{form.address}}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    {{form.state.label}}:
-                </td>
-                <td>
-                    {{form.state}}
+                	{% if form.position.errors %}
+                	<div class="field field_error">
+                    	{{form.position}} {{form.position.errors}}                   	
+                	</div>
+                	{% else %}
+                		{{form.position}}
+                	{% endif %}                	
                 </td>
             </tr>
             <tr>
                 <td>
-                    {{form.city.label}}:
+                    {{form.gender.label}}: {% if  form.gender.field.required %} *{% endif %}
                 </td>
                 <td>
-                    {{form.city}}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    {{form.postcode.label}}:
-                </td>
-                <td>
-                    {{form.postcode}}
+                	{% if form.gender.errors %}
+                	<div class="field field_error">
+                    	{{form.gender}} {{form.gender.errors}}                   	
+                	</div>
+                	{% else %}
+                		{{form.gender}}
+                	{% endif %}                	
                 </td>
             </tr>
             <tr>
                 <td>
-                    {{form.country.label}}:
+                    {{form.address.label}}: {% if  form.address.field.required %} *{% endif %}
                 </td>
                 <td>
-                    {{form.country}}
+                	{% if form.address.errors %}
+                	<div class="field field_error">
+                    	{{form.address}} {{form.address.errors}}                   	
+                	</div>
+                	{% else %}
+                		{{form.address}}
+                	{% endif %}               	
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{form.state.label}}: {% if  form.state.field.required %} *{% endif %}
+                </td>
+                <td>        			
+        			{% if form.state.errors %}
+                	<div class="field field_error">
+                    	{{form.state}} {{form.state.errors}}                   	
+                	</div>
+                	{% else %}
+                		{{form.state}}
+                	{% endif %}			
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{form.city.label}}: {% if  form.city.field.required %} *{% endif %}
+                </td>
+                <td>                	
+                    {% if form.city.errors %}
+                	<div class="field field_error">
+                    	{{form.city}} {{form.city.errors}}                   	
+                	</div>
+                	{% else %}
+                		{{form.city}}
+                	{% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{form.postcode.label}}: {% if  form.post_code.field.required %} *{% endif %}
+                </td>
+                <td>                	
+                	{% if form.postcode.errors %}
+                	<div class="field field_error">
+                    	{{form.postcode}} {{form.postcode.errors}}                   	
+                	</div>
+                	{% else %}
+                		{{form.postcode}}
+                	{% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    {{form.country.label}}: {% if  form.country.field.required %} *{% endif %}
+                </td>
+                <td>                	
+                	{% if form.country.errors %}
+                	<div class="field field_error">
+                    	{{form.country}} {{form.country.errors}}                   	
+                	</div>
+                	{% else %}
+                		{{form.country}}
+                	{% endif %}
                 </td>
             </tr>
             </tbody>
