@@ -1,4 +1,5 @@
 import uuid
+import datetime 
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -98,6 +99,7 @@ class Contact(models.Model):
     children_names      = models.CharField(_(u"Children Names"),         max_length=75, blank=True)
     home_town           = models.CharField(_(u"Home Town"),              max_length=30, blank=True)
     company             = models.ForeignKey(Company)
+    
     #call = models.ManyToOneRel
 
     def __unicode__(self):
@@ -106,10 +108,20 @@ class Contact(models.Model):
 
 class ConversationHistory(models.Model):
     contact             = models.ForeignKey(Contact)
+    creation_date       = models.DateTimeField(auto_now_add = True,      editable=False)
     contact_date        = models.DateField(_(u"Conversation Date"),      blank=True)
-    contact_time        = models.DateTimeField(_(u"Conversation Time"),  blank=True)
+    contact_time        = models.TimeField(_(u"Conversation Time"),      blank=True)
     subject             = models.CharField(_(u"Conversation Subject"),   max_length=50, blank=True)
     notes               = models.TextField(_(u"Conversation Notes"),     blank=True)
     company             = models.ForeignKey(Company)
+    
+    class Meta:
+        get_latest_by   = "creation_date"
+    
     def __unicode__(self):
         return self.subject
+    
+#    def __init__(self, *args, **kwargs):
+#        super(ConversationHistory, self).__init__(*args, **kwargs)
+#        self.contact_date    = datetime.datetime.now()
+#        self.contact_time    = datetime.datetime.now().strftime("%H:%M")

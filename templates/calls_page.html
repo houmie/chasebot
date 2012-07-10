@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}Chasebot - Conversation History{% endblock %}
+{% block head %}Conversations with {{calls.0.contact.first_name}} {{ calls.0.contact.last_name }}{% endblock %}
+{% block external %}
+{% endblock %}
+{% block content %}	
+	<table class="table">
+                <thead>
+                    <tr>
+                        <th><a class="contact" href="/contact/{{ calls.0.contact.id }}/call/add" data-form="" title="New Conversation"><i class="icon-plus"></i>New</a></th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Subject</th>
+                        <th>Notes</th>                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in calls %}
+                    <tr>
+                        <td>                        	
+                            <a class="contact" href="/contact/{{ calls.0.contact.id }}/call/edit/{{ item.id }}" data-form="" title="Edit"><i class="icon-pencil"></i></a>
+                            <a href="/contact/{{ calls.0.contact.id }}/call/delete/{{ item.id }}" title="{% trans 'Delete' %}"><i class="icon-trash"></i></a>
+                        </td>
+                        <td>{{ item.contact_date }}</td>
+                        <td>{{ item.contact_time }}</td>
+                        <td>{{ item.subject }}</td>
+                        <td>{{ item.notes }}</td>                        
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+{% endblock %}

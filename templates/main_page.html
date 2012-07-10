@@ -29,7 +29,7 @@
                     {% for item in contacts %}
                     <tr>
                         <td>
-                            <a class="contact" href="/contact/edit/{{ item.id }}" data-form="/contact/edit/{{ item.id }}" title="Edit"><i class="icon-edit"></i></a>
+                            <a class="contact" href="/contact/edit/{{ item.id }}" data-form="/contact/edit/{{ item.id }}" title="Edit"><i class="icon-pencil"></i></a>
                             <a href="/contact/delete/{{ item.id }}" title="{% trans 'Delete' %}"><i class="icon-trash"></i></a>
                         </td>
                         <td>{{ item.last_name }}</td>
@@ -39,7 +39,7 @@
                         <td>{{ item.email }}</td>
                         <td>{{ item.work_phone }}</td>
                         <td>{{ item.mobile_phone }}</td>
-                        <td></td>
+                        <td>{{ item.conversationhistory_set.latest }}   <a href="/contact/{{ item.id }}/calls" title="{% trans 'Conversation' %}"><i class="icon-comment"></i></a></td>
                         <td></td>
                         <td></td>
                         <td></td>

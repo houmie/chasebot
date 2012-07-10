@@ -6,7 +6,7 @@ from django import forms
 import re
 from django.contrib.auth.models import User
 from django.forms import ModelForm
-from chasebot_app.models import UserProfile, Contact, ContactType, Country, MaritalStatus
+from chasebot_app.models import UserProfile, Contact, ContactType, Country, MaritalStatus, ConversationHistory
 from django.utils.translation import ugettext_lazy as _
 
 class RegistrationForm(ModelForm):
@@ -70,7 +70,7 @@ class ContactsForm(ModelForm):
                 'mobile_phone': forms.TextInput(attrs={'placeholder': 'Add a cell phone'}),
                 'fax_number': forms.TextInput(attrs={'placeholder': 'Add a fax number'}),
                 'email': forms.TextInput(attrs={'placeholder': 'Add an email'}),
-                'birth_date': forms.TextInput(attrs={'placeholder': 'Add the day of birth'}),
+                'birth_date': forms.TextInput(attrs={'placeholder': 'Add the day of birth', 'data-datepicker': 'datepicker'}),
                 'referred_by': forms.TextInput(attrs={'placeholder': '...was referred by?'}),
                 'spouse_first_name': forms.TextInput(attrs={'placeholder': 'What is the spouse\'s name?'}),
                 'children_names': forms.TextInput(attrs={'placeholder': 'What are the children names?'}),
@@ -79,8 +79,20 @@ class ContactsForm(ModelForm):
                 'contact_notes': forms.Textarea(attrs={'rows':4, 'placeholder': 'What is the personality like?'}),
                 'contacts_interests': forms.Textarea(attrs={'rows':4, 'placeholder': 'Any particular interests?'}),
                 'spouses_interests': forms.Textarea(attrs={'rows':4, 'placeholder': 'Does the spouse have any particular interest?'}),
-                'prev_meeting_places': forms.Textarea(attrs={'rows':4, 'placeholder': 'Where did you meet so far?'}),
+                'prev_meeting_places': forms.Textarea(attrs={'rows':4, 'placeholder': 'Where did you meet so far?'})                                
             }
+
+class CallsForm(ModelForm):
+    def __init__(self, company, contact, *args, **kwargs):
+        super(CallsForm, self).__init__(*args, **kwargs)
+        #deals here
+        
+    class Meta:
+        model = ConversationHistory
+        exclude = ('company', 'contact')
+        
+
+
 
 class CountryForm(ModelForm):
     class Meta:

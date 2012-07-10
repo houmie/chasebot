@@ -1,4 +1,5 @@
 # Create your views here.
+import datetime 
 from __builtin__ import id
 from django.http import Http404
 from django.contrib.auth import logout
@@ -7,8 +8,8 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
-from chasebot_app.forms import RegistrationForm, ContactsForm, ContactTypeForm, MaritalStatusForm, CountryForm
-from chasebot_app.models import Company, Contact, ContactType, MaritalStatus, Country
+from chasebot_app.forms import RegistrationForm, ContactsForm, ContactTypeForm, MaritalStatusForm, CountryForm, CallsForm
+from chasebot_app.models import Company, Contact, ContactType, MaritalStatus, Country, ConversationHistory
 from chasebot_app.models import UserProfile
 from django.utils.translation import ugettext as _
 
@@ -17,10 +18,18 @@ from django.utils.translation import ugettext as _
 def main_page_view(request):
     profile = request.user.get_profile()
     company_name = profile.company.company_name
-    contacts= profile.company.contact_set.all().order_by('last_name')[:10]
+    contacts= profile.company.contact_set.all().order_by('last_name')[:10]    
     vars = {'company_name': company_name, 'contacts' : contacts}
     variables = RequestContext(request, vars)
     return render_to_response('main_page.html', variables)
+
+@login_required
+def call_display_view(request, contact_id):
+    profile = request.user.get_profile()
+    contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
+    calls = contact.conversationhistory_set.all().order_by('-creation_date')
+    variables = RequestContext(request, {'calls': calls})
+    return render_to_response('calls_page.html', variables)
 
 def logout_page_view(request):
     logout(request)
@@ -79,13 +88,13 @@ def contact_view(request, contact_id=None):
     profile = request.user.get_profile()
     if contact_id is None:
         contact = Contact(company=profile.company)
-        template_title = _(u'Add Contact')
+        template_title = _(u'Add New Contact')
     else:
         contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
         template_title = _(u'Edit Contact')
     if request.POST:
-        if request.POST.get('cancel', None):
-            return HttpResponseRedirect('/')
+#        if request.POST.get('cancel', None):
+#            return HttpResponseRedirect('/')
         form = ContactsForm(profile.company, request.POST, instance=contact)
         if form.is_valid():
             contact = form.save()
@@ -99,6 +108,25 @@ def contact_view(request, contact_id=None):
  #   else:
     return render_to_response('contact.html', variables)
 
+@login_required
+def call_view(request, contact_id, call_id=None):
+    profile = request.user.get_profile()
+    contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
+    if call_id is None:
+        call = ConversationHistory(company=profile.company, contact=contact, contact_date = datetime.datetime.now(), contact_time = datetime.datetime.now().strftime("%H:%M"))        
+        template_title = _(u'Add New Conversation')
+    else:
+        call = get_object_or_404(contact.conversationhistory_set.all(), pk=call_id)
+        template_title = _(u'Edit Conversation')
+    if request.POST:
+        form = CallsForm(profile.company, contact, request.POST, instance=call)
+        if form.is_valid():
+            call = form.save()            
+            return HttpResponseRedirect('/contact/' + contact_id + '/calls/')
+    else:
+        form = CallsForm(instance=call, company=profile.company, contact=contact)
+    variables = RequestContext(request, {'form':form})
+    return render_to_response('conversation.html', variables)
 
 @login_required
 def delete_contact_view(request, contact_id):
@@ -109,6 +137,20 @@ def delete_contact_view(request, contact_id):
         contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
         contact.delete()
     return HttpResponseRedirect('/')
+
+@login_required
+def delete_call_view(request, contact_id, call_id):
+    if contact_id is None:
+        raise Http404(_(u'Contact not found'))
+    elif call_id is None:
+        raise Http404(_(u'Conversation not found'))
+    else:
+        profile = request.user.get_profile()
+        contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
+        call = get_object_or_404(contact.conversationhistory_set.all(), pk=call_id)
+        call.delete()
+    return HttpResponseRedirect('/contact/' + contact_id + '/calls/')
+
 
 @login_required
 def contact_type_view(request, contact_type_id=None):
