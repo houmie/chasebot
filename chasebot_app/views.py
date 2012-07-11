@@ -28,7 +28,7 @@ def call_display_view(request, contact_id):
     profile = request.user.get_profile()
     contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
     calls = contact.conversationhistory_set.all().order_by('-creation_date')
-    variables = RequestContext(request, {'calls': calls})
+    variables = RequestContext(request, {'calls': calls, 'contact': contact})
     return render_to_response('calls_page.html', variables)
 
 def logout_page_view(request):
@@ -93,8 +93,6 @@ def contact_view(request, contact_id=None):
         contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
         template_title = _(u'Edit Contact')
     if request.POST:
-#        if request.POST.get('cancel', None):
-#            return HttpResponseRedirect('/')
         form = ContactsForm(profile.company, request.POST, instance=contact)
         if form.is_valid():
             contact = form.save()
@@ -119,12 +117,12 @@ def call_view(request, contact_id, call_id=None):
         call = get_object_or_404(contact.conversationhistory_set.all(), pk=call_id)
         template_title = _(u'Edit Conversation')
     if request.POST:
-        form = CallsForm(profile.company, contact, request.POST, instance=call)
+        form = CallsForm(request.POST, instance=call)
         if form.is_valid():
             call = form.save()            
             return HttpResponseRedirect('/contact/' + contact_id + '/calls/')
     else:
-        form = CallsForm(instance=call, company=profile.company, contact=contact)
+        form = CallsForm(instance=call)
     variables = RequestContext(request, {'form':form})
     return render_to_response('conversation.html', variables)
 

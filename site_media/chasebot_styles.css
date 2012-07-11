@@ -20,8 +20,6 @@ div.field_error li{
 }
 
 
-input[type="text"]
-{
+.placeholder_fix_css:-moz-placeholder {
     color: #999999;
 }
-​

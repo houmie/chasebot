@@ -1,7 +1,6 @@
-from django.forms.widgets import TextInput
-
 __author__ = 'houman'
-
+from django.forms.widgets import TextInput
+from django.utils.formats import get_format
 from django import forms
 import re
 from django.contrib.auth.models import User
@@ -57,40 +56,42 @@ class ContactsForm(ModelForm):
         model = Contact
         exclude = ('company')
         widgets = {
-                'first_name': forms.TextInput(attrs={'placeholder': 'Enter first name here'}),
-                'last_name': forms.TextInput(attrs={'placeholder': 'Enter last name here'}),
-                'dear': forms.TextInput(attrs={'placeholder': 'Enter the preferred short name'}),
-                'city': forms.TextInput(attrs={'placeholder': 'Enter the city here'}),
-                'state': forms.TextInput(attrs={'placeholder': 'Enter the state here'}),
-                'postcode': forms.TextInput(attrs={'placeholder': 'Enter the zip code here'}),
-                'company_name': forms.TextInput(attrs={'placeholder': 'Add a company'}),
-                'position': forms.TextInput(attrs={'placeholder': 'Add a position'}),
-                'work_phone': forms.TextInput(attrs={'placeholder': 'Add a work phone'}),
-                'home_phone': forms.TextInput(attrs={'placeholder': 'Add a home phone'}),
-                'mobile_phone': forms.TextInput(attrs={'placeholder': 'Add a cell phone'}),
-                'fax_number': forms.TextInput(attrs={'placeholder': 'Add a fax number'}),
-                'email': forms.TextInput(attrs={'placeholder': 'Add an email'}),
-                'birth_date': forms.TextInput(attrs={'placeholder': 'Add the day of birth', 'data-datepicker': 'datepicker'}),
-                'referred_by': forms.TextInput(attrs={'placeholder': '...was referred by?'}),
-                'spouse_first_name': forms.TextInput(attrs={'placeholder': 'What is the spouse\'s name?'}),
-                'children_names': forms.TextInput(attrs={'placeholder': 'What are the children names?'}),
-                'home_town': forms.TextInput(attrs={'placeholder': 'Enter the home town'}),
-                'address': forms.Textarea(attrs={'rows':4, 'placeholder': 'Add an address'}),
+                'first_name': forms.TextInput(  attrs={'placeholder': 'Enter first name here',          'class': 'placeholder_fix_css'}),
+                'last_name': forms.TextInput(   attrs={'placeholder': 'Enter last name here',           'class': 'placeholder_fix_css'}),
+                'dear': forms.TextInput(        attrs={'placeholder': 'Enter the preferred short name', 'class': 'placeholder_fix_css'}),
+                'city': forms.TextInput(        attrs={'placeholder': 'Enter the city here',            'class': 'placeholder_fix_css'}),
+                'state': forms.TextInput(       attrs={'placeholder': 'Enter the state here',           'class': 'placeholder_fix_css'}),
+                'postcode': forms.TextInput(    attrs={'placeholder': 'Enter the zip code here',        'class': 'placeholder_fix_css'}),
+                'company_name': forms.TextInput(attrs={'placeholder': 'Add a company',                  'class': 'placeholder_fix_css'}),
+                'position': forms.TextInput(    attrs={'placeholder': 'Add a position',                 'class': 'placeholder_fix_css'}),
+                'work_phone': forms.TextInput(  attrs={'placeholder': 'Add a work phone',               'class': 'placeholder_fix_css'}),
+                'home_phone': forms.TextInput(  attrs={'placeholder': 'Add a home phone',               'class': 'placeholder_fix_css'}),
+                'mobile_phone': forms.TextInput(attrs={'placeholder': 'Add a cell phone',               'class': 'placeholder_fix_css'}),
+                'fax_number': forms.TextInput(  attrs={'placeholder': 'Add a fax number',               'class': 'placeholder_fix_css'}),
+                'email': forms.TextInput(       attrs={'placeholder': 'Add an email',                   'class': 'placeholder_fix_css'}),
+                'birth_date': forms.DateInput(  attrs={'placeholder': 'Add the day of birth', 'id': 'datepicker', 'class': 'placeholder_fix_css'}, format='%d/%m/%Y'),
+                'referred_by': forms.TextInput( attrs={'placeholder': '...was referred by?', 'class': 'placeholder_fix_css'}),
+                'spouse_first_name': forms.TextInput(attrs={'placeholder': 'What is the spouse\'s name?', 'class': 'placeholder_fix_css'}),
+                'children_names': forms.TextInput(attrs={'placeholder': 'What are the children names?', 'class': 'placeholder_fix_css'}),
+                'home_town': forms.TextInput(   attrs={'placeholder': 'Enter the home town',            'class': 'placeholder_fix_css'}),
+                'address': forms.Textarea(      attrs={'rows':4, 'placeholder': 'Add an address',       'class': 'placeholder_fix_css'}),
                 'contact_notes': forms.Textarea(attrs={'rows':4, 'placeholder': 'What is the personality like?'}),
                 'contacts_interests': forms.Textarea(attrs={'rows':4, 'placeholder': 'Any particular interests?'}),
                 'spouses_interests': forms.Textarea(attrs={'rows':4, 'placeholder': 'Does the spouse have any particular interest?'}),
-                'prev_meeting_places': forms.Textarea(attrs={'rows':4, 'placeholder': 'Where did you meet so far?'})                                
+                'prev_meeting_places': forms.Textarea(attrs={'rows':4, 'placeholder': 'Where did you meet so far?'})                       
             }
 
-class CallsForm(ModelForm):
-    def __init__(self, company, contact, *args, **kwargs):
-        super(CallsForm, self).__init__(*args, **kwargs)
-        #deals here
-        
+class CallsForm(ModelForm):   
+    
     class Meta:
         model = ConversationHistory
         exclude = ('company', 'contact')
-        
+        widgets = {
+                    'contact_date': forms.DateInput(attrs={'placeholder': 'Add the date...', 'id': 'datepicker', 'class': 'placeholder_fix_css'}, format='%d/%m/%Y'),
+                    'contact_time': forms.TimeInput(attrs={'placeholder': 'Add the time...',                     'class': 'placeholder_fix_css'}),
+                    'subject': forms.TextInput(attrs={'placeholder': '',                                         'class': 'placeholder_fix_css'}),
+                    'notes': forms.Textarea(attrs={'placeholder': 'Add relevant notes...'}),
+                   }
 
 
 

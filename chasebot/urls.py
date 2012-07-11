@@ -27,8 +27,7 @@ urlpatterns = patterns('',
     (r'^contact/delete/(?P<contact_id>\d+)/$', delete_contact_view),
     (r'^contact/edit/(?P<contact_id>\d+)/$', contact_view),
     (r'^contact/add/', contact_view),
-    
-    
+        
     (r'^contact/(?P<contact_id>\d+)/call/edit/(?P<call_id>\w+)/$', call_view),
     (r'^contact/(?P<contact_id>\d+)/call/delete/(?P<call_id>\w+)/$', delete_call_view),
     (r'^contact/(?P<contact_id>\d+)/call/add/$', call_view),
@@ -39,7 +38,8 @@ urlpatterns = patterns('',
     (r'^contact_type/delete/(?P<contact_type_id>\d+)/$', delete_contact_type_view),
 
     #i18n
-
+    (r'^i18n/', include('django.conf.urls.i18n')),
+    
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 

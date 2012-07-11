@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block title %}Chasebot - Conversation History{% endblock %}
-{% block head %}Conversations with {{calls.0.contact.first_name}} {{ calls.0.contact.last_name }}{% endblock %}
+{% block head %}Conversations with {{contact.first_name}} {{ contact.last_name }}{% endblock %}
 {% block external %}
 {% endblock %}
 {% block content %}	
 	<table class="table">
                 <thead>
                     <tr>
-                        <th><a class="contact" href="/contact/{{ calls.0.contact.id }}/call/add" data-form="" title="New Conversation"><i class="icon-plus"></i>New</a></th>
+                        <th><a class="contact" href="/contact/{{ contact.id }}/call/add" data-form="" title="New Conversation"><button class="btn btn-success"><i class="icon-plus"></i><i class="icon-comment"></i></button></a></th>
                         <th>Date</th>
                         <th>Time</th>
                         <th>Subject</th>
@@ -19,8 +19,8 @@
                     {% for item in calls %}
                     <tr>
                         <td>                        	
-                            <a class="contact" href="/contact/{{ calls.0.contact.id }}/call/edit/{{ item.id }}" data-form="" title="Edit"><i class="icon-pencil"></i></a>
-                            <a href="/contact/{{ calls.0.contact.id }}/call/delete/{{ item.id }}" title="{% trans 'Delete' %}"><i class="icon-trash"></i></a>
+                            <a class="contact" href="/contact/{{ contact.id }}/call/edit/{{ item.id }}" data-form="" title="Edit"><i class="icon-pencil"></i></a>
+                            <a href="/contact/{{ contact.id }}/call/delete/{{ item.id }}" title="{% trans 'Delete' %}"><i class="icon-trash"></i></a>
                         </td>
                         <td>{{ item.contact_date }}</td>
                         <td>{{ item.contact_time }}</td>

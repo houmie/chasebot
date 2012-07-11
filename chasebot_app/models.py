@@ -109,9 +109,9 @@ class Contact(models.Model):
 class ConversationHistory(models.Model):
     contact             = models.ForeignKey(Contact)
     creation_date       = models.DateTimeField(auto_now_add = True,      editable=False)
-    contact_date        = models.DateField(_(u"Conversation Date"),      blank=True)
-    contact_time        = models.TimeField(_(u"Conversation Time"),      blank=True)
-    subject             = models.CharField(_(u"Conversation Subject"),   max_length=50, blank=True)
+    contact_date        = models.DateField(_(u"Conversation Date"),      )
+    contact_time        = models.TimeField(_(u"Conversation Time"),      )
+    subject             = models.CharField(_(u"Conversation Subject"),   max_length=50)
     notes               = models.TextField(_(u"Conversation Notes"),     blank=True)
     company             = models.ForeignKey(Company)
     
