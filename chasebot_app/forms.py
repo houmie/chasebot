@@ -5,7 +5,7 @@ from django import forms
 import re
 from django.contrib.auth.models import User
 from django.forms import ModelForm
-from chasebot_app.models import UserProfile, Contact, ContactType, Country, MaritalStatus, ConversationHistory
+from chasebot_app.models import UserProfile, Contact, ContactType, Country, MaritalStatus, Conversation
 from django.utils.translation import ugettext_lazy as _
 
 class RegistrationForm(ModelForm):
@@ -84,7 +84,7 @@ class ContactsForm(ModelForm):
 class CallsForm(ModelForm):   
     
     class Meta:
-        model = ConversationHistory
+        model = Conversation
         exclude = ('company', 'contact')
         widgets = {
                     'contact_date': forms.DateInput(attrs={'placeholder': 'Add the date...', 'id': 'datepicker', 'class': 'placeholder_fix_css'}, format='%d/%m/%Y'),

@@ -9,7 +9,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
 from chasebot_app.forms import RegistrationForm, ContactsForm, ContactTypeForm, MaritalStatusForm, CountryForm, CallsForm
-from chasebot_app.models import Company, Contact, ContactType, MaritalStatus, Country, ConversationHistory
+from chasebot_app.models import Company, Contact, ContactType, MaritalStatus, Country, Conversation
 from chasebot_app.models import UserProfile
 from django.utils.translation import ugettext as _
 
@@ -27,7 +27,7 @@ def main_page_view(request):
 def call_display_view(request, contact_id):
     profile = request.user.get_profile()
     contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
-    calls = contact.conversationhistory_set.all().order_by('-creation_date')
+    calls = contact.conversation_set.all().order_by('-creation_date')
     variables = RequestContext(request, {'calls': calls, 'contact': contact})
     return render_to_response('calls_page.html', variables)
 
@@ -111,10 +111,10 @@ def call_view(request, contact_id, call_id=None):
     profile = request.user.get_profile()
     contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
     if call_id is None:
-        call = ConversationHistory(company=profile.company, contact=contact, contact_date = datetime.datetime.now(), contact_time = datetime.datetime.now().strftime("%H:%M"))        
+        call = Conversation(company=profile.company, contact=contact, contact_date = datetime.datetime.now(), contact_time = datetime.datetime.now().strftime("%H:%M"))        
         template_title = _(u'Add New Conversation')
     else:
-        call = get_object_or_404(contact.conversationhistory_set.all(), pk=call_id)
+        call = get_object_or_404(contact.conversation_set.all(), pk=call_id)
         template_title = _(u'Edit Conversation')
     if request.POST:
         form = CallsForm(request.POST, instance=call)
@@ -145,7 +145,7 @@ def delete_call_view(request, contact_id, call_id):
     else:
         profile = request.user.get_profile()
         contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
-        call = get_object_or_404(contact.conversationhistory_set.all(), pk=call_id)
+        call = get_object_or_404(contact.conversation_set.all(), pk=call_id)
         call.delete()
     return HttpResponseRedirect('/contact/' + contact_id + '/calls/')
 

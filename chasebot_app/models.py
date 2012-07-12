@@ -106,13 +106,38 @@ class Contact(models.Model):
         return self.last_name
 
 
-class ConversationHistory(models.Model):
+class SalesItem(models.Model):        
+    item_description    = models.CharField(_(u"Item Description"), max_length=40)
+    company             = models.ForeignKey(Company)
+    
+    def __unicode__(self):
+        return self.item_description
+
+class SalesTerm(models.Model):
+    company             = models.ForeignKey(Company)
+    sales_term          = models.CharField(_(u"Sales Term"), max_length=40)
+
+class DealStatus(models.Model):
+    deal_status         = models.CharField(_(u"Deal Status"), max_length=40)
+    
+class Deal(models.Model):    
+    company             = models.ForeignKey(Company)
+    deal_name           = models.CharField(_(u"Name the deal"), max_length=40)
+    deal_description    = models.TextField(_(u"Describe the deal"),     blank=True)
+    sales_item          = models.ForeignKey(SalesItem, verbose_name=_(u"Sales Item"))    
+    price               = models.DecimalField(_(u"Price"), decimal_places=2, max_digits=12)
+    sales_term          = models.ForeignKey(SalesTerm, verbose_name=_(u"Sales Term"))
+    quantity            = models.IntegerField(_(u"Quantity"))
+    status              = models.ForeignKey(DealStatus, verbose_name=_(u"Deal Status"))
+
+class Conversation(models.Model):
     contact             = models.ForeignKey(Contact)
     creation_date       = models.DateTimeField(auto_now_add = True,      editable=False)
     contact_date        = models.DateField(_(u"Conversation Date"),      )
     contact_time        = models.TimeField(_(u"Conversation Time"),      )
     subject             = models.CharField(_(u"Conversation Subject"),   max_length=50)
     notes               = models.TextField(_(u"Conversation Notes"),     blank=True)
+    deal                = models.ForeignKey(Deal, verbose_name=_(u"Deal"))
     company             = models.ForeignKey(Company)
     
     class Meta:
@@ -120,8 +145,9 @@ class ConversationHistory(models.Model):
     
     def __unicode__(self):
         return self.subject
+
+
     
-#    def __init__(self, *args, **kwargs):
-#        super(ConversationHistory, self).__init__(*args, **kwargs)
-#        self.contact_date    = datetime.datetime.now()
-#        self.contact_time    = datetime.datetime.now().strftime("%H:%M")
+    
+    
+    

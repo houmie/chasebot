@@ -7,59 +7,59 @@
 {% block content %}
 {% if user.username %}
     <p>Welcome {{ user.username }} from the company {{ company_name }}! </p>
-    {% if contacts %}
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th><a class="contact" href="/contact/add" data-form="" title="New Contact"><button class="btn btn-success"><i class="icon-plus"></i><i class="icon-user"></i></button></a></th>
-                        <th>Last Name</th>
-                        <th>First Name</th>
-                        <th>Dear</th>
-                        <th>Company</th>
-                        <th>Email</th>
-                        <th>Work Phone</th>
-                        <th>Cell Phone</th>
-                        <th>Last Conversation</th>
-                        <th>Deals</th>
-                        <th>Past Sales</th>
-                        <th>Important Client</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in contacts %}
-                    <tr>
-                        <td>
-                            <a class="contact" href="/contact/edit/{{ item.id }}" data-form="/contact/edit/{{ item.id }}" title="Edit"><i class="icon-pencil"></i></a>
-                            <a href="/contact/delete/{{ item.id }}" title="{% trans 'Delete' %}"><i class="icon-trash"></i></a>
-                        </td>
-                        <td>{{ item.last_name }}</td>
-                        <td>{{ item.first_name }}</td>
-                        <td>{{ item.dear }}</td>
-                        <td>{{ item.company_name }}</td>
-                        <td>{{ item.email }}</td>
-                        <td>{{ item.work_phone }}</td>
-                        <td>{{ item.mobile_phone }}</td>
-                        <td>{{ item.conversationhistory_set.latest }}   <a href="/contact/{{ item.id }}/calls" title="{% trans 'Conversation' %}"><i class="icon-comment"></i></a></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            <!--<div class="modal hide" id="contactModal">-->
-            <!--</div>-->
-            <!--<script>-->
-                <!--$(".contact").click(function(ev) { // for each edit contact url-->
-                    <!--ev.preventDefault(); // prevent navigation-->
-                    <!--var url = $(this).data("form"); // get the contact form url-->
-                    <!--$("#contactModal").load(url, function() { // load the url into the modal-->
-                        <!--$(this).modal('show'); // display the modal on url load-->
-                    <!--});-->
-                    <!--return false; // prevent the click propagation-->
-                <!--})-->
-            <!--</script>-->
-    {% endif %}
+    
+        <table class="table">
+            <thead>
+                <tr>
+                    <th><a class="contact" href="/contact/add" data-form="" title="New Contact"><button class="btn btn-success"><i class="icon-plus"></i><i class="icon-user"></i></button></a></th>
+                    <th>Last Name</th>
+                    <th>First Name</th>
+                    <th>Dear</th>
+                    <th>Company</th>
+                    <th>Email</th>
+                    <th>Work Phone</th>
+                    <th>Cell Phone</th>
+                    <th>Last Conversation</th>
+                    <th>Deals</th>
+                    <th>Past Sales</th>
+                    <th>Important Client</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in contacts %}
+                <tr>
+                    <td>
+                        <a class="contact" href="/contact/edit/{{ item.id }}" data-form="/contact/edit/{{ item.id }}" title="Edit"><button class="btn-tiny"><i class="icon-pencil"></i></button></a>
+                        <a href="/contact/delete/{{ item.id }}" title="{% trans 'Delete' %}"><button class="btn-tiny"><i class="icon-trash"></i></button></a>
+                    </td>
+                    <td>{{ item.last_name }}</td>
+                    <td>{{ item.first_name }}</td>
+                    <td>{{ item.dear }}</td>
+                    <td>{{ item.company_name }}</td>
+                    <td>{{ item.email }}</td>
+                    <td>{{ item.work_phone }}</td>
+                    <td>{{ item.mobile_phone }}</td>
+                    <td>{{ item.conversationhistory_set.latest }}   <a href="/contact/{{ item.id }}/calls" title="{% trans 'Conversation' %}"><button class="btn btn-success"><i class="icon-comment"></i></button></a></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <!--<div class="modal hide" id="contactModal">-->
+        <!--</div>-->
+        <!--<script>-->
+            <!--$(".contact").click(function(ev) { // for each edit contact url-->
+                <!--ev.preventDefault(); // prevent navigation-->
+                <!--var url = $(this).data("form"); // get the contact form url-->
+                <!--$("#contactModal").load(url, function() { // load the url into the modal-->
+                    <!--$(this).modal('show'); // display the modal on url load-->
+                <!--});-->
+                <!--return false; // prevent the click propagation-->
+            <!--})-->
+        <!--</script>-->
+    
 {% else %}
     <p>Welcome anonymous user! You need to <a href ="/login/">login</a> before you can use Chasebot.</p>
 {% endif %}
