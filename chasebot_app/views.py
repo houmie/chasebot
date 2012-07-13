@@ -31,6 +31,13 @@ def call_display_view(request, contact_id):
     variables = RequestContext(request, {'calls': calls, 'contact': contact})
     return render_to_response('calls_page.html', variables)
 
+@login_required
+def sales_item_display_view(request):
+    profile = request.user.get_profile()
+    sales_items = profile.company.sales_item_set.all()
+    variables = RequestContact(request, {'sales_items': sales_items})
+    return render_to_response('sales_item_page.html', variables)
+
 def logout_page_view(request):
     logout(request)
     return HttpResponseRedirect('/')
@@ -125,6 +132,25 @@ def call_view(request, contact_id, call_id=None):
         form = CallsForm(instance=call)
     variables = RequestContext(request, {'form':form})
     return render_to_response('conversation.html', variables)
+
+@login_required
+def sales_item_view(request, sales_item_id=None):
+    profile = request.user.get_profile()
+    if sales_item_id is None:
+        sales_item = SalesItem(company=profile.company)
+        template_title = _(u'Add new Sales Item')
+    else:
+        sales_item = get_object_or_404(profile.company.sales_item_set().all, pk=sales_item_id)
+        template_title = _(u'Edit Sales Item')
+    if request.POST:
+        form = SalesItemForm(request.POST, instance=sales_item)
+        if form.is_valid():
+            sales_item = form.save()
+            return HttpResponseRedirect('/sales_items/')
+    else:
+        form = SalesItemForm(instance=sales_item)
+    variables = RequestContext(request, {'form':form})
+    return render_to_response('sales_item_page')
 
 @login_required
 def delete_contact_view(request, contact_id):

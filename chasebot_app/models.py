@@ -109,16 +109,19 @@ class Contact(models.Model):
 class SalesItem(models.Model):        
     item_description    = models.CharField(_(u"Item Description"), max_length=40)
     company             = models.ForeignKey(Company)
-    
     def __unicode__(self):
         return self.item_description
 
 class SalesTerm(models.Model):
     company             = models.ForeignKey(Company)
     sales_term          = models.CharField(_(u"Sales Term"), max_length=40)
+    def __unicode__(self):
+        return self.sales_term
 
 class DealStatus(models.Model):
     deal_status         = models.CharField(_(u"Deal Status"), max_length=40)
+    def __unicode__(self):
+        return self.deal_status
     
 class Deal(models.Model):    
     company             = models.ForeignKey(Company)
@@ -129,7 +132,9 @@ class Deal(models.Model):
     sales_term          = models.ForeignKey(SalesTerm, verbose_name=_(u"Sales Term"))
     quantity            = models.IntegerField(_(u"Quantity"))
     status              = models.ForeignKey(DealStatus, verbose_name=_(u"Deal Status"))
-
+    def __unicode__(self):
+        return self.deal_name
+        
 class Conversation(models.Model):
     contact             = models.ForeignKey(Contact)
     creation_date       = models.DateTimeField(auto_now_add = True,      editable=False)
@@ -139,15 +144,10 @@ class Conversation(models.Model):
     notes               = models.TextField(_(u"Conversation Notes"),     blank=True)
     deal                = models.ForeignKey(Deal, verbose_name=_(u"Deal"))
     company             = models.ForeignKey(Company)
-    
+        
     class Meta:
         get_latest_by   = "creation_date"
     
     def __unicode__(self):
         return self.subject
-
-
-    
-    
-    
     
