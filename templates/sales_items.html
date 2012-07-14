@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans 'Chasebot - Sales Items' %}{% endblock %}
+{% block head %}{% trans 'Chasebot - Sales Items' %}{% endblock %}
+{% block external %}
+{% endblock %}
+{% block content %}    
+    <table class="table">
+        <thead>
+            <tr>
+                <th><a class="contact" href="/sales_item/add" data-form="" title="{% trans 'New Sales Item' %}"><button class="btn btn-success"><i class="icon-plus"></i></button></a></th>
+                <th>{% trans 'Sales Item' %}</th>                    
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in sales_items %}
+            <tr>
+                <td>
+                    <a class="contact" href="/sales_item/edit/{{ item.id }}" data-form="/sales_item/edit/{{ item.id }}" title="{% trans 'Edit' %}"><button class="btn-tiny"><i class="icon-pencil"></i></button></a>
+                    <a href="/sales_item/delete/{{ item.id }}" title="{% trans 'Delete' %}"><button class="btn-tiny"><i class="icon-trash"></i></button></a>
+                </td>
+                <td>{{ item.item_description }}</td>                    
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>        
+{% endblock %}

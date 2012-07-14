@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block title %}{{ template_title }}{% endblock %}
+{% block head %}{{ template_title }}{% endblock %}
+{% block content %}
+<form method="post" action=".">
+    {% csrf_token %}
+    <div class="row-fluid">
+        <div class="span12">
+		    <div class="span6">
+		        <table class="table edit_table">
+		            <tbody>
+		                <tr>
+		                    <td>                        
+		                        {{form.deal_name.label}}: {% if  form.deal_name.field.required %} *{% endif %}
+		                    </td>
+		                    <td>                        
+		                        {% if form.deal_name.errors %}
+			                	<div class="field field_error">
+			                    	{{form.deal_name}} {{form.deal_name.errors}}                   	
+			                	</div>
+			                	{% else %}
+			                		{{form.deal_name}}
+			                	{% endif %}                        
+		                    </td>
+		                </tr>                
+		                <tr>
+		                    <td>                        
+		                        {{form.deal_description.label}}: {% if  form.deal_description.field.required %} *{% endif %}
+		                    </td>
+		                    <td>                        
+		                        {% if form.deal_description.errors %}
+			                	<div class="field field_error">
+			                    	{{form.deal_description}} {{form.deal_description.errors}}                   	
+			                	</div>
+			                	{% else %}
+			                		{{form.deal_description}}
+			                	{% endif %}                        
+		                    </td>
+		                </tr>            
+		                <tr>
+		                    <td>                        
+		                        {{form.status.label}}: {% if  form.status.field.required %} *{% endif %}
+		                    </td>
+		                    <td>                        
+		                        {% if form.status.errors %}
+			                	<div class="field field_error">
+			                    	{{form.status}} {{form.status.errors}}                   	
+			                	</div>
+			                	{% else %}
+			                		{{form.status}}
+			                	{% endif %}                        
+		                    </td>
+		                </tr>
+		            </tbody>
+		        </table>
+		    </div>
+		    <div class="span6">
+		        <table class="table edit_table">
+		            <tbody>
+		            	<tr>
+		                    <td>                        
+		                        {{form.sales_item.label}}: {% if  form.sales_item.field.required %} *{% endif %}
+		                    </td>
+		                    <td>                        
+		                        {% if form.sales_item.errors %}
+			                	<div class="field field_error">
+			                    	{{form.sales_item}} {{form.sales_item.errors}}                   	
+			                	</div>
+			                	{% else %}
+			                		{{form.sales_item}}
+			                	{% endif %}                        
+		                    </td>
+		                </tr>
+		                <tr>
+		                    <td>                        
+		                        {{form.price.label}}: {% if  form.price.field.required %} *{% endif %}
+		                    </td>
+		                    <td>                        
+		                        {% if form.price.errors %}
+			                	<div class="field field_error">
+			                    	{{form.price}} {{form.price.errors}}                   	
+			                	</div>
+			                	{% else %}
+			                		{{form.price}}
+			                	{% endif %}                        
+		                    </td>
+		                </tr>
+		                <tr>
+		                    <td>                        
+		                        {{form.sales_term.label}}: {% if  form.sales_term.field.required %} *{% endif %}
+		                    </td>
+		                    <td>                        
+		                        {% if form.sales_term.errors %}
+			                	<div class="field field_error">
+			                    	{{form.sales_term}} {{form.sales_term.errors}}                   	
+			                	</div>
+			                	{% else %}
+			                		{{form.sales_term}}
+			                	{% endif %}                        
+		                    </td>
+		                </tr>
+		                <tr>
+		                    <td>                        
+		                        {{form.quantity.label}}: {% if  form.quantity.field.required %} *{% endif %}
+		                    </td>
+		                    <td>                        
+		                        {% if form.quantity.errors %}
+			                	<div class="field field_error">
+			                    	{{form.quantity}} {{form.quantity.errors}}                   	
+			                	</div>
+			                	{% else %}
+			                		{{form.quantity}}
+			                	{% endif %}                        
+		                    </td>
+		                </tr>                
+		            </tbody>
+		        </table>
+		    </div>
+		</div>
+     </div>
+    <p>
+        <input type="submit" value="{% trans 'Save' %}" class="btn btn-primary" />
+        <input name="cancel" type="button" value="{% trans 'Cancel' %}" class="btn" onclick="history.go(-1)"/>
+    </p>
+</form>
+{% endblock %}

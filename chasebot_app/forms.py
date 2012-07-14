@@ -5,7 +5,7 @@ from django import forms
 import re
 from django.contrib.auth.models import User
 from django.forms import ModelForm
-from chasebot_app.models import UserProfile, Contact, ContactType, Country, MaritalStatus, Conversation, SalesItem
+from chasebot_app.models import UserProfile, Contact, ContactType, Country, MaritalStatus, Conversation, SalesItem, Deal, SalesTerm
 from django.utils.translation import ugettext_lazy as _
 
 class RegistrationForm(ModelForm):
@@ -50,7 +50,7 @@ class ContactsForm(ModelForm):
     def __init__(self, company, *args, **kwargs):
         super(ContactsForm, self).__init__(*args, **kwargs)
         # limit selection list to just items for this account
-        self.fields['contact_type'].queryset = ContactType.objects.filter(company=company)
+        #self.fields['contact_type'].queryset = ContactType.objects.filter(company=company)
 
     class Meta:
         model = Contact
@@ -93,9 +93,26 @@ class CallsForm(ModelForm):
                     'notes': forms.Textarea(attrs={'placeholder': 'Add relevant notes...'}),
                    }
 
+class DealForm(ModelForm):
+    class Meta:
+        model = Deal
+        exclude = ('company')
+        
+        widgets = {
+                    'deal_name': forms.TextInput(attrs={'placeholder': 'Name the deal', 'class': 'placeholder_fix_css'}),
+                    'deal_description': forms.Textarea(attrs={'placeholder': 'Describe the deal'}),
+#                    'sales_item': forms.TextInput(attrs={'placeholder': 'What are you buying or selling?', 'class': 'placeholder_fix_css'}),
+                    'price': forms.TextInput(attrs={'placeholder': 'How much is proposed?', 'class': 'placeholder_fix_css'}),                    
+#                    'sales_term': forms.TextInput(attrs={'placeholder': 'Is it fixed or recurring?', 'class': 'placeholder_fix_css'}),
+                    'quantity': forms.TextInput(attrs={'placeholder': 'How many items?', 'class': 'placeholder_fix_css'}),
+#                    'status': forms.TextInput(attrs={'placeholder': 'How is the progress?', 'class': 'placeholder_fix_css'}),                   
+                   }
+
+
 class SalesItemForm(ModelForm):
     class Meta:
         model = SalesItem
+        exclude = ('company')
 
 class CountryForm(ModelForm):
     class Meta:
@@ -106,9 +123,13 @@ class MaritalStatusForm(ModelForm):
     class Meta:
         model = MaritalStatus
 
+class SalesTermForm(ModelForm):
+    class Meta:
+        model = SalesTerm
+
 class ContactTypeForm(ModelForm):
     class Meta:
         model = ContactType
-        exclude = ('company')
+        #exclude = ('company')
 
 

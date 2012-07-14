@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% block title %}{{ template_title }}{% endblock %}
 {% block head %}{{ template_title }}{% endblock %}
 {% block content %}
@@ -8,10 +9,10 @@
         <div class="tabbable"> <!-- Only required for left/right tabs -->
             <ul class="nav nav-tabs">
                 <li class="active">
-                    <a href="#tab1" data-toggle="tab">Basic</a>
+                    <a href="#tab1" data-toggle="tab">{% trans 'Basic' %}</a>
                 </li>
                 <li>
-                    <a href="#tab2" data-toggle="tab">Personal</a>
+                    <a href="#tab2" data-toggle="tab">{% trans 'Personal' %}</a>
                 </li>
             </ul>
             <div class="tab-content">
@@ -25,8 +26,8 @@
         </div>
     </div>
     <p>
-        <input type="submit" value="Save" class="btn btn-primary" />
-        <input name="cancel" type="button" value="Cancel" class="btn" onclick="history.go(-1)"/>
+        <input type="submit" value="{% trans 'Save' %}" class="btn btn-primary" />
+        <input name="cancel" type="button" value="{% trans 'Cancel' %}" class="btn" onclick="history.go(-1)"/>
     </p>
 </form>
 {% endblock %}

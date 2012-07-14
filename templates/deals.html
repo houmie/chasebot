@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans 'Chasebot - Sales Items' %}{% endblock %}
+{% block head %}{% trans 'Chasebot - Sales Items' %}{% endblock %}
+{% block external %}
+{% endblock %}
+{% block content %}    
+    <table class="table">
+        <thead>
+            <tr>
+                <th><a class="contact" href="/deal/add" data-form="" title="{% trans 'New Deal' %}"><button class="btn btn-success"><i class="icon-plus"></i></button></a></th>
+                <th>{% trans 'Deal' %}</th>        
+                <th>{% trans 'Description' %}</th>    
+                <th>{% trans 'Item' %}</th>
+                <th>{% trans 'Price' %}</th>
+                <th>{% trans 'Term' %}</th>
+                <th>{% trans 'Quantity' %}</th>
+                <th>{% trans 'Status' %}</th>
+                        
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in deals %}
+            <tr>
+                <td>
+                    <a class="contact" href="/deal/edit/{{ item.id }}" data-form="/deal/edit/{{ item.id }}" title="{% trans 'Edit' %}"><button class="btn-tiny"><i class="icon-pencil"></i></button></a>
+                    <a href="/deal/delete/{{ item.id }}" title="{% trans 'Delete' %}"><button class="btn-tiny"><i class="icon-trash"></i></button></a>
+                </td>
+                <td>{{ item.deal_name }}</td>
+                <td>{{ item.deal_description }}</td>             
+                <td>{{ item.sales_item }}</td>
+                <td>{{ item.price }}</td>
+                <td>{{ item.sales_term }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.status }}</td>                           
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>        
+{% endblock %}

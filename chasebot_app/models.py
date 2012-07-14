@@ -37,7 +37,7 @@ class UserProfile(models.Model):
 
 class ContactType(models.Model):
     contact_type = models.CharField(_(u"Contact Type"), max_length=30)
-    company      = models.ForeignKey(Company)
+    #company      = models.ForeignKey(Company)
     def __unicode__(self):
         return self.contact_type
 
@@ -113,7 +113,7 @@ class SalesItem(models.Model):
         return self.item_description
 
 class SalesTerm(models.Model):
-    company             = models.ForeignKey(Company)
+    #company             = models.ForeignKey(Company)
     sales_term          = models.CharField(_(u"Sales Term"), max_length=40)
     def __unicode__(self):
         return self.sales_term
@@ -125,8 +125,8 @@ class DealStatus(models.Model):
     
 class Deal(models.Model):    
     company             = models.ForeignKey(Company)
-    deal_name           = models.CharField(_(u"Name the deal"), max_length=40)
-    deal_description    = models.TextField(_(u"Describe the deal"),     blank=True)
+    deal_name           = models.CharField(_(u"Deal Name"), max_length=40)
+    deal_description    = models.TextField(_(u"Deal Description"),     blank=True)
     sales_item          = models.ForeignKey(SalesItem, verbose_name=_(u"Sales Item"))    
     price               = models.DecimalField(_(u"Price"), decimal_places=2, max_digits=12)
     sales_term          = models.ForeignKey(SalesTerm, verbose_name=_(u"Sales Term"))
@@ -137,12 +137,12 @@ class Deal(models.Model):
         
 class Conversation(models.Model):
     contact             = models.ForeignKey(Contact)
-    creation_date       = models.DateTimeField(auto_now_add = True,      editable=False)
-    contact_date        = models.DateField(_(u"Conversation Date"),      )
-    contact_time        = models.TimeField(_(u"Conversation Time"),      )
-    subject             = models.CharField(_(u"Conversation Subject"),   max_length=50)
-    notes               = models.TextField(_(u"Conversation Notes"),     blank=True)
-    deal                = models.ForeignKey(Deal, verbose_name=_(u"Deal"))
+    creation_date       = models.DateTimeField(auto_now_add = True,         editable=False)
+    contact_date        = models.DateField(_(u"Conversation Date"))
+    contact_time        = models.TimeField(_(u"Conversation Time"))
+    subject             = models.CharField(_(u"Conversation Subject"),      max_length=50)
+    notes               = models.TextField(_(u"Conversation Notes"),        blank=True)
+    deal                = models.ForeignKey(Deal, verbose_name=_(u"Deal"),  blank=True, null=True)
     company             = models.ForeignKey(Company)
         
     class Meta:

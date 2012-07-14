@@ -8,8 +8,8 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
-from chasebot_app.forms import RegistrationForm, ContactsForm, ContactTypeForm, MaritalStatusForm, CountryForm, CallsForm
-from chasebot_app.models import Company, Contact, ContactType, MaritalStatus, Country, Conversation
+from chasebot_app.forms import RegistrationForm, ContactsForm, ContactTypeForm, MaritalStatusForm, CountryForm, CallsForm, SalesItemForm, DealForm
+from chasebot_app.models import Company, Contact, ContactType, MaritalStatus, Country, Conversation, SalesItem, Deal
 from chasebot_app.models import UserProfile
 from django.utils.translation import ugettext as _
 
@@ -24,19 +24,155 @@ def main_page_view(request):
     return render_to_response('main_page.html', variables)
 
 @login_required
+def contact_view(request, contact_id=None):
+    profile = request.user.get_profile()
+    if contact_id is None:
+        contact = Contact(company=profile.company)
+        template_title = _(u'Add New Contact')
+    else:
+        contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
+        template_title = _(u'Edit Contact')
+    if request.POST:
+        form = ContactsForm(profile.company, request.POST, instance=contact)
+        if form.is_valid():
+            contact = form.save()
+            return HttpResponseRedirect('/')
+    else:
+        form = ContactsForm(instance=contact, company=profile.company)
+    variables = RequestContext(request, {'form':form, 'template_title': template_title, 'contact_id' : contact_id})
+#    return render_to_response("contact.html", variables)
+#    if request.GET.has_key('ajax'):
+    #return render_to_response('contact_modal.html', variables)
+ #   else:
+    return render_to_response('contact.html', variables)
+
+@login_required
+def delete_contact_view(request, contact_id):
+    if contact_id is None:
+        raise Http404(_(u'Contact not found'))
+    else:
+        profile = request.user.get_profile()
+        contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
+        contact.delete()
+    return HttpResponseRedirect('/')
+
+
+@login_required
 def call_display_view(request, contact_id):
     profile = request.user.get_profile()
     contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
     calls = contact.conversation_set.all().order_by('-creation_date')
     variables = RequestContext(request, {'calls': calls, 'contact': contact})
-    return render_to_response('calls_page.html', variables)
+    return render_to_response('calls.html', variables)
+
+@login_required
+def call_view(request, contact_id, call_id=None):
+    profile = request.user.get_profile()
+    contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
+    if call_id is None:
+        call = Conversation(company=profile.company, contact=contact, contact_date = datetime.datetime.now(), contact_time = datetime.datetime.now().strftime("%H:%M"))        
+        template_title = _(u'Add New Conversation')
+    else:
+        call = get_object_or_404(contact.conversation_set.all(), pk=call_id)
+        template_title = _(u'Edit Conversation')
+    if request.POST:
+        form = CallsForm(request.POST, instance=call)
+        if form.is_valid():
+            call = form.save()            
+            return HttpResponseRedirect('/contact/' + contact_id + '/calls/')
+    else:
+        form = CallsForm(instance=call)
+    variables = RequestContext(request, {'form':form})
+    return render_to_response('conversation.html', variables)
+
+@login_required
+def delete_call_view(request, contact_id, call_id):
+    if contact_id is None:
+        raise Http404(_(u'Contact not found'))
+    elif call_id is None:
+        raise Http404(_(u'Conversation not found'))
+    else:
+        profile = request.user.get_profile()
+        contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
+        call = get_object_or_404(contact.conversation_set.all(), pk=call_id)
+        call.delete()
+    return HttpResponseRedirect('/contact/' + contact_id + '/calls/')
+
 
 @login_required
 def sales_item_display_view(request):
     profile = request.user.get_profile()
-    sales_items = profile.company.sales_item_set.all()
-    variables = RequestContact(request, {'sales_items': sales_items})
-    return render_to_response('sales_item_page.html', variables)
+    sales_items = profile.company.salesitem_set.all()
+    variables = RequestContext(request, {'sales_items': sales_items})
+    return render_to_response('sales_items.html', variables)
+
+@login_required
+def sales_item_view(request, sales_item_id=None):
+    profile = request.user.get_profile()
+    if sales_item_id is None:
+        sales_item = SalesItem(company=profile.company)
+        template_title = _(u'Add a new Sales Item')
+    else:
+        sales_item = get_object_or_404(profile.company.salesitem_set.all(), pk=sales_item_id)
+        template_title = _(u'Edit Sales Item')
+    if request.POST:
+        form = SalesItemForm(request.POST, instance=sales_item)
+        if form.is_valid():
+            sales_item = form.save()
+            return HttpResponseRedirect('/sales_items')
+    else:
+        form = SalesItemForm(instance=sales_item)
+    variables = RequestContext(request, {'form':form})
+    return render_to_response('sales_item.html', variables)
+
+@login_required
+def delete_sales_item_view(request, sales_item_id=None):
+    if sales_item_id is None:
+        raise Http404(_(u'Sales item not found'))
+    else:
+        profile = request.user.get_profile()
+        sales_item = get_object_or_404(profile.company.salesitem_set.all(), pk=sales_item_id)
+        sales_item.delete()
+    return HttpResponseRedirect('/sales_items')
+
+
+
+@login_required
+def deal_display_view(request):
+    profile = request.user.get_profile()
+    deals = profile.company.deal_set.all()
+    variables = RequestContext(request, {'deals': deals})
+    return render_to_response('deals.html', variables)
+
+@login_required
+def deal_view(request, deal_id=None):
+    profile = request.user.get_profile()
+    if deal_id is None:
+        deal = Deal(company=profile.company)
+        template_title = _(u'Add a new deal')
+    else:
+        deal = get_object_or_404(profile.company.deal_set.all(), pk=deal_id)
+        template_title = _(u'Edit deal')
+    if request.POST:
+        form = DealForm(request.POST, instance=deal)
+        if form.is_valid():
+            deal = form.save()
+            return HttpResponseRedirect('/deals')
+    else:
+        form = DealForm(instance=deal)
+    variables = RequestContext(request, {'form':form})
+    return render_to_response('deal.html', variables)
+
+@login_required
+def delete_deal_view(request, deal_id=None):
+    if deal_id is None:
+        raise Http404(_(u'Deal not found'))
+    else:
+        profile = request.user.get_profile()
+        deal = get_object_or_404(profile.company.deal_set.all(), pk=deal_id)
+        deal.delete()
+    return HttpResponseRedirect('/deals')
+
 
 def logout_page_view(request):
     logout(request)
@@ -90,120 +226,6 @@ def register_page_view(request):
     return render_to_response('registration/register.html', variables)
 
 
-@login_required
-def contact_view(request, contact_id=None):
-    profile = request.user.get_profile()
-    if contact_id is None:
-        contact = Contact(company=profile.company)
-        template_title = _(u'Add New Contact')
-    else:
-        contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
-        template_title = _(u'Edit Contact')
-    if request.POST:
-        form = ContactsForm(profile.company, request.POST, instance=contact)
-        if form.is_valid():
-            contact = form.save()
-            return HttpResponseRedirect('/')
-    else:
-        form = ContactsForm(instance=contact, company=profile.company)
-    variables = RequestContext(request, {'form':form, 'template_title': template_title, 'contact_id' : contact_id})
-#    return render_to_response("contact.html", variables)
-#    if request.GET.has_key('ajax'):
-    #return render_to_response('contact_modal.html', variables)
- #   else:
-    return render_to_response('contact.html', variables)
 
-@login_required
-def call_view(request, contact_id, call_id=None):
-    profile = request.user.get_profile()
-    contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
-    if call_id is None:
-        call = Conversation(company=profile.company, contact=contact, contact_date = datetime.datetime.now(), contact_time = datetime.datetime.now().strftime("%H:%M"))        
-        template_title = _(u'Add New Conversation')
-    else:
-        call = get_object_or_404(contact.conversation_set.all(), pk=call_id)
-        template_title = _(u'Edit Conversation')
-    if request.POST:
-        form = CallsForm(request.POST, instance=call)
-        if form.is_valid():
-            call = form.save()            
-            return HttpResponseRedirect('/contact/' + contact_id + '/calls/')
-    else:
-        form = CallsForm(instance=call)
-    variables = RequestContext(request, {'form':form})
-    return render_to_response('conversation.html', variables)
-
-@login_required
-def sales_item_view(request, sales_item_id=None):
-    profile = request.user.get_profile()
-    if sales_item_id is None:
-        sales_item = SalesItem(company=profile.company)
-        template_title = _(u'Add new Sales Item')
-    else:
-        sales_item = get_object_or_404(profile.company.sales_item_set().all, pk=sales_item_id)
-        template_title = _(u'Edit Sales Item')
-    if request.POST:
-        form = SalesItemForm(request.POST, instance=sales_item)
-        if form.is_valid():
-            sales_item = form.save()
-            return HttpResponseRedirect('/sales_items/')
-    else:
-        form = SalesItemForm(instance=sales_item)
-    variables = RequestContext(request, {'form':form})
-    return render_to_response('sales_item_page')
-
-@login_required
-def delete_contact_view(request, contact_id):
-    if contact_id is None:
-        raise Http404(_(u'Contact not found'))
-    else:
-        profile = request.user.get_profile()
-        contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
-        contact.delete()
-    return HttpResponseRedirect('/')
-
-@login_required
-def delete_call_view(request, contact_id, call_id):
-    if contact_id is None:
-        raise Http404(_(u'Contact not found'))
-    elif call_id is None:
-        raise Http404(_(u'Conversation not found'))
-    else:
-        profile = request.user.get_profile()
-        contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
-        call = get_object_or_404(contact.conversation_set.all(), pk=call_id)
-        call.delete()
-    return HttpResponseRedirect('/contact/' + contact_id + '/calls/')
-
-
-@login_required
-def contact_type_view(request, contact_type_id=None):
-    profile = request.user.get_profile()
-    if contact_type_id is None:
-        contact_type = ContactType(company=profile.company)
-        template_title = _(u'Add Contact Type')
-    else:
-        contact_type = get_object_or_404(profile.company.contacttype_set.all(), pk=contact_type_id)
-        template_title = _(u'Edit Contact Type')
-
-    if request.POST:
-        form = ContactTypeForm(request.POST, instance=contact_type)
-        if form.is_valid():
-            contact_type = form.save()
-            return HttpResponseRedirect('/')
-    else:
-        form = ContactTypeForm(instance=contact_type)
-    variables = RequestContext(request, {'form': form, 'template_title': template_title})
-    return render_to_response('contact_type.html', variables)
-
-@login_required
-def delete_contact_type_view(request, contact_type_id):
-    if contact_type_id is None:
-        raise Http404(_(u'Contact Type not found'))
-    else:
-        profile = request.user.get_profile()
-        contact_type = get_object_or_404(profile.company.contacttype_set.all(), pk=contact_type_id)
-        contact_type.delete()
-        return HttpResponseRedirect('/')
 
 
