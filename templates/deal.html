@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% block title %}{{ template_title }}{% endblock %}
 {% block head %}{{ template_title }}{% endblock %}
 {% block content %}
@@ -37,7 +38,7 @@
 			                	{% endif %}                        
 		                    </td>
 		                </tr>            
-		                <tr>
+		                <!-- <tr>
 		                    <td>                        
 		                        {{form.status.label}}: {% if  form.status.field.required %} *{% endif %}
 		                    </td>
@@ -50,7 +51,7 @@
 			                		{{form.status}}
 			                	{% endif %}                        
 		                    </td>
-		                </tr>
+		                </tr> -->		                
 		            </tbody>
 		        </table>
 		    </div>

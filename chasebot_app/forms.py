@@ -94,9 +94,25 @@ class CallsForm(ModelForm):
                    }
 
 class DealForm(ModelForm):
+    #status2 = forms.TextInput()
+    
+    def __init__(self, *args, **kwargs):
+        super(ModelForm, self).__init__(*args, **kwargs)
+#        instance = getattr(self, 'instance', None)
+#        if instance and instance.pk:
+        #self.fields['status'].widget.attrs['readonly'] = True
+        #self.fields['status2'] = 'Hello'
+        #self.fields['status'].widget = forms.TextInput(attrs={'readonly':'readonly'})
+        
+    
+    def clean_status(self):
+        return self.instance.status
+        
+            
+    
     class Meta:
         model = Deal
-        exclude = ('company')
+        exclude = ('company', 'status')
         
         widgets = {
                     'deal_name': forms.TextInput(attrs={'placeholder': 'Name the deal', 'class': 'placeholder_fix_css'}),
@@ -105,7 +121,8 @@ class DealForm(ModelForm):
                     'price': forms.TextInput(attrs={'placeholder': 'How much is proposed?', 'class': 'placeholder_fix_css'}),                    
 #                    'sales_term': forms.TextInput(attrs={'placeholder': 'Is it fixed or recurring?', 'class': 'placeholder_fix_css'}),
                     'quantity': forms.TextInput(attrs={'placeholder': 'How many items?', 'class': 'placeholder_fix_css'}),
-#                    'status': forms.TextInput(attrs={'placeholder': 'How is the progress?', 'class': 'placeholder_fix_css'}),                   
+                    #'status': forms.TextInput(attrs={'placeholder': 'How is the progress?', 'class': 'placeholder_fix_css'}),    
+                              
                    }
 
 

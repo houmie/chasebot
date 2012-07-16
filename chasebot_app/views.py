@@ -9,7 +9,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
 from chasebot_app.forms import RegistrationForm, ContactsForm, ContactTypeForm, MaritalStatusForm, CountryForm, CallsForm, SalesItemForm, DealForm
-from chasebot_app.models import Company, Contact, ContactType, MaritalStatus, Country, Conversation, SalesItem, Deal
+from chasebot_app.models import Company, Contact, ContactType, MaritalStatus, Country, Conversation, SalesItem, Deal, DealStatus
 from chasebot_app.models import UserProfile
 from django.utils.translation import ugettext as _
 
@@ -149,6 +149,7 @@ def deal_view(request, deal_id=None):
     profile = request.user.get_profile()
     if deal_id is None:
         deal = Deal(company=profile.company)
+        deal.status = DealStatus.objects.get(id=1)
         template_title = _(u'Add a new deal')
     else:
         deal = get_object_or_404(profile.company.deal_set.all(), pk=deal_id)
