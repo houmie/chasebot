@@ -1,6 +1,5 @@
 # Create your views here.
 import datetime 
-from __builtin__ import id
 from django.http import Http404
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
@@ -43,7 +42,7 @@ def contact_view(request, contact_id=None):
 #    return render_to_response("contact.html", variables)
 #    if request.GET.has_key('ajax'):
     #return render_to_response('contact_modal.html', variables)
- #   else:
+#   else:
     return render_to_response('contact.html', variables)
 
 @login_required
@@ -77,12 +76,16 @@ def call_view(request, contact_id, call_id=None):
         template_title = _(u'Edit Conversation')
     if request.POST:
         form = CallsForm(request.POST, instance=call)
-        if form.is_valid():
-            call = form.save()            
+        if form.is_valid():            
+            call = form.save(commit=False)
+            deal =  get_object_or_404(profile.company.deal_set.all(), pk=call.deal.id)
+            deal.status = call.status
+            deal.save()
+            call.save()            
             return HttpResponseRedirect('/contact/' + contact_id + '/calls/')
     else:
         form = CallsForm(instance=call)
-    variables = RequestContext(request, {'form':form})
+    variables = RequestContext(request, {'form':form, 'template_title': template_title})
     return render_to_response('conversation.html', variables)
 
 @login_required
@@ -122,7 +125,7 @@ def sales_item_view(request, sales_item_id=None):
             return HttpResponseRedirect('/sales_items')
     else:
         form = SalesItemForm(instance=sales_item)
-    variables = RequestContext(request, {'form':form})
+    variables = RequestContext(request, {'form':form, 'template_title': template_title})
     return render_to_response('sales_item.html', variables)
 
 @login_required
@@ -161,7 +164,7 @@ def deal_view(request, deal_id=None):
             return HttpResponseRedirect('/deals')
     else:
         form = DealForm(instance=deal)
-    variables = RequestContext(request, {'form':form})
+    variables = RequestContext(request, {'form':form, 'template_title': template_title})
     return render_to_response('deal.html', variables)
 
 @login_required

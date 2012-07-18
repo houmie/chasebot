@@ -77,7 +77,21 @@
 	                		{{form.deal}}
 	                	{% endif %}                        
                     </td>
-                </tr>                
+                </tr>    
+                <tr>
+                	<td>                        
+                        {{form.status.label}}: {% if  form.status.field.required %} *{% endif %}
+                    </td>
+                    <td>                        
+                        {% if form.status.errors %}
+	                	<div class="field field_error">
+	                    	{{form.status}} {{form.status.errors}}                   	
+	                	</div>
+	                	{% else %}
+	                		{{form.status}}
+	                	{% endif %}                        
+                    </td>
+                </tr>            
             </tbody>
         </table>
     </div>

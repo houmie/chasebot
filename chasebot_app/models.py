@@ -133,7 +133,8 @@ class Deal(models.Model):
     quantity            = models.IntegerField(_(u"Quantity"))
     status              = models.ForeignKey(DealStatus, verbose_name=_(u"Deal Status"))
     def __unicode__(self):
-        return self.deal_name
+        return self.deal_name + " - " + self.status.deal_status
+        
         
 class Conversation(models.Model):
     contact             = models.ForeignKey(Contact)
@@ -144,6 +145,7 @@ class Conversation(models.Model):
     notes               = models.TextField(_(u"Conversation Notes"),        blank=True)
     deal                = models.ForeignKey(Deal, verbose_name=_(u"Deal"),  blank=True, null=True)
     company             = models.ForeignKey(Company)
+    status              = models.ForeignKey(DealStatus, verbose_name=_(u"New Deal Status"), blank=True, null=True)
         
     class Meta:
         get_latest_by   = "creation_date"

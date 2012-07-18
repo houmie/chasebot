@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block title %}{% trans 'Chasebot - Home' %}{% endblock %}
-{% block head %}{% trans 'Welcome to Chasebot' %}{% endblock %}
+{% block head %}{{ company_name }}{% endblock %}
 {% block external %}
+	<script type="text/javascript" src="/site_media/jqPlot/jqplot.pieRenderer.min.js"></script>
 {% endblock %}
 {% block content %}
 {% if user.username %}
-    <p>{% trans 'Welcome' %} {{ user.username }} {% trans 'from the company' %} {{ company_name }}! </p>
+    <p>{% trans 'Welcome back' %} {{ user.username }}.</p>
     
         <table class="table">
             <thead>
@@ -39,8 +40,8 @@
                     <td>{{ item.email }}</td>
                     <td>{{ item.work_phone }}</td>
                     <td>{{ item.mobile_phone }}</td>
-                    <td>{{ item.conversationhistory_set.latest }}   <a href="/contact/{{ item.id }}/calls" title="{% trans 'Conversations' %}"><button class="btn btn-success"><i class="icon-comment"></i></button></a></td>
-                    <td></td>
+                    <td><a href="/contact/{{ item.id }}/calls" title="{% trans 'Conversations' %}"><button class="btn btn-success"><i class="icon-comment"></i></button></a></td>
+                    <td><a href="/deals" title"{% trans 'Deals' %}"><button class="btn btn-success"><i class="icon-tags"></i></button></a></td>
                     <td></td>
                     <td></td>
                 </tr>
