@@ -1,6 +1,6 @@
 # Create your views here.
 import datetime 
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -8,9 +8,13 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template.context import RequestContext
 from chasebot_app.forms import RegistrationForm, ContactsForm, ContactTypeForm, MaritalStatusForm, CountryForm, CallsForm, SalesItemForm, DealForm
-from chasebot_app.models import Company, Contact, ContactType, MaritalStatus, Country, Conversation, SalesItem, Deal, DealStatus
+from chasebot_app.models import Company, Contact, ContactType, MaritalStatus, Country, Conversation, SalesItem, Deal, DealStatus,\
+    Conversation_Deal 
 from chasebot_app.models import UserProfile
+from django.core import serializers
 from django.utils.translation import ugettext as _
+from django.template import response
+from django.utils import simplejson
 
 
 @login_required
@@ -78,14 +82,26 @@ def call_view(request, contact_id, call_id=None):
         form = CallsForm(request.POST, instance=call)
         if form.is_valid():            
             call = form.save(commit=False)
-            deal =  get_object_or_404(profile.company.deal_set.all(), pk=call.deal.id)
-            deal.status = call.status
-            deal.save()
-            call.save()            
+            call.save()
+            
+#            deal_status_updates = {}
+#            for query, value in form.data.items():
+#                if query.startswith('deal_status_'):
+#                    deal_status_updates[int(query[12:])] = value
+#            
+#            deals = form.cleaned_data["deals"]
+#            for deal in deals:                
+#                deal_status = DealStatus.objects.get(pk=deal_status_updates[deal.pk])
+#                conversation_deal, id_created = Conversation_Deal.objects.get_or_create(conversation=call, deal=deal)
+#                conversation_deal.status=deal_status
+#                conversation_deal.save()
             return HttpResponseRedirect('/contact/' + contact_id + '/calls/')
     else:
         form = CallsForm(instance=call)
-    variables = RequestContext(request, {'form':form, 'template_title': template_title})
+    deal_statuses = DealStatus.objects.all()
+    deals = profile.company.deal_set.all()
+    conversation_deals = call.deals.through.objects.all()
+    variables = RequestContext(request, {'form':form, 'template_title': template_title, 'deal_statuses' : deal_statuses, 'deals' : deals, 'conversation_deals' : conversation_deals})
     return render_to_response('conversation.html', variables)
 
 @login_required
@@ -229,7 +245,16 @@ def register_page_view(request):
     variables = RequestContext(request, {'form':form})
     return render_to_response('registration/register.html', variables)
 
-
-
+@login_required
+def _deal_status_view(request, call_id=None):        
+    conversation_deal = Conversation_Deal.objects.filter(conversation_id__in=call_id)    
+    deal_statuses = DealStatus.objects.all()        
+    all = list(Conversation_Deal.objects.filter(conversation_id__in=call_id)) + list(DealStatus.objects.all())
+    
+    to_json =  [ {"deal_pk": 1, "fields": [{"selected": "true", "status": "Pending 0%"}, {"selected": "false", "status": "Pending 25%"} ]}, {"deal_pk": 2, "fields": [{"selected": "false", "status": "Pending 0%"}, {"selected": "true", "status": "Pending 25%"} ]} ]  
+    
+    #data = serializers.serialize("json", employees)
+    return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
+#dic = {'conversation_deal' : conversation_deal, 'deal_statuses' : deal_statuses}
 
 

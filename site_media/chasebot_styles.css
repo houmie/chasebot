@@ -23,3 +23,7 @@ div.field_error li{
 .placeholder_fix_css:-moz-placeholder {
     color: #999999;
 }
+
+.hidden_cb{
+	visibility: hidden;
+}

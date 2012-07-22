@@ -122,6 +122,11 @@ class DealStatus(models.Model):
     deal_status         = models.CharField(_(u"Deal Status"), max_length=40)
     def __unicode__(self):
         return self.deal_status
+
+class Conversation_Deal(models.Model):
+    conversation        = models.ForeignKey('Conversation')
+    deal                = models.ForeignKey('Deal')
+    status              = models.ForeignKey(DealStatus, verbose_name=_(u"Deal Status"), null=True, blank=True)
     
 class Deal(models.Model):    
     company             = models.ForeignKey(Company)
@@ -131,9 +136,11 @@ class Deal(models.Model):
     price               = models.DecimalField(_(u"Price"), decimal_places=2, max_digits=12)
     sales_term          = models.ForeignKey(SalesTerm, verbose_name=_(u"Sales Term"))
     quantity            = models.IntegerField(_(u"Quantity"))
-    status              = models.ForeignKey(DealStatus, verbose_name=_(u"Deal Status"))
+    #status              = models.ForeignKey(DealStatus, verbose_name=_(u"Deal Status"))
+    #calls               = models.ManyToManyField('Conversation', through=Conversation_Deal, blank=True, null=True)
+    
     def __unicode__(self):
-        return self.deal_name + " - " + self.status.deal_status
+        return self.deal_name #+ " - " + self.status.deal_status
         
         
 class Conversation(models.Model):
@@ -143,9 +150,10 @@ class Conversation(models.Model):
     contact_time        = models.TimeField(_(u"Conversation Time"))
     subject             = models.CharField(_(u"Conversation Subject"),      max_length=50)
     notes               = models.TextField(_(u"Conversation Notes"),        blank=True)
-    deal                = models.ForeignKey(Deal, verbose_name=_(u"Deal"),  blank=True, null=True)
+    #deal                = models.ManyToManyField(Deal, verbose_name=_(u"Deal"),  blank=True, null=True)
     company             = models.ForeignKey(Company)
-    status              = models.ForeignKey(DealStatus, verbose_name=_(u"New Deal Status"), blank=True, null=True)
+    #status              = models.ForeignKey(DealStatus, verbose_name=_(u"New Deal Status"), blank=True, null=True)
+    deals               = models.ManyToManyField('Deal', through=Conversation_Deal, blank=True, null=True)
         
     class Meta:
         get_latest_by   = "creation_date"

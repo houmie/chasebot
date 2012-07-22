@@ -15,7 +15,21 @@
 	                		{{form.contact_date}}
 	                	{% endif %}                        
                     </td>
-                </tr>                
+                </tr>    
+                <tr>
+                    <td>                        
+                        {{form.contact_time.label}}: {% if  form.contact_time.field.required %} *{% endif %}
+                    </td>
+                    <td>                        
+                        {% if form.contact_time.errors %}
+	                	<div class="field field_error">
+	                    	{{form.contact_time}} {{form.contact_time.errors}}                   	
+	                	</div>
+	                	{% else %}
+	                		{{form.contact_time}}
+	                	{% endif %}                        
+                    </td>
+                </tr>            
                 <tr>
                     <td>                        
                         {{form.subject.label}}: {% if  form.subject.field.required %} *{% endif %}
@@ -48,51 +62,69 @@
         </table>
     </div>
     <div class="span6">
-        <table class="table edit_table">
-            <tbody>
-            	<tr>
-                    <td>                        
-                        {{form.contact_time.label}}: {% if  form.contact_time.field.required %} *{% endif %}
-                    </td>
-                    <td>                        
-                        {% if form.contact_time.errors %}
-	                	<div class="field field_error">
-	                    	{{form.contact_time}} {{form.contact_time.errors}}                   	
-	                	</div>
-	                	{% else %}
-	                		{{form.contact_time}}
-	                	{% endif %}                        
-                    </td>
+        <table class="table edit_table" id="deals">
+            <tbody>                
+                <tr>
+                	<td>
+                		Add Deals:
+                	</td>
+                	<td>
+                		<button type="button" id="add_deals_button" class="btn btn-success"><i class="icon-plus icon-white"></i></button>                		
+                	</td>   
+                	<td>               		
+                	</td>             	
                 </tr>
+            {% if conversation_deals %}            
+            {% for cd in conversation_deals %}
                 <tr>
-                    <td>                        
-                        {{form.deal.label}}: {% if  form.deal.field.required %} *{% endif %}
-                    </td>
-                    <td>                        
-                        {% if form.deal.errors %}
-	                	<div class="field field_error">
-	                    	{{form.deal}} {{form.deal.errors}}                   	
-	                	</div>
-	                	{% else %}
-	                		{{form.deal}}
-	                	{% endif %}                        
-                    </td>
-                </tr>    
-                <tr>
-                	<td>                        
-                        {{form.status.label}}: {% if  form.status.field.required %} *{% endif %}
-                    </td>
-                    <td>                        
-                        {% if form.status.errors %}
-	                	<div class="field field_error">
-	                    	{{form.status}} {{form.status.errors}}                   	
-	                	</div>
-	                	{% else %}
-	                		{{form.status}}
-	                	{% endif %}                        
-                    </td>
-                </tr>            
+                	<td>
+                		<select class="test" name='deal_X{{forloop.counter}}'>
+							{% for deal in deals %}
+								{% if deal.pk == cd.deal.pk %}
+									<option selected='selected' value='{{deal.pk}}'>{{deal.deal_name}}</option>
+								{% else %}
+									<option value='{{deal.pk}}'>{{deal.deal_name}}</option>
+								{% endif %}
+							{% endfor %}
+						</select>
+                	</td>
+                	<td>
+                		<select name='dealstatus_X{{forloop.counter}}'>
+						{% for ds in deal_statuses %}
+							{% if ds.pk == cd.status_id %}
+								<option selected="selected" value='{{ds.pk}}'>{{ds.deal_status}}</option>
+							{% else %}
+								<option value='{{ds.pk}}'>{{ds.deal_status}}</option>
+							{% endif %}
+						{% endfor %}
+						</select>
+                	</td>
+                	<td>
+						<button type="button" class="btn btn-danger remove_deals_button"><i class="icon-minus icon-white"></i></button>
+					</td>
+                </tr>
+            {% endfor %}
+            {% endif %}
+                <tr id='hidden_deal_elements'>
+                	<td>
+                		<select id='hidden_deals' class="hidden_cb">
+							{% for deal in deals %}
+								<option value='{{deal.pk}}'>{{deal.deal_name}}</option>
+							{% endfor %}
+						</select>
+                	</td>
+            		<td>
+            			<select id='hidden_deal_statuses' class="hidden_cb">
+						{% for ds in deal_statuses %}
+							<option value='{{ds.pk}}'>{{ds.deal_status}}</option>
+						{% endfor %}
+					</select>
+            		</td>						
+					<td>
+						<button type="button" id="remove_deals_button" class="btn btn-danger hidden_cb"><i class="icon-minus icon-white"></i></button>
+					</td>						
+                </tr>				
             </tbody>
         </table>
-    </div>
+    </div>    
 </div>

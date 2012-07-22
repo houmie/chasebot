@@ -87,10 +87,11 @@ class CallsForm(ModelForm):
         model = Conversation
         exclude = ('company', 'contact')
         widgets = {
-                    'contact_date': forms.DateInput(attrs={'placeholder': 'Add the date...', 'id': 'datepicker', 'class': 'placeholder_fix_css'}, format='%d/%m/%Y'),
+                    'contact_date': forms.DateInput(attrs={'placeholder': 'Add the date...', 'id': 'datepicker', 'class': 'placeholder_fix_css'}, format='%m/%d/%Y'),
                     'contact_time': forms.TimeInput(attrs={'placeholder': 'Add the time...',                     'class': 'placeholder_fix_css'}),
                     'subject': forms.TextInput(attrs={'placeholder': '',                                         'class': 'placeholder_fix_css'}),
                     'notes': forms.Textarea(attrs={'placeholder': 'Add relevant notes...'}),
+                    
                    }
 
 class DealForm(ModelForm):
