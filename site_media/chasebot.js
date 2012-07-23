@@ -142,14 +142,14 @@ function remove_deal(e){
 }
 
 $(document).ready(function () {  
-  $("#add_deals_button").click(add_deals)
-  $('.remove_deals_button').click(remove_deal)
-  if(max_deals_reached())
-  {
-  	$('#add_deals_button').attr({'class': 'btn btn-success disabled'})  	
-  }
-  else if($('#deals tbody > tr').size() > 2)
-  {  	
-	$('#hidden_deal_elements').attr({'class':'hidden'});
-  }
+  // $("#add_deals_button").click(add_deals)
+  // $('.remove_deals_button').click(remove_deal)
+  // if(max_deals_reached())
+  // {
+  	// $('#add_deals_button').attr({'class': 'btn btn-success disabled'})  	
+  // }
+  // else if($('#deals tbody > tr').size() > 2)
+  // {  	
+	// $('#hidden_deal_elements').attr({'class':'hidden'});
+  // }
 });

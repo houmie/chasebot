@@ -5,7 +5,8 @@ from django import forms
 import re
 from django.contrib.auth.models import User
 from django.forms import ModelForm
-from chasebot_app.models import UserProfile, Contact, ContactType, Country, MaritalStatus, Conversation, SalesItem, Deal, SalesTerm
+from chasebot_app.models import UserProfile, Contact, ContactType, Country, MaritalStatus, Conversation, SalesItem, Deal, SalesTerm,\
+    DealStatus
 from django.utils.translation import ugettext_lazy as _
 
 class RegistrationForm(ModelForm):
@@ -81,7 +82,37 @@ class ContactsForm(ModelForm):
                 'prev_meeting_places': forms.Textarea(attrs={'rows':4, 'placeholder': 'Where did you meet so far?'})                       
             }
 
-class CallsForm(ModelForm):   
+class CallsForm(ModelForm):       
+#    status_1    =   forms.ModelChoiceField()
+    
+    def __init__(self, company, *args, **kwargs):
+        super(CallsForm, self).__init__(*args, **kwargs)        
+        self.fields['deal_1'].queryset = company.deal_set.all()            
+        self.fields['status_1'].queryset = DealStatus.objects.all()
+        self.fields['deal_2'].queryset = company.deal_set.all()            
+        self.fields['status_2'].queryset = DealStatus.objects.all()
+        self.fields['deal_3'].queryset = company.deal_set.all()            
+        self.fields['status_3'].queryset = DealStatus.objects.all()
+        self.fields['deal_4'].queryset = company.deal_set.all()            
+        self.fields['status_4'].queryset = DealStatus.objects.all()
+        self.fields['deal_5'].queryset = company.deal_set.all()            
+        self.fields['status_5'].queryset = DealStatus.objects.all()
+        self.fields['deal_6'].queryset = company.deal_set.all()            
+        self.fields['status_6'].queryset = DealStatus.objects.all()
+    
+        
+    deal_1      =   forms.ModelChoiceField(queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))   
+    status_1    =   forms.ModelChoiceField(queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'})) 
+    deal_2      =   forms.ModelChoiceField(queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))   
+    status_2    =   forms.ModelChoiceField(queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))
+    deal_3      =   forms.ModelChoiceField(queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))   
+    status_3    =   forms.ModelChoiceField(queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))
+    deal_4      =   forms.ModelChoiceField(queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))   
+    status_4    =   forms.ModelChoiceField(queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))
+    deal_5      =   forms.ModelChoiceField(queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))   
+    status_5    =   forms.ModelChoiceField(queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))
+    deal_6      =   forms.ModelChoiceField(queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))   
+    status_6    =   forms.ModelChoiceField(queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))
     
     class Meta:
         model = Conversation
@@ -91,7 +122,7 @@ class CallsForm(ModelForm):
                     'contact_time': forms.TimeInput(attrs={'placeholder': 'Add the time...',                     'class': 'placeholder_fix_css'}),
                     'subject': forms.TextInput(attrs={'placeholder': '',                                         'class': 'placeholder_fix_css'}),
                     'notes': forms.Textarea(attrs={'placeholder': 'Add relevant notes...'}),
-                    
+                                      
                    }
 
 class DealForm(ModelForm):

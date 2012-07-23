@@ -82,8 +82,6 @@ def call_view(request, contact_id, call_id=None):
     if request.POST:
         form = CallsForm(request.POST, instance=call)
         if form.is_valid():            
-            
-            
             call = form.save(commit=False)
             #call.save()
             
@@ -112,11 +110,8 @@ def call_view(request, contact_id, call_id=None):
             if not custom_validation_errors:                
                 return HttpResponseRedirect('/contact/' + contact_id + '/calls/')
     else:
-        form = CallsForm(instance=call)
-    deal_statuses = DealStatus.objects.all()
-    deals = profile.company.deal_set.all()
-    conversation_deals = call.deals.through.objects.all()
-    variables = RequestContext(request, {'form':form, 'template_title': template_title, 'deal_statuses' : deal_statuses, 'deals' : deals, 'conversation_deals' : conversation_deals, 'custom_validation_errors': custom_validation_errors})
+        form = CallsForm(instance=call, company=profile.company)    
+    variables = RequestContext(request, {'form':form, 'template_title': template_title})
     return render_to_response('conversation.html', variables)
 
 @login_required
