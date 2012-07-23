@@ -74,8 +74,18 @@
                 	<td>               		
                 	</td>             	
                 </tr>
-            {% if conversation_deals %}            
+            {% if conversation_deals %}     
+            {% if custom_validation_errors %}       
+            	{% for key, err in custom_validation_errors.items %}
+            		<tr>
+            			<td>
+            				{{err}}
+            			</td>
+            		</tr>
+            	{% endfor %}
+            {% endif %}
             {% for cd in conversation_deals %}
+            {% if forloop.counter < 7 %}
                 <tr>
                 	<td>
                 		<select class="test" name='deal_X{{forloop.counter}}'>
@@ -103,6 +113,7 @@
 						<button type="button" class="btn btn-danger remove_deals_button"><i class="icon-minus icon-white"></i></button>
 					</td>
                 </tr>
+            {% endif %}
             {% endfor %}
             {% endif %}
                 <tr id='hidden_deal_elements'>

@@ -23,42 +23,46 @@ $.ajaxSetup({
 });
 
 
-function deal_edit_func(e) {
-  var item = $('#deal_status tbody')
-  //var selected = $(e.target).val();  
-  var selected = $("#id_deals option:selected");   
-  item.empty();
-  
-  var new_row = $('<tr />');
-  var column_left = $('<td />');
-  var column_right = $('<td />');
-    
-  var title = $('<p />').text("Deal Status:");
-  column_left.append(title);
-  
-  new_row.append(column_left);
-  new_row.append(column_right);
-  
-  item.append(new_row);
-  
-  $.each(selected, function(index, object){
-  	var new_row = $('<tr />');
-  	var column_left = $('<td />');
-  	var column_right = $('<td />');  	
-  	
-  	column_left.append($('<p />').text(object.text + ':'));
-  	
-  	var dropdown = create_dropdown(object);  	
-	column_right.append(dropdown);
-	
-	new_row.append(column_left);
-	new_row.append(column_right);
-	
-	item.append(new_row);
-  }); 
- 
-  return false;
-}
+$.chasebot = {};
+$.chasebot.deal_id = 0;
+
+
+// function deal_edit_func(e) {
+  // var item = $('#deal_status tbody')
+  // //var selected = $(e.target).val();  
+  // var selected = $("#id_deals option:selected");   
+  // item.empty();
+//   
+  // var new_row = $('<tr />');
+  // var column_left = $('<td />');
+  // var column_right = $('<td />');
+//     
+  // var title = $('<p />').text("Deal Status:");
+  // column_left.append(title);
+//   
+  // new_row.append(column_left);
+  // new_row.append(column_right);
+//   
+  // item.append(new_row);
+//   
+  // $.each(selected, function(index, object){
+  	// var new_row = $('<tr />');
+  	// var column_left = $('<td />');
+  	// var column_right = $('<td />');  	
+//   	
+  	// column_left.append($('<p />').text(object.text + ':'));
+//   	
+  	// var dropdown = create_dropdown(object);  	
+	// column_right.append(dropdown);
+// 	
+	// new_row.append(column_left);
+	// new_row.append(column_right);
+// 	
+	// item.append(new_row);
+  // }); 
+//  
+  // return false;
+// }
 
 
 function add_deals(e){
@@ -70,13 +74,15 @@ function add_deals(e){
 	{		
 		return false;
 	}	
-		
+	
+	$.chasebot.deal_id++;
+	
 	$('#hidden_deal_elements').attr({'class':'hidden'});
 		
 	var deal = $('#hidden_deals').clone();
 	deal.removeAttr('id');
 	deal.removeAttr('class');
-	deal.attr({'name': 'x'})	 	
+	deal.attr({'name': 'deal_XX' + $.chasebot.deal_id})	 	
 	
 	var tr = $('<tr />');
 	$('#deals tbody').append(tr);	
@@ -88,6 +94,7 @@ function add_deals(e){
 	var statuses = $('#hidden_deal_statuses').clone();
 	statuses.removeAttr('id');
 	statuses.removeAttr('class');
+	statuses.attr({'name': 'dealstatus_XX' + $.chasebot.deal_id})
 	
 	var td = $('<td />');
 	tr.append(td);
@@ -127,7 +134,7 @@ function min_deals_reached(){
 function remove_deal(e){
 	$(e.target).parent().parent().remove()
 	$('#add_deals_button').attr({'class': 'btn btn-success'})		
-	
+		
 	if(min_deals_reached())
 	{
 		$('#hidden_deal_elements').attr({'class':'hidden_cb'});		
