@@ -6,7 +6,7 @@ import re
 from django.contrib.auth.models import User
 from django.forms import ModelForm
 from chasebot_app.models import UserProfile, Contact, ContactType, Country, MaritalStatus, Conversation, SalesItem, Deal, SalesTerm,\
-    DealStatus
+    DealStatus, Conversation_Deal
 from django.utils.translation import ugettext_lazy as _
 
 class RegistrationForm(ModelForm):
@@ -82,37 +82,47 @@ class ContactsForm(ModelForm):
                 'prev_meeting_places': forms.Textarea(attrs={'rows':4, 'placeholder': 'Where did you meet so far?'})                       
             }
 
+
+
+
 class CallsForm(ModelForm):       
 #    status_1    =   forms.ModelChoiceField()
     
     def __init__(self, company, *args, **kwargs):
-        super(CallsForm, self).__init__(*args, **kwargs)        
-        self.fields['deal_1'].queryset = company.deal_set.all()            
-        self.fields['status_1'].queryset = DealStatus.objects.all()
-        self.fields['deal_2'].queryset = company.deal_set.all()            
-        self.fields['status_2'].queryset = DealStatus.objects.all()
-        self.fields['deal_3'].queryset = company.deal_set.all()            
-        self.fields['status_3'].queryset = DealStatus.objects.all()
-        self.fields['deal_4'].queryset = company.deal_set.all()            
-        self.fields['status_4'].queryset = DealStatus.objects.all()
-        self.fields['deal_5'].queryset = company.deal_set.all()            
-        self.fields['status_5'].queryset = DealStatus.objects.all()
-        self.fields['deal_6'].queryset = company.deal_set.all()            
-        self.fields['status_6'].queryset = DealStatus.objects.all()
+        super(CallsForm, self).__init__(*args, **kwargs)                                        
+        self.fields['deal_1'].queryset = self.get_non_duplicate_deals(self.instance, company)            
+        #self.fields['status_1'].queryset = DealStatus.objects.all()
+        self.fields['deal_2'].queryset = self.get_non_duplicate_deals(self.instance, company)       
+        #self.fields['status_2'].queryset = DealStatus.objects.all()
+        self.fields['deal_3'].queryset = self.get_non_duplicate_deals(self.instance, company)
+        #self.fields['status_3'].queryset = DealStatus.objects.all()
+        self.fields['deal_4'].queryset = self.get_non_duplicate_deals(self.instance, company)
+        #self.fields['status_4'].queryset = DealStatus.objects.all()
+        self.fields['deal_5'].queryset = self.get_non_duplicate_deals(self.instance, company)
+        #self.fields['status_5'].queryset = DealStatus.objects.all()
+        self.fields['deal_6'].queryset = self.get_non_duplicate_deals(self.instance, company)
+        #self.fields['status_6'].queryset = DealStatus.objects.all()
     
         
-    deal_1      =   forms.ModelChoiceField(queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))   
-    status_1    =   forms.ModelChoiceField(queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'})) 
-    deal_2      =   forms.ModelChoiceField(queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))   
-    status_2    =   forms.ModelChoiceField(queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))
-    deal_3      =   forms.ModelChoiceField(queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))   
-    status_3    =   forms.ModelChoiceField(queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))
-    deal_4      =   forms.ModelChoiceField(queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))   
-    status_4    =   forms.ModelChoiceField(queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))
-    deal_5      =   forms.ModelChoiceField(queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))   
-    status_5    =   forms.ModelChoiceField(queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))
-    deal_6      =   forms.ModelChoiceField(queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))   
-    status_6    =   forms.ModelChoiceField(queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))
+    deal_1      =   forms.ModelChoiceField(required=False, queryset = '')#, widget=forms.Select(attrs={'class':'hidden_cb'}))   
+    #status_1    =   forms.ModelChoiceField(required=False, queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'})) 
+    deal_2      =   forms.ModelChoiceField(required=False, queryset = '')#, widget=forms.Select(attrs={'class':'hidden_cb2'}))   
+    #status_2    =   forms.ModelChoiceField(required=False, queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))
+    deal_3      =   forms.ModelChoiceField(required=False, queryset = '')#, widget=forms.Select(attrs={'class':'hidden_cb'}))   
+    #status_3    =   forms.ModelChoiceField(required=False, queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))
+    deal_4      =   forms.ModelChoiceField(required=False, queryset = '')#, widget=forms.Select(attrs={'class':'hidden_cb'}))   
+    #status_4    =   forms.ModelChoiceField(required=False, queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))
+    deal_5      =   forms.ModelChoiceField(required=False, queryset = '')#, widget=forms.Select(attrs={'class':'hidden_cb'}))   
+    #status_5    =   forms.ModelChoiceField(required=False, queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))
+    deal_6      =   forms.ModelChoiceField(required=False, queryset = '')#, widget=forms.Select(attrs={'class':'hidden_cb'}))   
+    #status_6    =   forms.ModelChoiceField(required=False, queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))
+    
+    deal_show_row_1   = forms.BooleanField(required=False, initial=False)#, widget=forms.CheckboxInput(attrs={'class':'hidden_cb'}))
+    deal_show_row_2   = forms.BooleanField(required=False, initial=False)#, widget=forms.CheckboxInput(attrs={'class':'hidden_cb'}))
+    deal_show_row_3   = forms.BooleanField(required=False, initial=False)#, widget=forms.CheckboxInput(attrs={'class':'hidden_cb'}))
+    deal_show_row_4   = forms.BooleanField(required=False, initial=False)#, widget=forms.CheckboxInput(attrs={'class':'hidden_cb'}))
+    deal_show_row_5   = forms.BooleanField(required=False, initial=False)#, widget=forms.CheckboxInput(attrs={'class':'hidden_cb'}))
+    deal_show_row_6   = forms.BooleanField(required=False, initial=False)#, widget=forms.CheckboxInput(attrs={'class':'hidden_cb'}))
     
     class Meta:
         model = Conversation
@@ -121,9 +131,60 @@ class CallsForm(ModelForm):
                     'contact_date': forms.DateInput(attrs={'placeholder': 'Add the date...', 'id': 'datepicker', 'class': 'placeholder_fix_css'}, format='%m/%d/%Y'),
                     'contact_time': forms.TimeInput(attrs={'placeholder': 'Add the time...',                     'class': 'placeholder_fix_css'}),
                     'subject': forms.TextInput(attrs={'placeholder': '',                                         'class': 'placeholder_fix_css'}),
-                    'notes': forms.Textarea(attrs={'placeholder': 'Add relevant notes...'}),
-                                      
+                    'notes': forms.Textarea(attrs={'placeholder': 'Add relevant notes...'}),                                      
                    }
+    
+    def clean(self):
+        cleaned_data = super(CallsForm, self).clean()
+        deal_1 = cleaned_data.get('deal_1')
+        deal_2 = cleaned_data.get('deal_2')
+        deal_3 = cleaned_data.get('deal_3')
+        deal_4 = cleaned_data.get('deal_4')
+        deal_5 = cleaned_data.get('deal_5')
+        deal_6 = cleaned_data.get('deal_6')
+        
+        deal_show_row_1 = cleaned_data.get('deal_show_row_1')
+        deal_show_row_2 = cleaned_data.get('deal_show_row_2')
+        deal_show_row_3 = cleaned_data.get('deal_show_row_3')
+        deal_show_row_4 = cleaned_data.get('deal_show_row_4')
+        deal_show_row_5 = cleaned_data.get('deal_show_row_5')
+        deal_show_row_6 = cleaned_data.get('deal_show_row_6')
+        
+        msg = _(u'Please select a deal to add or remove it')
+        
+        if deal_show_row_1:
+            if not deal_1:
+                self._errors['deal_1'] = self.error_class([msg])            
+        if deal_show_row_2:
+            if not deal_2:
+                self._errors['deal_2'] = self.error_class([msg])
+        if deal_show_row_3:
+            if not deal_3:
+                self._errors['deal_3'] = self.error_class([msg])
+        if deal_show_row_4:
+            if not deal_4:
+                self._errors['deal_4'] = self.error_class([msg])
+        if deal_show_row_5:
+            if not deal_5:
+                self._errors['deal_5'] = self.error_class([msg])
+        if deal_show_row_6:
+            if not deal_6:
+                self._errors['deal_6'] = self.error_class([msg])
+        return cleaned_data;
+    
+    
+    
+    def get_non_duplicate_deals(self, company, call):
+        deals = Deal.objects.filter(company=company)
+        duplicate_deals_pk = []
+        for deal in deals:
+            temp = Conversation_Deal.objects.filter(conversation=call, deal=deal)
+            if temp:
+                duplicate_deals_pk.append(temp[0].deal.pk)
+        return deals.exclude(pk__in=duplicate_deals_pk)
+            
+        
+        
 
 class DealForm(ModelForm):
     #status2 = forms.TextInput()

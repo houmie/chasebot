@@ -64,10 +64,7 @@ class Gender(models.Model):
         return self.gender
 
 
-#CONTACT_TYPE_CHOICES = (
-#    ('S', 'Single')
-#)
-#contact_type        = models.CharField(max_length=1, choices=CONTACT_TYPE_CHOICES)
+
 
 class Contact(models.Model):
     first_name          = models.CharField(_(u"First Name"),             max_length=30, blank=True)

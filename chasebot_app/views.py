@@ -70,7 +70,6 @@ def call_display_view(request, contact_id):
 
 @login_required
 def call_view(request, contact_id, call_id=None):
-    custom_validation_errors = {}
     profile = request.user.get_profile()
     contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
     if call_id is None:
@@ -80,37 +79,30 @@ def call_view(request, contact_id, call_id=None):
         call = get_object_or_404(contact.conversation_set.all(), pk=call_id)
         template_title = _(u'Edit Conversation')
     if request.POST:
-        form = CallsForm(request.POST, instance=call)
+        form = CallsForm(profile.company, request.POST, instance=call)
         if form.is_valid():            
-            call = form.save(commit=False)
-            #call.save()
-            
-            # Extracts the Deal pk from the twin-id between the two dropdowns
+            call = form.save(commit=False)            
+            # Extracts the Deal pk from the deal template row-id, but it could be that row has been removed 
             deal_dic = {}
             for query, value in form.data.items():
                 if query.startswith('deal_'):
                     deal_dic[query[5:]] = value
             
-            deal_status_updates = {}
-            for query, value in form.data.items():
-                if query.startswith('dealstatus_'):
-                    key = deal_dic[query[11:]]
-                    if(key in deal_status_updates):
-                        deal = profile.company.deal_set.get(pk=key)
-                        custom_validation_errors['deal_' + key] = deal.deal_name + ' has already been selected.'
-                    else:
-                        deal_status_updates[deal_dic[query[11:]]] = value
-#            
-#            deals = form.cleaned_data["deals"]
-#            for deal in deals:                
-#                deal_status = DealStatus.objects.get(pk=deal_status_updates[deal.pk])
-#                conversation_deal, id_created = Conversation_Deal.objects.get_or_create(conversation=call, deal=deal)
-#                conversation_deal.status=deal_status
-#                conversation_deal.save()
-            if not custom_validation_errors:                
-                return HttpResponseRedirect('/contact/' + contact_id + '/calls/')
-    else:
-        form = CallsForm(instance=call, company=profile.company)    
+            deals_to_add = []
+            for row, value in form.data.items():
+                if row.startswith('deal_show_row_'):                    
+                    deals_to_add += deal_dic[row[14:]]
+            
+            for deal_pk in deals_to_add:
+                deal = profile.company.deal_set.get(pk=deal_pk)
+                deal_status = DealStatus.objects.get(pk=1)
+                call.save()
+                conversation_deal = Conversation_Deal.objects.create(conversation=call, deal=deal)
+                conversation_deal.status=deal_status
+                conversation_deal.save()
+            return HttpResponseRedirect('/contact/' + contact_id + '/calls/')
+    else:        
+        form = CallsForm(profile.company, instance=call)    
     variables = RequestContext(request, {'form':form, 'template_title': template_title})
     return render_to_response('conversation.html', variables)
 

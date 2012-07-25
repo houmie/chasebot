@@ -25,6 +25,7 @@ $.ajaxSetup({
 
 $.chasebot = {};
 $.chasebot.deal_id = 0;
+$.chasebot.hidden_deal_ids = [];
 
 
 // function deal_edit_func(e) {
@@ -64,8 +65,54 @@ $.chasebot.deal_id = 0;
   // return false;
 // }
 
+function SortByValue(x, y){   
+  return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+}
 
-function add_deals(e){
+
+
+function add_deals(e){	
+	// $('#id_deal_' + $.chasebot.deal_id).attr({'class':'non_hidden'});
+	// $('#id_status_' + $.chasebot.deal_id).attr({'class':'non_hidden'});
+	// $('#remove_deals_button_' + $.chasebot.deal_id).attr({'class':'btn btn-danger remove_deals_button'});
+	if($.chasebot.hidden_deal_ids.length > 0)
+	{		
+		$('#tr_' + $.chasebot.hidden_deal_ids[0]).attr({'class':''});	
+		$('#id_deal_show_row_' + $.chasebot.hidden_deal_ids[0]).prop("checked", true);
+		$.chasebot.hidden_deal_ids.splice( $.inArray($.chasebot.hidden_deal_ids[0], $.chasebot.hidden_deal_ids), 1 );				
+	}
+	if($.chasebot.hidden_deal_ids.length == 0)	
+		$('#add_deals_button').attr({'class': 'btn btn-success disabled'})
+}
+
+function remove_deal(e){		
+	// $('#id_deal_' + $.chasebot.deal_id).attr({'class':'hidden_cb'});
+	// $('#id_status_' + $.chasebot.deal_id).attr({'class':'hidden_cb'});
+	// $('#remove_deals_button_' + $.chasebot.deal_id).attr({'class':'btn btn-danger remove_deals_button hidden_cb'});
+	// $.chasebot.deal_id--;
+	// for(i=0; i<=1; i++)	{
+		// var t = $(e.target).parent().parent().find('td select')[i];
+		// $(t).attr({'class':'hidden'});	
+	// }
+	if($.chasebot.hidden_deal_ids.length < 5)
+	{
+		var tr = $(e.target).closest('tr');
+		
+		// if($.chasebot.hidden_deal_ids.length == 5)
+			// $(tr).attr({'class':'hidden_cb'});
+		// else
+		$(tr).attr({'class':'hidden'});
+		//$(e.target).attr({'class':'btn btn-danger remove_deals_button hidden'});
+		var id = $(tr).attr('id').substring(3);
+		$('#id_deal_show_row_' + id).prop("checked", false);
+		$.chasebot.hidden_deal_ids.push(id);
+		$.chasebot.hidden_deal_ids.sort(SortByValue);
+		$('#add_deals_button').attr({'class': 'btn btn-success'})
+	}	
+}
+
+
+function add_deals_old(e){
 	
 	var nr_possible_deals = $('#hidden_deals > option').size()
 	var nr_selected_deals = $('#deals tbody > tr').size() - 2;
@@ -131,7 +178,7 @@ function min_deals_reached(){
 		return false;
 }
 
-function remove_deal(e){
+function remove_deal_old(e){
 	$(e.target).parent().parent().remove()
 	$('#add_deals_button').attr({'class': 'btn btn-success'})		
 		
@@ -141,9 +188,19 @@ function remove_deal(e){
 	}
 }
 
-$(document).ready(function () {  
-  // $("#add_deals_button").click(add_deals)
-  // $('.remove_deals_button').click(remove_deal)
+$(document).ready(function () {
+	
+	for(i=1;i<=5;i++)
+	{
+		if($('#id_deal_show_row_' + i).is(':checked')==false)
+		{
+			$.chasebot.hidden_deal_ids.push(i);
+		}		
+	}  
+  	 
+	$("#add_deals_button").click(add_deals)
+	$('.remove_deals_button').click(remove_deal)
+  
   // if(max_deals_reached())
   // {
   	// $('#add_deals_button').attr({'class': 'btn btn-success disabled'})  	
