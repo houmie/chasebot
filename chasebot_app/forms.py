@@ -3,6 +3,8 @@ from django.forms.widgets import TextInput
 from django.utils.formats import get_format
 from django import forms
 import re
+import operator
+import collections
 from django.contrib.auth.models import User
 from django.forms import ModelForm
 from chasebot_app.models import UserProfile, Contact, ContactType, Country, MaritalStatus, Conversation, SalesItem, Deal, SalesTerm,\
@@ -150,26 +152,77 @@ class CallsForm(ModelForm):
         deal_show_row_5 = cleaned_data.get('deal_show_row_5')
         deal_show_row_6 = cleaned_data.get('deal_show_row_6')
         
-        msg = _(u'Please select a deal to add or remove it')
+#        selection = [deal_show_row_1, deal_show_row_2, deal_show_row_3, deal_show_row_4, deal_show_row_5]
+#        c = collections.Counter(selection)
+#        duplicates = [i for i in c if c[i] > 1]
+
+        duplicates = {}
+        
+        
+        if deal_show_row_1:
+            if deal_1:
+                duplicates[deal_1.pk] = duplicates.get(deal_1.pk, 0) + 1
+        if deal_show_row_2:
+            if deal_2:
+                duplicates[deal_2.pk] = duplicates.get(deal_2.pk, 0) + 1
+        if deal_show_row_3:
+            if deal_3:
+                duplicates[deal_3.pk] = duplicates.get(deal_3.pk, 0) + 1
+        if deal_show_row_4:
+            if deal_4:
+                duplicates[deal_4.pk] = duplicates.get(deal_4.pk, 0) + 1
+        if deal_show_row_5:
+            if deal_5:
+                duplicates[deal_5.pk] = duplicates.get(deal_5.pk, 0) + 1
+        if deal_show_row_6:
+            if deal_6:
+                duplicates[deal_6.pk] = duplicates.get(deal_6.pk, 0) + 1      
+        
+        #sorted_duplicates = sorted(duplicates.iteritems(), key=operator.itemgetter(1), reserve=True)
+        
+        msg_required = _(u'Please select a deal to add or remove it')
+        msg_duplication = _(u'This deal has been selected more than once')
         
         if deal_show_row_1:
             if not deal_1:
-                self._errors['deal_1'] = self.error_class([msg])            
+                self._errors['deal_1'] = self.error_class([msg_required])
+            else:
+                if duplicates[deal_1.pk] > 1:
+                    self._errors['deal_1'] = self.error_class([msg_duplication])
+                                                    
         if deal_show_row_2:
             if not deal_2:
-                self._errors['deal_2'] = self.error_class([msg])
+                self._errors['deal_2'] = self.error_class([msg_required])
+            else:
+                if duplicates[deal_2.pk] > 1:
+                    self._errors['deal_2'] = self.error_class([msg_duplication])
         if deal_show_row_3:
             if not deal_3:
-                self._errors['deal_3'] = self.error_class([msg])
+                self._errors['deal_3'] = self.error_class([msg_required])
+            else:
+                if duplicates[deal_3.pk] > 1:
+                    self._errors['deal_3'] = self.error_class([msg_duplication])
+                    
         if deal_show_row_4:
             if not deal_4:
-                self._errors['deal_4'] = self.error_class([msg])
+                self._errors['deal_4'] = self.error_class([msg_required])
+            else:
+                if duplicates[deal_4.pk] > 1:
+                    self._errors['deal_4'] = self.error_class([msg_duplication])
+                    
         if deal_show_row_5:
             if not deal_5:
-                self._errors['deal_5'] = self.error_class([msg])
+                self._errors['deal_5'] = self.error_class([msg_required])
+            else:
+                if duplicates[deal_5.pk] > 1:
+                    self._errors['deal_5'] = self.error_class([msg_duplication])
+                    
         if deal_show_row_6:
             if not deal_6:
-                self._errors['deal_6'] = self.error_class([msg])
+                self._errors['deal_6'] = self.error_class([msg_required])
+            else:
+                if duplicates[deal_6.pk] > 1:
+                    self._errors['deal_6'] = self.error_class([msg_duplication])
         return cleaned_data;
     
     
