@@ -91,7 +91,7 @@ def call_view(request, contact_id, call_id=None):
             deals_to_add = []
             for row, value in form.data.items():
                 if row.startswith('deal_show_row_'):                    
-                    deals_to_add += deal_dic[row[14:]]
+                    deals_to_add.append(deal_dic[row[14:]])
             
             for deal_pk in deals_to_add:
                 deal = profile.company.deal_set.get(pk=deal_pk)

@@ -119,12 +119,12 @@ class CallsForm(ModelForm):
     deal_6      =   forms.ModelChoiceField(required=False, queryset = '')#, widget=forms.Select(attrs={'class':'hidden_cb'}))   
     #status_6    =   forms.ModelChoiceField(required=False, queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))
     
-    deal_show_row_1   = forms.BooleanField(required=False, initial=False)#, widget=forms.CheckboxInput(attrs={'class':'hidden_cb'}))
-    deal_show_row_2   = forms.BooleanField(required=False, initial=False)#, widget=forms.CheckboxInput(attrs={'class':'hidden_cb'}))
-    deal_show_row_3   = forms.BooleanField(required=False, initial=False)#, widget=forms.CheckboxInput(attrs={'class':'hidden_cb'}))
-    deal_show_row_4   = forms.BooleanField(required=False, initial=False)#, widget=forms.CheckboxInput(attrs={'class':'hidden_cb'}))
-    deal_show_row_5   = forms.BooleanField(required=False, initial=False)#, widget=forms.CheckboxInput(attrs={'class':'hidden_cb'}))
-    deal_show_row_6   = forms.BooleanField(required=False, initial=False)#, widget=forms.CheckboxInput(attrs={'class':'hidden_cb'}))
+    deal_show_row_1   = forms.BooleanField(required=False, initial=False)
+    deal_show_row_2   = forms.BooleanField(required=False, initial=False)
+    deal_show_row_3   = forms.BooleanField(required=False, initial=False)
+    deal_show_row_4   = forms.BooleanField(required=False, initial=False)
+    deal_show_row_5   = forms.BooleanField(required=False, initial=False)
+    deal_show_row_6   = forms.BooleanField(required=False, initial=False)
     
     class Meta:
         model = Conversation
@@ -237,13 +237,20 @@ class CallsForm(ModelForm):
         return deals.exclude(pk__in=duplicate_deals_pk)
             
         
+
+class Conversation_DealForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(Conversation_DealForm, self).__init__(*args, **kwargs)
+        
+        class Meta:
+            model = Conversation_Deal
         
 
 class DealForm(ModelForm):
     #status2 = forms.TextInput()
     
     def __init__(self, *args, **kwargs):
-        super(ModelForm, self).__init__(*args, **kwargs)
+        super(DealForm, self).__init__(*args, **kwargs)
 #        instance = getattr(self, 'instance', None)
 #        if instance and instance.pk:
         #self.fields['status'].widget.attrs['readonly'] = True
