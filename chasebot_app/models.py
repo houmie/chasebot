@@ -4,6 +4,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.utils.translation import ugettext as _
+from django_extensions.db.fields import UUIDField, CreationDateTimeField
+
 
 # Create your models here.
 
@@ -101,6 +103,26 @@ class Contact(models.Model):
 
     def __unicode__(self):
         return self.last_name
+    
+    def get_open_deals(self):
+        query =     "SELECT l1.*   \
+                FROM    \
+                  chasebot_app_deal AS l1    \
+                INNER JOIN (    \
+                    SELECT    \
+                        deal_id,    \
+                        MAX(ARRAY[EXTRACT(EPOCH FROM time_stamp),id])    \
+                        AS compound_time_stamp    \
+                    FROM    \
+                        chasebot_app_deal    \
+                    GROUP BY deal_id    \
+                ) AS l2    \
+                ON    \
+                l1.deal_id = l2.deal_id AND    \
+                  EXTRACT(EPOCH FROM l1.time_stamp) = l2.compound_time_stamp[1] AND    \
+                  l1.id = l2.compound_time_stamp[2]    \
+                  WHERE contact_id = %s and l1.deal_id not in (select deal_id from chasebot_app_deal where status_id in (5, 6))"
+        return Deal.objects.raw(query, [self.id])
 
 
 class SalesItem(models.Model):        
@@ -120,36 +142,45 @@ class DealStatus(models.Model):
     def __unicode__(self):
         return self.deal_status
 
-class Conversation_Deal(models.Model):
-    conversation        = models.ForeignKey('Conversation')
-    deal                = models.ForeignKey('Deal')
-    status              = models.ForeignKey(DealStatus, verbose_name=_(u"Deal Status"), null=True, blank=True)
-    
-class Deal(models.Model):    
+class DealType(models.Model):    
     company             = models.ForeignKey(Company)
     deal_name           = models.CharField(_(u"Deal Name"), max_length=40)
     deal_description    = models.TextField(_(u"Deal Description"),     blank=True)
     sales_item          = models.ForeignKey(SalesItem, verbose_name=_(u"Sales Item"))    
     price               = models.DecimalField(_(u"Price"), decimal_places=2, max_digits=12)
     sales_term          = models.ForeignKey(SalesTerm, verbose_name=_(u"Sales Term"))
-    quantity            = models.IntegerField(_(u"Quantity"))
-    #status              = models.ForeignKey(DealStatus, verbose_name=_(u"Deal Status"))
-    #calls               = models.ManyToManyField('Conversation', through=Conversation_Deal, blank=True, null=True)
+    quantity            = models.IntegerField(_(u"Quantity"))    
     
     def __unicode__(self):
-        return self.deal_name #+ " - " + self.status.deal_status
+        return self.deal_name
+
+class Deal(models.Model):
+    deal_id             = UUIDField()
+    status              = models.ForeignKey(DealStatus, verbose_name=_(u"Deal Status"), null=True, blank=True)    
+    contact             = models.ForeignKey(Contact)
+    deal_type           = models.ForeignKey(DealType)    
+    time_stamp          = CreationDateTimeField()
+
+    def __unicode__(self):
+        return self.deal_type.deal_name
+    
+
+class Conversation_Deal(models.Model):    
+    conversation        = models.ForeignKey('Conversation')
+    deal                = models.ForeignKey('Deal')
+
+    def __unicode__(self):
+        return self.conversation.pk + "_" + self.deal.pk 
         
-        
+
 class Conversation(models.Model):
     contact             = models.ForeignKey(Contact)
     creation_date       = models.DateTimeField(auto_now_add = True,         editable=False)
     contact_date        = models.DateField(_(u"Conversation Date"))
     contact_time        = models.TimeField(_(u"Conversation Time"))
     subject             = models.CharField(_(u"Conversation Subject"),      max_length=50)
-    notes               = models.TextField(_(u"Conversation Notes"),        blank=True)
-    #deal                = models.ManyToManyField(Deal, verbose_name=_(u"Deal"),  blank=True, null=True)
-    company             = models.ForeignKey(Company)
-    #status              = models.ForeignKey(DealStatus, verbose_name=_(u"New Deal Status"), blank=True, null=True)
+    notes               = models.TextField(_(u"Conversation Notes"),        blank=True)    
+    company             = models.ForeignKey(Company)    
     deals               = models.ManyToManyField('Deal', through=Conversation_Deal, blank=True, null=True)
         
     class Meta:
@@ -157,4 +188,12 @@ class Conversation(models.Model):
     
     def __unicode__(self):
         return self.subject
+
+    
+    
+    
+
+    
+    
+
     

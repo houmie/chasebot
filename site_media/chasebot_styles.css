@@ -27,3 +27,7 @@ div.field_error li{
 .hidden_cb{
 	visibility: hidden;
 }
+
+.bold_cb{
+	font-weight: bold;
+}

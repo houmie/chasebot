@@ -7,8 +7,9 @@ import operator
 import collections
 from django.contrib.auth.models import User
 from django.forms import ModelForm
-from chasebot_app.models import UserProfile, Contact, ContactType, Country, MaritalStatus, Conversation, SalesItem, Deal, SalesTerm,\
-    DealStatus, Conversation_Deal
+from chasebot_app.models import UserProfile, Contact, ContactType, Country, MaritalStatus, Conversation, SalesItem, DealType, SalesTerm,\
+    DealStatus, Conversation_Deal, Deal
+from django.forms.models import BaseModelFormSet
 from django.utils.translation import ugettext_lazy as _
 
 class RegistrationForm(ModelForm):
@@ -92,31 +93,21 @@ class CallsForm(ModelForm):
     
     def __init__(self, company, *args, **kwargs):
         super(CallsForm, self).__init__(*args, **kwargs)                                        
-        self.fields['deal_1'].queryset = self.get_non_duplicate_deals(self.instance, company)            
-        #self.fields['status_1'].queryset = DealStatus.objects.all()
-        self.fields['deal_2'].queryset = self.get_non_duplicate_deals(self.instance, company)       
-        #self.fields['status_2'].queryset = DealStatus.objects.all()
-        self.fields['deal_3'].queryset = self.get_non_duplicate_deals(self.instance, company)
-        #self.fields['status_3'].queryset = DealStatus.objects.all()
-        self.fields['deal_4'].queryset = self.get_non_duplicate_deals(self.instance, company)
-        #self.fields['status_4'].queryset = DealStatus.objects.all()
-        self.fields['deal_5'].queryset = self.get_non_duplicate_deals(self.instance, company)
-        #self.fields['status_5'].queryset = DealStatus.objects.all()
-        self.fields['deal_6'].queryset = self.get_non_duplicate_deals(self.instance, company)
+        self.fields['deal_1'].queryset = self.get_non_open_deals(self.instance, company)        
+        self.fields['deal_2'].queryset = self.get_non_open_deals(self.instance, company)
+        self.fields['deal_3'].queryset = self.get_non_open_deals(self.instance, company)        
+        self.fields['deal_4'].queryset = self.get_non_open_deals(self.instance, company)        
+        self.fields['deal_5'].queryset = self.get_non_open_deals(self.instance, company)        
+        self.fields['deal_6'].queryset = self.get_non_open_deals(self.instance, company)
         #self.fields['status_6'].queryset = DealStatus.objects.all()
     
         
-    deal_1      =   forms.ModelChoiceField(required=False, queryset = '')#, widget=forms.Select(attrs={'class':'hidden_cb'}))   
-    #status_1    =   forms.ModelChoiceField(required=False, queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'})) 
-    deal_2      =   forms.ModelChoiceField(required=False, queryset = '')#, widget=forms.Select(attrs={'class':'hidden_cb2'}))   
-    #status_2    =   forms.ModelChoiceField(required=False, queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))
-    deal_3      =   forms.ModelChoiceField(required=False, queryset = '')#, widget=forms.Select(attrs={'class':'hidden_cb'}))   
-    #status_3    =   forms.ModelChoiceField(required=False, queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))
-    deal_4      =   forms.ModelChoiceField(required=False, queryset = '')#, widget=forms.Select(attrs={'class':'hidden_cb'}))   
-    #status_4    =   forms.ModelChoiceField(required=False, queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))
-    deal_5      =   forms.ModelChoiceField(required=False, queryset = '')#, widget=forms.Select(attrs={'class':'hidden_cb'}))   
-    #status_5    =   forms.ModelChoiceField(required=False, queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))
-    deal_6      =   forms.ModelChoiceField(required=False, queryset = '')#, widget=forms.Select(attrs={'class':'hidden_cb'}))   
+    deal_1      =   forms.ModelChoiceField(required=False, queryset = '')     
+    deal_2      =   forms.ModelChoiceField(required=False, queryset = '')    
+    deal_3      =   forms.ModelChoiceField(required=False, queryset = '')    
+    deal_4      =   forms.ModelChoiceField(required=False, queryset = '')    
+    deal_5      =   forms.ModelChoiceField(required=False, queryset = '')    
+    deal_6      =   forms.ModelChoiceField(required=False, queryset = '')   
     #status_6    =   forms.ModelChoiceField(required=False, queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))
     
     deal_show_row_1   = forms.BooleanField(required=False, initial=False)
@@ -227,14 +218,21 @@ class CallsForm(ModelForm):
     
     
     
-    def get_non_duplicate_deals(self, company, call):
-        deals = Deal.objects.filter(company=company)
-        duplicate_deals_pk = []
-        for deal in deals:
-            temp = Conversation_Deal.objects.filter(conversation=call, deal=deal)
-            if temp:
-                duplicate_deals_pk.append(temp[0].deal.pk)
-        return deals.exclude(pk__in=duplicate_deals_pk)
+    def get_non_open_deals(self, call, company):
+#        all_deals = Deal.objects.filter(contact=call.contact)            
+#        closed_deals = all_deals.filter(status__in=[5, 6])
+#        closed_deal_list = []
+#        if closed_deals:
+#            for item in closed_deals:
+#                closed_deal_list.append(item.deal_id)        
+#        open_deals = all_deals.exclude(deal_id__in=closed_deal_list)#.latest('time_stamp')
+        open_deals = call.contact.get_open_deals()
+        open_deal_list = []
+        if open_deals:
+            for item in open_deals:
+                open_deal_list.append(item.deal_type.pk)
+        deal_types = DealType.objects.filter(company=company)            
+        return deal_types.exclude(pk__in=open_deal_list)
             
         
 
@@ -246,25 +244,10 @@ class Conversation_DealForm(ModelForm):
             model = Conversation_Deal
         
 
-class DealForm(ModelForm):
-    #status2 = forms.TextInput()
-    
-    def __init__(self, *args, **kwargs):
-        super(DealForm, self).__init__(*args, **kwargs)
-#        instance = getattr(self, 'instance', None)
-#        if instance and instance.pk:
-        #self.fields['status'].widget.attrs['readonly'] = True
-        #self.fields['status2'] = 'Hello'
-        #self.fields['status'].widget = forms.TextInput(attrs={'readonly':'readonly'})
-        
-    
-    def clean_status(self):
-        return self.instance.status
-        
-            
+class DealTypeForm(ModelForm):                
     
     class Meta:
-        model = Deal
+        model = DealType
         exclude = ('company', 'status')
         
         widgets = {
@@ -274,10 +257,33 @@ class DealForm(ModelForm):
                     'price': forms.TextInput(attrs={'placeholder': 'How much is proposed?', 'class': 'placeholder_fix_css'}),                    
 #                    'sales_term': forms.TextInput(attrs={'placeholder': 'Is it fixed or recurring?', 'class': 'placeholder_fix_css'}),
                     'quantity': forms.TextInput(attrs={'placeholder': 'How many items?', 'class': 'placeholder_fix_css'}),
-                    #'status': forms.TextInput(attrs={'placeholder': 'How is the progress?', 'class': 'placeholder_fix_css'}),    
-                              
+                    #'status': forms.TextInput(attrs={'placeholder': 'How is the progress?', 'class': 'placeholder_fix_css'}),                              
                    }
 
+class DealForm(ModelForm):
+    class Meta:
+        model = Deal
+        fields = {'deal_type', 'status'}
+        
+class DealCForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(DealCForm, self).__init__(*args, **kwargs)
+        self.fields['deal_type'].required = False
+        self.fields['deal_type'].widget.attrs['disabled'] = 'disabled'
+    
+    
+    def clean_deal_type(self):
+        instance = getattr(self, 'instance', None)
+        if instance:
+            return instance.deal_type
+        else:            
+            return self.cleaned_data['deal_type']
+    
+    class Meta:
+        model = Deal
+        fields = {'deal_type', 'status'}
+    
+    
 
 class SalesItemForm(ModelForm):
     class Meta:
@@ -302,4 +308,10 @@ class ContactTypeForm(ModelForm):
         model = ContactType
         #exclude = ('company')
 
-
+class BaseDealFormSet(BaseModelFormSet):    
+    deal_type        = forms.CharField(max_length=30, widget=forms.TextInput(  attrs={'readonly': 'True'}))
+    
+    def clean_deal_type(self):
+        return self.instance.deal_type
+   
+  
