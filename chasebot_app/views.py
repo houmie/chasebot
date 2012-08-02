@@ -92,26 +92,34 @@ def call_view(request, contact_id, call_id=None):
         form = CallsForm(profile.company, request.POST, instance=call)           
         if form.is_valid() and formset.is_valid():            
             call = form.save(commit=False)            
-            # Extracts the DealType pk from the deal template row-id, but it could be that row has been removed 
+            # The row number of the five possible deals to add are captured as key, while the value is the actual deal that was selected in that given row. 
             deal_dic = {}
             for formset_query, value in form.data.items():
                 if formset_query.startswith('deal_'):
                     deal_dic[formset_query[5:]] = value
             
+            #Now it needs to check if the row was really meant to be added (in case the delete button was pressed, before submitting)
             deals_to_add = []
             for row, value in form.data.items():
                 if row.startswith('deal_show_row_'):                    
                     deals_to_add.append(deal_dic[row[14:]])
             
-            for deal_pk in deals_to_add:
-                deal_type = profile.company.dealtype_set.get(pk=deal_pk)
-                deal = Deal.objects.create(deal_id=uuid.uuid1(), status=DealStatus.objects.get(pk=1), contact=call.contact, deal_type=deal_type)                
+            if deals_to_add:
                 call.save()
-                Conversation_Deal.objects.create(conversation=call, deal=deal)                
-            deals_in_progress_list = formset.save(commit=False)
-            for dp in deals_in_progress_list:
-                deal = Deal.objects.create(deal_id=dp.deal_id, status=dp.status, contact=call.contact, deal_type=dp.deal_type)
+                for deal_pk in deals_to_add:
+                    deal_type = profile.company.dealtype_set.get(pk=deal_pk)
+                    deal = Deal.objects.create(deal_id=uuid.uuid1(), status=DealStatus.objects.get(pk=1), contact=call.contact, deal_type=deal_type)                    
+                    Conversation_Deal.objects.create(conversation=call, deal=deal)            
+            
+            save_call = False
+            for fm in formset:
+                if len(fm.changed_data) > 1: #This means the status has been changed. As deal_type is always changed due the disabled-widget-workaround
+                    deal_to_add = fm.save(commit=False)
+                    Deal.objects.create(deal_id=deal_to_add.deal_id, status=deal_to_add.status, contact=call.contact, deal_type=deal_to_add.deal_type)
+                    save_call = True
+            if save_call:
                 call.save()
+                            
             return HttpResponseRedirect('/contact/' + contact_id + '/calls/')
         else:
             new_post = request.POST.copy()
@@ -269,6 +277,17 @@ def register_page_view(request):
         form = RegistrationForm()
     variables = RequestContext(request, {'form':form})
     return render_to_response('registration/register.html', variables)
+
+@login_required
+def charts_view(request, contact_id):
+    profile = request.user.get_profile()
+    contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
+    deals = contact.deal_set.all().order_by('deal_id', 'time_stamp')
+    
+    variables = RequestContext(request, {'deals':deals})
+    return render_to_response('charts.html', variables)
+    
+    
 
 @login_required
 def _deal_status_view(request, call_id=None):        

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{{ template_title }}{% endblock %}
+{% block external %}
+	<script type="text/javascript" src="/site_media/jqPlot/jquery.jqplot.min.js"></script>
+	<script type="text/javascript" src="/site_media/jqPlot/plugins/jqplot.pieRenderer.min.js"></script>
+	<link href="/site_media/jqPlot/jquery.jqplot.css" type="text/css" rel="stylesheet">	
+	<script type="text/javascript" src="/site_media/chasebot_charts.js"></script>
+{% endblock %}
+{% block head %}{{ template_title }}{% endblock %}
+{% block content %}
+{% if deals %}
+<table class="table edit_table">
+	<thead>
+		<tr>
+			<td>
+				
+			</td>
+		</tr>
+	</thead>
+	<tbody>		
+		{% for deal in deals %}
+		<tr class="{{forloop.counter0}}">
+			<td>
+				{{deal.deal_type}}
+			</td>
+			<td>
+				{{deal.status}}
+			</td>
+			<td>
+				{{deal.time_stamp}}
+			</td>
+		</tr>
+		
+		{% endfor %}
+	</tbody>
+</table>
+
+<div id="chartdiv" style="height: 300px; width: 500px; position: relative;">
+		
+</div>
+
+{% else %}
+<p>{% trans 'No data recorded yet...'%}</p>
+{% endif %}	
+
+{% endblock %}
