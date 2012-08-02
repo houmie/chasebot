@@ -67,18 +67,24 @@
 	                		<thead>
 	                			<tr>
 				                	<td class="bold_cb">				                		
-		        						{% trans 'Current Deals in Progress' %}		        						
+		        						{{deal_title}}			
 			        				</td>
 				                </tr>
 	                		</thead>
 	                		<tbody>				                
-	                			{% if formset.forms %}
+	                			{% if formset.forms %}	                			
 				                {% for fs in formset %}  
 				                {{ fs.id }} 
 				            	<tr>            		
 				                    <td>										
 										<input type="hidden" name="hidden-{{ fs.prefix }}-deal_type" value="{{fs.deal_type.value}}" />
-										{{fs.deal_type}}
+										{% if formset.non_form_errors %}
+					                	<div class="field field_error">
+					                    	{{fs.deal_type}}                    	
+					                	</div>
+					                	{% else %}
+					                		{{fs.deal_type}}					                		
+					                	{% endif %}
 				                    </td>
 				                    <td>                        
 				                        {% if fs.status.errors %}
@@ -91,6 +97,15 @@
 				                    </td>
 				            	</tr>            	
 			            		{% endfor %}
+			            		{% if formset.non_form_errors %}
+		            			<tr>
+		            				<td>
+		            					<div class="field field_error">
+		            						{{formset.non_form_errors}}
+		            					</div>
+		            				</td>
+		            			</tr>	
+			            		{% endif %}
 			            		{% else %}
 			            		<tr>
                 					<td>

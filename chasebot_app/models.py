@@ -154,42 +154,40 @@ class DealType(models.Model):
     def __unicode__(self):
         return self.deal_name
 
+#class Conversation_Deal(models.Model):    
+#    conversation        = models.ForeignKey('Conversation')
+#    deal                = models.ForeignKey('Deal')
+#
+#    def __unicode__(self):
+#        return self.conversation.pk + "_" + self.deal.pk 
+        
+
+class Conversation(models.Model):
+    contact             = models.ForeignKey(Contact)
+    time_stamp          = CreationDateTimeField()
+    contact_date        = models.DateField(_(u"Conversation Date"))
+    contact_time        = models.TimeField(_(u"Conversation Time"))
+    subject             = models.CharField(_(u"Conversation Subject"),      max_length=50)
+    notes               = models.TextField(_(u"Conversation Notes"),        blank=True)    
+    company             = models.ForeignKey(Company)    
+    #deals               = models.ManyToManyField('Deal', through=Conversation_Deal, blank=True, null=True)
+        
+    class Meta:
+        get_latest_by   = "time_stamp"
+    
+    def __unicode__(self):
+        return self.subject
+
 class Deal(models.Model):
     deal_id             = UUIDField()
     status              = models.ForeignKey(DealStatus, verbose_name=_(u"Deal Status"), null=True, blank=True)    
     contact             = models.ForeignKey(Contact)
     deal_type           = models.ForeignKey(DealType)    
     time_stamp          = CreationDateTimeField()
+    conversation        = models.ForeignKey(Conversation)
 
     def __unicode__(self):
-        return self.deal_type.deal_name
-    
-
-class Conversation_Deal(models.Model):    
-    conversation        = models.ForeignKey('Conversation')
-    deal                = models.ForeignKey('Deal')
-
-    def __unicode__(self):
-        return self.conversation.pk + "_" + self.deal.pk 
-        
-
-class Conversation(models.Model):
-    contact             = models.ForeignKey(Contact)
-    creation_date       = models.DateTimeField(auto_now_add = True,         editable=False)
-    contact_date        = models.DateField(_(u"Conversation Date"))
-    contact_time        = models.TimeField(_(u"Conversation Time"))
-    subject             = models.CharField(_(u"Conversation Subject"),      max_length=50)
-    notes               = models.TextField(_(u"Conversation Notes"),        blank=True)    
-    company             = models.ForeignKey(Company)    
-    deals               = models.ManyToManyField('Deal', through=Conversation_Deal, blank=True, null=True)
-        
-    class Meta:
-        get_latest_by   = "creation_date"
-    
-    def __unicode__(self):
-        return self.subject
-
-    
+        return self.deal_type.deal_name    
     
     
 

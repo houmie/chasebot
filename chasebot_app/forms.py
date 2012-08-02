@@ -1,3 +1,4 @@
+from django.utils.datetime_safe import strftime
 __author__ = 'houman'
 from django.forms.widgets import TextInput
 from django.utils.formats import get_format
@@ -8,7 +9,7 @@ import collections
 from django.contrib.auth.models import User
 from django.forms import ModelForm
 from chasebot_app.models import UserProfile, Contact, ContactType, Country, MaritalStatus, Conversation, SalesItem, DealType, SalesTerm,\
-    DealStatus, Conversation_Deal, Deal
+    DealStatus, Deal
 from django.forms.models import BaseModelFormSet
 from django.utils.translation import ugettext_lazy as _
 
@@ -234,15 +235,6 @@ class CallsForm(ModelForm):
         deal_types = DealType.objects.filter(company=company)            
         return deal_types.exclude(pk__in=open_deal_list)
             
-        
-
-class Conversation_DealForm(ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(Conversation_DealForm, self).__init__(*args, **kwargs)
-        
-        class Meta:
-            model = Conversation_Deal
-        
 
 class DealTypeForm(ModelForm):                
     
@@ -264,6 +256,15 @@ class DealForm(ModelForm):
     class Meta:
         model = Deal
         fields = {'deal_type', 'status'}
+    
+    def clean_status(self):
+        status = self.cleaned_data['status']
+        if status.pk == 5 or status.pk == 6:                
+            #deal = self.save(commit=False)
+            latest_deal = self.instance.contact.deal_set.filter(deal_id = self.instance.deal_id).latest('time_stamp')
+            if self.instance.pk != latest_deal.pk:
+                raise forms.ValidationError(_(u'You cannot set a past deal to Win/Lost, as there is already a "%s" deal status recorded on ' % latest_deal.status)  + str(latest_deal.conversation.contact_date))
+        return status
         
 class DealCForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -309,9 +310,21 @@ class ContactTypeForm(ModelForm):
         #exclude = ('company')
 
 class BaseDealFormSet(BaseModelFormSet):    
-    deal_type        = forms.CharField(max_length=30, widget=forms.TextInput(  attrs={'readonly': 'True'}))
-    
-    def clean_deal_type(self):
-        return self.instance.deal_type
+    def clean(self):
+        if any(self.errors):
+            # Don't bother validating the formset unless each form is valid on its own
+            return
+        deal_types = []
+        for form in self.forms:
+            
+            deal_type = form.cleaned_data['deal_type']
+            if deal_type in deal_types:
+                raise forms.ValidationError(_(u'Please correct the duplicated deal types attached to this conversation.'))
+            deal_types.append(deal_type)
+            
+            
+                
+            
+        
    
   
