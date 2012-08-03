@@ -101,7 +101,7 @@ function remove_deal(e){
 		// if($.chasebot.hidden_deal_ids.length == 5)
 			// $(tr).attr({'class':'hidden_cb'});
 		// else
-		$(tr).attr({'class':'hidden'});
+		$(tr).attr({'class':'hidden_cb'});
 		//$(e.target).attr({'class':'btn btn-danger remove_deals_button hidden'});
 		var id = $(tr).attr('id').substring(3);
 		$('#id_deal_show_row_' + id).prop("checked", false);

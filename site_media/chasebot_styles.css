@@ -31,3 +31,7 @@ div.field_error li{
 .bold_cb{
 	font-weight: bold;
 }
+
+.select_status{
+	width: 120px;
+}

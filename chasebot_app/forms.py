@@ -253,6 +253,10 @@ class DealTypeForm(ModelForm):
                    }
 
 class DealForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(DealForm, self).__init__(*args, **kwargs)            
+        self.fields['status'].widget.attrs['class'] = 'select select_status'
+        
     class Meta:
         model = Deal
         fields = {'deal_type', 'status'}
@@ -267,23 +271,31 @@ class DealForm(ModelForm):
         return status
         
 class DealCForm(ModelForm):
+    attach_deal_conversation  = forms.BooleanField(required=False, initial=False)
+    
     def __init__(self, *args, **kwargs):
         super(DealCForm, self).__init__(*args, **kwargs)
-        self.fields['deal_type'].required = False
-        self.fields['deal_type'].widget.attrs['disabled'] = 'disabled'
+        #self.fields['deal_type'].required = False
+        #self.fields['deal_type'].widget.attrs['disabled'] = 'disabled'    
+        self.fields['deal_instance_name'].widget.attrs['readonly'] = 'True'
+        self.fields['status'].widget.attrs['class'] = 'select select_status'
+#        self.fields['long_desc'].widget.attrs['rows'] = 20
+
     
-    
-    def clean_deal_type(self):
-        instance = getattr(self, 'instance', None)
-        if instance:
-            return instance.deal_type
-        else:            
-            return self.cleaned_data['deal_type']
+#    def clean_deal_type(self):
+#        instance = getattr(self, 'instance', None)
+#        if instance:
+#            return instance.deal_type
+#        else:            
+#            return self.cleaned_data['deal_type']
     
     class Meta:
         model = Deal
-        fields = {'deal_type', 'status'}
-    
+        fields = {'deal_instance_name', 'status', 'attach_deal_conversation'}
+#        widgets = {
+#                    'status': forms.Select(),
+#                                            
+#                   }
     
 
 class SalesItemForm(ModelForm):

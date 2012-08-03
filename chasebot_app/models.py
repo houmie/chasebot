@@ -149,10 +149,10 @@ class DealType(models.Model):
     sales_item          = models.ForeignKey(SalesItem, verbose_name=_(u"Sales Item"))    
     price               = models.DecimalField(_(u"Price"), decimal_places=2, max_digits=12)
     sales_term          = models.ForeignKey(SalesTerm, verbose_name=_(u"Sales Term"))
-    quantity            = models.IntegerField(_(u"Quantity"))    
+    quantity            = models.IntegerField(_(u"Quantity"))        
     
     def __unicode__(self):
-        return self.deal_name
+        return self.deal_name 
 
 #class Conversation_Deal(models.Model):    
 #    conversation        = models.ForeignKey('Conversation')
@@ -179,15 +179,21 @@ class Conversation(models.Model):
         return self.subject
 
 class Deal(models.Model):
+    def __init__(self, *args, **kwargs):
+        super(Deal, self).__init__(*args, **kwargs)      
+        self.deal_instance_name = self.deal_type.deal_name + _(u" - Set No.")  + str(self.set)  
+    
     deal_id             = UUIDField()
     status              = models.ForeignKey(DealStatus, verbose_name=_(u"Deal Status"), null=True, blank=True)    
     contact             = models.ForeignKey(Contact)
-    deal_type           = models.ForeignKey(DealType)    
+    deal_type           = models.ForeignKey(DealType)
+    deal_instance_name  = models.CharField(_("Deal Name"), max_length=100)    
     time_stamp          = CreationDateTimeField()
     conversation        = models.ForeignKey(Conversation)
+    set                 = models.IntegerField(_(u"Set Number"))
 
     def __unicode__(self):
-        return self.deal_type.deal_name    
+        return self.deal_type.deal_name + _(u" - Set No.")  + str(self.set)
     
     
 

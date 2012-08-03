@@ -18,6 +18,7 @@ from django.utils import simplejson
 from django.forms.models import modelformset_factory
 import uuid
 from django.forms.formsets import formset_factory
+from django.db.models.aggregates import Max
 
 
 @login_required
@@ -78,15 +79,21 @@ def call_view_edit(request, contact_id, call_id):
     contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
     
     call = get_object_or_404(contact.conversation_set.all(), pk=call_id)
-    deal_formset = modelformset_factory(Deal,formset=BaseDealFormSet, form=DealForm, extra=0)    
-    formset_query = call.deal_set.all()    
+    deals_formset_factory = modelformset_factory(Deal, form=DealCForm, extra=0)    
+    formset_query = call.deal_set.all()
+    
+    opendeal_formset_factory = modelformset_factory(Deal, form=DealCForm, extra=0)    
+    raw = contact.get_open_deals();
+    opendeal_formset_query = Deal.objects.filter(id__in=[item.id for item in raw]) 
+        
     template_title = _(u'Edit Past Conversation')
     deal_title = _(u'Deals attached to this Conversation')
     
     if request.POST:
-        formset = deal_formset(request.POST, queryset=formset_query)        
+        opendeal_formset = opendeal_formset_factory(request.POST, prefix='opendeals')
+        deal_formset = deals_formset_factory(request.POST, prefix='deals')                
         form = CallsForm(profile.company, request.POST, instance=call)           
-        if form.is_valid() and formset.is_valid():            
+        if form.is_valid() and deal_formset.is_valid():            
             call = form.save()            
             # The row number of the five possible deals to add are captured as key, while the value is the actual deal that was selected in that given row. 
             deal_dic = {}
@@ -99,22 +106,42 @@ def call_view_edit(request, contact_id, call_id):
             for row, value in form.data.items():
                 if row.startswith('deal_show_row_'):
                     deals_to_add.append(deal_dic[row[14:]])
-                        
-            if deals_to_add:
+                    
+            if deals_to_add:                
                 for deal_pk in deals_to_add:
                     deal_type = profile.company.dealtype_set.get(pk=deal_pk)
-                    Deal.objects.create(deal_id=uuid.uuid1(), status=DealStatus.objects.get(pk=1), contact=call.contact, deal_type=deal_type, conversation=call)            
+                    set_dic = contact.deal_set.filter(deal_type_id=deal_type.id).aggregate(Max('set'))
+                    set_val = set_dic.get('set__max', 0)
+                    if not set_val:
+                        set_val = 0                    
+                    Deal.objects.create(deal_id=uuid.uuid1(), status=DealStatus.objects.get(pk=1), contact=call.contact, deal_type=deal_type, conversation=call, set=set_val+1)
             
-            for fm in formset:
-                if len(fm.changed_data) > 0: 
-                    fm.save()            
+            
+            for fm in deal_formset:
+                #if len(fm.changed_data) > 0:
+                if fm.has_changed(): 
+                    fm.save()
+                    
+            for fm in opendeal_formset:                    
+                if fm.has_changed() and fm.cleaned_data['attach_deal_conversation']:
+                    deal_to_add = fm.save(commit=False)                    
+                    Deal.objects.create(deal_id=deal_to_add.deal_id, status=deal_to_add.status, contact=call.contact, deal_type=deal_to_add.deal_type, conversation=call, set=deal_to_add.set)            
                             
             return HttpResponseRedirect('/contact/' + contact_id + '/calls/')        
             
     else:        
         form = CallsForm(profile.company, instance=call)              
-        formset = deal_formset(queryset=formset_query)
-    variables = RequestContext(request, {'form':form, 'formset':formset, 'template_title': template_title, 'deal_title': deal_title})
+        deal_formset = deals_formset_factory(queryset=formset_query, prefix='deals')
+        
+        exclude_opendeals = []
+        for di in formset_query:
+            for od in opendeal_formset_query:
+                if di.deal_id == od.deal_id:
+                    exclude_opendeals.append(od.deal_id)        
+        non_duplicate_query = opendeal_formset_query.exclude(deal_id__in=exclude_opendeals)
+        
+        opendeal_formset = opendeal_formset_factory(queryset=non_duplicate_query, prefix='opendeals')                    
+    variables = RequestContext(request, {'form':form, 'deal_formset':deal_formset, 'opendeal_formset':opendeal_formset, 'template_title': template_title, 'deal_title': deal_title})
     return render_to_response('conversation.html', variables)
 
 
@@ -132,9 +159,9 @@ def call_view(request, contact_id):
     deal_title = _(u'Current Deals in Progress')
         
     if request.POST:        
-        formset = deal_formset(request.POST, queryset=formset_query)        
+        opendeal_formset = deal_formset(request.POST, queryset=formset_query)        
         form = CallsForm(profile.company, request.POST, instance=call)           
-        if form.is_valid() and formset.is_valid():            
+        if form.is_valid() and opendeal_formset.is_valid():            
             call = form.save()            
             # The row number of the five possible deals to add are captured as key, while the value is the actual deal that was selected in that given row. 
             deal_dic = {}
@@ -151,28 +178,33 @@ def call_view(request, contact_id):
             if deals_to_add:                
                 for deal_pk in deals_to_add:
                     deal_type = profile.company.dealtype_set.get(pk=deal_pk)
-                    Deal.objects.create(deal_id=uuid.uuid1(), status=DealStatus.objects.get(pk=1), contact=call.contact, deal_type=deal_type, conversation=call)                    
+                    set_dic = contact.deal_set.filter(deal_type_id=deal_type.id).aggregate(Max('set'))
+                    set_val = set_dic.get('set__max', 0)
+                    if not set_val:
+                        set_val = 0  
+                    Deal.objects.create(deal_id=uuid.uuid1(), status=DealStatus.objects.get(pk=1), contact=call.contact, deal_type=deal_type, conversation=call, set=set_val+1)                    
             
-            for fm in formset:
-                if len(fm.changed_data) > 1: #This means the status has been changed. As deal_type is always changed due the disabled-widget-workaround
+            for fm in opendeal_formset:
+                #if len(fm.changed_data) > 1: #This means the status has been changed. As deal_type is always changed due the disabled-widget-workaround
+                if fm.has_changed() and fm.cleaned_data['attach_deal_conversation']:
                     deal_to_add = fm.save(commit=False)                    
-                    Deal.objects.create(deal_id=deal_to_add.deal_id, status=deal_to_add.status, contact=call.contact, deal_type=deal_to_add.deal_type, conversation=call)                
+                    Deal.objects.create(deal_id=deal_to_add.deal_id, status=deal_to_add.status, contact=call.contact, deal_type=deal_to_add.deal_type, conversation=call, set=deal_to_add.set)                
                             
             return HttpResponseRedirect('/contact/' + contact_id + '/calls/')
-        else:
-            new_post = request.POST.copy()
-            deal_types = dict()
-            for k,v in new_post.items():
-                if k.startswith('hidden'):
-                    deal_types[k[7:]]= v
-            for k,v in deal_types.iteritems():
-                new_post[k] = v
-            formset = deal_formset(new_post, queryset=formset_query)
+#        else:
+#            new_post = request.POST.copy()
+#            deal_types = dict()
+#            for k,v in new_post.items():
+#                if k.startswith('hidden'):
+#                    deal_types[k[7:]]= v
+#            for k,v in deal_types.iteritems():
+#                new_post[k] = v
+#            opendeal_formset = deal_formset(new_post, queryset=formset_query)
             
     else:        
         form = CallsForm(profile.company, instance=call)              
-        formset = deal_formset(queryset=formset_query)
-    variables = RequestContext(request, {'form':form, 'formset':formset, 'template_title': template_title, 'deal_title':deal_title})
+        opendeal_formset = deal_formset(queryset=formset_query)
+    variables = RequestContext(request, {'form':form, 'opendeal_formset':opendeal_formset, 'template_title': template_title, 'deal_title':deal_title})
     return render_to_response('conversation.html', variables)
 
 @login_required
