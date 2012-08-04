@@ -19,6 +19,7 @@ from django.forms.models import modelformset_factory
 import uuid
 from django.forms.formsets import formset_factory
 from django.db.models.aggregates import Max
+import time
 
 
 @login_required
@@ -133,15 +134,17 @@ def call_view_edit(request, contact_id, call_id):
         form = CallsForm(profile.company, instance=call)              
         deal_formset = deals_formset_factory(queryset=formset_query, prefix='deals')
         
+        opendeal_attached = False
         exclude_opendeals = []
         for di in formset_query:
             for od in opendeal_formset_query:
                 if di.deal_id == od.deal_id:
-                    exclude_opendeals.append(od.deal_id)        
+                    exclude_opendeals.append(od.deal_id)
+                    opendeal_attached = True        
         non_duplicate_query = opendeal_formset_query.exclude(deal_id__in=exclude_opendeals)
         
         opendeal_formset = opendeal_formset_factory(queryset=non_duplicate_query, prefix='opendeals')                    
-    variables = RequestContext(request, {'form':form, 'deal_formset':deal_formset, 'opendeal_formset':opendeal_formset, 'template_title': template_title, 'deal_title': deal_title})
+    variables = RequestContext(request, {'form':form, 'deal_formset':deal_formset, 'opendeal_formset':opendeal_formset, 'opendeal_attached':opendeal_attached})
     return render_to_response('conversation.html', variables)
 
 
@@ -353,11 +356,35 @@ def charts_view(request, contact_id):
     profile = request.user.get_profile()
     contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
     deals = contact.deal_set.all().order_by('deal_id', 'time_stamp')
-    
-    variables = RequestContext(request, {'deals':deals})
+    stac = {'EM':0, 'LM':0, 'EA':0, 'LA':0, 'EE':0}
+    for deal in deals:        
+        part = part_of_day_statistics(deal.conversation.contact_time)
+        stac[part] += 1         
+    variables = RequestContext(request, {'deals':deals, 'stac':stac})
     return render_to_response('charts.html', variables)
     
+
+def part_of_day_statistics(x):
+    if x.hour > 6 and x.hour < 9:
+        return 'EM'
+    if x.hour >= 9 and x.hour < 12:
+        return 'LM'
+    if x.hour >= 12 and x.hour < 15:
+        return 'EA'
+    if x.hour >= 15 and x.hour < 18:
+        return 'LA'
+    if x.hour >= 18 and x.hour < 21:
+        return 'EE'
     
+
+
+
+
+def time_of_day_statistics(x):
+    return {
+            
+            
+            }.get(x)    
 
 #@login_required
 #def _deal_status_view(request, call_id=None):        

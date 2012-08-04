@@ -73,9 +73,9 @@
 				                </tr>
 	                		</thead>
 	                		<tbody>				                
-	                			{% if opendeal_formset.forms %}	                			
+                			{% if opendeal_formset.forms %}	                			
 				                {% for fs in opendeal_formset %}  
-				                {{ fs.id }} 
+				                	{{ fs.id }} 
 				            	<tr>
 				            		<td>
 				            			{{fs.attach_deal_conversation}}
@@ -110,13 +110,19 @@
 		            				</td>
 		            			</tr>	
 			            		{% endif %}
-			            		{% else %}
+		            		{% elif opendeal_attached %}
 			            		<tr>
                 					<td>
 										{% trans 'All open deals are already attached to this conversation.' %}                						
                 					</td>
+                				</tr>
+            				{% else %}
+            					<tr>
+                					<td>
+										{% trans 'No new deals are yet negotiated with this client.' %}                						
+                					</td>
                 				</tr>  
-			            		{% endif %}
+		            		{% endif %}
 	                		</tbody>
 	                	</table>
 	                </tr>        	
@@ -127,62 +133,6 @@
 	    		<table id="right_side">
 	    			<tbody>
 	    				<tr>
-		    				{{ deal_formset.management_form }}	                	
-			            	<table class="table edit_table">
-			            		<thead>
-			            			<tr>	                				
-					                	<td class="bold_cb">				                		
-			        						{% trans 'Deals attached to this Conversation:' %}			
-				        				</td>
-					                </tr>
-			            		</thead>
-			            		<tbody>				                
-									{% if deal_formset.forms %}
-					                {% for fs in deal_formset %}  
-					                {{ fs.id }} 
-					            	<tr>
-					            		            		
-					                    <td>										
-											<input type="hidden" name="hidden-{{ fs.prefix }}-deal_type" value="{{fs.deal_type.value}}" />										
-											{% if deal_formset.non_form_errors %}
-						                	<div class="field field_error">
-						                    	{{fs.deal_instance_name}}                    	
-						                	</div>
-						                	{% else %}
-						                		{{fs.deal_instance_name}}					                		
-						                	{% endif %}
-					                    </td>
-					                    <td>                        
-					                        {% if fs.status.errors %}
-						                	<div class="field field_error">
-						                    	{{fs.status}} {{fs.status.errors}}                   	
-						                	</div>
-						                	{% else %}
-						                		{{fs.status}}					                		
-						                	{% endif %}                        
-					                    </td>
-					            	</tr>            	
-				            		{% endfor %}
-				            		{% if deal_formset.non_form_errors %}
-			            			<tr>
-			            				<td>
-			            					<div class="field field_error">
-			            						{{deal_formset.non_form_errors}}
-			            					</div>
-			            				</td>
-			            			</tr>	
-				            		{% endif %}
-				            		{% else %}
-				            		<tr>
-			        					<td>
-											{% trans 'No deals attached yet to this conversation' %}                						
-			        					</td>
-			        				</tr>  
-				            		{% endif %}
-			            		</tbody>
-			            	</table>
-		            	</tr>
-		            	<tr>
 		            		<table class="table edit_table" id="deals">
 					            <thead>
 					            	<tr>
@@ -323,6 +273,63 @@
 					            </tbody>
 					        </table>
 		            	</tr>
+	    				<tr>
+		    				{{ deal_formset.management_form }}	                	
+			            	<table class="table edit_table">
+			            		<thead>
+			            			<tr>	                				
+					                	<td class="bold_cb">				                		
+			        						{% trans 'Deals attached to this Conversation:' %}			
+				        				</td>
+					                </tr>
+			            		</thead>
+			            		<tbody>				                
+								{% if deal_formset.forms %}
+					                {% for fs in deal_formset %}  
+					                	{{ fs.id }} 
+					            	<tr>
+					            		            		
+					                    <td>										
+											<input type="hidden" name="hidden-{{ fs.prefix }}-deal_type" value="{{fs.deal_type.value}}" />										
+											{% if deal_formset.non_form_errors %}
+						                	<div class="field field_error">
+						                    	{{fs.deal_instance_name}}                    	
+						                	</div>
+						                	{% else %}
+						                		{{fs.deal_instance_name}}					                		
+						                	{% endif %}
+					                    </td>
+					                    <td>                        
+					                        {% if fs.status.errors %}
+						                	<div class="field field_error">
+						                    	{{fs.status}} {{fs.status.errors}}                   	
+						                	</div>
+						                	{% else %}
+						                		{{fs.status}}					                		
+						                	{% endif %}                        
+					                    </td>
+					            	</tr>            	
+				            		{% endfor %}
+				            		{% if deal_formset.non_form_errors %}
+			            			<tr>
+			            				<td>
+			            					<div class="field field_error">
+			            						{{deal_formset.non_form_errors}}
+			            					</div>
+			            				</td>
+			            			</tr>	
+				            		{% endif %}
+			            		{% else %}
+				            		<tr>
+			        					<td>
+											{% trans 'No deals attached yet to this conversation' %}                						
+			        					</td>
+			        				</tr>  
+			            		{% endif %}
+			            		</tbody>
+			            	</table>
+		            	</tr>
+		            	
 	    			</tbody>
 	    		</table>	        
 	    	</div>    

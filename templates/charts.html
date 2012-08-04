@@ -13,26 +13,38 @@
 <table class="table edit_table">
 	<thead>
 		<tr>
-			<td>
-				
-			</td>
+			<td class="bold_cb">Deal</td>
+			<td class="bold_cb">Status</td>
+			<td class="bold_cb">Contact Date</td>
+			<td class="bold_cb">Contact Time</td>
+			<td class="bold_cb">Conversation Subject</td>
 		</tr>
 	</thead>
 	<tbody>		
 		{% for deal in deals %}
 		<tr class="{{forloop.counter0}}">
 			<td>
-				{{deal.deal_type}}
+				{{deal.deal_type}} - Set No. {{deal.set}}
 			</td>
 			<td>
 				{{deal.status}}
 			</td>
 			<td>
-				{{deal.time_stamp}}
+				{{deal.conversation.contact_date}}
 			</td>
-		</tr>
-		
+			<td class="call_time">
+				{{deal.conversation.contact_time}}
+			</td>
+			<td>
+				{{deal.conversation}}
+			</td>			
+		</tr>		
 		{% endfor %}
+		<div id="stac" class="hidden">
+			{% for k,v in stac.items %}
+			<div id={{k}}>{{v}}</div>
+			{% endfor %}
+		</div>
 	</tbody>
 </table>
 
