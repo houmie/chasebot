@@ -9,6 +9,8 @@
 {% endblock %}
 {% block head %}{{ template_title }}{% endblock %}
 {% block content %}
+<h2>{% trans 'Historical Charts with' %} {{contact.first_name}} {{contact.last_name}}</h2>
+<h3 class="h3_padded">{% trans 'Best Time Of The Day For A Successful Sales Conversation' %}</h3>
 {% if deals %}
 <table class="table edit_table">
 	<thead>

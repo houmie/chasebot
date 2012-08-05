@@ -188,6 +188,10 @@ function remove_deal_old(e){
 	}
 }
 
+function attach_open_deal(e){
+	$('.select_status').closest('tr').find('input:checkbox').attr('checked', true);
+}
+
 $(document).ready(function () {
 	
 	for(i=1;i<=5;i++)
@@ -201,6 +205,8 @@ $(document).ready(function () {
 	$("#add_deals_button").click(add_deals)
 	$('.remove_deals_button').click(remove_deal)
   
+  	$('.select_status').change(attach_open_deal)
+  	
   // if(max_deals_reached())
   // {
   	// $('#add_deals_button').attr({'class': 'btn btn-success disabled'})  	

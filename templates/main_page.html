@@ -12,7 +12,9 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th><a class="contact" href="/contact/add" data-form="" title="{% trans 'New Contact' %}"><button class="btn btn-success"><i class="icon-plus"></i><i class="icon-user"></i></button></a></th>
+                    <th><a class="contact" href="/contact/add" data-form="" title="{% trans 'New Contact' %}"><button class="btn btn-success"><i class="icon-plus"></i><i class="icon-user"></i></button></a>
+                    	<a href="/deals" title="{% trans 'Deals' %}"><button class="btn btn-success"><i class="icon-tags"> </i></button></a>
+                    </th>
                     <th>{% trans 'Last Name' %}</th>
                     <th>{% trans 'First Name' %}</th>
                     <th>{% trans 'Dear' %}</th>
@@ -21,7 +23,6 @@
                     <th>{% trans 'Work Phone' %}</th>
                     <th>{% trans 'Cell Phone' %}</th>
                     <th>{% trans 'Conversations' %}</th>
-                    <th>{% trans 'Deals' %}</th>
                     <th>{% trans 'Charts' %}</th>
                     <th>{% trans 'Important Client' %}</th>
                 </tr>
@@ -40,10 +41,9 @@
                     <td>{{ item.email }}</td>
                     <td>{{ item.work_phone }}</td>
                     <td>{{ item.mobile_phone }}</td>
-                    <td><a href="/contact/{{ item.id }}/calls" title="{% trans 'Conversations' %}"><button class="btn btn-success"><i class="icon-comment"></i></button></a></td>
-                    <td><a href="/deals" title="{% trans 'Deals' %}"><button class="btn btn-success"><i class="icon-tags"> </i></button></a></td>
+                    <td><a href="/contact/{{ item.id }}/calls" title="{% trans 'Conversations' %}"><button class="btn btn-success"><i class="icon-comment"></i></button></a></td>                    
                     <td><a href="/charts/contact/{{ item.id }}" title="{% trans 'Charts' %}"><button class="btn btn-success"><i class="icon-road"> </i></button></a></td>
-                    <td></td>
+                    <td class="center_cb"><input type="checkbox"/></td>
                 </tr>
                 {% endfor %}
             </tbody>

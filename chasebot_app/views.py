@@ -94,7 +94,7 @@ def call_view_edit(request, contact_id, call_id):
         opendeal_formset = opendeal_formset_factory(request.POST, prefix='opendeals')
         deal_formset = deals_formset_factory(request.POST, prefix='deals')                
         form = CallsForm(profile.company, request.POST, instance=call)           
-        if form.is_valid() and deal_formset.is_valid():            
+        if form.is_valid() and deal_formset.is_valid() and opendeal_formset.is_valid():            
             call = form.save()            
             # The row number of the five possible deals to add are captured as key, while the value is the actual deal that was selected in that given row. 
             deal_dic = {}
@@ -359,8 +359,8 @@ def charts_view(request, contact_id):
     stac = {'EM':0, 'LM':0, 'EA':0, 'LA':0, 'EE':0}
     for deal in deals:        
         part = part_of_day_statistics(deal.conversation.contact_time)
-        stac[part] += 1         
-    variables = RequestContext(request, {'deals':deals, 'stac':stac})
+        stac[part] += 1                 
+    variables = RequestContext(request, {'deals':deals, 'stac':stac, 'contact':contact})
     return render_to_response('charts.html', variables)
     
 

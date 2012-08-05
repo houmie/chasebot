@@ -35,3 +35,14 @@ div.field_error li{
 .select_status{
 	width: 120px;
 }
+
+.h3_padded{
+	padding: 10px 0px 5px 0px;
+}
+
+td.center_cb{	
+	text-align: center; /* center checkbox horizontally */
+    vertical-align: middle; /* center checkbox vertically */
+}
+
+
