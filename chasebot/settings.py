@@ -11,6 +11,7 @@ EMAIL_HOST_USER = 'info@chasebot.com'
 EMAIL_HOST_PASSWORD = 'Rahil2503'
 EMAIL_USE_TLS = True
 SERVER_EMAIL = 'houmie@gmail.com'
+EMAIL_SUBJECT_PREFIX = '[Chasebot]'
 
 AUTH_PROFILE_MODULE = 'chasebot_app.UserProfile'
 
