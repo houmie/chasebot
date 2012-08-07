@@ -14,8 +14,15 @@ framework.
 
 """
 import os
+import sys
+
+#Production Settings
+#sys.path.append('/venuscloud/chasebot')
+#sys.path.append('/venuscloud/chasebot/chasebot')
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "chasebot.settings")
+
+
 
 # This application object is used by any WSGI server configured to use this
 # file. This includes Django's development server, if the WSGI_APPLICATION
