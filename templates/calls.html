@@ -8,7 +8,8 @@
 	<table class="table">
                 <thead>
                     <tr>
-                        <th><a class="contact" href="/contact/{{ contact.id }}/call/add" data-form="" title="{% trans 'New Conversation' %}"><button class="btn btn-success"><i class="icon-plus"> </i><i class="icon-comment"> </i></button></a></th>
+                        <th><a class="contact" href="/" data-form="" title="{% trans 'Back to Main Screen' %}"><button class="btn btn-success"><i class="icon-arrow-left"></i></button></a>
+                        	<a class="contact" href="/contact/{{ contact.id }}/call/add" data-form="" title="{% trans 'New Conversation' %}"><button class="btn btn-success"><i class="icon-plus"> </i><i class="icon-comment"> </i></button></a></th>
                         <th>{% trans 'Date' %}</th>
                         <th>{% trans 'Time' %}</th>
                         <th>{% trans 'Subject' %}</th>
