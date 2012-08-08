@@ -273,8 +273,7 @@ def deal_template_display_view(request):
 def deal_template_view(request, deal_id=None):
     profile = request.user.get_profile()
     if deal_id is None:
-        deal = DealType(company=profile.company)
-        deal.status = DealStatus.objects.get(id=1)
+        deal = DealType(company=profile.company)        
         template_title = _(u'Add a new deal')
     else:
         deal = get_object_or_404(profile.company.dealtype_set.all(), pk=deal_id)

@@ -236,7 +236,10 @@ class CallsForm(ModelForm):
         return deal_types.exclude(pk__in=open_deal_list)
             
 
-class DealTypeForm(ModelForm):                
+class DealTypeForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(DealTypeForm, self).__init__(*args, **kwargs)
+        self.fields['sales_item'].queryset = SalesItem.objects.filter(company=self.instance.company)                
     
     class Meta:
         model = DealType
