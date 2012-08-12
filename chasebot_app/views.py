@@ -5,7 +5,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404, render
 from django.template.context import RequestContext
 from chasebot_app.forms import RegistrationForm, ContactsForm, ContactTypeForm, MaritalStatusForm, CountryForm, CallsForm, SalesItemForm, DealTypeForm,\
     DealForm, BaseDealFormSet, DealCForm
@@ -27,9 +27,8 @@ def main_page_view(request):
     profile = request.user.get_profile()
     company_name = profile.company.company_name
     contacts= profile.company.contact_set.all().order_by('last_name')[:10]    
-    vars = {'company_name': company_name, 'contacts' : contacts}
-    variables = RequestContext(request, vars)
-    return render_to_response('main_page.html', variables)
+    variables = {'company_name': company_name, 'contacts' : contacts}    
+    return render(request, 'main_page.html', variables)
 
 @login_required
 def contact_view(request, contact_id=None):
@@ -40,19 +39,15 @@ def contact_view(request, contact_id=None):
     else:
         contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
         template_title = _(u'Edit Contact')
-    if request.POST:
+    if request.method == 'POST':
         form = ContactsForm(profile.company, request.POST, instance=contact)
         if form.is_valid():
             contact = form.save()
             return HttpResponseRedirect('/')
     else:
         form = ContactsForm(instance=contact, company=profile.company)
-    variables = RequestContext(request, {'form':form, 'template_title': template_title, 'contact_id' : contact_id})
-#    return render_to_response("contact.html", variables)
-#    if request.GET.has_key('ajax'):
-    #return render_to_response('contact_modal.html', variables)
-#   else:
-    return render_to_response('contact.html', variables)
+    variables = {'form':form, 'template_title': template_title, 'contact_id' : contact_id}
+    return render(request, 'contact.html', variables)
 
 @login_required
 def delete_contact_view(request, contact_id):
@@ -70,8 +65,8 @@ def call_display_view(request, contact_id):
     profile = request.user.get_profile()
     contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
     calls = contact.conversation_set.all().order_by('-time_stamp')
-    variables = RequestContext(request, {'calls': calls, 'contact': contact})
-    return render_to_response('calls.html', variables)
+    variables = {'calls': calls, 'contact': contact}
+    return render(request, 'calls.html', variables)
 
 
 @login_required
@@ -90,7 +85,7 @@ def call_view_edit(request, contact_id, call_id):
     template_title = _(u'Edit Past Conversation')
     deal_title = _(u'Deals attached to this Conversation')
     
-    if request.POST:
+    if request.method == 'POST':
         opendeal_formset = opendeal_formset_factory(request.POST, prefix='opendeals')
         deal_formset = deals_formset_factory(request.POST, prefix='deals')                
         form = CallsForm(profile.company, request.POST, instance=call)           
@@ -144,8 +139,8 @@ def call_view_edit(request, contact_id, call_id):
         non_duplicate_query = opendeal_formset_query.exclude(deal_id__in=exclude_opendeals)
         
         opendeal_formset = opendeal_formset_factory(queryset=non_duplicate_query, prefix='opendeals')                    
-    variables = RequestContext(request, {'form':form, 'deal_formset':deal_formset, 'opendeal_formset':opendeal_formset, 'opendeal_attached':opendeal_attached})
-    return render_to_response('conversation.html', variables)
+    variables = {'form':form, 'deal_formset':deal_formset, 'opendeal_formset':opendeal_formset, 'opendeal_attached':opendeal_attached}
+    return render(request, 'conversation.html', variables)
 
 
 
@@ -157,11 +152,11 @@ def call_view(request, contact_id):
     raw = contact.get_open_deals();
     formset_query = Deal.objects.filter(id__in=[item.id for item in raw])    
     
-    call = Conversation(company=profile.company, contact=contact, contact_date = datetime.datetime.now(), contact_time = datetime.datetime.now().strftime("%H:%M"))        
+    call = Conversation(contact=contact, contact_date = datetime.datetime.now(), contact_time = datetime.datetime.now().strftime("%H:%M"))        
     template_title = _(u'Add New Conversation')
     deal_title = _(u'Current Deals in Progress')
         
-    if request.POST:        
+    if request.method == 'POST':        
         opendeal_formset = deal_formset(request.POST, queryset=formset_query)        
         form = CallsForm(profile.company, request.POST, instance=call)           
         if form.is_valid() and opendeal_formset.is_valid():            
@@ -207,8 +202,8 @@ def call_view(request, contact_id):
     else:        
         form = CallsForm(profile.company, instance=call)              
         opendeal_formset = deal_formset(queryset=formset_query)
-    variables = RequestContext(request, {'form':form, 'opendeal_formset':opendeal_formset, 'template_title': template_title, 'deal_title':deal_title})
-    return render_to_response('conversation.html', variables)
+    variables = {'form':form, 'opendeal_formset':opendeal_formset, 'template_title': template_title, 'deal_title':deal_title}
+    return render(request, 'conversation.html', variables)
 
 @login_required
 def delete_call_view(request, contact_id, call_id):
@@ -228,8 +223,8 @@ def delete_call_view(request, contact_id, call_id):
 def sales_item_display_view(request):
     profile = request.user.get_profile()
     sales_items = profile.company.salesitem_set.all()
-    variables = RequestContext(request, {'sales_items': sales_items})
-    return render_to_response('sales_items.html', variables)
+    variables = {'sales_items': sales_items}
+    return render(request, 'sales_items.html', variables)
 
 @login_required
 def sales_item_view(request, sales_item_id=None):
@@ -240,15 +235,15 @@ def sales_item_view(request, sales_item_id=None):
     else:
         sales_item = get_object_or_404(profile.company.salesitem_set.all(), pk=sales_item_id)
         template_title = _(u'Edit Sales Item')
-    if request.POST:
+    if request.method == 'POST':
         form = SalesItemForm(request.POST, instance=sales_item)
         if form.is_valid():
             sales_item = form.save()
             return HttpResponseRedirect('/sales_items')
     else:
         form = SalesItemForm(instance=sales_item)
-    variables = RequestContext(request, {'form':form, 'template_title': template_title})
-    return render_to_response('sales_item.html', variables)
+    variables = {'form':form, 'template_title': template_title}
+    return render(request, 'sales_item.html', variables)
 
 @login_required
 def delete_sales_item_view(request, sales_item_id=None):
@@ -266,8 +261,8 @@ def delete_sales_item_view(request, sales_item_id=None):
 def deal_template_display_view(request):
     profile = request.user.get_profile()
     deals = profile.company.dealtype_set.all()
-    variables = RequestContext(request, {'deals': deals})
-    return render_to_response('deals.html', variables)
+    variables = {'deals': deals}
+    return render(request, 'deals.html', variables)
 
 @login_required
 def deal_template_view(request, deal_id=None):
@@ -278,15 +273,15 @@ def deal_template_view(request, deal_id=None):
     else:
         deal = get_object_or_404(profile.company.dealtype_set.all(), pk=deal_id)
         template_title = _(u'Edit deal')
-    if request.POST:
+    if request.method == 'POST':
         form = DealTypeForm(request.POST, instance=deal)
         if form.is_valid():
             deal = form.save()
             return HttpResponseRedirect('/deals')
     else:
         form = DealTypeForm(instance=deal)
-    variables = RequestContext(request, {'form':form, 'template_title': template_title})
-    return render_to_response('deal.html', variables)
+    variables = {'form':form, 'template_title': template_title}
+    return render(request, 'deal.html', variables)
 
 @login_required
 def delete_template_deal_view(request, deal_id=None):
@@ -347,8 +342,8 @@ def register_page_view(request):
             return HttpResponseRedirect('/register/success/')
     else:
         form = RegistrationForm()
-    variables = RequestContext(request, {'form':form})
-    return render_to_response('registration/register.html', variables)
+    variables = {'form':form}
+    return render(request, 'registration/register.html', variables)
 
 @login_required
 def charts_view(request, contact_id):
@@ -359,8 +354,8 @@ def charts_view(request, contact_id):
     for deal in deals:        
         part = part_of_day_statistics(deal.conversation.contact_time)
         stac[part] += 1                 
-    variables = RequestContext(request, {'deals':deals, 'stac':stac, 'contact':contact})
-    return render_to_response('charts.html', variables)
+    variables = {'deals':deals, 'stac':stac, 'contact':contact}
+    return render(request, 'charts.html', variables)
     
 
 def part_of_day_statistics(x):

@@ -23,45 +23,28 @@ class UserProfile(models.Model):
     def __unicode__(self):
         return u'%s, %s' % (self.user.username, self.company.company_name)
 
-    #def create_user_profile(sender, instance, created, **kwargs):
-    #    if created:
-    #        UserProfile.objects.create(user=instance)
-
-    #post_save.connect(create_user_profile, sender=User)
-
-#    def save(self, *args, **kwargs):
-#
-#        if not self.company_code:
-#            self.company_code = uuid.uuid1()
-#
-#        super(Company, self).save(*args, **kwargs)
-
 
 class ContactType(models.Model):
-    contact_type = models.CharField(_(u"Contact Type"), max_length=30)
-    #company      = models.ForeignKey(Company)
+    contact_type = models.CharField(_(u"Contact Type"), max_length=30)    
     def __unicode__(self):
         return self.contact_type
 
 
 class MaritalStatus(models.Model):
-    martial_status_type = models.CharField(_(u"Marital Status"), max_length=30)
-    #company             = models.ForeignKey(Company)
+    martial_status_type = models.CharField(_(u"Marital Status"), max_length=30)    
     def __unicode__(self):
         return self.martial_status_type
 
 
 class Country(models.Model):
     country_code = models.CharField(_(u"Country Code"), max_length=2)
-    country_name = models.CharField(_(u"Country"), max_length=50)
-    #company      = models.ForeignKey(Company)
+    country_name = models.CharField(_(u"Country"), max_length=50)    
     def __unicode__(self):
         return self.country_name
 
 
 class Gender(models.Model):
-    gender       = models.CharField(_(u"Sex"), max_length=10)
-    #company      = models.ForeignKey(Company)
+    gender       = models.CharField(_(u"Sex"), max_length=10)    
     def __unicode__(self):
         return self.gender
 
@@ -97,9 +80,7 @@ class Contact(models.Model):
     spouses_interests   = models.TextField(_(u"Spouse's Interests"),     blank=True)
     children_names      = models.CharField(_(u"Children Names"),         max_length=75, blank=True)
     home_town           = models.CharField(_(u"Home Town"),              max_length=30, blank=True)
-    company             = models.ForeignKey(Company)
-    
-    #call = models.ManyToOneRel
+    company             = models.ForeignKey(Company)    
 
     def __unicode__(self):
         return self.last_name
@@ -131,8 +112,7 @@ class SalesItem(models.Model):
     def __unicode__(self):
         return self.item_description
 
-class SalesTerm(models.Model):
-    #company             = models.ForeignKey(Company)
+class SalesTerm(models.Model):    
     sales_term          = models.CharField(_(u"Sales Term"), max_length=40)
     def __unicode__(self):
         return self.sales_term
@@ -154,13 +134,6 @@ class DealType(models.Model):
     def __unicode__(self):
         return self.deal_name 
 
-#class Conversation_Deal(models.Model):    
-#    conversation        = models.ForeignKey('Conversation')
-#    deal                = models.ForeignKey('Deal')
-#
-#    def __unicode__(self):
-#        return self.conversation.pk + "_" + self.deal.pk 
-        
 
 class Conversation(models.Model):
     contact             = models.ForeignKey(Contact)
@@ -168,10 +141,8 @@ class Conversation(models.Model):
     contact_date        = models.DateField(_(u"Conversation Date"))
     contact_time        = models.TimeField(_(u"Conversation Time"))
     subject             = models.CharField(_(u"Conversation Subject"),      max_length=50)
-    notes               = models.TextField(_(u"Conversation Notes"),        blank=True)    
-    company             = models.ForeignKey(Company)    
-    #deals               = models.ManyToManyField('Deal', through=Conversation_Deal, blank=True, null=True)
-        
+    notes               = models.TextField(_(u"Conversation Notes"),        blank=True)   
+            
     class Meta:
         get_latest_by   = "time_stamp"
     

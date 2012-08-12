@@ -22,6 +22,8 @@ ADMINS = (
      ('Houman', 'houman@venuscloud.com'),
 )
 
+TEST_NAME = 'testdb_'
+
 MANAGERS = ADMINS
 
 DATABASES = {
