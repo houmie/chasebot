@@ -1,4 +1,5 @@
 from django.utils.datetime_safe import strftime
+from django.contrib.localflavor.generic.forms import DateField
 __author__ = 'houman'
 from django.forms.widgets import TextInput
 from django.utils.formats import get_format
@@ -74,7 +75,7 @@ class ContactsForm(ModelForm):
                 'mobile_phone': forms.TextInput(attrs={'placeholder': 'Add a cell phone',               'class': 'placeholder_fix_css'}),
                 'fax_number': forms.TextInput(  attrs={'placeholder': 'Add a fax number',               'class': 'placeholder_fix_css'}),
                 'email': forms.TextInput(       attrs={'placeholder': 'Add an email',                   'class': 'placeholder_fix_css'}),
-                'birth_date': forms.DateInput(  attrs={'placeholder': 'Add the day of birth', 'id': 'datepicker', 'class': 'placeholder_fix_css'}, format='%d/%m/%Y'),
+                'birth_date': forms.DateInput(  attrs={'placeholder': 'Add the day of birth', 'id': 'datepicker', 'class': 'placeholder_fix_css'}),
                 'referred_by': forms.TextInput( attrs={'placeholder': '...was referred by?', 'class': 'placeholder_fix_css'}),
                 'spouse_first_name': forms.TextInput(attrs={'placeholder': 'What is the spouse\'s name?', 'class': 'placeholder_fix_css'}),
                 'children_names': forms.TextInput(attrs={'placeholder': 'What are the children names?', 'class': 'placeholder_fix_css'}),
@@ -91,7 +92,11 @@ class ContactsForm(ModelForm):
 
 class CallsForm(ModelForm):       
 #    status_1    =   forms.ModelChoiceField()
-    
+# contact_date = DateField(localize=True, widget=forms.DateInput(attrs={'placeholder': 'Add the date...', 'id': 'datepicker', 'class': 'placeholder_fix_css'}))    
+    #contact_date = DateField(localize=True, widget=forms.DateInput(attrs={'placeholder': 'Add the date...', 'id': 'datepicker', 'class': 'placeholder_fix_css'}))    
+    def contact_date_callback(self, field, **kwargs) :
+        return field.contact_date(localize=True, **kwargs)
+       
     def __init__(self, company, *args, **kwargs):
         super(CallsForm, self).__init__(*args, **kwargs)                                        
         self.fields['deal_1'].queryset = self.get_non_open_deals(self.instance, company)        
@@ -100,6 +105,7 @@ class CallsForm(ModelForm):
         self.fields['deal_4'].queryset = self.get_non_open_deals(self.instance, company)        
         self.fields['deal_5'].queryset = self.get_non_open_deals(self.instance, company)        
         self.fields['deal_6'].queryset = self.get_non_open_deals(self.instance, company)
+        
         #self.fields['status_6'].queryset = DealStatus.objects.all()
     
         
@@ -122,8 +128,8 @@ class CallsForm(ModelForm):
         model = Conversation
         exclude = ('company', 'contact')
         widgets = {
-                    'contact_date': forms.DateInput(attrs={'placeholder': 'Add the date...', 'id': 'datepicker', 'class': 'placeholder_fix_css'}, format='%m/%d/%Y'),
-                    'contact_time': forms.TimeInput(attrs={'placeholder': 'Add the time...',                     'class': 'placeholder_fix_css'}),
+                    'contact_date': forms.DateInput(  attrs={'placeholder': 'Add the date for this conversation', 'id': 'datepicker', 'class': 'placeholder_fix_css'}),
+                    'contact_time': forms.TimeInput(attrs={'placeholder': 'Add the time for this conversation', 'class': 'placeholder_fix_css'}),
                     'subject': forms.TextInput(attrs={'placeholder': '',                                         'class': 'placeholder_fix_css'}),
                     'notes': forms.Textarea(attrs={'placeholder': 'Add relevant notes...'}),                                      
                    }

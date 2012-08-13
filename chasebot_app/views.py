@@ -84,6 +84,7 @@ def call_view_edit(request, contact_id, call_id):
         
     template_title = _(u'Edit Past Conversation')
     deal_title = _(u'Deals attached to this Conversation')
+    opendeal_attached = False
     
     if request.method == 'POST':
         opendeal_formset = opendeal_formset_factory(request.POST, prefix='opendeals')
@@ -127,9 +128,7 @@ def call_view_edit(request, contact_id, call_id):
             
     else:        
         form = CallsForm(profile.company, instance=call)              
-        deal_formset = deals_formset_factory(queryset=formset_query, prefix='deals')
-        
-        opendeal_attached = False
+        deal_formset = deals_formset_factory(queryset=formset_query, prefix='deals')        
         exclude_opendeals = []
         for di in formset_query:
             for od in opendeal_formset_query:
@@ -152,7 +151,7 @@ def call_view(request, contact_id):
     raw = contact.get_open_deals();
     formset_query = Deal.objects.filter(id__in=[item.id for item in raw])    
     
-    call = Conversation(contact=contact, contact_date = datetime.datetime.now(), contact_time = datetime.datetime.now().strftime("%H:%M"))        
+    call = Conversation(contact=contact, contact_date = datetime.datetime.now(), contact_time = datetime.datetime.now())        
     template_title = _(u'Add New Conversation')
     deal_title = _(u'Current Deals in Progress')
         
