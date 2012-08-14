@@ -1,6 +1,7 @@
 # Django settings for Chasebot project.
 import os
 
+
 LOGIN_URL = '/login/'
 
 SITE_HOST = '127.0.0.1:8000'
@@ -52,8 +53,18 @@ TIME_ZONE = 'Europe/London'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
-#LANGUAGE_CODE = 'en-gb'
+#LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en-gb'
+
+ugettext = lambda s: s
+
+LANGUAGES = (
+    ('en', ugettext('US English')),
+    ('en-gb', ugettext('British English')),
+)
+
+
+
 
 SITE_ID = 1
 
@@ -116,7 +127,7 @@ TEMPLATE_LOADERS = (
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    #'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',    

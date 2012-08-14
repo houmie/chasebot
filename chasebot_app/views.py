@@ -23,11 +23,20 @@ import time
 
 
 @login_required
+def display_current_language(request):
+    if request.LANGUAGE_CODE == 'en-gb':
+        lang = "You prefer to read British English."
+    else:
+        lang = "You prefer to read American English."
+    return lang
+
+@login_required
 def main_page_view(request):
     profile = request.user.get_profile()
     company_name = profile.company.company_name
     contacts= profile.company.contact_set.all().order_by('last_name')[:10]    
-    variables = {'company_name': company_name, 'contacts' : contacts}    
+    lang = display_current_language(request)
+    variables = {'company_name': company_name, 'contacts' : contacts, 'lang': lang}    
     return render(request, 'main_page.html', variables)
 
 @login_required
@@ -65,7 +74,8 @@ def call_display_view(request, contact_id):
     profile = request.user.get_profile()
     contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
     calls = contact.conversation_set.all().order_by('-time_stamp')
-    variables = {'calls': calls, 'contact': contact}
+    lang = display_current_language(request)
+    variables = {'calls': calls, 'contact': contact, 'lang':lang}
     return render(request, 'calls.html', variables)
 
 
@@ -137,8 +147,10 @@ def call_view_edit(request, contact_id, call_id):
                     opendeal_attached = True        
         non_duplicate_query = opendeal_formset_query.exclude(deal_id__in=exclude_opendeals)
         
-        opendeal_formset = opendeal_formset_factory(queryset=non_duplicate_query, prefix='opendeals')                    
-    variables = {'form':form, 'deal_formset':deal_formset, 'opendeal_formset':opendeal_formset, 'opendeal_attached':opendeal_attached}
+        opendeal_formset = opendeal_formset_factory(queryset=non_duplicate_query, prefix='opendeals')
+                            
+    lang = display_current_language(request)
+    variables = {'form':form, 'deal_formset':deal_formset, 'opendeal_formset':opendeal_formset, 'opendeal_attached':opendeal_attached, 'lang':lang}
     return render(request, 'conversation.html', variables)
 
 
@@ -201,7 +213,14 @@ def call_view(request, contact_id):
     else:        
         form = CallsForm(profile.company, instance=call)              
         opendeal_formset = deal_formset(queryset=formset_query)
-    variables = {'form':form, 'opendeal_formset':opendeal_formset, 'template_title': template_title, 'deal_title':deal_title}
+    culture = request.environ['HTTP_ACCEPT_LANGUAGE'].split(',')[0]
+    if culture == 'en-US':
+        locale = 'mm/dd/yyyy'
+    else:
+        locale = 'dd/mm/yyyy'
+    
+    lang = display_current_language(request)    
+    variables = {'form':form, 'opendeal_formset':opendeal_formset, 'template_title': template_title, 'deal_title':deal_title, 'locale' : locale, 'lang':lang}
     return render(request, 'conversation.html', variables)
 
 @login_required

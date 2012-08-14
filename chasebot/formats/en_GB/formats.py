@@ -2,7 +2,7 @@
 # The *_FORMAT strings use the Django date format syntax,
 # see http://docs.djangoproject.com/en/dev/ref/templates/builtins/#date
 DATE_FORMAT = 'j M Y'                   # '25 Oct 2006'
-TIME_FORMAT = 'P'                       # '2:30 pm'
+TIME_FORMAT = 'G:i'                       # '2:30 pm'
 DATETIME_FORMAT = 'j M Y, P'            # '25 Oct 2006, 2:30 pm'
 YEAR_MONTH_FORMAT = 'F Y'               # 'October 2006'
 MONTH_DAY_FORMAT = 'j F'                # '25 October'

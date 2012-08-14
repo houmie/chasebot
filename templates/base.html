@@ -65,18 +65,51 @@
     </p>
 </div> <!-- /container -->
 
+<div id='footer'>	
+	<form action="/i18n/setlang/" method="post">
+		{% csrf_token %}
+		<input name="next" type="hidden" value="{{ redirect_to }}" />
+		<select name="language">
+		{% get_language_info_list for LANGUAGES as languages %}
+		{% for language in languages %}
+		<option value="{{ language.code }}">{{ language.name_local }}</option>
+		{% endfor %}
+		</select>
+		<input type="submit" value="Go" />
+	</form>
+	{{lang}}	
+	<!-- <ul class="nav pull-middle">
+	    <li class="dropdown">
+	        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{% trans "Set Language" %}<b class="caret"></b></a>
+	        <ul class="dropdown-menu">			    
+			    {% for language in LANGUAGES %}
+			        <li>
+		                    <form name="setLang{{ language.1}}" action="/i18n/setlang/" method="POST">
+		                    	{% csrf_token %}
+		                        <input name="next" type="hidden" value="{{ redirect_to }}" />
+		                        <input type="hidden" name="language" value="{{ language.0 }}" />
+		                        <a href="#" onclick="document.setLang{{ language.1 }}.submit();return false;">{{ language.1 }}</a>
+		                    </form>
+		                </li>
+	            {% endfor %}    
+			</ul>
+	    </li>
+	</ul> -->
+</div>
+
 <!-- Le javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 
 <Script src="/site_media/js/bootstrap.min.js"></Script>
 <Script src="/site_media/bootstrap-datepicker/js/bootstrap-datepicker.js"></Script>
-<script>
+<script src="/site_media/chasebot_datepicker.js"></script>
+<!-- <script>
     $('#datepicker')
     	.datepicker({    		
     		format: 'mm/dd/yyyy',
     		autoclose: 'True'
     		});
-</script> 
+</script>  -->
 </body>
 </html>

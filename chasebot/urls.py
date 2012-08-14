@@ -11,7 +11,7 @@ from chasebot_app.views import main_page_view, logout_page_view, register_page_v
 admin.autodiscover()
 
 urlpatterns = patterns('',
-
+    
     # Session management
     (r'^login/$', 'django.contrib.auth.views.login'),
     (r'^logout/$', logout_page_view),
