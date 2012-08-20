@@ -1,7 +1,6 @@
+__author__ = 'houman'
 from django.utils.datetime_safe import strftime
 from django.contrib.localflavor.generic.forms import DateField
-from chosen.widgets import ChosenSelectMultiple
-__author__ = 'houman'
 from django.forms.widgets import TextInput
 from django.utils.formats import get_format
 from django import forms
