@@ -3,7 +3,7 @@
 {% block title %}{% trans 'Chasebot - Home' %}{% endblock %}
 {% block head %}{{ company_name }}{% endblock %}
 {% block external %}
-	<script type="text/javascript" src="/site_media/jqPlot/jqplot.pieRenderer.min.js"></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}jqPlot/plugins/jqplot.pieRenderer.min.js"></script>
 {% endblock %}
 {% block content %}
 {% if user.username %}

@@ -9,7 +9,8 @@ from django.shortcuts import render_to_response, get_object_or_404, render
 from django.template.context import RequestContext
 from chasebot_app.forms import RegistrationForm, ContactsForm, ContactTypeForm, MaritalStatusForm, CountryForm, CallsForm, SalesItemForm, DealTypeForm,\
     DealForm, BaseDealFormSet, DealCForm
-from chasebot_app.models import Company, Contact, ContactType, MaritalStatus, Country, Conversation, SalesItem, DealType, DealStatus, Deal
+from chasebot_app.models import Company, Contact, ContactType, MaritalStatus, Country, Conversation, SalesItem, DealType, DealStatus, Deal,\
+    UserProfile
 from chasebot_app.models import UserProfile
 from django.core import serializers
 from django.utils.translation import ugettext as _
@@ -20,27 +21,27 @@ import uuid
 from django.forms.formsets import formset_factory
 from django.db.models.aggregates import Max
 import time
+from django.utils.translation import activate
 
 
-@login_required
 def display_current_language(request):
     if request.LANGUAGE_CODE == 'en-gb':
-        lang = "You prefer to read British English."
-    else:
-        lang = "You prefer to read American English."
+        lang = "British English"        
+    elif request.LANGUAGE_CODE == 'en':        
+        lang = "American English"           
     return lang
 
 @login_required
 def main_page_view(request):
+    lang = display_current_language(request)
     profile = request.user.get_profile()
     company_name = profile.company.company_name
     contacts= profile.company.contact_set.all().order_by('last_name')[:10]    
-    lang = display_current_language(request)
     variables = {'company_name': company_name, 'contacts' : contacts, 'lang': lang}    
     return render(request, 'main_page.html', variables)
 
 @login_required
-def contact_view(request, contact_id=None):
+def contact_view(request, contact_id=None):    
     profile = request.user.get_profile()
     if contact_id is None:
         contact = Contact(company=profile.company)
@@ -55,13 +56,15 @@ def contact_view(request, contact_id=None):
             return HttpResponseRedirect('/')
     else:
         form = ContactsForm(instance=contact, company=profile.company)
-    variables = {'form':form, 'template_title': template_title, 'contact_id' : contact_id}
+    locale = get_datepicker_format(request) 
+    lang = display_current_language(request)
+    variables = {'form':form, 'template_title': template_title, 'contact_id' : contact_id, 'locale':locale, 'lang':lang}
     return render(request, 'contact.html', variables)
 
 @login_required
 def delete_contact_view(request, contact_id):
     if contact_id is None:
-        raise Http404(_(u'Contact not found'))
+        raise Http404(_(u'Customer not found'))
     else:
         profile = request.user.get_profile()
         contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
@@ -157,19 +160,20 @@ def call_view_edit(request, contact_id, call_id):
 
 @login_required
 def call_view(request, contact_id):
+    lang = display_current_language(request)    
     profile = request.user.get_profile()
     contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
     deal_formset = modelformset_factory(Deal, form=DealCForm, extra=0)    
     raw = contact.get_open_deals();
     formset_query = Deal.objects.filter(id__in=[item.id for item in raw])    
     
-    call = Conversation(contact=contact, contact_date = datetime.datetime.now(), contact_time = datetime.datetime.now())        
+    call = Conversation(contact=contact, contact_date = datetime.date.today(), contact_time = datetime.datetime.now().time())        
     template_title = _(u'Add New Conversation')
     deal_title = _(u'Current Deals in Progress')
         
     if request.method == 'POST':        
         opendeal_formset = deal_formset(request.POST, queryset=formset_query)        
-        form = CallsForm(profile.company, request.POST, instance=call)           
+        form = CallsForm(profile.company, request.POST, instance=call)                   
         if form.is_valid() and opendeal_formset.is_valid():            
             call = form.save()            
             # The row number of the five possible deals to add are captured as key, while the value is the actual deal that was selected in that given row. 
@@ -211,15 +215,11 @@ def call_view(request, contact_id):
 #            opendeal_formset = deal_formset(new_post, queryset=formset_query)
             
     else:        
-        form = CallsForm(profile.company, instance=call)              
+        form = CallsForm(profile.company, instance=call)                  
         opendeal_formset = deal_formset(queryset=formset_query)
-    culture = request.environ['HTTP_ACCEPT_LANGUAGE'].split(',')[0]
-    if culture == 'en-US':
-        locale = 'mm/dd/yyyy'
-    else:
-        locale = 'dd/mm/yyyy'
     
-    lang = display_current_language(request)    
+    locale = get_datepicker_format(request)    
+      
     variables = {'form':form, 'opendeal_formset':opendeal_formset, 'template_title': template_title, 'deal_title':deal_title, 'locale' : locale, 'lang':lang}
     return render(request, 'conversation.html', variables)
 
@@ -241,12 +241,14 @@ def delete_call_view(request, contact_id, call_id):
 def sales_item_display_view(request):
     profile = request.user.get_profile()
     sales_items = profile.company.salesitem_set.all()
-    variables = {'sales_items': sales_items}
+    lang = display_current_language(request)
+    variables = {'sales_items': sales_items, 'lang': lang}
     return render(request, 'sales_items.html', variables)
 
 @login_required
 def sales_item_view(request, sales_item_id=None):
     profile = request.user.get_profile()
+    lang = display_current_language(request)
     if sales_item_id is None:
         sales_item = SalesItem(company=profile.company)
         template_title = _(u'Add a new Sales Item')
@@ -260,7 +262,7 @@ def sales_item_view(request, sales_item_id=None):
             return HttpResponseRedirect('/sales_items')
     else:
         form = SalesItemForm(instance=sales_item)
-    variables = {'form':form, 'template_title': template_title}
+    variables = {'form':form, 'template_title': template_title, 'lang': lang}
     return render(request, 'sales_item.html', variables)
 
 @login_required
@@ -279,12 +281,14 @@ def delete_sales_item_view(request, sales_item_id=None):
 def deal_template_display_view(request):
     profile = request.user.get_profile()
     deals = profile.company.dealtype_set.all()
-    variables = {'deals': deals}
+    lang = display_current_language(request)
+    variables = {'deals': deals, 'lang': lang}
     return render(request, 'deals.html', variables)
 
 @login_required
 def deal_template_view(request, deal_id=None):
     profile = request.user.get_profile()
+    
     if deal_id is None:
         deal = DealType(company=profile.company)        
         template_title = _(u'Add a new deal')
@@ -298,7 +302,8 @@ def deal_template_view(request, deal_id=None):
             return HttpResponseRedirect('/deals')
     else:
         form = DealTypeForm(instance=deal)
-    variables = {'form':form, 'template_title': template_title}
+    lang = display_current_language(request)
+    variables = {'form':form, 'template_title': template_title, 'chosen' : _(u'No results matched'), 'lang': lang}
     return render(request, 'deal.html', variables)
 
 @login_required
@@ -316,9 +321,9 @@ def logout_page_view(request):
     logout(request)
     return HttpResponseRedirect('/')
 
-def register_page_view(request):
+def register_page_view(request):    
     if request.user.is_authenticated():
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect('/')    
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
@@ -360,7 +365,8 @@ def register_page_view(request):
             return HttpResponseRedirect('/register/success/')
     else:
         form = RegistrationForm()
-    variables = {'form':form}
+    lang = display_current_language(request)
+    variables = {'form':form, 'lang':lang}
     return render(request, 'registration/register.html', variables)
 
 @login_required
@@ -372,7 +378,8 @@ def charts_view(request, contact_id):
     for deal in deals:        
         part = part_of_day_statistics(deal.conversation.contact_time)
         stac[part] += 1                 
-    variables = {'deals':deals, 'stac':stac, 'contact':contact}
+    lang = display_current_language(request)
+    variables = {'deals':deals, 'stac':stac, 'contact':contact, 'lang':lang}
     return render(request, 'charts.html', variables)
     
 
@@ -387,16 +394,19 @@ def part_of_day_statistics(x):
         return 'LA'
     if x.hour >= 18 and x.hour < 21:
         return 'EE'
+
+def get_datepicker_format(request):
+    if request.LANGUAGE_CODE == 'en':
+        locale = 'mm/dd/yyyy'
+    else:
+        locale = 'dd/mm/yyyy'
+    return locale
+
     
 
 
 
-
-def time_of_day_statistics(x):
-    return {
-            
-            
-            }.get(x)    
+  
 
 #@login_required
 #def _deal_status_view(request, call_id=None):        

@@ -59,7 +59,7 @@ LANGUAGE_CODE = 'en-gb'
 ugettext = lambda s: s
 
 LANGUAGES = (
-    ('en', ugettext('US English')),
+    ('en', ugettext('American English')),
     ('en-gb', ugettext('British English')),
 )
 
@@ -81,19 +81,18 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
-MEDIA_ROOT = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../site_media')
-
+MEDIA_ROOT = '/home/houman/projects/chasebot/media/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
 # Examples: "http://media.lawrence.com/media/", "http://example.com/media/"
-MEDIA_URL = ''
+MEDIA_URL = '/media/'
 
 # Absolute path to the directory static files should be collected to.
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = ''
+STATIC_ROOT = '/home/houman/projects/chasebot/static/'
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
@@ -104,6 +103,7 @@ STATICFILES_DIRS = (
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    '/home/houman/projects/chasebot/static_files/',
 )
 
 # List of finder classes that know how to find static files in
@@ -141,7 +141,8 @@ ROOT_URLCONF = 'chasebot.urls'
 WSGI_APPLICATION = 'chasebot.wsgi.application'
 
 TEMPLATE_DIRS = (
-        os.path.join(os.path.dirname(__file__), '../templates'),
+        #os.path.join(os.path.dirname(__file__), '../templates'),
+        '/home/houman/projects/chasebot/templates/'
     )
 
 INSTALLED_APPS = (

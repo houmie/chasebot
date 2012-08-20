@@ -1,5 +1,6 @@
 from django.utils.datetime_safe import strftime
 from django.contrib.localflavor.generic.forms import DateField
+from chosen.widgets import ChosenSelectMultiple
 __author__ = 'houman'
 from django.forms.widgets import TextInput
 from django.utils.formats import get_format
@@ -90,12 +91,7 @@ class ContactsForm(ModelForm):
 
 
 
-class CallsForm(ModelForm):       
-#    status_1    =   forms.ModelChoiceField()
-# contact_date = DateField(localize=True, widget=forms.DateInput(attrs={'placeholder': 'Add the date...', 'id': 'datepicker', 'class': 'placeholder_fix_css'}))    
-    #contact_date = DateField(localize=True, widget=forms.DateInput(attrs={'placeholder': 'Add the date...', 'id': 'datepicker', 'class': 'placeholder_fix_css'}))    
-    def contact_date_callback(self, field, **kwargs) :
-        return field.contact_date(localize=True, **kwargs)
+class CallsForm(ModelForm):          
        
     def __init__(self, company, *args, **kwargs):
         super(CallsForm, self).__init__(*args, **kwargs)                                        
@@ -104,10 +100,10 @@ class CallsForm(ModelForm):
         self.fields['deal_3'].queryset = self.get_non_open_deals(self.instance, company)        
         self.fields['deal_4'].queryset = self.get_non_open_deals(self.instance, company)        
         self.fields['deal_5'].queryset = self.get_non_open_deals(self.instance, company)        
-        self.fields['deal_6'].queryset = self.get_non_open_deals(self.instance, company)
-        
-        #self.fields['status_6'].queryset = DealStatus.objects.all()
-    
+        self.fields['deal_6'].queryset = self.get_non_open_deals(self.instance, company)        
+  
+    contact_date = forms.DateField(localize=True, widget=forms.DateInput(attrs={'placeholder': 'Add the date for this conversation', 'id': 'datepicker', 'class': 'placeholder_fix_css'}))
+    contact_time = forms.TimeField(localize=True, widget=forms.TimeInput(attrs={'placeholder': 'Add the time for this conversation', 'class': 'placeholder_fix_css'}))
         
     deal_1      =   forms.ModelChoiceField(required=False, queryset = '')     
     deal_2      =   forms.ModelChoiceField(required=False, queryset = '')    
@@ -115,7 +111,6 @@ class CallsForm(ModelForm):
     deal_4      =   forms.ModelChoiceField(required=False, queryset = '')    
     deal_5      =   forms.ModelChoiceField(required=False, queryset = '')    
     deal_6      =   forms.ModelChoiceField(required=False, queryset = '')   
-    #status_6    =   forms.ModelChoiceField(required=False, queryset = '', widget=forms.Select(attrs={'class':'hidden_cb'}))
     
     deal_show_row_1   = forms.BooleanField(required=False, initial=False)
     deal_show_row_2   = forms.BooleanField(required=False, initial=False)
@@ -127,10 +122,8 @@ class CallsForm(ModelForm):
     class Meta:
         model = Conversation
         exclude = ('company', 'contact')
-        widgets = {
-                    'contact_date': forms.DateInput(  attrs={'placeholder': 'Add the date for this conversation', 'id': 'datepicker', 'class': 'placeholder_fix_css'}),
-                    'contact_time': forms.TimeInput(attrs={'placeholder': 'Add the time for this conversation', 'class': 'placeholder_fix_css'}),
-                    'subject': forms.TextInput(attrs={'placeholder': '',                                         'class': 'placeholder_fix_css'}),
+        widgets = {                    
+                    'subject': forms.TextInput(attrs={'placeholder': '', 'class': 'placeholder_fix_css'}),
                     'notes': forms.Textarea(attrs={'placeholder': 'Add relevant notes...'}),                                      
                    }
     
@@ -242,7 +235,7 @@ class CallsForm(ModelForm):
         return deal_types.exclude(pk__in=open_deal_list)
             
 
-class DealTypeForm(ModelForm):
+class DealTypeForm(ModelForm):    
     def __init__(self, *args, **kwargs):
         super(DealTypeForm, self).__init__(*args, **kwargs)
         self.fields['sales_item'].queryset = SalesItem.objects.filter(company=self.instance.company)                
@@ -254,7 +247,8 @@ class DealTypeForm(ModelForm):
         widgets = {
                     'deal_name': forms.TextInput(attrs={'placeholder': 'Name the deal', 'class': 'placeholder_fix_css'}),
                     'deal_description': forms.Textarea(attrs={'placeholder': 'Describe the deal'}),
-#                    'sales_item': forms.TextInput(attrs={'placeholder': 'What are you buying or selling?', 'class': 'placeholder_fix_css'}),
+                    'sales_item': forms.SelectMultiple(attrs={'data-placeholder': 'What are you buying or selling?'}),
+                    #'sales_item': ChosenSelectMultiple(), #(attrs={'data-placeholder': 'What are you buying or selling?'}),
                     'price': forms.TextInput(attrs={'placeholder': 'How much is proposed?', 'class': 'placeholder_fix_css'}),                    
 #                    'sales_term': forms.TextInput(attrs={'placeholder': 'Is it fixed or recurring?', 'class': 'placeholder_fix_css'}),
                     'quantity': forms.TextInput(attrs={'placeholder': 'How many items?', 'class': 'placeholder_fix_css'}),

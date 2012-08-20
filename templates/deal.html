@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% block external %}
+<script type="text/javascript" src="{{ STATIC_URL }}chasebot/chasebot_chosen.js"></script>
+{% endblock %}
 {% block title %}{{ template_title }}{% endblock %}
 {% block head %}{{ template_title }}{% endblock %}
 {% block content %}
@@ -9,7 +12,7 @@
         <div class="span12">
 		    <div class="span6">
 		        <table class="table edit_table">
-		            <tbody>
+		            <tbody>		            	
 		                <tr>
 		                    <td>                        
 		                        {{form.deal_name.label}}: {% if  form.deal_name.field.required %} *{% endif %}
@@ -69,9 +72,10 @@
 			                	</div>
 			                	{% else %}
 			                		{{form.sales_item}}
-			                	{% endif %}                        
+			                	{% endif %}     
+			                	<div id='chosen_msg' class="hidden">{{chosen}}</div>                   
 		                    </td>
-		                </tr>
+		                </tr>		                
 		                <tr>
 		                    <td>                        
 		                        {{form.price.label}}: {% if  form.price.field.required %} *{% endif %}

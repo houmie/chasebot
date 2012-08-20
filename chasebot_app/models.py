@@ -126,7 +126,7 @@ class DealType(models.Model):
     company             = models.ForeignKey(Company)
     deal_name           = models.CharField(_(u"Deal Name"), max_length=40)
     deal_description    = models.TextField(_(u"Deal Description"),     blank=True)
-    sales_item          = models.ForeignKey(SalesItem, verbose_name=_(u"Sales Item"))    
+    sales_item          = models.ManyToManyField(SalesItem, verbose_name=_(u"Sales Item"))    
     price               = models.DecimalField(_(u"Price"), decimal_places=2, max_digits=12)
     sales_term          = models.ForeignKey(SalesTerm, verbose_name=_(u"Sales Term"))
     quantity            = models.IntegerField(_(u"Quantity"))        

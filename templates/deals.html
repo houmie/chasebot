@@ -18,8 +18,7 @@
                 <th>{% trans 'Price' %}</th>
                 <th>{% trans 'Term' %}</th>
                 <th>{% trans 'Quantity' %}</th>
-                <th>{% trans 'Status' %}</th>
-                        
+                <th>{% trans 'Status' %}</th>                        
             </tr>
         </thead>
         <tbody>
@@ -31,7 +30,11 @@
                 </td>
                 <td>{{ item.deal_name }}</td>
                 <td>{{ item.deal_description }}</td>             
-                <td>{{ item.sales_item }}</td>
+                <td>
+                	{% for item in item.sales_item.all %}
+                		{{item}}, 
+                	{% endfor %}
+            	</td>
                 <td>{{ item.price }}</td>
                 <td>{{ item.sales_term }}</td>
                 <td>{{ item.quantity }}</td>
