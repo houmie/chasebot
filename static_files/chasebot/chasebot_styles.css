@@ -46,3 +46,7 @@ td.center_cb{
 }
 
 
+.btn-success2, .btn-success2:hover {
+    color: #333333;
+    text-shadow: none;
+}
