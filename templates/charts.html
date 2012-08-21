@@ -2,8 +2,8 @@
 {% load i18n %}
 {% block title %}{{ template_title }}{% endblock %}
 {% block external %}
-	<script type="text/javascript" src="{{ STATIC_URL }}jqPlot/jquery.jqplot.min.js"></script>
-	<script type='text/javascript' src="{{ STATIC_URL }}jqPlot/excanvas.min.js"></script> 
+	<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="{{ STATIC_URL }}jqPlot/excanvas.min.js"></script><![endif]-->
+	<script type="text/javascript" src="{{ STATIC_URL }}jqPlot/jquery.jqplot.min.js"></script>	 
 	<script type="text/javascript" src="{{ STATIC_URL }}jqPlot/plugins/jqplot.pieRenderer.min.js"></script>
 	<link href="{{ STATIC_URL }}jqPlot/jquery.jqplot.css" type="text/css" rel="stylesheet">	
 	<script type="text/javascript" src="{{ STATIC_URL }}chasebot/chasebot_charts.js"></script>
