@@ -37,7 +37,7 @@ def main_page_view(request):
     profile = request.user.get_profile()
     company_name = profile.company.company_name
     contacts= profile.company.contact_set.all().order_by('last_name')[:10]    
-    variables = {'company_name': company_name, 'contacts' : contacts, 'lang': lang}    
+    variables = {'company_name': company_name, 'contacts' : contacts, 'locale' : get_datepicker_format(request), 'lang': lang}    
     return render(request, 'main_page.html', variables)
 
 @login_required
@@ -55,10 +55,9 @@ def contact_view(request, contact_id=None):
             contact = form.save()
             return HttpResponseRedirect('/')
     else:
-        form = ContactsForm(instance=contact, company=profile.company)
-    locale = get_datepicker_format(request) 
+        form = ContactsForm(instance=contact, company=profile.company)    
     lang = display_current_language(request)
-    variables = {'form':form, 'template_title': template_title, 'contact_id' : contact_id, 'locale':locale, 'lang':lang}
+    variables = {'form':form, 'template_title': template_title, 'contact_id' : contact_id, 'locale' : get_datepicker_format(request), 'lang':lang}
     return render(request, 'contact.html', variables)
 
 @login_required
@@ -78,7 +77,7 @@ def call_display_view(request, contact_id):
     contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
     calls = contact.conversation_set.all().order_by('-time_stamp')
     lang = display_current_language(request)
-    variables = {'calls': calls, 'contact': contact, 'lang':lang}
+    variables = {'calls': calls, 'contact': contact, 'locale' : get_datepicker_format(request), 'lang':lang}
     return render(request, 'calls.html', variables)
 
 
@@ -153,7 +152,7 @@ def call_view_edit(request, contact_id, call_id):
         opendeal_formset = opendeal_formset_factory(queryset=non_duplicate_query, prefix='opendeals')
                             
     lang = display_current_language(request)
-    variables = {'form':form, 'deal_formset':deal_formset, 'opendeal_formset':opendeal_formset, 'opendeal_attached':opendeal_attached, 'lang':lang}
+    variables = {'form':form, 'deal_formset':deal_formset, 'opendeal_formset':opendeal_formset, 'opendeal_attached':opendeal_attached, 'locale' : get_datepicker_format(request), 'lang':lang}
     return render(request, 'conversation.html', variables)
 
 
@@ -218,9 +217,7 @@ def call_view(request, contact_id):
         form = CallsForm(profile.company, instance=call)                  
         opendeal_formset = deal_formset(queryset=formset_query)
     
-    locale = get_datepicker_format(request)    
-      
-    variables = {'form':form, 'opendeal_formset':opendeal_formset, 'template_title': template_title, 'deal_title':deal_title, 'locale' : locale, 'lang':lang}
+    variables = {'form':form, 'opendeal_formset':opendeal_formset, 'template_title': template_title, 'deal_title':deal_title, 'locale' : get_datepicker_format(request), 'lang':lang}
     return render(request, 'conversation.html', variables)
 
 @login_required
@@ -262,7 +259,7 @@ def sales_item_view(request, sales_item_id=None):
             return HttpResponseRedirect('/sales_items')
     else:
         form = SalesItemForm(instance=sales_item)
-    variables = {'form':form, 'template_title': template_title, 'lang': lang}
+    variables = {'form':form, 'template_title': template_title, 'locale' : get_datepicker_format(request), 'lang': lang}
     return render(request, 'sales_item.html', variables)
 
 @login_required
@@ -303,7 +300,7 @@ def deal_template_view(request, deal_id=None):
     else:
         form = DealTypeForm(instance=deal)
     lang = display_current_language(request)
-    variables = {'form':form, 'template_title': template_title, 'chosen' : _(u'No results matched'), 'lang': lang}
+    variables = {'form':form, 'template_title': template_title, 'chosen' : _(u'No results matched'), 'locale' : get_datepicker_format(request), 'lang': lang}
     return render(request, 'deal.html', variables)
 
 @login_required
@@ -366,7 +363,7 @@ def register_page_view(request):
     else:
         form = RegistrationForm()
     lang = display_current_language(request)
-    variables = {'form':form, 'lang':lang}
+    variables = {'form':form, 'locale' : get_datepicker_format(request), 'lang':lang}
     return render(request, 'registration/register.html', variables)
 
 @login_required
@@ -379,7 +376,7 @@ def charts_view(request, contact_id):
         part = part_of_day_statistics(deal.conversation.contact_time)
         stac[part] += 1                 
     lang = display_current_language(request)
-    variables = {'deals':deals, 'stac':stac, 'contact':contact, 'lang':lang}
+    variables = {'deals':deals, 'stac':stac, 'contact':contact, 'locale' : get_datepicker_format(request), 'lang':lang}
     return render(request, 'charts.html', variables)
     
 
