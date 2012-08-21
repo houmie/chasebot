@@ -8,8 +8,8 @@
 	<table class="table">
                 <thead>
                     <tr>
-                        <th><a class="contact" href="/" data-form="" title="{% trans 'Back to Main Screen' %}"><button class="btn btn-success"><i class="icon-arrow-left"></i></button></a>
-                        	<a class="contact" href="/contact/{{ contact.id }}/call/add" data-form="" title="{% trans 'New Conversation' %}"><button class="btn btn-success"><i class="icon-plus"> </i><i class="icon-comment"> </i></button></a></th>
+                        <th><a class="btn btn-success" href="/" title="{% trans 'Back to Main Screen' %}"><i class="icon-arrow-left"> </i></a>
+                        	<a class="btn btn-success" href="/contact/{{ contact.id }}/call/add" title="{% trans 'New Conversation' %}"> <i class="icon-plus"> </i><i class="icon-comment"> </i></a></th>
                         <th>{% trans 'Date' %}</th>
                         <th>{% trans 'Time' %}</th>
                         <th>{% trans 'Subject' %}</th>
@@ -20,16 +20,16 @@
                     {% for item in calls %}
                     <tr>
                         <td>                        	
-                            <a class="contact" href="/contact/{{ contact.id }}/call/edit/{{ item.id }}" data-form="" title="{% trans 'Edit' %}"> <i class="icon-pencil"> </i></a>
+                            <a href="/contact/{{ contact.id }}/call/edit/{{ item.id }}" title="{% trans 'Edit' %}"> <i class="icon-pencil"> </i></a>
                             <a href="/contact/{{ contact.id }}/call/delete/{{ item.id }}" title="{% trans 'Delete' %}"><i class="icon-trash"> </i></a>
                         </td>
                         <td>{{ item.contact_date }}</td>
                         <td>{{ item.contact_time }}</td>
                         <td>{{ item.subject }}</td>
                         <td>{{ item.notes }}</td>                        
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td> </td>
+                        <td> </td>
+                        <td> </td>
                     </tr>
                     {% endfor %}
                 </tbody>

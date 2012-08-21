@@ -12,8 +12,8 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th><a class="contact" href="/contact/add" data-form="" title="{% trans 'New Contact' %}"><button class="btn btn-success"><i class="icon-plus"></i><i class="icon-user"></i></button></a>
-                    	<a href="/deals" title="{% trans 'Deals' %}"><button class="btn btn-success"><i class="icon-tags"> </i></button></a>
+                    <th><a class="btn btn-success" href="/contact/add" title="{% trans 'New Contact' %}"><i class="icon-plus"> </i><i class="icon-user"> </i></a>
+                    	<a class="btn btn-success" href="/deals" title="{% trans 'Deals' %}"><i class="icon-tags"> </i></a>
                     </th>
                     <th>{% trans 'Last Name' %}</th>
                     <th>{% trans 'First Name' %}</th>
@@ -31,8 +31,8 @@
                 {% for item in contacts %}
                 <tr>
                     <td>
-                        <a class="contact" href="/contact/edit/{{ item.id }}" data-form="/contact/edit/{{ item.id }}" title="{% trans 'Edit Contact' %}"><button class="btn-tiny"><i class="icon-pencil"> </i></button></a>
-                        <a href="/contact/delete/{{ item.id }}" title="{% trans 'Delete Contact' %}"><button class="btn-tiny"><i class="icon-trash"> </i></button></a>
+                        <a href="/contact/edit/{{ item.id }}" title="{% trans 'Edit Contact' %}"><i class="icon-pencil"> </i></a>
+                        <a href="/contact/delete/{{ item.id }}" title="{% trans 'Delete Contact' %}"><i class="icon-trash"> </i></a>
                     </td>
                     <td>{{ item.last_name }}</td>
                     <td>{{ item.first_name }}</td>
@@ -41,8 +41,8 @@
                     <td>{{ item.email }}</td>
                     <td>{{ item.work_phone }}</td>
                     <td>{{ item.mobile_phone }}</td>
-                    <td><a href="/contact/{{ item.id }}/calls" title="{% trans 'Conversations' %}"><button class="btn btn-success"><i class="icon-comment"></i></button></a></td>                    
-                    <td><a href="/charts/contact/{{ item.id }}" title="{% trans 'Charts' %}"><button class="btn btn-success"><i class="icon-road"> </i></button></a></td>
+                    <td><a class="btn btn-success" href="/contact/{{ item.id }}/calls" title="{% trans 'Conversations' %}"><i class="icon-comment"> </i></a></td>                    
+                    <td><a class="btn btn-success" href="/charts/contact/{{ item.id }}" title="{% trans 'Charts' %}"><i class="icon-road"> </i></a></td>
                     <td class="center_cb"><input type="checkbox"/></td>
                 </tr>
                 {% endfor %}

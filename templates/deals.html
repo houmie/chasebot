@@ -8,9 +8,9 @@
     <table class="table">
         <thead>
             <tr>
-                <th><a class="contact" href="/" data-form="" title="{% trans 'Back to Main Screen' %}"><button class="btn btn-success"><i class="icon-arrow-left"></i></button></a>
-                	<a class="contact" href="/deal/add" data-form="" title="{% trans 'New Deal' %}"><button class="btn btn-success"><i class="icon-plus"> </i></button></a>
-                	<a class="contact" href="/sales_items" data-form="" title="{% trans 'Sales Items' %}"><button class="btn btn-success"><i class="icon-barcode"> </i></button></a>
+                <th><a class="btn btn-success" href="/" title="{% trans 'Back to Main Screen' %}"><i class="icon-arrow-left"> </i></a>
+                	<a class="btn btn-success" href="/deal/add" title="{% trans 'New Deal' %}"><i class="icon-plus"> </i></a>
+                	<a class="btn btn-success" href="/sales_items" title="{% trans 'Sales Items' %}"><i class="icon-barcode"> </i></a>
                 </th>
                 <th>{% trans 'Deal' %}</th>        
                 <th>{% trans 'Description' %}</th>    
@@ -25,8 +25,8 @@
             {% for item in deals %}
             <tr>
                 <td>
-                    <a class="contact" href="/deal/edit/{{ item.id }}" data-form="/deal/edit/{{ item.id }}" title="{% trans 'Edit' %}"><button class="btn-tiny"><i class="icon-pencil"></i></button></a>
-                    <a href="/deal/delete/{{ item.id }}" title="{% trans 'Delete' %}"><button class="btn-tiny"><i class="icon-trash"></i></button></a>
+                    <a href="/deal/edit/{{ item.id }}" title="{% trans 'Edit' %}"><i class="icon-pencil"> </i></a>
+                    <a href="/deal/delete/{{ item.id }}" title="{% trans 'Delete' %}"><i class="icon-trash"> </i></a>
                 </td>
                 <td>{{ item.deal_name }}</td>
                 <td>{{ item.deal_description }}</td>             

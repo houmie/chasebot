@@ -8,8 +8,8 @@
     <table class="table">
         <thead>
             <tr>
-                <th><a class="contact" href="/deals" data-form="" title="{% trans 'Back to Deals' %}"><button class="btn btn-success"><i class="icon-arrow-left"></i></button></a>
-                	<a class="contact" href="/sales_item/add" data-form="" title="{% trans 'New Sales Item' %}"><button class="btn btn-success"><i class="icon-plus"></i></button></a>
+                <th><a class="btn btn-success" href="/deals" title="{% trans 'Back to Deals' %}"><i class="icon-arrow-left"> </i></a>
+                	<a class="contact" href="/sales_item/add" title="{% trans 'New Sales Item' %}"><i class="icon-plus"> </i></a>
                 	
                 </th>
                 <th>{% trans 'Sales Item' %}</th>                    
@@ -19,8 +19,8 @@
             {% for item in sales_items %}
             <tr>
                 <td>
-                    <a class="contact" href="/sales_item/edit/{{ item.id }}" data-form="/sales_item/edit/{{ item.id }}" title="{% trans 'Edit' %}"><button class="btn-tiny"><i class="icon-pencil"></i></button></a>
-                    <a href="/sales_item/delete/{{ item.id }}" title="{% trans 'Delete' %}"><button class="btn-tiny"><i class="icon-trash"></i></button></a>
+                    <a href="/sales_item/edit/{{ item.id }}" title="{% trans 'Edit' %}"><i class="icon-pencil"> </i></a>
+                    <a href="/sales_item/delete/{{ item.id }}" title="{% trans 'Delete' %}"><i class="icon-trash"> </i></a>
                 </td>
                 <td>{{ item.item_description }}</td>                    
             </tr>
