@@ -110,7 +110,7 @@
 		            				</td>
 		            			</tr>	
 			            		{% endif %}
-		            		{% elif opendeal_attached %}
+		            		{% elif is_atleast_one_opendeal_attached %}
 			            		<tr>
                 					<td>
 										{% trans 'All open deals are already attached to this conversation.' %}                						
@@ -119,7 +119,7 @@
             				{% else %}
             					<tr>
                 					<td>
-										{% trans 'No new deals are yet negotiated with this client.' %}                						
+										{% trans 'No new deals are negotiated yet with this client.' %}                						
                 					</td>
                 				</tr>  
 		            		{% endif %}
@@ -274,7 +274,7 @@
 					        </table>
 		            	</tr>
 	    				<tr>
-		    				{{ deal_formset.management_form }}	                	
+		    				{{ attached_deals_formset.management_form }}	                	
 			            	<table class="table edit_table">
 			            		<thead>
 			            			<tr>	                				
@@ -284,14 +284,14 @@
 					                </tr>
 			            		</thead>
 			            		<tbody>				                
-								{% if deal_formset.forms %}
-					                {% for fs in deal_formset %}  
+								{% if attached_deals_formset.forms %}
+					                {% for fs in attached_deals_formset %}  
 					                	{{ fs.id }} 
 					            	<tr>
 					            		            		
 					                    <td>										
 											<input type="hidden" name="hidden-{{ fs.prefix }}-deal_type" value="{{fs.deal_type.value}}" />										
-											{% if deal_formset.non_form_errors %}
+											{% if attached_deals_formset.non_form_errors %}
 						                	<div class="field field_error">
 						                    	{{fs.deal_instance_name}}                    	
 						                	</div>
@@ -310,11 +310,11 @@
 					                    </td>
 					            	</tr>            	
 				            		{% endfor %}
-				            		{% if deal_formset.non_form_errors %}
+				            		{% if attached_deals_formset.non_form_errors %}
 			            			<tr>
 			            				<td>
 			            					<div class="field field_error">
-			            						{{deal_formset.non_form_errors}}
+			            						{{attached_deals_formset.non_form_errors}}
 			            					</div>
 			            				</td>
 			            			</tr>	

@@ -85,6 +85,7 @@ class Contact(models.Model):
     def __unicode__(self):
         return self.last_name
     
+#   Show all open deals for this contact  
     def get_open_deals(self):
         query =     "SELECT l1.*   \
                 FROM    \
