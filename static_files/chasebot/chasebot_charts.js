@@ -1,5 +1,13 @@
 $(document).ready(function(){	
 	
+	//IE workaround for trim()
+	if(typeof String.prototype.trim !== 'function') {
+	  String.prototype.trim = function() {
+    		return this.replace(/^\s+|\s+$/g, ''); 
+  		}
+	}
+
+	
 	var EM = parseInt($('#EM').text().trim());
 	var LM = parseInt($('#LM').text().trim());
 	var EA = parseInt($('#EA').text().trim());
