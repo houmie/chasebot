@@ -34,10 +34,11 @@ def display_current_language(request):
 @login_required
 def main_page_view(request):
     lang = display_current_language(request)
+    delete_button_confirmation = get_delete_button_confirmation()
     profile = request.user.get_profile()
     company_name = profile.company.company_name
     contacts= profile.company.contact_set.all().order_by('last_name')[:10]    
-    variables = {'company_name': company_name, 'contacts' : contacts, 'locale' : get_datepicker_format(request), 'lang': lang}    
+    variables = {'company_name': company_name, 'contacts' : contacts, 'locale' : get_datepicker_format(request), 'lang': lang, 'delete_button_confirmation': delete_button_confirmation}    
     return render(request, 'main_page.html', variables)
 
 @login_required
@@ -182,13 +183,26 @@ def sales_item_display_view(request):
     profile = request.user.get_profile()
     sales_items = profile.company.salesitem_set.all()
     lang = display_current_language(request)
-    variables = {'sales_items': sales_items, 'lang': lang}
+    
+    sales_item = SalesItem(company=profile.company)
+    form = SalesItemForm(instance=sales_item)
+    delete_button_confirmation = get_delete_button_confirmation()
+    variables = {'sales_items': sales_items, 'locale' : get_datepicker_format(request), 'lang': lang, 'form':form, 'delete_button_confirmation' : delete_button_confirmation}
     return render(request, 'sales_items.html', variables)
+
+@login_required
+def sales_item_cancel_view(request, sales_item_id):
+    profile = request.user.get_profile()    
+    sales_item = get_object_or_404(profile.company.salesitem_set.all(), pk=sales_item_id)
+    variables = {'sales_items' : [sales_item]}
+    return render(request, 'sales_item_list.html', variables)
+
 
 @login_required
 def sales_item_view(request, sales_item_id=None):
     profile = request.user.get_profile()
     lang = display_current_language(request)
+    validation_error_ajax = False;
     if sales_item_id is None:
         sales_item = SalesItem(company=profile.company)
         template_title = _(u'Add a new Sales Item')
@@ -196,14 +210,26 @@ def sales_item_view(request, sales_item_id=None):
         sales_item = get_object_or_404(profile.company.salesitem_set.all(), pk=sales_item_id)
         template_title = _(u'Edit Sales Item')
     if request.method == 'POST':
+        #list_post = list(request.POST)
+        #if 'submit-button' in list_post:        
         form = SalesItemForm(request.POST, instance=sales_item)
         if form.is_valid():
-            sales_item = form.save()
-            return HttpResponseRedirect('/sales_items')
+            sales_item = form.save()            
+            variables = {'sales_items' : [sales_item]}
+            return render(request, 'sales_item_list.html', variables)
+        else:
+            validation_error_ajax = True;                
+#        else:
+#            sales_item = profile.company.salesitem_set.get(pk=sales_item_id)
+#            variables = {'sales_items' : [sales_item]}
+#            return render(request, 'sales_item_list.html', variables)            
     else:
         form = SalesItemForm(instance=sales_item)
-    variables = {'form':form, 'template_title': template_title, 'locale' : get_datepicker_format(request), 'lang': lang}
-    return render(request, 'sales_item.html', variables)
+    variables = {'form':form, 'template_title': template_title, 'locale' : get_datepicker_format(request), 'lang': lang, 'salesitem_id' : sales_item_id, 'validation_error_ajax' : validation_error_ajax}
+    if sales_item_id is None:
+        return render(request, 'sales_item_add_save_form.html', variables)
+    else:
+        return render(request, 'sales_item_save_form.html', variables)
 
 @login_required
 def delete_sales_item_view(request, sales_item_id=None):
@@ -222,7 +248,8 @@ def deal_template_display_view(request):
     profile = request.user.get_profile()
     deals = profile.company.dealtype_set.all()
     lang = display_current_language(request)
-    variables = {'deals': deals, 'lang': lang}
+    delete_button_confirmation = get_delete_button_confirmation()
+    variables = {'deals': deals, 'lang': lang, 'delete_button_confirmation' : delete_button_confirmation}
     return render(request, 'deals.html', variables)
 
 @login_required
@@ -343,6 +370,8 @@ def get_datepicker_format(request):
     return locale
 
     
+def get_delete_button_confirmation():
+    return _(u'Are you sure you want to delete this row?')
 
 
 

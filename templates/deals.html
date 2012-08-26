@@ -3,6 +3,7 @@
 {% block title %}{% trans 'Chasebot - Deals' %}{% endblock %}
 {% block head %}{% trans 'Chasebot - Deals' %}{% endblock %}
 {% block external %}
+<script type="text/javascript" src="{{ STATIC_URL }}chasebot/chasebot_base.js" ></script>
 {% endblock %}
 {% block content %}    
     <table class="table">
@@ -26,7 +27,7 @@
             <tr>
                 <td>
                     <a href="/deal/edit/{{ item.id }}" title="{% trans 'Edit' %}"><i class="icon-pencil"> </i></a>
-                    <a href="/deal/delete/{{ item.id }}" title="{% trans 'Delete' %}"><i class="icon-trash"> </i></a>
+                    <a class="row_delete" href="/deal/delete/{{ item.id }}" title="{% trans 'Delete' %}"><i class="icon-trash"> </i></a>
                 </td>
                 <td>{{ item.deal_name }}</td>
                 <td>{{ item.deal_description }}</td>             

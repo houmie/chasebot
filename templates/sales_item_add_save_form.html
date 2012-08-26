@@ -1,0 +1,27 @@
+{% load i18n %}
+<form id="save-add-form" class="span6" method="post" action="/sales_item/add/">
+    {% csrf_token %}    
+        <table class="table edit_table table-condensed">
+            <tbody>
+                <tr>
+                    <td>                        
+                        {% trans 'Add a new Sales Item' %}: {% if  form.item_description.field.required %} *{% endif %}
+                    </td>
+                    <td class="input-append">                        
+                        {% if form.item_description.errors %}
+	                	<div class="field field_error">
+	                    	{{form.item_description}}
+	                    	<input class="btn btn-primary row_add_button" type="button" value="{% trans 'Add' %}" class="btn btn-primary" />
+	                    	{{form.item_description.errors}}                   	
+	                	</div>
+	                	{% else %}
+	                		{{form.item_description}}
+	                		<input class="btn btn-primary row_add_button" type="button" value="{% trans 'Add' %}" class="btn btn-primary" />
+	                	{% endif %}	                	                        
+                    </td>                    
+                </tr>
+            </tbody>
+        </table>                
+        <div class="validation_error_ajax hidden">{{validation_error_ajax}}</div>    
+</form>
+

@@ -304,6 +304,12 @@ class SalesItemForm(ModelForm):
     class Meta:
         model = SalesItem
         exclude = ('company')
+        widgets = {
+                   'item_description': forms.TextInput(attrs={'class': 'item_description'}),
+                   }
+        
+    
+
 
 class CountryForm(ModelForm):
     class Meta:

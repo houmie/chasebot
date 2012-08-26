@@ -3,28 +3,32 @@
 {% block title %}{% trans 'Chasebot - Sales Items' %}{% endblock %}
 {% block head %}{% trans 'Chasebot - Sales Items' %}{% endblock %}
 {% block external %}
+<script type="text/javascript" src="{{ STATIC_URL }}chasebot/chasebot_salesitems.js" ></script>
+<script type="text/javascript" src="{{ STATIC_URL }}chasebot/chasebot_base.js" ></script>
 {% endblock %}
 {% block content %}    
     <table class="table">
         <thead>
             <tr>
                 <th><a class="btn btn-success" href="/deals" title="{% trans 'Back to Deals' %}"><i class="icon-arrow-left"> </i></a>
-                	<a class="btn btn-success" href="/sales_item/add" title="{% trans 'New Sales Item' %}"><i class="icon-plus"> </i><i class="icon-glass"> </i></a>
-                	
+                	<!-- <a class="btn btn-success" href="/sales_item/add" title="{% trans 'New Sales Item' %}"><i class="icon-plus"> </i><i class="icon-glass"> </i></a> -->                	
                 </th>
                 <th>{% trans 'Sales Item' %}</th>                    
             </tr>
         </thead>
         <tbody>
-            {% for item in sales_items %}
-            <tr>
-                <td>
-                    <a href="/sales_item/edit/{{ item.id }}" title="{% trans 'Edit' %}"><i class="icon-pencil"> </i></a>
-                    <a href="/sales_item/delete/{{ item.id }}" title="{% trans 'Delete' %}"><i class="icon-trash"> </i></a>
+        	{% include 'sales_item_list.html' %}
+        	<tr>
+        		<td></td>
+        		<td>
+	        		{% include 'sales_item_add_save_form.html' %}
                 </td>
-                <td>{{ item.item_description }}</td>                    
+                <td>                	                	
+                </td>
+        	</tr>
+            <tr>
+            	<div id="backup_add" class="hidden"></div>
             </tr>
-            {% endfor %}
         </tbody>
     </table>        
 {% endblock %}

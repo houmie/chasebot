@@ -6,7 +6,7 @@ from django.views.generic.simple import direct_to_template
 from chasebot import settings
 from chasebot_app.views import main_page_view, logout_page_view, register_page_view, contact_view, delete_contact_view, call_display_view, \
      delete_call_view, sales_item_view, sales_item_display_view, delete_sales_item_view, deal_template_display_view, deal_template_view, delete_template_deal_view,\
-    charts_view, call_view
+    charts_view, call_view, sales_item_cancel_view
 
 admin.autodiscover()
 
@@ -37,6 +37,7 @@ urlpatterns = patterns('',
 
     (r'^sales_item/add/$', sales_item_view),    
     (r'^sales_item/edit/(?P<sales_item_id>\d+)/$', sales_item_view),
+    (r'^sales_item/edit/cancel/(?P<sales_item_id>\d+)/$', sales_item_cancel_view),    
     (r'^sales_items/$', sales_item_display_view),
     (r'^sales_item/delete/(?P<sales_item_id>\d+)/$', delete_sales_item_view),
     
