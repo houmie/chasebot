@@ -22,6 +22,7 @@ from django.forms.formsets import formset_factory
 from django.db.models.aggregates import Max
 import time
 from django.utils.translation import activate
+from django.core.paginator import Paginator, InvalidPage
 
 
 def display_current_language(request):
@@ -33,12 +34,18 @@ def display_current_language(request):
 
 @login_required
 def main_page_view(request):
+    ITEMS_PER_PAGE = 10
     lang = display_current_language(request)
     delete_button_confirmation = get_delete_button_confirmation()
     profile = request.user.get_profile()
     company_name = profile.company.company_name
-    contacts= profile.company.contact_set.all().order_by('last_name')[:10]    
-    variables = {'company_name': company_name, 'contacts' : contacts, 'locale' : get_datepicker_format(request), 'lang': lang, 'delete_button_confirmation': delete_button_confirmation}    
+    contacts_queryset = profile.company.contact_set.all().order_by('last_name')    
+    contacts, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, contacts_queryset)            
+    variables = {
+                 'company_name': company_name, 'contacts' : contacts, 'locale' : get_datepicker_format(request), 'lang': lang, 'delete_button_confirmation': delete_button_confirmation,
+                 'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages,
+                 'next_page': page_number + 1, 'prev_page': page_number - 1
+                 }    
     return render(request, 'main_page.html', variables)
 
 @login_required
@@ -74,11 +81,17 @@ def delete_contact_view(request, contact_id):
 
 @login_required
 def call_display_view(request, contact_id):
+    ITEMS_PER_PAGE = 10
     profile = request.user.get_profile()
     contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
-    calls = contact.conversation_set.all().order_by('-time_stamp')
+    calls_queryset = contact.conversation_set.all().order_by('-time_stamp')    
+    calls, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, calls_queryset)    
     lang = display_current_language(request)
-    variables = {'calls': calls, 'contact': contact, 'locale' : get_datepicker_format(request), 'lang':lang}
+    variables = {
+                 'calls': calls, 'contact': contact, 'locale' : get_datepicker_format(request), 'lang':lang,
+                 'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages,
+                 'next_page': page_number + 1, 'prev_page': page_number - 1          
+                 }
     return render(request, 'calls.html', variables)
 
 
@@ -180,14 +193,19 @@ def delete_call_view(request, contact_id, call_id):
 
 @login_required
 def sales_item_display_view(request):
+    ITEMS_PER_PAGE = 10
     profile = request.user.get_profile()
-    sales_items = profile.company.salesitem_set.all()
-    lang = display_current_language(request)
-    
+    sales_items_queryset = profile.company.salesitem_set.all()    
+    sales_items, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, sales_items_queryset)    
+    lang = display_current_language(request)    
     sales_item = SalesItem(company=profile.company)
     form = SalesItemForm(instance=sales_item)
     delete_button_confirmation = get_delete_button_confirmation()
-    variables = {'sales_items': sales_items, 'locale' : get_datepicker_format(request), 'lang': lang, 'form':form, 'delete_button_confirmation' : delete_button_confirmation}
+    variables = {
+                 'sales_items': sales_items, 'locale' : get_datepicker_format(request), 'lang': lang, 'form':form, 'delete_button_confirmation' : delete_button_confirmation,
+                 'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages,
+                 'next_page': page_number + 1, 'prev_page': page_number - 1                 
+                 }
     return render(request, 'sales_items.html', variables)
 
 @login_required
@@ -245,11 +263,17 @@ def delete_sales_item_view(request, sales_item_id=None):
 
 @login_required
 def deal_template_display_view(request):
+    ITEMS_PER_PAGE = 10
     profile = request.user.get_profile()
-    deals = profile.company.dealtype_set.all()
+    deals_queryset = profile.company.dealtype_set.all()        
+    deals, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deals_queryset)    
     lang = display_current_language(request)
     delete_button_confirmation = get_delete_button_confirmation()
-    variables = {'deals': deals, 'lang': lang, 'delete_button_confirmation' : delete_button_confirmation}
+    variables = {
+                 'deals': deals, 'lang': lang, 'delete_button_confirmation' : delete_button_confirmation,
+                 'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages,
+                 'next_page': page_number + 1, 'prev_page': page_number - 1                 
+                 }
     return render(request, 'deals.html', variables)
 
 @login_required
@@ -372,6 +396,20 @@ def get_datepicker_format(request):
     
 def get_delete_button_confirmation():
     return _(u'Are you sure you want to delete this row?')
+
+def makePaginator(request, ITEMS_PER_PAGE, queryset):
+    paginator = Paginator(queryset, ITEMS_PER_PAGE)
+    try:
+        page_number = int(request.GET['page'])
+    except (KeyError, ValueError):
+        page_number = 1
+    try:
+        page = paginator.page(page_number)
+    except InvalidPage:
+        raise Http404
+    objects = page.object_list
+    return objects, paginator, page, page_number
+
 
 
 

@@ -6,63 +6,59 @@
 	<script type="text/javascript" src="{{ STATIC_URL }}chasebot/chasebot_base.js" ></script>
 {% endblock %}
 {% block content %}
-{% if user.username %}
-    <p>{% trans 'Welcome back' %} {{ user.username }}.</p>
-    
-        <table class="table">
-            <thead>
-                <tr>
-                    <th><a class="btn btn-success" href="/contact/add" title="{% trans 'New Contact' %}"><i class="icon-plus"> </i><i class="icon-user"> </i></a>
-                    	<a class="btn btn-success btn-success2" href="/deals" title="{% trans 'Deals' %}"><i class="icon-tags"></i> {% trans 'Deals' %}</a>
-                    </th>
-                    <th>{% trans 'Last Name' %}</th>
-                    <th>{% trans 'First Name' %}</th>
-                    <th>{% trans 'Dear' %}</th>
-                    <th>{% trans 'Company' %}</th>
-                    <th>{% trans 'Email' %}</th>
-                    <th>{% trans 'Work Phone' %}</th>
-                    <th>{% trans 'Cell Phone' %}</th>
-                    <th>{% trans 'Conversations' %}</th>
-                    <th>{% trans 'Charts' %}</th>
-                    <th>{% trans 'Important Client' %}</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in contacts %}
-                <tr>
-                    <td>
-                        <a href="/contact/edit/{{ item.id }}" title="{% trans 'Edit Contact' %}"><i class="icon-pencil"> </i></a>
-                        <a class="row_delete" href="/contact/delete/{{ item.id }}" title="{% trans 'Delete Contact' %}"><i class="icon-trash"> </i></a>
-                    </td>
-                    <td>{{ item.last_name }}</td>
-                    <td>{{ item.first_name }}</td>
-                    <td>{{ item.dear }}</td>
-                    <td>{{ item.company_name }}</td>
-                    <td>{{ item.email }}</td>
-                    <td>{{ item.work_phone }}</td>
-                    <td>{{ item.mobile_phone }}</td>
-                    <td><a class="btn btn-success" href="/contact/{{ item.id }}/calls" title="{% trans 'Conversations' %}"><i class="icon-comment"> </i></a></td>                    
-                    <td><a class="btn btn-success" href="/charts/contact/{{ item.id }}" title="{% trans 'Charts' %}"><i class="icon-signal"> </i></a></td>
-                    <td class="center_cb"><input type="checkbox"/></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <!--<div class="modal hide" id="contactModal">-->
-        <!--</div>-->
-        <!--<script>-->
-            <!--$(".contact").click(function(ev) { // for each edit contact url-->
-                <!--ev.preventDefault(); // prevent navigation-->
-                <!--var url = $(this).data("form"); // get the contact form url-->
-                <!--$("#contactModal").load(url, function() { // load the url into the modal-->
-                    <!--$(this).modal('show'); // display the modal on url load-->
-                <!--});-->
-                <!--return false; // prevent the click propagation-->
-            <!--})-->
-        <!--</script>-->
-    
-{% else %}
-    <p>{% trans 'Welcome anonymous user! You need to' %} <a href ="/login/">{% trans 'login' %}</a> {% trans 'before you can use Chasebot' %}.</p>
-{% endif %}
+
+<p>{% trans 'Welcome back' %} {{ user.username }}.</p>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th><a class="btn btn-success" href="/contact/add" title="{% trans 'New Contact' %}"><i class="icon-plus"> </i><i class="icon-user"> </i></a>
+                	<a class="btn btn-success btn-success2" href="/deals" title="{% trans 'Deals' %}"><i class="icon-tags"></i> {% trans 'Deals' %}</a>
+                </th>
+                <th>{% trans 'Last Name' %}</th>
+                <th>{% trans 'First Name' %}</th>
+                <th>{% trans 'Dear' %}</th>
+                <th>{% trans 'Company' %}</th>
+                <th>{% trans 'Email' %}</th>
+                <th>{% trans 'Work Phone' %}</th>
+                <th>{% trans 'Cell Phone' %}</th>
+                <th>{% trans 'Conversations' %}</th>
+                <th>{% trans 'Charts' %}</th>
+                <th>{% trans 'Important Client' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in contacts %}
+            <tr>
+                <td>
+                    <a href="/contact/edit/{{ item.id }}" title="{% trans 'Edit Contact' %}"><i class="icon-pencil"> </i></a>
+                    <a class="row_delete" href="/contact/delete/{{ item.id }}" title="{% trans 'Delete Contact' %}"><i class="icon-trash"> </i></a>
+                </td>
+                <td>{{ item.last_name }}</td>
+                <td>{{ item.first_name }}</td>
+                <td>{{ item.dear }}</td>
+                <td>{{ item.company_name }}</td>
+                <td>{{ item.email }}</td>
+                <td>{{ item.work_phone }}</td>
+                <td>{{ item.mobile_phone }}</td>
+                <td><a class="btn btn-success" href="/contact/{{ item.id }}/calls" title="{% trans 'Conversations' %}"><i class="icon-comment"> </i></a></td>                    
+                <td><a class="btn btn-success" href="/charts/contact/{{ item.id }}" title="{% trans 'Charts' %}"><i class="icon-signal"> </i></a></td>
+                <td class="center_cb"><input type="checkbox"/></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+     {% if show_paginator %}
+	    <div class="paginator">
+	      {% if has_prev %}
+	        <a href="?page={{ prev_page }}">&laquo; Previous</a>
+	      {% endif %}
+	      {% if has_next %}
+	        <a href="?page={{ next_page }}">Next &raquo;</a>
+	      {% endif %}
+	      (Page {{ page }} of {{ pages }})
+	    </div>
+  	{% endif %}
+   
 
 {% endblock %}
