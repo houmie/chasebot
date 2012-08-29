@@ -50,3 +50,11 @@ td.center_cb{
     color: #333333;
     text-shadow: none;
 }
+
+.input_filter{
+	width: 85px;
+}
+
+.form_no_margin{
+	margin: 0;
+}

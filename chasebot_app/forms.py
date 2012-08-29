@@ -1,3 +1,4 @@
+from django.forms.forms import Form
 __author__ = 'houman'
 from django.utils.datetime_safe import strftime
 from django.contrib.localflavor.generic.forms import DateField
@@ -51,6 +52,12 @@ class RegistrationForm(ModelForm):
             raise forms.ValidationError("That email is already taken, please select another.")
         return email
 
+
+class FilterContactsForm(Form):
+    last_name     = forms.CharField(widget= forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query'}), max_length=50)
+    first_name    = forms.CharField(widget= forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query'}), max_length=30)
+    company       = forms.CharField(widget= forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query'}), max_length=30)
+    email         = forms.EmailField(widget= forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query'}))
 
 class ContactsForm(ModelForm):
     def __init__(self, company, *args, **kwargs):

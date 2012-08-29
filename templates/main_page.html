@@ -3,23 +3,52 @@
 {% block title %}{% trans 'Chasebot - Home' %}{% endblock %}
 {% block head %}{{ company_name }}{% endblock %}
 {% block external %}
-	<script type="text/javascript" src="{{ STATIC_URL }}chasebot/chasebot_base.js" ></script>
+	<script type="text/javascript" src="{{ STATIC_URL }}chasebot/chasebot_base.js" ></script>	
 {% endblock %}
 {% block content %}
 
 <p>{% trans 'Welcome back' %} {{ user.username }}.</p>
-
+	<div>
+		<a class="btn btn-success" href="/contact/add" title="{% trans 'New Contact' %}"><i class="icon-plus"></i><i class="icon-user"> </i></a>
+        <a class="btn btn-success btn-success2" href="/deals" title="{% trans 'Deals' %}"><i class="icon-tags"></i> {% trans 'Deals' %}</a>
+	</div>	
     <table class="table">
         <thead>
             <tr>
-                <th><a class="btn btn-success" href="/contact/add" title="{% trans 'New Contact' %}"><i class="icon-plus"> </i><i class="icon-user"> </i></a>
-                	<a class="btn btn-success btn-success2" href="/deals" title="{% trans 'Deals' %}"><i class="icon-tags"></i> {% trans 'Deals' %}</a>
+            	<th></th>
+                <th>
+                	<form action="." method="get" class="form-search form_no_margin">	    				
+	    				<div class="input-append">
+	    				{{filter_form.last_name}}<button type="button" class="btn filter_button"><i class='icon-filter'> </i></button>
+	    				</div>	   <br> 
+	    				{% trans 'Last Name' %}	    								
+                	</form>  
                 </th>
-                <th>{% trans 'Last Name' %}</th>
-                <th>{% trans 'First Name' %}</th>
+                <th>
+                	<form action="." method="get" class="form-search form_no_margin">	    				
+	    				<div class="input-append">
+	    				{{filter_form.first_name}}<button type="button" class="btn filter_button"><i class='icon-filter'> </i></button>
+	    				</div>	   <br> 
+	    				{% trans 'First Name' %}	    								
+                	</form>
+            	</th>
                 <th>{% trans 'Dear' %}</th>
-                <th>{% trans 'Company' %}</th>
-                <th>{% trans 'Email' %}</th>
+                <th>
+                	<form action="." method="get" class="form-search form_no_margin">	    				
+	    				<div class="input-append">
+	    				{{filter_form.company}}<button type="button" class="btn filter_button"><i class='icon-filter'> </i></button>
+	    				</div>	   <br> 
+	    				{% trans 'Company' %}	    								
+                	</form>                	
+            	</th>
+                <th>
+                	<form action="." method="get" class="form-search form_no_margin">	    				
+	    				<div class="input-append">
+	    				{{filter_form.email}}<button type="button" class="btn filter_button"><i class='icon-filter'> </i></button>
+	    				</div>	   <br> 
+	    				{% trans 'Email' %}	    								
+                	</form>                	
+            	</th>
                 <th>{% trans 'Work Phone' %}</th>
                 <th>{% trans 'Cell Phone' %}</th>
                 <th>{% trans 'Conversations' %}</th>
@@ -27,25 +56,8 @@
                 <th>{% trans 'Important Client' %}</th>
             </tr>
         </thead>
-        <tbody>
-            {% for item in contacts %}
-            <tr>
-                <td>
-                    <a href="/contact/edit/{{ item.id }}" title="{% trans 'Edit Contact' %}"><i class="icon-pencil"> </i></a>
-                    <a class="row_delete" href="/contact/delete/{{ item.id }}" title="{% trans 'Delete Contact' %}"><i class="icon-trash"> </i></a>
-                </td>
-                <td>{{ item.last_name }}</td>
-                <td>{{ item.first_name }}</td>
-                <td>{{ item.dear }}</td>
-                <td>{{ item.company_name }}</td>
-                <td>{{ item.email }}</td>
-                <td>{{ item.work_phone }}</td>
-                <td>{{ item.mobile_phone }}</td>
-                <td><a class="btn btn-success" href="/contact/{{ item.id }}/calls" title="{% trans 'Conversations' %}"><i class="icon-comment"> </i></a></td>                    
-                <td><a class="btn btn-success" href="/charts/contact/{{ item.id }}" title="{% trans 'Charts' %}"><i class="icon-signal"> </i></a></td>
-                <td class="center_cb"><input type="checkbox"/></td>
-            </tr>
-            {% endfor %}
+        <tbody id="search_result">
+            {% include 'contacts_list.html' %}
         </tbody>
     </table>
      {% if show_paginator %}

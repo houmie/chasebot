@@ -1,0 +1,19 @@
+{% load i18n %}
+{% for item in contacts %}
+            <tr>
+                <td>
+                    <a href="/contact/edit/{{ item.id }}" title="{% trans 'Edit Contact' %}"><i class="icon-pencil"> </i></a>
+                    <a class="row_delete" href="/contact/delete/{{ item.id }}" title="{% trans 'Delete Contact' %}"><i class="icon-trash"> </i></a>
+                </td>
+                <td>{{ item.last_name }}</td>
+                <td>{{ item.first_name }}</td>
+                <td>{{ item.dear }}</td>
+                <td>{{ item.company_name }}</td>
+                <td>{{ item.email }}</td>
+                <td>{{ item.work_phone }}</td>
+                <td>{{ item.mobile_phone }}</td>
+                <td><a class="btn btn-success" href="/contact/{{ item.id }}/calls" title="{% trans 'Conversations' %}"><i class="icon-comment"> </i></a></td>                    
+                <td><a class="btn btn-success" href="/charts/contact/{{ item.id }}" title="{% trans 'Charts' %}"><i class="icon-signal"> </i></a></td>
+                <td class="center_cb"><input type="checkbox"/></td>
+            </tr>
+{% endfor %}

@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404, render
 from django.template.context import RequestContext
 from chasebot_app.forms import RegistrationForm, ContactsForm, ContactTypeForm, MaritalStatusForm, CountryForm, CallsForm, SalesItemForm, DealTypeForm,\
-    DealForm, BaseDealFormSet, DealCForm
+    DealForm, BaseDealFormSet, DealCForm, FilterContactsForm
 from chasebot_app.models import Company, Contact, ContactType, MaritalStatus, Country, Conversation, SalesItem, DealType, DealStatus, Deal,\
     UserProfile
 from chasebot_app.models import UserProfile
@@ -34,19 +34,40 @@ def display_current_language(request):
 
 @login_required
 def main_page_view(request):
-    ITEMS_PER_PAGE = 10
+    ITEMS_PER_PAGE = 3
     lang = display_current_language(request)
     delete_button_confirmation = get_delete_button_confirmation()
     profile = request.user.get_profile()
     company_name = profile.company.company_name
     contacts_queryset = profile.company.contact_set.all().order_by('last_name')    
-    contacts, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, contacts_queryset)            
+    ajax = False
+    
+    if 'ajax' in request.GET:
+        ajax = True
+        if 'last_name' in request.GET:    
+            last_name = request.GET['last_name']
+            contacts_queryset = contacts_queryset.filter(last_name__icontains=last_name).order_by('last_name')
+        if 'first_name' in request.GET:    
+            first_name = request.GET['first_name']
+            contacts_queryset = contacts_queryset.filter(first_name__icontains=first_name).order_by('first_name')
+        if 'company' in request.GET:    
+            company = request.GET['company']
+            contacts_queryset = contacts_queryset.filter(company_name__icontains=company).order_by('company_name')
+        if 'email' in request.GET:    
+            email = request.GET['email']
+            contacts_queryset = contacts_queryset.filter(email__icontains=email).order_by('email')
+    
+    filter_form = FilterContactsForm(request.GET)
+    contacts, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, contacts_queryset)    
     variables = {
                  'company_name': company_name, 'contacts' : contacts, 'locale' : get_datepicker_format(request), 'lang': lang, 'delete_button_confirmation': delete_button_confirmation,
                  'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages,
-                 'next_page': page_number + 1, 'prev_page': page_number - 1
-                 }    
-    return render(request, 'main_page.html', variables)
+                 'next_page': page_number + 1, 'prev_page': page_number - 1, 'filter_form' : filter_form
+                 }
+    if ajax:    
+        return render(request, 'contacts_list.html', variables)
+    else:
+        return render(request, 'main_page.html', variables)        
 
 @login_required
 def contact_view(request, contact_id=None):    

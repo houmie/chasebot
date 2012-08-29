@@ -91,6 +91,7 @@ function row_add_save(){
     		//if there is no error then insert the added row before the current add-button row. (last row)
     		row.before(result);      		
       		$(".row_edit").click(row_edit);
+      		$(".row_delete").click(row_delete);	
       		
       		//if backup_add contains any children, it means that previously there was an error and the box is still red. We need to load our backup.
       		if($("#backup_add").children().length > 0)
@@ -146,6 +147,7 @@ function row_edit_save(e) {
     		row.before(result);
       		row.remove();
       		$(".row_edit").click(row_edit);
+      		$(".row_delete").click(row_delete);	
     	}
   	});
 	return false;
