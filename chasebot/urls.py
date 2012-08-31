@@ -6,7 +6,7 @@ from django.views.generic.simple import direct_to_template
 from chasebot import settings
 from chasebot_app.views import main_page_view, logout_page_view, register_page_view, contact_view, delete_contact_view, call_display_view, \
      delete_call_view, sales_item_view, sales_item_display_view, delete_sales_item_view, deal_template_display_view, deal_template_view, delete_template_deal_view,\
-    charts_view, call_view, sales_item_cancel_view
+    charts_view, call_view, sales_item_cancel_view, set_timezone
 
 admin.autodiscover()
 
@@ -53,6 +53,8 @@ urlpatterns = patterns('',
     
     #i18n
     (r'^i18n/', include('django.conf.urls.i18n')),
+    (r'^timezone/', set_timezone),
+    
     
     # Uncomment the admin/doc line below to enable admin documentation:
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

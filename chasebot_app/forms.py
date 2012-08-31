@@ -1,4 +1,7 @@
 from django.forms.forms import Form
+from chasebot_app.widgets import cb_DateInput
+from django.utils import timezone
+import pytz
 __author__ = 'houman'
 from django.utils.datetime_safe import strftime
 from django.contrib.localflavor.generic.forms import DateField
@@ -82,7 +85,7 @@ class ContactsForm(ModelForm):
                 'mobile_phone': forms.TextInput(attrs={'placeholder': 'Add a cell phone',               'class': 'placeholder_fix_css'}),
                 'fax_number': forms.TextInput(  attrs={'placeholder': 'Add a fax number',               'class': 'placeholder_fix_css'}),
                 'email': forms.TextInput(       attrs={'placeholder': 'Add an email',                   'class': 'placeholder_fix_css'}),
-                'birth_date': forms.DateInput(  attrs={'placeholder': 'Add the day of birth', 'id': 'datepicker', 'class': 'placeholder_fix_css'}),
+                'birth_date': forms.DateInput(  attrs={'placeholder': 'Add the day of birth',           'class': 'placeholder_fix_css datepicker'}),
                 'referred_by': forms.TextInput( attrs={'placeholder': '...was referred by?', 'class': 'placeholder_fix_css'}),
                 'spouse_first_name': forms.TextInput(attrs={'placeholder': 'What is the spouse\'s name?', 'class': 'placeholder_fix_css'}),
                 'children_names': forms.TextInput(attrs={'placeholder': 'What are the children names?', 'class': 'placeholder_fix_css'}),
@@ -97,8 +100,17 @@ class ContactsForm(ModelForm):
 
 
 
-class CallsForm(ModelForm):          
-       
+class FilterCallsForm(Form):            
+    from_date   = forms.DateField(localize=True, widget=cb_DateInput(attrs={'placeholder': 'From Date...', 'class': 'placeholder_fix_css datepicker input-small search-query', }))
+    to_date     = forms.DateField(localize=True, widget=cb_DateInput(attrs={'placeholder': 'To Date...', 'class': 'placeholder_fix_css datepicker input-small search-query'}))
+    subject     = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query'}), max_length=50)
+    
+    
+    
+class CallsForm(ModelForm):       
+    conversation_date = forms.DateField(localize=True, widget=forms.DateInput(attrs={'placeholder': 'Add the date for this conversation', 'class': 'placeholder_fix_css datepicker'}))
+    conversation_time = forms.TimeField(localize=True, widget=forms.TimeInput(attrs={'placeholder': 'Add the time for this conversation', 'class': 'placeholder_fix_css'}))
+    
     def __init__(self, company, *args, **kwargs):
         super(CallsForm, self).__init__(*args, **kwargs)                                        
         self.fields['deal_1'].queryset = self.get_non_open_deals(self.instance, company)        
@@ -106,10 +118,11 @@ class CallsForm(ModelForm):
         self.fields['deal_3'].queryset = self.get_non_open_deals(self.instance, company)        
         self.fields['deal_4'].queryset = self.get_non_open_deals(self.instance, company)        
         self.fields['deal_5'].queryset = self.get_non_open_deals(self.instance, company)        
-        self.fields['deal_6'].queryset = self.get_non_open_deals(self.instance, company)        
-  
-    contact_date = forms.DateField(localize=True, widget=forms.DateInput(attrs={'placeholder': 'Add the date for this conversation', 'id': 'datepicker', 'class': 'placeholder_fix_css'}))
-    contact_time = forms.TimeField(localize=True, widget=forms.TimeInput(attrs={'placeholder': 'Add the time for this conversation', 'class': 'placeholder_fix_css'}))
+        self.fields['deal_6'].queryset = self.get_non_open_deals(self.instance, company)
+        local_tz = timezone.get_current_timezone()
+        self.fields['conversation_date'].initial = self.instance.conversation_datetime.replace(tzinfo=pytz.utc).astimezone(local_tz).date()
+        self.fields['conversation_time'].initial = self.instance.conversation_datetime.replace(tzinfo=pytz.utc).astimezone(local_tz).time()         
+    
         
     deal_1      =   forms.ModelChoiceField(required=False, queryset = '')     
     deal_2      =   forms.ModelChoiceField(required=False, queryset = '')    
@@ -127,7 +140,7 @@ class CallsForm(ModelForm):
     
     class Meta:
         model = Conversation
-        exclude = ('company', 'contact')
+        exclude = ('company', 'contact', 'conversation_datetime')
         widgets = {                    
                     'subject': forms.TextInput(attrs={'placeholder': '', 'class': 'placeholder_fix_css'}),
                     'notes': forms.Textarea(attrs={'placeholder': 'Add relevant notes...'}),                                      
@@ -241,6 +254,19 @@ class CallsForm(ModelForm):
         return deal_types.exclude(pk__in=open_deal_list)
             
 
+class FilterDealsForm(Form):
+    def __init__(self, company, *args, **kwargs):
+        super(FilterDealsForm, self).__init__(*args, **kwargs)
+        self.fields['sales_item'].queryset = SalesItem.objects.filter(company=company)
+            
+    deal_name           = forms.CharField(widget = forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query'}), max_length=40)    
+    sales_item          = forms.ModelMultipleChoiceField(queryset='', widget = forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query'}))    
+    price               = forms.DecimalField(widget = forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query'}))
+    sales_term          = forms.ModelChoiceField(queryset=SalesTerm.objects.all(), widget = forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query'}))
+    quantity            = forms.IntegerField(widget = forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query'})) 
+
+
+
 class DealTypeForm(ModelForm):    
     def __init__(self, *args, **kwargs):
         super(DealTypeForm, self).__init__(*args, **kwargs)
@@ -276,36 +302,27 @@ class DealForm(ModelForm):
             #deal = self.save(commit=False)
             latest_deal = self.instance.contact.deal_set.filter(deal_id = self.instance.deal_id).latest('time_stamp')
             if self.instance.pk != latest_deal.pk:
-                raise forms.ValidationError(_(u'You cannot set a past deal to Win/Lost, as there is already a "%s" deal status recorded on ' % latest_deal.status)  + str(latest_deal.conversation.contact_date))
+                raise forms.ValidationError(_(u'You cannot set a past deal to Win/Lost, as there is already a "%s" deal status recorded on ' % latest_deal.status)  + str(latest_deal.conversation.conversation_datetime))
         return status
         
 class DealCForm(ModelForm):
     attach_deal_conversation  = forms.BooleanField(required=False, initial=False)
     
     def __init__(self, *args, **kwargs):
-        super(DealCForm, self).__init__(*args, **kwargs)
-        #self.fields['deal_type'].required = False
-        #self.fields['deal_type'].widget.attrs['disabled'] = 'disabled'    
+        super(DealCForm, self).__init__(*args, **kwargs)           
         self.fields['deal_instance_name'].widget.attrs['readonly'] = 'True'
         self.fields['status'].widget.attrs['class'] = 'select select_status'
-#        self.fields['long_desc'].widget.attrs['rows'] = 20
-
-    
-#    def clean_deal_type(self):
-#        instance = getattr(self, 'instance', None)
-#        if instance:
-#            return instance.deal_type
-#        else:            
-#            return self.cleaned_data['deal_type']
     
     class Meta:
         model = Deal
         fields = {'deal_instance_name', 'status', 'attach_deal_conversation'}
-#        widgets = {
-#                    'status': forms.Select(),
-#                                            
-#                   }
     
+
+class FilterSalesItemForm(Form):
+    def __init__(self, *args, **kwargs):
+        super(FilterSalesItemForm, self).__init__(*args, **kwargs)          
+    
+    item_description    = forms.CharField(widget = forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query'}), max_length=40)
 
 class SalesItemForm(ModelForm):
     class Meta:

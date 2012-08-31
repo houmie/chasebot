@@ -3,7 +3,7 @@ $.chasebot_dp.locale = '';
 
 $(document).ready(function () {		
 	// $.chasebot_dp.locale = 'dd/mm/yyyy';
-	$('#datepicker')
+	$('.datepicker')
     	.datepicker({    		
     		format: $('#locale').text(),
     		autoclose: 'True'

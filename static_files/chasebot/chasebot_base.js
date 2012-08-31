@@ -22,6 +22,35 @@ $.ajaxSetup({
      } 
 });
 
+function ISODateString(d){
+	function pad(n){
+		return n<10 ? '0'+n : n
+	}
+	return d.getUTCFullYear()+'-'
+      + pad(d.getUTCMonth()+1)+'-'
+      + pad(d.getUTCDate())+'T'
+      + pad(d.getUTCHours())+':'
+      + pad(d.getUTCMinutes())+':'
+      + pad(d.getUTCSeconds())+'Z'
+}
+
+
+function convertDateTimeToUTC(date) { 
+	return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds()); 
+	}
+	
+function convertDateToUTC(date) { 
+	return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()); 
+	}
+
+if (!String.prototype.trim) {
+   //code for trim
+   String.prototype.trim=function(){
+		return this.replace(/^\s+|\s+$/g, '');
+	};
+}
+
+
 
 function row_delete() {
     if (confirm($('#delete_button_confirmation').text())) {
@@ -54,9 +83,26 @@ function filter_rows(){
 		//id_last_name -> last_name
 		var keyword = $(v).attr('id').substring(3);
 		
-		//Only if it contains any value in the field, attach it to the url GET, otherwise its pointless		
-		if($(v).val() != ''){			
-			url = url + '&' + keyword + '=' + $(v).val();			
+		//Only if it contains any value in the field, attach it to the url GET, otherwise its pointless
+		var value = $(v).val();		
+		if(value != ''){
+			// if($(v).attr('type') == 'date'){
+			// }			
+			
+			//If multiple parameters are passed seperated by commas...
+			if(value.indexOf(',') != -1){				
+				values = value.split(',');
+				$(values).each(function(i, v){
+					if(v.trim() != ''){
+						//Put each paramater in its own keyword .e.g. ?ajax&sales_item=t3&sales_item=t1
+						url = url + '&' + keyword + '=' + v.trim();
+					}
+				});
+			}
+			//If single paramaters are passed in...
+			else{
+				url = url + '&' + keyword + '=' + value;				
+			}						
 		}				 		
 	})
 	//Even if no filter are set, still the query to server is required to get all list and undo filters.	

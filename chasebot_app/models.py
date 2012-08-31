@@ -139,8 +139,7 @@ class DealType(models.Model):
 class Conversation(models.Model):
     contact             = models.ForeignKey(Contact)
     time_stamp          = CreationDateTimeField()
-    contact_date        = models.DateField(_(u"Conversation Date"))
-    contact_time        = models.TimeField(_(u"Conversation Time"))
+    conversation_datetime = models.DateTimeField()    
     subject             = models.CharField(_(u"Conversation Subject"),      max_length=50)
     notes               = models.TextField(_(u"Conversation Notes"),        blank=True)   
             
@@ -159,7 +158,7 @@ class Deal(models.Model):
     status              = models.ForeignKey(DealStatus, verbose_name=_(u"Deal Status"), null=True, blank=True)    
     contact             = models.ForeignKey(Contact)
     deal_type           = models.ForeignKey(DealType)
-    deal_instance_name  = models.CharField(_("Deal Name"), max_length=100)    
+    deal_instance_name  = models.CharField(_(u"Deal Name"), max_length=100)    
     time_stamp          = CreationDateTimeField()
     conversation        = models.ForeignKey(Conversation)
     set                 = models.IntegerField(_(u"Set Number"))

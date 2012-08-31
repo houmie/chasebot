@@ -1,0 +1,17 @@
+{% load i18n %}
+{% load l10n %}
+{% for item in calls %}
+                    <tr>
+                        <td>                        	
+                            <a href="/contact/{{ contact.id }}/call/edit/{{ item.id }}" title="{% trans 'Edit' %}"> <i class="icon-pencil"> </i></a>
+                            <a href="/contact/{{ contact.id }}/call/delete/{{ item.id }}" title="{% trans 'Delete' %}"><i class="icon-trash"> </i></a>
+                        </td>
+                        <td>{{ item.conversation_datetime }}</td>
+                        <td>{{ item.conversation_datetime }}</td>
+                        <td>{{ item.subject }}</td>
+                        <td>{{ item.notes }}</td>                        
+                        <td> </td>
+                        <td> </td>
+                        <td> </td>
+                    </tr>
+{% endfor %}

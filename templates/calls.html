@@ -3,35 +3,43 @@
 {% block title %}{% trans 'Chasebot - Conversation History' %}{% endblock %}
 {% block head %}{% trans 'Conversations with' %} {{contact.first_name}} {{ contact.last_name }}{% endblock %}
 {% block external %}
+	<script type="text/javascript" src="{{ STATIC_URL }}chasebot/chasebot_base.js" ></script>	
 {% endblock %}
 {% block content %}	
 	<table class="table">
                 <thead>
                     <tr>
-                        <th><a class="btn btn-success" href="/" title="{% trans 'Back to Main Screen' %}"><i class="icon-arrow-left"> </i></a>
+                        <th>
+                        	<a class="btn btn-success" href="/" title="{% trans 'Back to Main Screen' %}"><i class="icon-arrow-left"> </i></a>
                         	<a class="btn btn-success" href="/contact/{{ contact.id }}/call/add" title="{% trans 'New Conversation' %}"> <i class="icon-plus"> </i><i class="icon-comment"> </i></a></th>
-                        <th>{% trans 'Date' %}</th>
+                        <th>
+                        	<form action="." method="get" class="form-search form_no_margin">	    				
+			    				<div class="input-append">
+			    				{{filter_form.from_date}}<button type="button" class="btn filter_button"><i class='icon-filter'> </i></button>
+			    				</div>	   <br> 
+			    					    								
+		                	</form>
+		                	<form action="." method="get" class="form-search form_no_margin">	    				
+			    				<div class="input-append">
+			    				{{filter_form.to_date}}<button type="button" class="btn filter_button"><i class='icon-filter'> </i></button>
+			    				</div>	   <br> 
+			    				{% trans 'Date' %}	    								
+		                	</form>
+                    	</th>
                         <th>{% trans 'Time' %}</th>
-                        <th>{% trans 'Subject' %}</th>
+                        <th>
+                        	<form action="." method="get" class="form-search form_no_margin">	    				
+			    				<div class="input-append">
+			    				{{filter_form.subject}}<button type="button" class="btn filter_button"><i class='icon-filter'> </i></button>
+			    				</div>	   <br> 
+			    				{% trans 'Subject' %}	    								
+		                	</form>                        	
+                    	</th>
                         <th>{% trans 'Notes' %}</th>                        
                     </tr>
                 </thead>
-                <tbody>
-                    {% for item in calls %}
-                    <tr>
-                        <td>                        	
-                            <a href="/contact/{{ contact.id }}/call/edit/{{ item.id }}" title="{% trans 'Edit' %}"> <i class="icon-pencil"> </i></a>
-                            <a href="/contact/{{ contact.id }}/call/delete/{{ item.id }}" title="{% trans 'Delete' %}"><i class="icon-trash"> </i></a>
-                        </td>
-                        <td>{{ item.contact_date }}</td>
-                        <td>{{ item.contact_time }}</td>
-                        <td>{{ item.subject }}</td>
-                        <td>{{ item.notes }}</td>                        
-                        <td> </td>
-                        <td> </td>
-                        <td> </td>
-                    </tr>
-                    {% endfor %}
+                <tbody id="search_result">
+                    {% include 'calls_list.html' %}
                 </tbody>
             </table>
             {% if show_paginator %}

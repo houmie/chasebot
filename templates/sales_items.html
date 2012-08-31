@@ -13,10 +13,17 @@
                 <th><a class="btn btn-success" href="/deals" title="{% trans 'Back to Deals' %}"><i class="icon-arrow-left"> </i></a>
                 	<!-- <a class="btn btn-success" href="/sales_item/add" title="{% trans 'New Sales Item' %}"><i class="icon-plus"> </i><i class="icon-glass"> </i></a> -->                	
                 </th>
-                <th>{% trans 'Sales Item' %}</th>                    
+                <th>
+                	<form action="." method="get" class="form-search form_no_margin">	    				
+	    				<div class="input-append">
+	    				{{filter_form.item_description}}<button type="button" class="btn filter_button"><i class='icon-filter'> </i></button>
+	    				</div>	   <br> 
+	    				{% trans 'Sales Item' %}
+                	</form>                	
+            	</th>                    
             </tr>
         </thead>
-        <tbody>
+        <tbody id="search_result">
         	{% include 'sales_item_list.html' %}
         	<tr>
         		<td></td>

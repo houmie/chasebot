@@ -11,6 +11,8 @@ from chasebot_app.models import Company, UserProfile, Contact, ContactType,\
     SalesItem, SalesTerm, Conversation, DealType, Deal, DealStatus
 import datetime
 import uuid
+from django.utils.timezone import utc
+from django.utils import timezone
 
 
 
@@ -49,10 +51,10 @@ def setup_sales_term(self):
 
 #Fixture for creating a three calls for company1's contact1a and 1 call for company2's contact2
 def setup_calls(self):
-        self.call1 = Conversation.objects.create(contact = self.contact1a, contact_date = datetime.datetime.now(), contact_time = datetime.datetime.now().strftime("%H:%M"), subject = 'subject1a')
-        self.call2 = Conversation.objects.create(contact = self.contact1a, contact_date = datetime.datetime.now(), contact_time = datetime.datetime.now().strftime("%H:%M"), subject = 'subject1b')
-        self.call3 = Conversation.objects.create(contact = self.contact1a, contact_date = datetime.datetime.now(), contact_time = datetime.datetime.now().strftime("%H:%M"), subject = 'subject1c')
-        self.call21 =Conversation.objects.create(contact = self.contact2, contact_date = datetime.datetime.now(), contact_time = datetime.datetime.now().strftime("%H:%M"), subject = 'subject2')
+        self.call1 = Conversation.objects.create(contact = self.contact1a, conversation_datetime = timezone.now(), subject = 'subject1a')
+        self.call2 = Conversation.objects.create(contact = self.contact1a, conversation_datetime = timezone.now(), subject = 'subject1b')
+        self.call3 = Conversation.objects.create(contact = self.contact1a, conversation_datetime = timezone.now(), subject = 'subject1c')
+        self.call21 =Conversation.objects.create(contact = self.contact2, conversation_datetime = timezone.now(), subject = 'subject2')
 
 #Testing the ownership of the contacts belonging to a company
 class ContactModelTest(TestCase):

@@ -4,44 +4,64 @@
 {% block head %}{% trans 'Chasebot - Deals' %}{% endblock %}
 {% block external %}
 <script type="text/javascript" src="{{ STATIC_URL }}chasebot/chasebot_base.js" ></script>
+
 {% endblock %}
 {% block content %}    
+	<div>
+		<a class="btn btn-success" href="/" title="{% trans 'Back to Main Screen' %}"><i class="icon-arrow-left"> </i></a>
+    	<a class="btn btn-success" href="/deal/add" title="{% trans 'New Deal' %}"><i class="icon-plus"> </i><i class="icon-tag"> </i></a>
+    	<a class="btn btn-success" href="/sales_items" title="{% trans 'Sales Items for Deals' %}"><i class="icon-glass"> </i></a>
+	</div>
     <table class="table">
         <thead>
             <tr>
-                <th><a class="btn btn-success" href="/" title="{% trans 'Back to Main Screen' %}"><i class="icon-arrow-left"> </i></a>
-                	<a class="btn btn-success" href="/deal/add" title="{% trans 'New Deal' %}"><i class="icon-plus"> </i><i class="icon-tag"> </i></a>
-                	<a class="btn btn-success" href="/sales_items" title="{% trans 'Sales Items for Deals' %}"><i class="icon-glass"> </i></a>
+                <th>
                 </th>
-                <th>{% trans 'Deal' %}</th>        
+                <th>
+                	<form action="." method="get" class="form-search form_no_margin">	    				
+	    				<div class="input-append">
+	    				{{filter_form.deal_name}}<button type="button" class="btn filter_button"><i class='icon-filter'> </i></button>
+	    				</div>	   <br> 
+	    				{% trans 'Deal' %}
+                	</form>
+            	</th>
                 <th>{% trans 'Description' %}</th>    
-                <th>{% trans 'Item' %}</th>
-                <th>{% trans 'Price' %}</th>
-                <th>{% trans 'Term' %}</th>
-                <th>{% trans 'Quantity' %}</th>
-                <th>{% trans 'Status' %}</th>                        
+                <th>
+                	<form action="." method="get" class="form-search form_no_margin">	    				
+	    				<div class="input-append">
+	    				{{filter_form.sales_item}}<button type="button" class="btn filter_button"><i class='icon-filter'> </i></button>
+	    				</div>	   <br> 
+	    				{% trans 'Item' %}
+                	</form>                	
+            	</th>
+                <th>
+                	<form action="." method="get" class="form-search form_no_margin">
+	    				<div class="input-append">
+	    				{{filter_form.price}}<button type="button" class="btn filter_button"><i class='icon-filter'> </i></button>
+	    				</div>	   <br> 
+	    				{% trans 'Price' %}
+                	</form>                	
+            	</th>
+                <th>
+                	<form action="." method="get" class="form-search form_no_margin">
+	    				<div class="input-append">
+	    				{{filter_form.sales_term}}<button type="button" class="btn filter_button"><i class='icon-filter'> </i></button>
+	    				</div>	   <br> 
+	    				{% trans 'Term' %}
+                	</form>                	
+            	</th>
+                <th>
+                	<form action="." method="get" class="form-search form_no_margin">
+	    				<div class="input-append">
+	    				{{filter_form.quantity}}<button type="button" class="btn filter_button"><i class='icon-filter'> </i></button>
+	    				</div>	   <br> 
+	    				{% trans 'Quantity' %}
+                	</form>                	
+            	</th>                
             </tr>
         </thead>
-        <tbody>
-            {% for item in deals %}
-            <tr>
-                <td>
-                    <a href="/deal/edit/{{ item.id }}" title="{% trans 'Edit' %}"><i class="icon-pencil"> </i></a>
-                    <a class="row_delete" href="/deal/delete/{{ item.id }}" title="{% trans 'Delete' %}"><i class="icon-trash"> </i></a>
-                </td>
-                <td>{{ item.deal_name }}</td>
-                <td>{{ item.deal_description }}</td>             
-                <td>
-                	{% for item in item.sales_item.all %}
-                		{{item}}, 
-                	{% endfor %}
-            	</td>
-                <td>{{ item.price }}</td>
-                <td>{{ item.sales_term }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>{{ item.status }}</td>                           
-            </tr>
-            {% endfor %}
+        <tbody id="search_result">
+            {% include 'deals_list.html'%}
         </tbody>
     </table>        
     {% if show_paginator %}

@@ -1,5 +1,7 @@
 # Create your views here.
-import datetime 
+import datetime
+from itertools import chain
+from datetime import datetime as dt 
 from django.http import Http404, HttpResponse
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
@@ -8,14 +10,15 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404, render
 from django.template.context import RequestContext
 from chasebot_app.forms import RegistrationForm, ContactsForm, ContactTypeForm, MaritalStatusForm, CountryForm, CallsForm, SalesItemForm, DealTypeForm,\
-    DealForm, BaseDealFormSet, DealCForm, FilterContactsForm
+    DealForm, BaseDealFormSet, DealCForm, FilterContactsForm, FilterCallsForm,\
+    FilterDealsForm, FilterSalesItemForm
 from chasebot_app.models import Company, Contact, ContactType, MaritalStatus, Country, Conversation, SalesItem, DealType, DealStatus, Deal,\
-    UserProfile
+    UserProfile, SalesTerm
 from chasebot_app.models import UserProfile
 from django.core import serializers
 from django.utils.translation import ugettext as _
 from django.template import response
-from django.utils import simplejson
+from django.utils import simplejson, timezone
 from django.forms.models import modelformset_factory
 import uuid
 from django.forms.formsets import formset_factory
@@ -23,7 +26,20 @@ from django.db.models.aggregates import Max
 import time
 from django.utils.translation import activate
 from django.core.paginator import Paginator, InvalidPage
+from django.utils.timezone import utc
+import pytz
+from django.shortcuts import redirect, render
+from chasebot.formats.en import formats as formats_en
+from chasebot.formats.en_GB import formats as formats_en_GB
+import operator
+from django.db.models.query_utils import Q
 
+def set_timezone(request):
+    if request.method == 'POST':
+        request.session['django_timezone'] = pytz.timezone(request.POST['timezone'])
+        return redirect(request.path)
+    else:
+        return redirect('/')
 
 def display_current_language(request):
     if request.LANGUAGE_CODE == 'en-gb':
@@ -32,8 +48,22 @@ def display_current_language(request):
         lang = "American English"           
     return lang
 
+def get_current_format(request):
+    if request.LANGUAGE_CODE == 'en-gb':
+        return formats_en_GB.DATE_INPUT_FORMATS[0]
+    elif request.LANGUAGE_CODE == 'en':        
+        return formats_en.DATE_INPUT_FORMATS[0]
+
+def create_date_from_javascript_date(request, date, to_date_format = None):
+    current_tz = timezone.get_current_timezone()    
+    date_time_unaware = dt.strptime(date, get_current_format(request))
+    if to_date_format:    
+        date_time_unaware = date_time_unaware.replace(hour=23, minute=59, second=59)
+    date_time = current_tz.localize(date_time_unaware)            
+    return date_time
+
 @login_required
-def main_page_view(request):
+def main_page_view(request):    
     ITEMS_PER_PAGE = 3
     lang = display_current_language(request)
     delete_button_confirmation = get_delete_button_confirmation()
@@ -62,7 +92,7 @@ def main_page_view(request):
     variables = {
                  'company_name': company_name, 'contacts' : contacts, 'locale' : get_datepicker_format(request), 'lang': lang, 'delete_button_confirmation': delete_button_confirmation,
                  'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages,
-                 'next_page': page_number + 1, 'prev_page': page_number - 1, 'filter_form' : filter_form
+                 'next_page': page_number + 1, 'prev_page': page_number - 1, 'filter_form' : filter_form, 'timezones': pytz.common_timezones
                  }
     if ajax:    
         return render(request, 'contacts_list.html', variables)
@@ -105,15 +135,35 @@ def call_display_view(request, contact_id):
     ITEMS_PER_PAGE = 10
     profile = request.user.get_profile()
     contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
-    calls_queryset = contact.conversation_set.all().order_by('-time_stamp')    
+    calls_queryset = contact.conversation_set.all().order_by('-time_stamp')            
+    lang = display_current_language(request)    
+    ajax = False
+    
+    if 'ajax' in request.GET:
+        ajax = True
+        if 'from_date' in request.GET:                        
+            from_date = create_date_from_javascript_date(request, request.GET['from_date'])
+            if 'to_date' in request.GET:
+                to_date = create_date_from_javascript_date(request, request.GET['to_date'], True)                
+            else:
+                to_date = timezone.now()        
+            calls_queryset = calls_queryset.filter(conversation_datetime__range=(from_date, to_date))
+        if 'subject' in request.GET:    
+            subject = request.GET['subject']
+            calls_queryset = calls_queryset.filter(subject__icontains=subject).order_by('subject')        
+    
+    filter_form = FilterCallsForm(request.GET)
     calls, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, calls_queryset)    
-    lang = display_current_language(request)
     variables = {
                  'calls': calls, 'contact': contact, 'locale' : get_datepicker_format(request), 'lang':lang,
                  'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages,
-                 'next_page': page_number + 1, 'prev_page': page_number - 1          
+                 'next_page': page_number + 1, 'prev_page': page_number - 1, 'filter_form' : filter_form, 'timezones': pytz.common_timezones
                  }
-    return render(request, 'calls.html', variables)
+    if ajax:    
+        return render(request, 'calls_list.html', variables)
+    else:
+        return render(request, 'calls.html', variables)  
+    
 
 
 @login_required
@@ -122,7 +172,7 @@ def call_view(request, contact_id, call_id=None):
     contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
     
     if call_id is None:
-        call = Conversation(contact=contact, contact_date = datetime.date.today(), contact_time = datetime.datetime.now().time())
+        call = Conversation(contact=contact, conversation_datetime = timezone.now()) 
     else:
         call = get_object_or_404(contact.conversation_set.all(), pk=call_id)
         
@@ -141,8 +191,16 @@ def call_view(request, contact_id, call_id=None):
         non_attached_opendeal_formset = opendeal_formset_factory(request.POST, prefix='opendeals')
         attached_deals_formset = deals_formset_factory(request.POST, prefix='deals')                
         form = CallsForm(profile.company, request.POST, instance=call)           
-        if form.is_valid() and attached_deals_formset.is_valid() and non_attached_opendeal_formset.is_valid():            
-            call = form.save()            
+        if form.is_valid() and attached_deals_formset.is_valid() and non_attached_opendeal_formset.is_valid():
+            # Always localize the entered date by user into his timezone before saving it to database
+            call = form.save(commit=False)            
+            current_tz = timezone.get_current_timezone()            
+            date = form.cleaned_data['conversation_date']
+            time = form.cleaned_data['conversation_time']            
+            date_time = current_tz.localize(datetime.datetime(date.year, date.month, date.day, time.hour, time.minute))                        
+            call.conversation_datetime = date_time
+            call.save()
+                        
             # The row number of the five possible deals to add are captured as key, while the value is the actual deal that was selected in that given row. 
             deal_dic = {}
             for query, value in form.data.items():
@@ -191,7 +249,7 @@ def call_view(request, contact_id, call_id=None):
         non_attached_opendeal_formset = opendeal_formset_factory(queryset=exclude_attached_opendeals_query, prefix='opendeals')
                             
     lang = display_current_language(request)
-    variables = {'form':form, 'attached_deals_formset':attached_deals_formset, 'opendeal_formset':non_attached_opendeal_formset, 'is_atleast_one_opendeal_attached':is_atleast_one_opendeal_attached, 'locale' : get_datepicker_format(request), 'lang':lang}
+    variables = {'form':form, 'attached_deals_formset':attached_deals_formset, 'opendeal_formset':non_attached_opendeal_formset, 'is_atleast_one_opendeal_attached':is_atleast_one_opendeal_attached, 'locale' : get_datepicker_format(request), 'lang':lang, 'timezones': pytz.common_timezones}
     return render(request, 'conversation.html', variables)
 
 
@@ -217,17 +275,32 @@ def sales_item_display_view(request):
     ITEMS_PER_PAGE = 10
     profile = request.user.get_profile()
     sales_items_queryset = profile.company.salesitem_set.all()    
+        
+    lang = display_current_language(request)
+    
+    ajax = False
+    
+    if 'ajax' in request.GET:
+        ajax = True        
+        if 'item_description' in request.GET:    
+            item_description = request.GET['item_description']
+            sales_items_queryset = sales_items_queryset.filter(item_description__icontains=item_description).order_by('item_description')        
+    
+    filter_form = FilterSalesItemForm(request.GET)    
     sales_items, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, sales_items_queryset)    
-    lang = display_current_language(request)    
+    #New SalesItem form for adding a possible new one on UI
     sales_item = SalesItem(company=profile.company)
     form = SalesItemForm(instance=sales_item)
     delete_button_confirmation = get_delete_button_confirmation()
     variables = {
                  'sales_items': sales_items, 'locale' : get_datepicker_format(request), 'lang': lang, 'form':form, 'delete_button_confirmation' : delete_button_confirmation,
                  'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages,
-                 'next_page': page_number + 1, 'prev_page': page_number - 1                 
-                 }
-    return render(request, 'sales_items.html', variables)
+                 'next_page': page_number + 1, 'prev_page': page_number - 1, 'filter_form' : filter_form, 'timezones': pytz.common_timezones
+                 }    
+    if ajax:    
+        return render(request, 'sales_item_list.html', variables)
+    else:
+        return render(request, 'sales_items.html', variables)  
 
 @login_required
 def sales_item_cancel_view(request, sales_item_id):
@@ -281,21 +354,50 @@ def delete_sales_item_view(request, sales_item_id=None):
     return HttpResponseRedirect('/sales_items')
 
 
-
 @login_required
 def deal_template_display_view(request):
     ITEMS_PER_PAGE = 10
     profile = request.user.get_profile()
-    deals_queryset = profile.company.dealtype_set.all()        
+    deals_queryset = profile.company.dealtype_set.all()
+    ajax = False
+    if 'ajax' in request.GET:
+        ajax = True        
+        if 'deal_name' in request.GET:    
+            deal_name = request.GET['deal_name']
+            deals_queryset = deals_queryset.filter(deal_name__icontains=deal_name).order_by('deal_name')
+        if 'sales_item' in request.GET:    
+            #sales_item_raw = request.GET['sales_item']
+            #sales_item_keywords = sales_item_raw.split(',')
+            sales_item_keywords = request.GET.getlist('sales_item')
+            # Q are queries that can be stacked with Or operators. If none of the Qs contains any value, `reduce` minimizes them to no queryset,             
+            q_filters = reduce(operator.or_, (Q(item_description__icontains=item.strip()) for item in sales_item_keywords))
+            sales_items = profile.company.salesitem_set.filter(q_filters)       
+            deals_queryset = deals_queryset.filter(sales_item__in=sales_items)
+        if 'price' in request.GET:    
+            price = request.GET['price']
+            deals_queryset = deals_queryset.filter(price__icontains=price).order_by('price')
+        if 'sales_term' in request.GET:    
+            sales_term = request.GET['sales_term']
+            sales_terms = SalesTerm.objects.filter(sales_term__icontains=sales_term)
+            deals_queryset = deals_queryset.filter(sales_term__in=sales_terms)
+        if 'quantity' in request.GET:    
+            quantity = request.GET['quantity']
+            deals_queryset = deals_queryset.filter(quantity__icontains=quantity).order_by('quantity')    
+
+    filter_form = FilterDealsForm(profile.company, request.GET)            
     deals, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deals_queryset)    
     lang = display_current_language(request)
     delete_button_confirmation = get_delete_button_confirmation()
     variables = {
                  'deals': deals, 'lang': lang, 'delete_button_confirmation' : delete_button_confirmation,
                  'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages,
-                 'next_page': page_number + 1, 'prev_page': page_number - 1                 
+                 'next_page': page_number + 1, 'prev_page': page_number - 1,'filter_form' : filter_form, 'timezones': pytz.common_timezones                 
                  }
-    return render(request, 'deals.html', variables)
+    if ajax:    
+        return render(request, 'deals_list.html', variables)
+    else:
+        return render(request, 'deals.html', variables)
+    
 
 @login_required
 def deal_template_view(request, deal_id=None):
@@ -388,7 +490,7 @@ def charts_view(request, contact_id):
     deals = contact.deal_set.all().order_by('deal_id', 'time_stamp')
     stac = {'EM':0, 'LM':0, 'EA':0, 'LA':0, 'EE':0}
     for deal in deals:        
-        part = part_of_day_statistics(deal.conversation.contact_time)
+        part = part_of_day_statistics(deal.conversation.conversation_datetime)
         stac[part] += 1                 
     lang = display_current_language(request)
     variables = {'deals':deals, 'stac':stac, 'contact':contact, 'locale' : get_datepicker_format(request), 'lang':lang}
