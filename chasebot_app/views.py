@@ -315,7 +315,7 @@ def sales_item_cancel_view(request, sales_item_id):
     profile = request.user.get_profile()    
     sales_item = get_object_or_404(profile.company.salesitem_set.all(), pk=sales_item_id)
     variables = {'sales_items' : [sales_item]}
-    return render(request, 'sales_item_list.html', variables)
+    return render(request, '_sales_item_rows.html', variables)
 
 
 @login_required
@@ -332,21 +332,28 @@ def sales_item_view(request, sales_item_id=None):
         form = SalesItemForm(request.POST, instance=sales_item)
         if form.is_valid():
             sales_item = form.save()
+            if sales_item_id is not None:
+                variables = {'sales_items' : [sales_item]}
+                return render(request, '_sales_item_rows.html', variables)        
         else:
-            validation_error_ajax = True;            
+            validation_error_ajax = True;
     else:
         form = SalesItemForm(instance=sales_item)
-    sales_items_queryset = profile.company.salesitem_set.all().order_by('item_description')
-    sales_items, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, sales_items_queryset)
-    delete_button_confirmation = get_delete_button_confirmation()
-    variables = {
-                 'sales_items': sales_items, 'locale' : get_datepicker_format(request), 'form':form, 'delete_button_confirmation' : delete_button_confirmation,
-                 'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages,
-                 'next_page': page_number + 1, 'prev_page': page_number - 1, 'salesitem_id' : sales_item_id, 'validation_error_ajax' : validation_error_ajax, 'get_request':get_request_parameters(request)
-                 } 
     if sales_item_id is None:
+        sales_items_queryset = profile.company.salesitem_set.all().order_by('item_description')
+        sales_items, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, sales_items_queryset)
+        delete_button_confirmation = get_delete_button_confirmation()
+        variables = {
+                     'sales_items': sales_items, 'locale' : get_datepicker_format(request), 'form':form, 'delete_button_confirmation' : delete_button_confirmation,
+                     'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages,
+                     'next_page': page_number + 1, 'prev_page': page_number - 1, 'salesitem_id' : sales_item_id, 'validation_error_ajax' : validation_error_ajax, 'get_request':get_request_parameters(request)
+                     }
         return render(request, 'sales_item_list.html', variables)
     else:
+        variables = {
+                     'locale' : get_datepicker_format(request), 'form':form,                     
+                     'salesitem_id' : sales_item_id, 'validation_error_ajax' : validation_error_ajax, 
+                    }
         return render(request, 'sales_item_save_form.html', variables)
 
 @login_required

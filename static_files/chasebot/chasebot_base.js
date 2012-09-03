@@ -52,7 +52,8 @@ if (!String.prototype.trim) {
 
 
 
-function row_delete_ajax() {
+function row_delete_ajax(event) {
+    event.preventDefault();
     if (confirm($('#delete_button_confirmation').text())) {
     	var url = $(this).attr("href") + "/";
     	//e.g. get whole row to be removed
@@ -61,14 +62,16 @@ function row_delete_ajax() {
         $.post(url, function(result){
         	$('#search_result').empty();
         	$('#search_result').append(result);
+        	rebind();
         });
         row.remove();        
-    }
+    }    	
     return false;
 }
 
 
-function filter_rows(){
+function filter_rows(event){
+	event.preventDefault();
 	var url = window.location.pathname;		
 	
 	//'?' found means dirty url		
@@ -110,24 +113,24 @@ function filter_rows(){
 	$('#search_result').load(url, function(){		
 		rebind();
 	});	
-	
+			
 	return false;
 }
 
 function paginator_navigate(event) {	
-	//event.preventDefault();	
+	event.preventDefault();	
 	var url = $(this).attr("href");
 	//e.g. get whole row to be removed	
 	//var row = $('#search_result').empty();
 	
 	$('#search_result').load(url, function(){		
 		rebind();	
-	});
-	event.preventDefault();	
+	});		
 	return false;
 }
 
-function row_edit_cancel_ajax(){
+function row_edit_cancel_ajax(event){
+	event.preventDefault();
 	// This is a hidden field that contains the current sales_item_id hold for cancel edit mode
 	var salesitem_id = $(this).parent().children('div.salesitem_id').text();
 	var url = '/sales_item/edit/cancel/' + salesitem_id + '/';
@@ -139,12 +142,13 @@ function row_edit_cancel_ajax(){
     	function () {    			              		
       		rebind();
     	}
-  	);  	
+  	);  		
   	return false;
 }
 
 
-function row_edit_ajax() {
+function row_edit_ajax(event) {
+	event.preventDefault();
 	// e.g. url = '/sales_item/edit/8' 
 	var url = $(this).attr("href") + "/";
   
@@ -164,11 +168,12 @@ function row_edit_ajax() {
       		$(target).children(".save-edit-form").submit(url, row_edit_save_ajax);
       		$(".cancel_edit_button").click(row_edit_cancel_ajax);
     	}
-  	);
+  	);  		
   	return false;
 }
 
-function row_add_save_ajax(){
+function row_add_save_ajax(event){
+	event.preventDefault();
 	// selector starts from Add Button (this)	
 	var url = "/sales_item/add/";	
 	var add_button_row = $(this).closest('tr'); //add_button_row inside the form
@@ -193,8 +198,7 @@ function row_add_save_ajax(){
       		 $(target).children(".save-edit-form").submit(url, row_edit_save_ajax); 		      		
     	}
     	else {
-    		//if there is no error then insert the added row before the current add-button row. (last row)
-    		//row.before(result);
+    		//if there is no error then insert the added row before the current add-button row. (last row)    		
     		$('#search_result').empty();
     		$('#search_result').append(result);    		      		
       		rebind();
@@ -216,14 +220,15 @@ function row_add_save_ajax(){
       			$(add_button_row).find(".item_description").val('');
       		}
     	}
-  	});
+  	});  		
   	return false;
 } 
 
 
-function row_edit_save_ajax(e) {
+function row_edit_save_ajax(event) {
+	event.preventDefault();
 	// selector starts from Edit Button (this)	
-	var url = e.data;
+	var url = event.data;
   	var row = $(this).closest('tr');
   	var data = {
   			item_description: row.find(".item_description").val()    
@@ -245,10 +250,10 @@ function row_edit_save_ajax(e) {
     	else {
     		//if no error, then simply add the full 'tr' html row (with delete and edit icons) behind this row and remove this row. 
     		row.before(result);
-      		row.remove();
+      		row.remove();      		  
       		rebind();	
     	}
-  	});
+  	});  		
 	return false;
 }
 
