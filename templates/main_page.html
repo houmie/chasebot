@@ -60,17 +60,7 @@
             {% include 'contacts_list.html' %}
         </tbody>
     </table>
-     {% if show_paginator %}
-	    <div class="paginator">
-	      {% if has_prev %}
-	        <a href="?page={{ prev_page }}">&laquo; Previous</a>
-	      {% endif %}
-	      {% if has_next %}
-	        <a href="?page={{ next_page }}">Next &raquo;</a>
-	      {% endif %}
-	      (Page {{ page }} of {{ pages }})
-	    </div>
-  	{% endif %}
+     
    
 
 {% endblock %}

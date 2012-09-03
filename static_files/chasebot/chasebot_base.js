@@ -52,14 +52,15 @@ if (!String.prototype.trim) {
 
 
 
-function row_delete() {
+function row_delete_ajax() {
     if (confirm($('#delete_button_confirmation').text())) {
     	var url = $(this).attr("href") + "/";
     	//e.g. get whole row to be removed
   		var row = $(this).closest('tr').empty();
   		
-        $.post(url, function(){
-        	alert('OK');
+        $.post(url, function(result){
+        	$('#search_result').empty();
+        	$('#search_result').append(result);
         });
         row.remove();        
     }
@@ -107,13 +108,160 @@ function filter_rows(){
 	})
 	//Even if no filter are set, still the query to server is required to get all list and undo filters.	
 	$('#search_result').load(url, function(){		
-		$(".row_delete").click(row_delete);	
+		rebind();
 	});	
 	
 	return false;
 }
 
+function paginator_navigate(event) {	
+	//event.preventDefault();	
+	var url = $(this).attr("href");
+	//e.g. get whole row to be removed	
+	//var row = $('#search_result').empty();
+	
+	$('#search_result').load(url, function(){		
+		rebind();	
+	});
+	event.preventDefault();	
+	return false;
+}
+
+function row_edit_cancel_ajax(){
+	// This is a hidden field that contains the current sales_item_id hold for cancel edit mode
+	var salesitem_id = $(this).parent().children('div.salesitem_id').text();
+	var url = '/sales_item/edit/cancel/' + salesitem_id + '/';
+	var row = $(this).closest('form').closest('tr').empty(); //real row containing also the submit-edit-form
+	
+	row.load(
+		// get only the children (td) od the tr and attach them to the existing empty row.
+    	url + ' td',    	
+    	function () {    			              		
+      		rebind();
+    	}
+  	);  	
+  	return false;
+}
+
+
+function row_edit_ajax() {
+	// e.g. url = '/sales_item/edit/8' 
+	var url = $(this).attr("href") + "/";
+  
+  	//e.g. get whole row to be replaced with editing fields
+  	var row = $(this).closest('tr').empty();
+  	//First dummy is the empty column at left
+  	var dummy = $('<td>').appendTo(row);  
+  	//target is positioned in the middle
+  	var target = $('<td>').appendTo(row);
+  	//second dummy is the empty column at right
+  	var dummy = $('<td>').appendTo(row);  
+  	  	
+	target.load(
+    	url,    	
+    	function () {
+    		//Once loaded make sure the submit-form will be redirected to 'row_edit_save_ajax' once submitted. Url is parameter 
+      		$(target).children(".save-edit-form").submit(url, row_edit_save_ajax);
+      		$(".cancel_edit_button").click(row_edit_cancel_ajax);
+    	}
+  	);
+  	return false;
+}
+
+function row_add_save_ajax(){
+	// selector starts from Add Button (this)	
+	var url = "/sales_item/add/";	
+	var add_button_row = $(this).closest('tr'); //add_button_row inside the form
+	var row = $(add_button_row).closest('form').closest('tr'); //real row containing also the form
+	
+	var data = {
+  			item_description: $(add_button_row).find(".item_description").val()    
+  	};
+  	
+  	$.post(url, data, function (result) {
+  		//If there are validation errors upon adding the field
+  		if ($('.validation_error_ajax', result).text() == 'True') {
+  			 //back_up is a hidden field holding the original state of the add-form. If there is an error we would clone the original add-form.
+  			 //This is done by cloning the middle column's children (all editing fields and buttons)
+  			 $('#backup_add').append($(row.children().get(1)).children().clone());
+    		 row.empty();
+    		 var dummy = $('<td>').appendTo(row);
+    		 var target = $('<td>').appendTo(row);
+  			 var dummy = $('<td>').appendTo(row);    		
+      		 target.append(result);   
+      		 $(".row_add_button_ajax").click(row_add_save_ajax);      		 
+      		 $(target).children(".save-edit-form").submit(url, row_edit_save_ajax); 		      		
+    	}
+    	else {
+    		//if there is no error then insert the added row before the current add-button row. (last row)
+    		//row.before(result);
+    		$('#search_result').empty();
+    		$('#search_result').append(result);    		      		
+      		rebind();
+      		
+      		//if backup_add contains any children, it means that previously there was an error and the box is still red. We need to load our backup.
+      		if($("#backup_add").children().length > 0)
+      		{
+	      		row.empty();	      		
+	      		var target = $('<td>').appendTo(row);
+	  			var dummy = $('<td>').appendTo(row);    		
+	      		target.append($("#backup_add").children()); 
+	      		row.append(target);
+	      		//Clean the backup as its no longer required.
+	      		$("#backup_add").empty();
+      		}      		
+      		else
+      		{
+      			//if there was no backup, it means all good. Simply empty the value as its already added.
+      			$(add_button_row).find(".item_description").val('');
+      		}
+    	}
+  	});
+  	return false;
+} 
+
+
+function row_edit_save_ajax(e) {
+	// selector starts from Edit Button (this)	
+	var url = e.data;
+  	var row = $(this).closest('tr');
+  	var data = {
+  			item_description: row.find(".item_description").val()    
+  	};
+  	
+  	$.post(url, data, function (result) {
+  		//If there are validation errors upon editing the field
+    	if ($('.validation_error_ajax', result).text() == 'True') {
+    		//if so, then we empty the current row and load the invalid-indicating-forms in the row 
+    		//and attach events to the still existing save and cancel buttons
+    		row.empty();
+    		var dummy = $('<td>').appendTo(row);   
+    		var target = $('<td>').appendTo(row);
+  			var dummy = $('<td>').appendTo(row);    		
+      		target.append(result);      		
+      		$(target).children(".save-edit-form").submit(url, row_edit_save_ajax); 	
+      		$(".cancel_edit_button").click(row_edit_cancel_ajax);	      		
+    	}
+    	else {
+    		//if no error, then simply add the full 'tr' html row (with delete and edit icons) behind this row and remove this row. 
+    		row.before(result);
+      		row.remove();
+      		rebind();	
+    	}
+  	});
+	return false;
+}
+
+function rebind(){
+	$(".row_delete_ajax").click(row_delete_ajax);	
+	$(".filter_button").click(filter_rows);	
+	$(".paginator_nav_links").click(paginator_navigate);
+	$(".row_edit_ajax").click(row_edit_ajax);
+	$(".row_add_button_ajax").click(row_add_save_ajax);	
+}
+
 $(document).ready(function () {	
-	$(".row_delete").click(row_delete);	
-	$(".filter_button").click(filter_rows);		
+	rebind();	
 });
+
+

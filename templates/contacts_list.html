@@ -1,9 +1,10 @@
 {% load i18n %}
-{% for item in contacts %}
+{% if contacts %}
+	{% for item in contacts %}
             <tr>
                 <td>
                     <a href="/contact/edit/{{ item.id }}" title="{% trans 'Edit Contact' %}"><i class="icon-pencil"> </i></a>
-                    <a class="row_delete" href="/contact/delete/{{ item.id }}" title="{% trans 'Delete Contact' %}"><i class="icon-trash"> </i></a>
+                    <a class="row_delete_ajax" href="/contact/delete/{{ item.id }}" title="{% trans 'Delete Contact' %}"><i class="icon-trash"> </i></a>
                 </td>
                 <td>{{ item.last_name }}</td>
                 <td>{{ item.first_name }}</td>
@@ -16,4 +17,8 @@
                 <td><a class="btn btn-success" href="/charts/contact/{{ item.id }}" title="{% trans 'Charts' %}"><i class="icon-signal"> </i></a></td>
                 <td class="center_cb"><input type="checkbox"/></td>
             </tr>
-{% endfor %}
+	{% endfor %}
+	{% include '_paginator.html' %}
+{% else %}
+	{% trans 'No Contacts found.' %}
+{% endif %}

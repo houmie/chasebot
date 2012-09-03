@@ -127,7 +127,14 @@ def delete_contact_view(request, contact_id):
         profile = request.user.get_profile()
         contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
         contact.delete()
-    return HttpResponseRedirect('/')
+        ITEMS_PER_PAGE = 3
+        contacts_queryset = profile.company.contact_set.all().order_by('last_name')
+        contacts, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, contacts_queryset)    
+        variables = {                 
+                 'contacts': contacts, 'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages,
+                 'next_page': page_number + 1, 'prev_page': page_number - 1
+                 }
+    return render(request, 'contacts_list.html', variables)     
 
 
 @login_required
@@ -272,12 +279,10 @@ def delete_call_view(request, contact_id, call_id):
 
 @login_required
 def sales_item_display_view(request):
-    ITEMS_PER_PAGE = 10
+    ITEMS_PER_PAGE = 3
     profile = request.user.get_profile()
-    sales_items_queryset = profile.company.salesitem_set.all()    
-        
-    lang = display_current_language(request)
-    
+    sales_items_queryset = profile.company.salesitem_set.order_by('item_description')            
+    lang = display_current_language(request)    
     ajax = False
     
     if 'ajax' in request.GET:
@@ -292,10 +297,13 @@ def sales_item_display_view(request):
     sales_item = SalesItem(company=profile.company)
     form = SalesItemForm(instance=sales_item)
     delete_button_confirmation = get_delete_button_confirmation()
+    
+    get_request = get_request_parameters(request)
+      
     variables = {
                  'sales_items': sales_items, 'locale' : get_datepicker_format(request), 'lang': lang, 'form':form, 'delete_button_confirmation' : delete_button_confirmation,
                  'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages,
-                 'next_page': page_number + 1, 'prev_page': page_number - 1, 'filter_form' : filter_form, 'timezones': pytz.common_timezones
+                 'next_page': page_number + 1, 'prev_page': page_number - 1, 'filter_form' : filter_form, 'timezones': pytz.common_timezones, 'get_request':get_request
                  }    
     if ajax:    
         return render(request, 'sales_item_list.html', variables)
@@ -312,34 +320,32 @@ def sales_item_cancel_view(request, sales_item_id):
 
 @login_required
 def sales_item_view(request, sales_item_id=None):
+    ITEMS_PER_PAGE = 3
     profile = request.user.get_profile()
-    lang = display_current_language(request)
+    #lang = display_current_language(request)
     validation_error_ajax = False;
     if sales_item_id is None:
-        sales_item = SalesItem(company=profile.company)
-        template_title = _(u'Add a new Sales Item')
+        sales_item = SalesItem(company=profile.company)        
     else:
-        sales_item = get_object_or_404(profile.company.salesitem_set.all(), pk=sales_item_id)
-        template_title = _(u'Edit Sales Item')
-    if request.method == 'POST':
-        #list_post = list(request.POST)
-        #if 'submit-button' in list_post:        
+        sales_item = get_object_or_404(profile.company.salesitem_set.all(), pk=sales_item_id)        
+    if request.method == 'POST':                
         form = SalesItemForm(request.POST, instance=sales_item)
         if form.is_valid():
-            sales_item = form.save()            
-            variables = {'sales_items' : [sales_item]}
-            return render(request, 'sales_item_list.html', variables)
+            sales_item = form.save()
         else:
-            validation_error_ajax = True;                
-#        else:
-#            sales_item = profile.company.salesitem_set.get(pk=sales_item_id)
-#            variables = {'sales_items' : [sales_item]}
-#            return render(request, 'sales_item_list.html', variables)            
+            validation_error_ajax = True;            
     else:
         form = SalesItemForm(instance=sales_item)
-    variables = {'form':form, 'template_title': template_title, 'locale' : get_datepicker_format(request), 'lang': lang, 'salesitem_id' : sales_item_id, 'validation_error_ajax' : validation_error_ajax}
+    sales_items_queryset = profile.company.salesitem_set.all().order_by('item_description')
+    sales_items, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, sales_items_queryset)
+    delete_button_confirmation = get_delete_button_confirmation()
+    variables = {
+                 'sales_items': sales_items, 'locale' : get_datepicker_format(request), 'form':form, 'delete_button_confirmation' : delete_button_confirmation,
+                 'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages,
+                 'next_page': page_number + 1, 'prev_page': page_number - 1, 'salesitem_id' : sales_item_id, 'validation_error_ajax' : validation_error_ajax, 'get_request':get_request_parameters(request)
+                 } 
     if sales_item_id is None:
-        return render(request, 'sales_item_add_save_form.html', variables)
+        return render(request, 'sales_item_list.html', variables)
     else:
         return render(request, 'sales_item_save_form.html', variables)
 
@@ -351,7 +357,19 @@ def delete_sales_item_view(request, sales_item_id=None):
         profile = request.user.get_profile()
         sales_item = get_object_or_404(profile.company.salesitem_set.all(), pk=sales_item_id)
         sales_item.delete()
-    return HttpResponseRedirect('/sales_items')
+        ITEMS_PER_PAGE = 3        
+        sales_items_queryset = profile.company.salesitem_set.all().order_by('item_description')   
+        sales_items, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, sales_items_queryset)    
+        #New SalesItem form for adding a possible new one on UI
+        sales_item = SalesItem(company=profile.company)
+        form = SalesItemForm(instance=sales_item)
+        delete_button_confirmation = get_delete_button_confirmation()
+        variables = {
+                 'sales_items': sales_items, 'locale' : get_datepicker_format(request), 'form':form, 'delete_button_confirmation' : delete_button_confirmation,
+                 'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages,
+                 'next_page': page_number + 1, 'prev_page': page_number - 1
+                 }    
+    return render(request, 'sales_item_list.html', variables)
 
 
 @login_required
@@ -534,8 +552,14 @@ def makePaginator(request, ITEMS_PER_PAGE, queryset):
     return objects, paginator, page, page_number
 
 
-
-
+def get_request_parameters(request):
+    get_request = ''
+    for key, value in request.GET.iteritems():
+        if key == 'ajax':
+            get_request = '?ajax'
+            continue
+        get_request = get_request + '&' + key + '=' + value
+    return get_request
   
 
 #@login_required

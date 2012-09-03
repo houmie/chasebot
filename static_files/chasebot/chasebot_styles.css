@@ -6,6 +6,10 @@ body {
     border-top: 0;
 }
 
+.sales_item_add_save_tr th, .sales_item_add_save_tr td {
+	border-top: 0;
+}
+
 /*div.field_error {
 	border: 2px solid #FF0000;
 }*/
@@ -55,6 +59,31 @@ td.center_cb{
 	width: 85px;
 }
 
-.form_no_margin{
+.cb_zero_margin{
 	margin: 0;
 }
+
+#search_result li {
+    list-style: none;
+}
+
+.cb_align_right {
+    float: right;
+}
+
+.cb_inline_block {
+	display:inline-block;
+}
+
+.cb_vertical_align {
+	vertical-align: middle;	
+}
+
+.cb_margin_top{
+	margin-top: 25px;	
+}
+
+.cb_margin_left{
+	margin-left: 40px;	
+}
+

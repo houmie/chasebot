@@ -322,7 +322,7 @@ class FilterSalesItemForm(Form):
     def __init__(self, *args, **kwargs):
         super(FilterSalesItemForm, self).__init__(*args, **kwargs)          
     
-    item_description    = forms.CharField(widget = forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query'}), max_length=40)
+    item_description    = forms.CharField(widget = forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query filter_add_button'}), max_length=40)
 
 class SalesItemForm(ModelForm):
     class Meta:

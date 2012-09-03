@@ -1,0 +1,19 @@
+<tr>
+	<td colspan="11">
+		{% if show_paginator %}
+		    <div class="paginator">
+		      {% if has_prev and get_request %}
+		        <a class="paginator_nav_links" href="{{ get_request }}&page={{ prev_page }}">&laquo; Previous</a>
+		      {% elif has_prev%}
+		        <a class="paginator_nav_links" href="?ajax&page={{ prev_page }}">&laquo; Previous</a>
+		      {% endif %}
+		      {% if has_next and get_request %}
+		        <a class="paginator_nav_links" href="{{ get_request }}&page={{ next_page }}">Next &raquo;</a>
+	          {% elif has_next %}
+	          	<a class="paginator_nav_links" href="?ajax&page={{ next_page }}">Next &raquo;</a>
+		      {% endif %}
+		      (Page {{ page }} of {{ pages }})
+		    </div>
+	  	{% endif %}
+  	</td>
+</tr>

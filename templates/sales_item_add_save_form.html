@@ -5,18 +5,18 @@
             <tbody>
                 <tr>
                     <td>                        
-                        {% trans 'Add a new Sales Item' %}: {% if  form.item_description.field.required %} *{% endif %}
+                        <p>{% trans 'Add a new Sales Item' %}: {% if  form.item_description.field.required %} *{% endif %}</p>
                     </td>
                     <td class="input-append">                        
                         {% if form.item_description.errors %}
 	                	<div class="field field_error">
 	                    	{{form.item_description}}
-	                    	<input class="btn btn-primary row_add_button" type="button" value="{% trans 'Add' %}" class="btn btn-primary" />
+	                    	<input class="btn btn-primary row_add_button_ajax" type="button" value="{% trans 'Add' %}" class="btn btn-primary" />
 	                    	{{form.item_description.errors}}                   	
 	                	</div>
 	                	{% else %}
 	                		{{form.item_description}}
-	                		<input class="btn btn-primary row_add_button" type="button" value="{% trans 'Add' %}" class="btn btn-primary" />
+	                		<input class="btn btn-primary row_add_button_ajax" type="button" value="{% trans 'Add' %}" class="btn btn-primary" />
 	                	{% endif %}	                	                        
                     </td>                    
                 </tr>
@@ -24,4 +24,3 @@
         </table>                
         <div class="validation_error_ajax hidden">{{validation_error_ajax}}</div>    
 </form>
-

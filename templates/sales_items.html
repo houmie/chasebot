@@ -3,18 +3,17 @@
 {% block title %}{% trans 'Chasebot - Sales Items' %}{% endblock %}
 {% block head %}{% trans 'Chasebot - Sales Items' %}{% endblock %}
 {% block external %}
-<script type="text/javascript" src="{{ STATIC_URL }}chasebot/chasebot_salesitems.js" ></script>
 <script type="text/javascript" src="{{ STATIC_URL }}chasebot/chasebot_base.js" ></script>
 {% endblock %}
 {% block content %}    
     <table class="table">
         <thead>
             <tr>
-                <th><a class="btn btn-success" href="/deals" title="{% trans 'Back to Deals' %}"><i class="icon-arrow-left"> </i></a>
-                	<!-- <a class="btn btn-success" href="/sales_item/add" title="{% trans 'New Sales Item' %}"><i class="icon-plus"> </i><i class="icon-glass"> </i></a> -->                	
+                <th>
+                	<a class="btn" href="/deals" title="{% trans 'Back to Deals' %}"><i class="icon-arrow-left"> </i></a>                	                	
                 </th>
                 <th>
-                	<form action="." method="get" class="form-search form_no_margin">	    				
+                	<form action="." method="get" class="form-search cb_zero_margin">	    				
 	    				<div class="input-append">
 	    				{{filter_form.item_description}}<button type="button" class="btn filter_button"><i class='icon-filter'> </i></button>
 	    				</div>	   <br> 
@@ -24,29 +23,7 @@
             </tr>
         </thead>
         <tbody id="search_result">
-        	{% include 'sales_item_list.html' %}
-        	<tr>
-        		<td></td>
-        		<td>
-	        		{% include 'sales_item_add_save_form.html' %}
-                </td>
-                <td>                	                	
-                </td>
-        	</tr>
-            <tr>
-            	<div id="backup_add" class="hidden"></div>
-            </tr>
+        	{% include 'sales_item_list.html' %}        	
         </tbody>
-    </table>
-    {% if show_paginator %}
-	    <div class="paginator">
-	      {% if has_prev %}
-	        <a href="?page={{ prev_page }}">&laquo; Previous</a>
-	      {% endif %}
-	      {% if has_next %}
-	        <a href="?page={{ next_page }}">Next &raquo;</a>
-	      {% endif %}
-	      (Page {{ page }} of {{ pages }})
-	    </div>
-  	{% endif %}        
+    </table>       
 {% endblock %}

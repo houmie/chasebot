@@ -21,16 +21,16 @@
                 	<form action="." method="get" class="form-search form_no_margin">	    				
 	    				<div class="input-append">
 	    				{{filter_form.deal_name}}<button type="button" class="btn filter_button"><i class='icon-filter'> </i></button>
-	    				</div>	   <br> 
-	    				{% trans 'Deal' %}
+	    				</div>	   
+	    				<p>{% trans 'Deal' %}</p>
                 	</form>
             	</th>
-                <th>{% trans 'Description' %}</th>    
+                <th><p>{% trans 'Description' %}</p></th>    
                 <th>
                 	<form action="." method="get" class="form-search form_no_margin">	    				
 	    				<div class="input-append">
 	    				{{filter_form.sales_item}}<button type="button" class="btn filter_button"><i class='icon-filter'> </i></button>
-	    				</div>	   <br> 
+	    				</div>	    
 	    				{% trans 'Item' %}
                 	</form>                	
             	</th>
