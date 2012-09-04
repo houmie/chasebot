@@ -108,10 +108,10 @@ class Contact(models.Model):
 
 
 class SalesItem(models.Model):        
-    item_description    = models.CharField(_(u"Item Description"), max_length=40)
+    item_name    = models.CharField(_(u"Item Description"), max_length=40)
     company             = models.ForeignKey(Company)
     def __unicode__(self):
-        return self.item_description
+        return self.item_name
 
 class SalesTerm(models.Model):    
     sales_term          = models.CharField(_(u"Sales Term"), max_length=40)

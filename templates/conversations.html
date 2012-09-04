@@ -16,7 +16,7 @@
                         	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
 			    				<div class="input-append">
 			    				{{filter_form.from_date}}<button type="button" class="btn filter_button"><i class='icon-filter'> </i></button>
-			    				</div>	   <br> 			    					    								
+			    				</div> 			    					    								
 		                	</form>
 		                	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
 			    				<div class="input-append">
@@ -24,8 +24,7 @@
 			    				</div>	   <br> 
 			    				{% trans 'Date' %}	    								
 		                	</form>
-                    	</th>
-                        <th>{% trans 'Time' %}</th>
+                    	</th>                        
                         <th>
                         	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
 			    				<div class="input-append">
@@ -38,7 +37,7 @@
                     </tr>
                 </thead>
                 <tbody id="search_result">
-                    {% include 'calls_list.html' %}
+                    {% include 'conversation_list.html' %}
                 </tbody>
             </table>            
 {% endblock %}

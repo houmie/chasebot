@@ -8,8 +8,8 @@
 {% block content %}    
 	<div>
 		<a class="btn" href="/" title="{% trans 'Back to Main Screen' %}"><i class="icon-arrow-left"> </i></a>
-    	<a class="btn" href="/deal/add" title="{% trans 'New Deal' %}"><i class="icon-plus"> </i><i class="icon-tag"> </i></a>
-    	<a class="btn" href="/sales_items" title="{% trans 'Sales Items for Deals' %}"><i class="icon-glass"> </i></a>
+    	<a class="btn" href="/deal/add" title="{% trans 'New Deal' %}"><i class="icon-plus"> </i><i class="icon-tag"> </i> {% trans 'New Deal' %}</a>
+    	<a class="btn" href="/sales_items" title="{% trans 'Sale Items for Deals' %}"><i class="icon-glass"> </i> {% trans 'Sales Items' %}</a>
 	</div>
     <table class="table">
         <thead>
@@ -62,7 +62,7 @@
             </tr>
         </thead>
         <tbody id="search_result">
-            {% include 'deals_list.html'%}
+            {% include 'deal_list.html'%}
         </tbody>
     </table>    
 {% endblock %}

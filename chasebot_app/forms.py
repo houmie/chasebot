@@ -107,12 +107,12 @@ class FilterCallsForm(Form):
     
     
     
-class CallsForm(ModelForm):       
+class ConversationForm(ModelForm):       
     conversation_date = forms.DateField(localize=True, widget=forms.DateInput(attrs={'placeholder': 'Add the date for this conversation', 'class': 'placeholder_fix_css datepicker'}))
     conversation_time = forms.TimeField(localize=True, widget=forms.TimeInput(attrs={'placeholder': 'Add the time for this conversation', 'class': 'placeholder_fix_css'}))
     
     def __init__(self, company, *args, **kwargs):
-        super(CallsForm, self).__init__(*args, **kwargs)                                        
+        super(ConversationForm, self).__init__(*args, **kwargs)                                        
         self.fields['deal_1'].queryset = self.get_non_open_deals(self.instance, company)        
         self.fields['deal_2'].queryset = self.get_non_open_deals(self.instance, company)
         self.fields['deal_3'].queryset = self.get_non_open_deals(self.instance, company)        
@@ -147,7 +147,7 @@ class CallsForm(ModelForm):
                    }
     
     def clean(self):
-        cleaned_data = super(CallsForm, self).clean()
+        cleaned_data = super(ConversationForm, self).clean()
         deal_1 = cleaned_data.get('deal_1')
         deal_2 = cleaned_data.get('deal_2')
         deal_3 = cleaned_data.get('deal_3')
@@ -322,14 +322,14 @@ class FilterSalesItemForm(Form):
     def __init__(self, *args, **kwargs):
         super(FilterSalesItemForm, self).__init__(*args, **kwargs)          
     
-    item_description    = forms.CharField(widget = forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query filter_add_button'}), max_length=40)
+    item_name    = forms.CharField(widget = forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query filter_add_button'}), max_length=40)
 
 class SalesItemForm(ModelForm):
     class Meta:
         model = SalesItem
         exclude = ('company')
         widgets = {
-                   'item_description': forms.TextInput(attrs={'class': 'item_description'}),
+                   'item_name': forms.TextInput(attrs={'class': 'item_name'}),
                    }
         
     

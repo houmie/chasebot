@@ -31,8 +31,8 @@ def setup_contacts(self):
 
 #Fixture for creating a sales item per user 
 def setup_sales_items(self):
-        self.sales_item1 = SalesItem.objects.create(item_description = 'item_1',  company = self.company1)
-        self.sales_item2 = SalesItem.objects.create(item_description = 'item_2',  company = self.company2)        
+        self.sales_item1 = SalesItem.objects.create(item_name = 'item_1',  company = self.company1)
+        self.sales_item2 = SalesItem.objects.create(item_name = 'item_2',  company = self.company2)        
 
 #Fixture for creating a deal_type item per company 
 def setup_dealtype(self):
@@ -82,7 +82,7 @@ class SalesItemModelTest(TestCase):
         sales_items = profile1.company.salesitem_set.all()   
         lst = list(sales_items)     
         self.assertEqual(len(lst), 1, 'Expected one sales item for this company, but got %s' % len(lst))
-        self.assertEqual(lst[0].item_description, 'item_1', 'Expected item_1, but got %s' % lst[0].item_description)
+        self.assertEqual(lst[0].item_name, 'item_1', 'Expected item_1, but got %s' % lst[0].item_name)
         
         
       

@@ -5,17 +5,17 @@
             <tbody>
                 <tr>
                     <td>                        
-                        <p>{% trans 'Add a new Sales Item' %}: {% if  form.item_description.field.required %} *{% endif %}</p>
+                        <p>{% trans 'Add a new Sales Item' %}: {% if  form.item_name.field.required %} *{% endif %}</p>
                     </td>
                     <td class="input-append">                        
-                        {% if form.item_description.errors %}
+                        {% if form.item_name.errors %}
 	                	<div class="field field_error">
-	                    	{{form.item_description}}
+	                    	{{form.item_name}}
 	                    	<input class="btn btn-primary row_add_button_ajax" type="button" value="{% trans 'Add' %}" class="btn btn-primary" />
-	                    	{{form.item_description.errors}}                   	
+	                    	{{form.item_name.errors}}                   	
 	                	</div>
 	                	{% else %}
-	                		{{form.item_description}}
+	                		{{form.item_name}}
 	                		<input class="btn btn-primary row_add_button_ajax" type="button" value="{% trans 'Add' %}" class="btn btn-primary" />
 	                	{% endif %}	                	                        
                     </td>                    

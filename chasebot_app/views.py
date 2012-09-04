@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from chasebot_app.forms import RegistrationForm, ContactsForm, CallsForm, SalesItemForm, DealTypeForm,\
+from chasebot_app.forms import RegistrationForm, ContactsForm, ConversationForm, SalesItemForm, DealTypeForm,\
      DealCForm, FilterContactsForm, FilterCallsForm, FilterDealsForm, FilterSalesItemForm
 from chasebot_app.models import Company, Contact, Conversation, SalesItem, DealType, DealStatus, Deal, SalesTerm
 from chasebot_app.models import UserProfile
@@ -83,9 +83,9 @@ def contacts_display(request):
                  }
     variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
     if ajax:    
-        return render(request, 'contacts_list.html', variables)
+        return render(request, 'contact_list.html', variables)
     else:
-        return render(request, 'main_page.html', variables)        
+        return render(request, 'contacts.html', variables)        
 
 
 
@@ -121,7 +121,7 @@ def contact_delete(request, contact_id):
         contacts, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, contacts_queryset)    
         variables = { 'contacts': contacts, }
         variables = merge_with_pagination_variables(paginator, page, page_number, variables)
-    return render(request, 'contacts_list.html', variables)     
+    return render(request, 'contact_list.html', variables)     
 
 
 @login_required
@@ -150,9 +150,9 @@ def conversation_display(request, contact_id):
                  }
     variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
     if ajax:    
-        return render(request, 'calls_list.html', variables)
+        return render(request, 'conversation_list.html', variables)
     else:
-        return render(request, 'calls.html', variables)  
+        return render(request, 'conversations.html', variables)  
     
 
 
@@ -180,7 +180,7 @@ def conversation_add_edit(request, contact_id, call_id=None):
     if request.method == 'POST':
         non_attached_opendeal_formset = opendeal_formset_factory(request.POST, prefix='opendeals')
         attached_deals_formset = deals_formset_factory(request.POST, prefix='deals')                
-        form = CallsForm(profile.company, request.POST, instance=call)           
+        form = ConversationForm(profile.company, request.POST, instance=call)           
         if form.is_valid() and attached_deals_formset.is_valid() and non_attached_opendeal_formset.is_valid():
             # Always localize the entered date by user into his timezone before saving it to database
             call = form.save(commit=False)            
@@ -224,7 +224,7 @@ def conversation_add_edit(request, contact_id, call_id=None):
             return HttpResponseRedirect('/contact/' + contact_id + '/calls/')        
             
     else:        
-        form = CallsForm(profile.company, instance=call)              
+        form = ConversationForm(profile.company, instance=call)              
         attached_deals_formset = deals_formset_factory(queryset=attached_deals_to_call_query, prefix='deals')        
         exclude_attached_opendeals = []
         for attached_deal in attached_deals_to_call_query:
@@ -259,20 +259,20 @@ def conversation_delete(request, contact_id, call_id):
         calls, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, call_queryset)          
         variables = { 'calls': calls, }
         variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
-    return render(request, 'calls_list.html', variables)
+    return render(request, 'conversation_list.html', variables)
 
 
 @login_required
 def sales_item_display(request):    
     profile = request.user.get_profile()
-    sales_items_queryset = profile.company.salesitem_set.order_by('item_description')    
+    sales_items_queryset = profile.company.salesitem_set.order_by('item_name')    
     ajax = False
         
     if 'ajax' in request.GET:
         ajax = True        
-        if 'item_description' in request.GET:    
-            item_description = request.GET['item_description']
-            sales_items_queryset = sales_items_queryset.filter(item_description__icontains=item_description).order_by('item_description')        
+        if 'item_name' in request.GET:    
+            item_name = request.GET['item_name']
+            sales_items_queryset = sales_items_queryset.filter(item_name__icontains=item_name).order_by('item_name')        
     
     filter_form = FilterSalesItemForm(request.GET)    
     sales_items, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, sales_items_queryset)    
@@ -316,7 +316,7 @@ def sales_item_add_edit(request, sales_item_id=None):
     else:
         form = SalesItemForm(instance=sales_item)
     if sales_item_id is None:
-        sales_items_queryset = profile.company.salesitem_set.all().order_by('item_description')
+        sales_items_queryset = profile.company.salesitem_set.all().order_by('item_name')
         sales_items, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, sales_items_queryset)        
         variables = {
                      'sales_items': sales_items, 'form':form,                     
@@ -339,7 +339,7 @@ def sales_item_delete(request, sales_item_id=None):
         profile = request.user.get_profile()
         sales_item = get_object_or_404(profile.company.salesitem_set.all(), pk=sales_item_id)
         sales_item.delete()                
-        sales_items_queryset = profile.company.salesitem_set.all().order_by('item_description')   
+        sales_items_queryset = profile.company.salesitem_set.all().order_by('item_name')   
         sales_items, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, sales_items_queryset)    
         #New SalesItem form for adding a possible new one on UI
         sales_item = SalesItem(company=profile.company)
@@ -363,7 +363,7 @@ def deal_type_display(request):
         if 'sales_item' in request.GET:            
             sales_item_keywords = request.GET.getlist('sales_item')
             # Q are queries that can be stacked with Or operators. If none of the Qs contains any value, `reduce` minimizes them to no queryset,             
-            q_filters = reduce(operator.or_, (Q(item_description__icontains=item.strip()) for item in sales_item_keywords))
+            q_filters = reduce(operator.or_, (Q(item_name__icontains=item.strip()) for item in sales_item_keywords))
             sales_items = profile.company.salesitem_set.filter(q_filters)       
             deals_queryset = deals_queryset.filter(sales_item__in=sales_items)
         if 'price' in request.GET:    
@@ -384,7 +384,7 @@ def deal_type_display(request):
                  }
     variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
     if ajax:    
-        return render(request, 'deals_list.html', variables)
+        return render(request, 'deal_list.html', variables)
     else:
         return render(request, 'deals.html', variables)
     
@@ -422,7 +422,7 @@ def deal_type_delete(request, deal_id=None):
         deals, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deal_queryset)          
         variables = { 'deals': deals, }
         variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
-    return render(request, 'deals_list.html', variables)
+    return render(request, 'deal_list.html', variables)
     
 
 @login_required

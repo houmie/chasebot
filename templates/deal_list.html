@@ -21,5 +21,10 @@
 	{% endfor %}
 	{% include '_paginator.html' %}
 {% else %}
-	{% trans 'No deals found.' %}
+	<tr>		
+		<td colspan="8">
+			{% trans 'No deals found.' %}
+		</td>
+	</tr>
+	
 {% endif %}

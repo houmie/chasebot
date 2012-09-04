@@ -7,8 +7,7 @@
 	                            <a href="/contact/{{ contact.id }}/call/edit/{{ item.id }}" title="{% trans 'Edit' %}"> <i class="icon-pencil"> </i></a>
 	                            <a class="row_delete_ajax" href="/contact/{{ contact.id }}/call/delete/{{ item.id }}" title="{% trans 'Delete' %}"><i class="icon-trash"> </i></a>
 	                        </td>
-	                        <td>{{ item.conversation_datetime }}</td>
-	                        <td>{{ item.conversation_datetime }}</td>
+	                        <td>{{ item.conversation_datetime }}</td>	                        
 	                        <td>{{ item.subject }}</td>
 	                        <td>{{ item.notes }}</td>                        
 	                        <td> </td>
@@ -18,5 +17,9 @@
 	{% endfor %}
 	{% include '_paginator.html' %}
 {% else %}
-	{% trans 'No calls found.' %}
+	<tr>
+		<td colspan="8">
+			{% trans 'No conversations found.' %}			
+		</td>
+	</tr>	
 {% endif %}

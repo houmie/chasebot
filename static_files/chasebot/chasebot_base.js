@@ -171,7 +171,7 @@ function row_add_save_ajax(event){
 	var row = $(add_button_row).closest('form').closest('tr'); //real row containing also the form
 	
 	var data = {
-  			item_description: $(add_button_row).find(".item_description").val()    
+  			item_name: $(add_button_row).find(".item_name").val()    
   	};
   	
   	$.post(url, data, function (result) {
@@ -208,7 +208,7 @@ function row_add_save_ajax(event){
       		else
       		{
       			//if there was no backup, it means all good. Simply empty the value as its already added.
-      			$(add_button_row).find(".item_description").val('');
+      			$(add_button_row).find(".item_name").val('');
       		}
     	}
   	});  	
@@ -221,7 +221,7 @@ function row_edit_save_ajax(event) {
 	var url = event.data;
   	var row = $(this).closest('tr');
   	var data = {
-  			item_description: row.find(".item_description").val()    
+  			item_name: row.find(".item_name").val()    
   	};
   	
   	$.post(url, data, function (result) {

@@ -20,5 +20,9 @@
 	{% endfor %}
 	{% include '_paginator.html' %}
 {% else %}
-	{% trans 'No contacts found.' %}
+	<tr>
+		<td colspan="11">
+			{% trans 'No contacts found.' %}			
+		</td>
+	</tr>	
 {% endif %}
