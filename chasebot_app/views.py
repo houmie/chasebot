@@ -1,38 +1,30 @@
-# Create your views here.
 import datetime
-from itertools import chain
 from datetime import datetime as dt 
-from django.http import Http404, HttpResponse
+from django.http import Http404
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
-from django.shortcuts import render_to_response, get_object_or_404, render
-from django.template.context import RequestContext
-from chasebot_app.forms import RegistrationForm, ContactsForm, ContactTypeForm, MaritalStatusForm, CountryForm, CallsForm, SalesItemForm, DealTypeForm,\
-    DealForm, BaseDealFormSet, DealCForm, FilterContactsForm, FilterCallsForm,\
-    FilterDealsForm, FilterSalesItemForm
-from chasebot_app.models import Company, Contact, ContactType, MaritalStatus, Country, Conversation, SalesItem, DealType, DealStatus, Deal,\
-    UserProfile, SalesTerm
+from django.shortcuts import get_object_or_404
+from chasebot_app.forms import RegistrationForm, ContactsForm, CallsForm, SalesItemForm, DealTypeForm,\
+     DealCForm, FilterContactsForm, FilterCallsForm, FilterDealsForm, FilterSalesItemForm
+from chasebot_app.models import Company, Contact, Conversation, SalesItem, DealType, DealStatus, Deal, SalesTerm
 from chasebot_app.models import UserProfile
-from django.core import serializers
 from django.utils.translation import ugettext as _
-from django.template import response
-from django.utils import simplejson, timezone
+from django.utils import timezone
 from django.forms.models import modelformset_factory
 import uuid
-from django.forms.formsets import formset_factory
 from django.db.models.aggregates import Max
 import time
-from django.utils.translation import activate
 from django.core.paginator import Paginator, InvalidPage
-from django.utils.timezone import utc
 import pytz
 from django.shortcuts import redirect, render
 from chasebot.formats.en import formats as formats_en
 from chasebot.formats.en_GB import formats as formats_en_GB
 import operator
 from django.db.models.query_utils import Q
+
+ITEMS_PER_PAGE = 3
 
 def set_timezone(request):
     if request.method == 'POST':
@@ -48,7 +40,7 @@ def display_current_language(request):
         lang = "American English"           
     return lang
 
-def get_current_format(request):
+def get_current_date_input_format(request):
     if request.LANGUAGE_CODE == 'en-gb':
         return formats_en_GB.DATE_INPUT_FORMATS[0]
     elif request.LANGUAGE_CODE == 'en':        
@@ -56,17 +48,14 @@ def get_current_format(request):
 
 def create_date_from_javascript_date(request, date, to_date_format = None):
     current_tz = timezone.get_current_timezone()    
-    date_time_unaware = dt.strptime(date, get_current_format(request))
+    date_time_unaware = dt.strptime(date, get_current_date_input_format(request))
     if to_date_format:    
         date_time_unaware = date_time_unaware.replace(hour=23, minute=59, second=59)
     date_time = current_tz.localize(date_time_unaware)            
     return date_time
 
 @login_required
-def main_page_view(request):    
-    ITEMS_PER_PAGE = 3
-    lang = display_current_language(request)
-    delete_button_confirmation = get_delete_button_confirmation()
+def contacts_display(request):      
     profile = request.user.get_profile()
     company_name = profile.company.company_name
     contacts_queryset = profile.company.contact_set.all().order_by('last_name')    
@@ -90,17 +79,18 @@ def main_page_view(request):
     filter_form = FilterContactsForm(request.GET)
     contacts, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, contacts_queryset)    
     variables = {
-                 'company_name': company_name, 'contacts' : contacts, 'locale' : get_datepicker_format(request), 'lang': lang, 'delete_button_confirmation': delete_button_confirmation,
-                 'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages,
-                 'next_page': page_number + 1, 'prev_page': page_number - 1, 'filter_form' : filter_form, 'timezones': pytz.common_timezones
+                 'company_name': company_name, 'contacts' : contacts, 'filter_form' : filter_form, 
                  }
+    variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
     if ajax:    
         return render(request, 'contacts_list.html', variables)
     else:
         return render(request, 'main_page.html', variables)        
 
+
+
 @login_required
-def contact_view(request, contact_id=None):    
+def contact_add_edit(request, contact_id=None):    
     profile = request.user.get_profile()
     if contact_id is None:
         contact = Contact(company=profile.company)
@@ -115,37 +105,31 @@ def contact_view(request, contact_id=None):
             return HttpResponseRedirect('/')
     else:
         form = ContactsForm(instance=contact, company=profile.company)    
-    lang = display_current_language(request)
-    variables = {'form':form, 'template_title': template_title, 'contact_id' : contact_id, 'locale' : get_datepicker_format(request), 'lang':lang}
+    variables = {'form':form, 'template_title': template_title, 'contact_id' : contact_id, }
+    merge_with_localized_variables(request, variables)
     return render(request, 'contact.html', variables)
 
 @login_required
-def delete_contact_view(request, contact_id):
+def delete_contact(request, contact_id):
     if contact_id is None:
-        raise Http404(_(u'Customer not found'))
+        raise Http404(_(u'Contact not found'))
     else:
         profile = request.user.get_profile()
         contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
-        contact.delete()
-        ITEMS_PER_PAGE = 3
-        contacts_queryset = profile.company.contact_set.all().order_by('last_name')
+        contact.delete()        
+        contacts_queryset = profile.company.contact_set.order_by('last_name')
         contacts, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, contacts_queryset)    
-        variables = {                 
-                 'contacts': contacts, 'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages,
-                 'next_page': page_number + 1, 'prev_page': page_number - 1
-                 }
+        variables = { 'contacts': contacts, }
+        merge_with_pagination_variables(paginator, page, page_number, variables)
     return render(request, 'contacts_list.html', variables)     
 
 
 @login_required
-def call_display_view(request, contact_id):
-    ITEMS_PER_PAGE = 10
+def conversation_display(request, contact_id):    
     profile = request.user.get_profile()
     contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
-    calls_queryset = contact.conversation_set.all().order_by('-time_stamp')            
-    lang = display_current_language(request)    
-    ajax = False
-    
+    calls_queryset = contact.conversation_set.all().order_by('-time_stamp')
+    ajax = False    
     if 'ajax' in request.GET:
         ajax = True
         if 'from_date' in request.GET:                        
@@ -162,10 +146,9 @@ def call_display_view(request, contact_id):
     filter_form = FilterCallsForm(request.GET)
     calls, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, calls_queryset)    
     variables = {
-                 'calls': calls, 'contact': contact, 'locale' : get_datepicker_format(request), 'lang':lang,
-                 'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages,
-                 'next_page': page_number + 1, 'prev_page': page_number - 1, 'filter_form' : filter_form, 'timezones': pytz.common_timezones
+                 'calls': calls, 'contact': contact, 'filter_form' : filter_form,
                  }
+    variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
     if ajax:    
         return render(request, 'calls_list.html', variables)
     else:
@@ -174,7 +157,7 @@ def call_display_view(request, contact_id):
 
 
 @login_required
-def call_view(request, contact_id, call_id=None):
+def conversation_add_edit(request, contact_id, call_id=None):
     profile = request.user.get_profile()
     contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
     
@@ -229,9 +212,7 @@ def call_view(request, contact_id, call_id=None):
                         set_val = 0                    
                     Deal.objects.create(deal_id=uuid.uuid1(), status=DealStatus.objects.get(pk=1), contact=call.contact, deal_type=deal_type, conversation=call, set=set_val+1)
             
-            
-            for fm in attached_deals_formset:
-                #if len(fm.changed_data) > 0:
+            for fm in attached_deals_formset:                
                 if fm.has_changed(): 
                     fm.save()
                     
@@ -254,9 +235,9 @@ def call_view(request, contact_id, call_id=None):
         exclude_attached_opendeals_query = opendeals_formset_query.exclude(deal_id__in=exclude_attached_opendeals)
         
         non_attached_opendeal_formset = opendeal_formset_factory(queryset=exclude_attached_opendeals_query, prefix='opendeals')
-                            
-    lang = display_current_language(request)
-    variables = {'form':form, 'attached_deals_formset':attached_deals_formset, 'opendeal_formset':non_attached_opendeal_formset, 'is_atleast_one_opendeal_attached':is_atleast_one_opendeal_attached, 'locale' : get_datepicker_format(request), 'lang':lang, 'timezones': pytz.common_timezones}
+    
+    variables = {'form':form, 'attached_deals_formset':attached_deals_formset, 'opendeal_formset':non_attached_opendeal_formset, 'is_atleast_one_opendeal_attached':is_atleast_one_opendeal_attached }
+    merge_with_localized_variables(request, variables)   
     return render(request, 'conversation.html', variables)
 
 
@@ -264,7 +245,7 @@ def call_view(request, contact_id, call_id=None):
 
 
 @login_required
-def delete_call_view(request, contact_id, call_id):
+def delete_conversation(request, contact_id, call_id):
     if contact_id is None:
         raise Http404(_(u'Contact not found'))
     elif call_id is None:
@@ -274,17 +255,19 @@ def delete_call_view(request, contact_id, call_id):
         contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
         call = get_object_or_404(contact.conversation_set.all(), pk=call_id)
         call.delete()
-    return HttpResponseRedirect('/contact/' + contact_id + '/calls/')
+        call_queryset = contact.conversation_set.order_by('conversation_datetime')   
+        calls, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, call_queryset)          
+        variables = { 'calls': calls, }
+        variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
+    return render(request, 'calls_list.html', variables)
 
 
 @login_required
-def sales_item_display_view(request):
-    ITEMS_PER_PAGE = 3
+def sales_item_display(request):    
     profile = request.user.get_profile()
-    sales_items_queryset = profile.company.salesitem_set.order_by('item_description')            
-    lang = display_current_language(request)    
+    sales_items_queryset = profile.company.salesitem_set.order_by('item_description')    
     ajax = False
-    
+        
     if 'ajax' in request.GET:
         ajax = True        
         if 'item_description' in request.GET:    
@@ -295,23 +278,18 @@ def sales_item_display_view(request):
     sales_items, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, sales_items_queryset)    
     #New SalesItem form for adding a possible new one on UI
     sales_item = SalesItem(company=profile.company)
-    form = SalesItemForm(instance=sales_item)
-    delete_button_confirmation = get_delete_button_confirmation()
-    
-    get_request = get_request_parameters(request)
-      
+    form = SalesItemForm(instance=sales_item)          
     variables = {
-                 'sales_items': sales_items, 'locale' : get_datepicker_format(request), 'lang': lang, 'form':form, 'delete_button_confirmation' : delete_button_confirmation,
-                 'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages,
-                 'next_page': page_number + 1, 'prev_page': page_number - 1, 'filter_form' : filter_form, 'timezones': pytz.common_timezones, 'get_request':get_request
-                 }    
+                 'sales_items': sales_items, 'form':form, 'filter_form' : filter_form, 'get_request':get_request_parameters(request)
+                }   
+    variables = merge_with_additional_variables(request, paginator, page, page_number, variables) 
     if ajax:    
         return render(request, 'sales_item_list.html', variables)
     else:
         return render(request, 'sales_items.html', variables)  
 
 @login_required
-def sales_item_cancel_view(request, sales_item_id):
+def sales_item_cancel(request, sales_item_id):
     profile = request.user.get_profile()    
     sales_item = get_object_or_404(profile.company.salesitem_set.all(), pk=sales_item_id)
     variables = {'sales_items' : [sales_item]}
@@ -319,10 +297,8 @@ def sales_item_cancel_view(request, sales_item_id):
 
 
 @login_required
-def sales_item_view(request, sales_item_id=None):
-    ITEMS_PER_PAGE = 3
-    profile = request.user.get_profile()
-    #lang = display_current_language(request)
+def sales_item_add_edit(request, sales_item_id=None):    
+    profile = request.user.get_profile()    
     validation_error_ajax = False;
     if sales_item_id is None:
         sales_item = SalesItem(company=profile.company)        
@@ -341,58 +317,50 @@ def sales_item_view(request, sales_item_id=None):
         form = SalesItemForm(instance=sales_item)
     if sales_item_id is None:
         sales_items_queryset = profile.company.salesitem_set.all().order_by('item_description')
-        sales_items, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, sales_items_queryset)
-        delete_button_confirmation = get_delete_button_confirmation()
+        sales_items, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, sales_items_queryset)        
         variables = {
-                     'sales_items': sales_items, 'locale' : get_datepicker_format(request), 'form':form, 'delete_button_confirmation' : delete_button_confirmation,
-                     'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages,
-                     'next_page': page_number + 1, 'prev_page': page_number - 1, 'salesitem_id' : sales_item_id, 'validation_error_ajax' : validation_error_ajax, 'get_request':get_request_parameters(request)
+                     'sales_items': sales_items, 'form':form,                     
+                     'salesitem_id' : sales_item_id, 'validation_error_ajax' : validation_error_ajax, 'get_request':get_request_parameters(request)
                      }
+        variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
         return render(request, 'sales_item_list.html', variables)
     else:
         variables = {
-                     'locale' : get_datepicker_format(request), 'form':form,                     
-                     'salesitem_id' : sales_item_id, 'validation_error_ajax' : validation_error_ajax, 
+                     'form':form, 'salesitem_id' : sales_item_id, 'validation_error_ajax' : validation_error_ajax, 
                     }
+        merge_with_localized_variables(request, variables)   
         return render(request, 'sales_item_save_form.html', variables)
 
 @login_required
-def delete_sales_item_view(request, sales_item_id=None):
+def delete_sales_item(request, sales_item_id=None):
     if sales_item_id is None:
         raise Http404(_(u'Sales item not found'))
     else:
         profile = request.user.get_profile()
         sales_item = get_object_or_404(profile.company.salesitem_set.all(), pk=sales_item_id)
-        sales_item.delete()
-        ITEMS_PER_PAGE = 3        
+        sales_item.delete()                
         sales_items_queryset = profile.company.salesitem_set.all().order_by('item_description')   
         sales_items, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, sales_items_queryset)    
         #New SalesItem form for adding a possible new one on UI
         sales_item = SalesItem(company=profile.company)
-        form = SalesItemForm(instance=sales_item)
-        delete_button_confirmation = get_delete_button_confirmation()
-        variables = {
-                 'sales_items': sales_items, 'locale' : get_datepicker_format(request), 'form':form, 'delete_button_confirmation' : delete_button_confirmation,
-                 'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages,
-                 'next_page': page_number + 1, 'prev_page': page_number - 1
-                 }    
+        form = SalesItemForm(instance=sales_item)        
+        variables = { 'sales_items': sales_items, 'form':form, }
+        variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
     return render(request, 'sales_item_list.html', variables)
 
 
+
 @login_required
-def deal_template_display_view(request):
-    ITEMS_PER_PAGE = 10
+def deal_type_display(request):    
     profile = request.user.get_profile()
-    deals_queryset = profile.company.dealtype_set.all()
+    deals_queryset = profile.company.dealtype_set.order_by('deal_name')
     ajax = False
     if 'ajax' in request.GET:
         ajax = True        
         if 'deal_name' in request.GET:    
             deal_name = request.GET['deal_name']
             deals_queryset = deals_queryset.filter(deal_name__icontains=deal_name).order_by('deal_name')
-        if 'sales_item' in request.GET:    
-            #sales_item_raw = request.GET['sales_item']
-            #sales_item_keywords = sales_item_raw.split(',')
+        if 'sales_item' in request.GET:            
             sales_item_keywords = request.GET.getlist('sales_item')
             # Q are queries that can be stacked with Or operators. If none of the Qs contains any value, `reduce` minimizes them to no queryset,             
             q_filters = reduce(operator.or_, (Q(item_description__icontains=item.strip()) for item in sales_item_keywords))
@@ -411,13 +379,10 @@ def deal_template_display_view(request):
 
     filter_form = FilterDealsForm(profile.company, request.GET)            
     deals, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deals_queryset)    
-    lang = display_current_language(request)
-    delete_button_confirmation = get_delete_button_confirmation()
     variables = {
-                 'deals': deals, 'lang': lang, 'delete_button_confirmation' : delete_button_confirmation,
-                 'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages,
-                 'next_page': page_number + 1, 'prev_page': page_number - 1,'filter_form' : filter_form, 'timezones': pytz.common_timezones                 
+                 'deals': deals, 'filter_form' : filter_form,
                  }
+    variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
     if ajax:    
         return render(request, 'deals_list.html', variables)
     else:
@@ -425,7 +390,7 @@ def deal_template_display_view(request):
     
 
 @login_required
-def deal_template_view(request, deal_id=None):
+def deal_type_add_edit(request, deal_id=None):
     profile = request.user.get_profile()
     
     if deal_id is None:
@@ -440,27 +405,32 @@ def deal_template_view(request, deal_id=None):
             deal = form.save()
             return HttpResponseRedirect('/deals')
     else:
-        form = DealTypeForm(instance=deal)
-    lang = display_current_language(request)
-    variables = {'form':form, 'template_title': template_title, 'chosen' : _(u'No results matched'), 'locale' : get_datepicker_format(request), 'lang': lang}
+        form = DealTypeForm(instance=deal)    
+    variables = {'form':form, 'template_title': template_title}
+    merge_with_localized_variables(request, variables)   
     return render(request, 'deal.html', variables)
 
 @login_required
-def delete_template_deal_view(request, deal_id=None):
+def delete_deal_type(request, deal_id=None):
     if deal_id is None:
-        raise Http404(_(u'Deal not found'))
+        raise Http404(_(u'Deal Type not found'))
     else:
         profile = request.user.get_profile()
         deal = get_object_or_404(profile.company.dealtype_set.all(), pk=deal_id)
         deal.delete()
-    return HttpResponseRedirect('/deals')
+        deal_queryset = profile.company.dealtype_set.order_by('deal_name')   
+        deals, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deal_queryset)          
+        variables = { 'deals': deals, }
+        variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
+    return render(request, 'deals_list.html', variables)
+    
 
-
-def logout_page_view(request):
+@login_required
+def logout_page(request):
     logout(request)
     return HttpResponseRedirect('/')
 
-def register_page_view(request):    
+def register_page(request):    
     if request.user.is_authenticated():
         return HttpResponseRedirect('/')    
     if request.method == 'POST':
@@ -503,22 +473,22 @@ def register_page_view(request):
 #                del request.session['invitation']
             return HttpResponseRedirect('/register/success/')
     else:
-        form = RegistrationForm()
-    lang = display_current_language(request)
-    variables = {'form':form, 'locale' : get_datepicker_format(request), 'lang':lang}
+        form = RegistrationForm()    
+    variables = {'form':form,}
+    merge_with_localized_variables(request, variables)   
     return render(request, 'registration/register.html', variables)
 
 @login_required
-def charts_view(request, contact_id):
+def charts_display(request, contact_id):
     profile = request.user.get_profile()
     contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
     deals = contact.deal_set.all().order_by('deal_id', 'time_stamp')
     stac = {'EM':0, 'LM':0, 'EA':0, 'LA':0, 'EE':0}
     for deal in deals:        
         part = part_of_day_statistics(deal.conversation.conversation_datetime)
-        stac[part] += 1                 
-    lang = display_current_language(request)
-    variables = {'deals':deals, 'stac':stac, 'contact':contact, 'locale' : get_datepicker_format(request), 'lang':lang}
+        stac[part] += 1    
+    variables = {'deals':deals, 'stac':stac, 'contact':contact, }
+    merge_with_localized_variables(request, variables)   
     return render(request, 'charts.html', variables)
     
 
@@ -567,7 +537,27 @@ def get_request_parameters(request):
             continue
         get_request = get_request + '&' + key + '=' + value
     return get_request
-  
+
+
+def get_paginator_variables(paginator, page, page_number):
+    return { 'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages, 'next_page': page_number + 1, 'prev_page': page_number - 1}
+
+def get_localized_variables(request):
+    return { 'locale' : get_datepicker_format(request), 'lang': display_current_language(request), 'delete_button_confirmation': get_delete_button_confirmation(), 'timezones': pytz.common_timezones, 'chosen' : _(u'No results matched') }  
+
+def merge_with_additional_variables(request, paginator, page, page_number, variables):
+    variables = dict(variables.items() + get_paginator_variables(paginator, page, page_number).items() + get_localized_variables(request).items())
+    return variables
+
+def merge_with_localized_variables(request, variables):
+    variables = dict(variables.items() + get_localized_variables(request).items())
+    return variables
+
+def merge_with_pagination_variables(paginator, page, page_number, variables):
+    variables = dict(variables.items() + get_paginator_variables(paginator, page, page_number).items())
+    return variables
+
+
 
 #@login_required
 #def _deal_status_view(request, call_id=None):        

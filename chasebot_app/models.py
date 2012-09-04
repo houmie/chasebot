@@ -144,7 +144,7 @@ class Conversation(models.Model):
     notes               = models.TextField(_(u"Conversation Notes"),        blank=True)   
             
     class Meta:
-        get_latest_by   = "time_stamp"
+        get_latest_by   = "conversation_datetime"
     
     def __unicode__(self):
         return self.subject

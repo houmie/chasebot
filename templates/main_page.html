@@ -9,43 +9,43 @@
 
 <p>{% trans 'Welcome back' %} {{ user.username }}.</p>
 	<div>
-		<a class="btn btn-success" href="/contact/add" title="{% trans 'New Contact' %}"><i class="icon-plus"></i><i class="icon-user"> </i></a>
-        <a class="btn btn-success btn-success2" href="/deals" title="{% trans 'Deals' %}"><i class="icon-tags"></i> {% trans 'Deals' %}</a>
+		<a class="btn" href="/contact/add" title="{% trans 'New Contact' %}"><i class="icon-plus"> </i><i class="icon-user"> </i></a>
+        <a class="btn" href="/deals" title="{% trans 'Deals' %}"><i class="icon-tags"> </i> {% trans 'Deals' %}</a>
 	</div>	
     <table class="table">
         <thead>
             <tr>
             	<th></th>
                 <th>
-                	<form action="." method="get" class="form-search form_no_margin">	    				
+                	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
 	    				<div class="input-append">
 	    				{{filter_form.last_name}}<button type="button" class="btn filter_button"><i class='icon-filter'> </i></button>
-	    				</div>	   <br> 
+	    				</div>	   
 	    				{% trans 'Last Name' %}	    								
                 	</form>  
                 </th>
                 <th>
-                	<form action="." method="get" class="form-search form_no_margin">	    				
+                	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
 	    				<div class="input-append">
 	    				{{filter_form.first_name}}<button type="button" class="btn filter_button"><i class='icon-filter'> </i></button>
-	    				</div>	   <br> 
+	    				</div>
 	    				{% trans 'First Name' %}	    								
                 	</form>
             	</th>
                 <th>{% trans 'Dear' %}</th>
                 <th>
-                	<form action="." method="get" class="form-search form_no_margin">	    				
+                	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
 	    				<div class="input-append">
 	    				{{filter_form.company}}<button type="button" class="btn filter_button"><i class='icon-filter'> </i></button>
-	    				</div>	   <br> 
+	    				</div>	  
 	    				{% trans 'Company' %}	    								
                 	</form>                	
             	</th>
                 <th>
-                	<form action="." method="get" class="form-search form_no_margin">	    				
+                	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
 	    				<div class="input-append">
 	    				{{filter_form.email}}<button type="button" class="btn filter_button"><i class='icon-filter'> </i></button>
-	    				</div>	   <br> 
+	    				</div>	   
 	    				{% trans 'Email' %}	    								
                 	</form>                	
             	</th>

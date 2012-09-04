@@ -56,17 +56,13 @@ function row_delete_ajax(event) {
     event.preventDefault();
     if (confirm($('#delete_button_confirmation').text())) {
     	var url = $(this).attr("href") + "/";
-    	//e.g. get whole row to be removed
-  		var row = $(this).closest('tr').empty();
-  		
+    	  		
         $.post(url, function(result){
         	$('#search_result').empty();
         	$('#search_result').append(result);
         	rebind();
-        });
-        row.remove();        
+        });                
     }    	
-    return false;
 }
 
 
@@ -113,8 +109,6 @@ function filter_rows(event){
 	$('#search_result').load(url, function(){		
 		rebind();
 	});	
-			
-	return false;
 }
 
 function paginator_navigate(event) {	
@@ -126,7 +120,6 @@ function paginator_navigate(event) {
 	$('#search_result').load(url, function(){		
 		rebind();	
 	});		
-	return false;
 }
 
 function row_edit_cancel_ajax(event){
@@ -142,8 +135,7 @@ function row_edit_cancel_ajax(event){
     	function () {    			              		
       		rebind();
     	}
-  	);  		
-  	return false;
+  	);
 }
 
 
@@ -168,8 +160,7 @@ function row_edit_ajax(event) {
       		$(target).children(".save-edit-form").submit(url, row_edit_save_ajax);
       		$(".cancel_edit_button").click(row_edit_cancel_ajax);
     	}
-  	);  		
-  	return false;
+  	);  	
 }
 
 function row_add_save_ajax(event){
@@ -220,8 +211,7 @@ function row_add_save_ajax(event){
       			$(add_button_row).find(".item_description").val('');
       		}
     	}
-  	});  		
-  	return false;
+  	});  	
 } 
 
 
@@ -253,9 +243,9 @@ function row_edit_save_ajax(event) {
       		row.remove();      		  
       		rebind();	
     	}
-  	});  		
-	return false;
+  	});	
 }
+
 
 function rebind(){
 	$(".row_delete_ajax").click(row_delete_ajax);	
@@ -263,6 +253,7 @@ function rebind(){
 	$(".paginator_nav_links").click(paginator_navigate);
 	$(".row_edit_ajax").click(row_edit_ajax);
 	$(".row_add_button_ajax").click(row_add_save_ajax);	
+	$(".form-filter-ajax").submit(filter_rows);
 }
 
 $(document).ready(function () {	
