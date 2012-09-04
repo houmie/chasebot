@@ -2,8 +2,8 @@ from django.conf.urls import patterns, include, url
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
 from django.views.generic.simple import direct_to_template
-from chasebot_app.views import logout_page, delete_contact, conversation_display, \
-     delete_conversation, sales_item_add_edit, sales_item_display, delete_sales_item, deal_type_display, deal_type_add_edit, delete_deal_type,\
+from chasebot_app.views import logout_page, contact_delete, conversation_display, \
+     conversation_delete, sales_item_add_edit, sales_item_display, sales_item_delete, deal_type_display, deal_type_add_edit, deal_type_delete,\
      charts_display, conversation_add_edit, sales_item_cancel, set_timezone,\
      contacts_display, register_page, contact_add_edit
 
@@ -25,12 +25,12 @@ urlpatterns = patterns('',
 
     #Browsing
     (r'^$', contacts_display),
-    (r'^contact/delete/(?P<contact_id>\d+)/$', delete_contact),
+    (r'^contact/delete/(?P<contact_id>\d+)/$', contact_delete),
     (r'^contact/edit/(?P<contact_id>\d+)/$', contact_add_edit),
     (r'^contact/add/', contact_add_edit),
         
     (r'^contact/(?P<contact_id>\d+)/call/edit/(?P<call_id>\w+)/$', conversation_add_edit),
-    (r'^contact/(?P<contact_id>\d+)/call/delete/(?P<call_id>\w+)/$', delete_conversation),
+    (r'^contact/(?P<contact_id>\d+)/call/delete/(?P<call_id>\w+)/$', conversation_delete),
     (r'^contact/(?P<contact_id>\d+)/call/add/$', conversation_add_edit),    
     (r'^contact/(?P<contact_id>\d+)/calls/$', conversation_display),
 
@@ -38,12 +38,12 @@ urlpatterns = patterns('',
     (r'^sales_item/edit/(?P<sales_item_id>\d+)/$', sales_item_add_edit),
     (r'^sales_item/edit/cancel/(?P<sales_item_id>\d+)/$', sales_item_cancel),    
     (r'^sales_items/$', sales_item_display),
-    (r'^sales_item/delete/(?P<sales_item_id>\d+)/$', delete_sales_item),
+    (r'^sales_item/delete/(?P<sales_item_id>\d+)/$', sales_item_delete),
     
     (r'^deal/add/$', deal_type_add_edit),    
     (r'^deal/edit/(?P<deal_id>\d+)/$', deal_type_add_edit),
     (r'^deals/$', deal_type_display),
-    (r'^deal/delete/(?P<deal_id>\d+)/$', delete_deal_type),
+    (r'^deal/delete/(?P<deal_id>\d+)/$', deal_type_delete),
     
     (r'^charts/contact/(?P<contact_id>\d+)$', charts_display),
             

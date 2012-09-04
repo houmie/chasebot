@@ -106,11 +106,11 @@ def contact_add_edit(request, contact_id=None):
     else:
         form = ContactsForm(instance=contact, company=profile.company)    
     variables = {'form':form, 'template_title': template_title, 'contact_id' : contact_id, }
-    merge_with_localized_variables(request, variables)
+    variables = merge_with_localized_variables(request, variables)
     return render(request, 'contact.html', variables)
 
 @login_required
-def delete_contact(request, contact_id):
+def contact_delete(request, contact_id):
     if contact_id is None:
         raise Http404(_(u'Contact not found'))
     else:
@@ -120,7 +120,7 @@ def delete_contact(request, contact_id):
         contacts_queryset = profile.company.contact_set.order_by('last_name')
         contacts, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, contacts_queryset)    
         variables = { 'contacts': contacts, }
-        merge_with_pagination_variables(paginator, page, page_number, variables)
+        variables = merge_with_pagination_variables(paginator, page, page_number, variables)
     return render(request, 'contacts_list.html', variables)     
 
 
@@ -128,7 +128,7 @@ def delete_contact(request, contact_id):
 def conversation_display(request, contact_id):    
     profile = request.user.get_profile()
     contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
-    calls_queryset = contact.conversation_set.all().order_by('-time_stamp')
+    calls_queryset = contact.conversation_set.all().order_by('-conversation_datetime')
     ajax = False    
     if 'ajax' in request.GET:
         ajax = True
@@ -237,7 +237,7 @@ def conversation_add_edit(request, contact_id, call_id=None):
         non_attached_opendeal_formset = opendeal_formset_factory(queryset=exclude_attached_opendeals_query, prefix='opendeals')
     
     variables = {'form':form, 'attached_deals_formset':attached_deals_formset, 'opendeal_formset':non_attached_opendeal_formset, 'is_atleast_one_opendeal_attached':is_atleast_one_opendeal_attached }
-    merge_with_localized_variables(request, variables)   
+    variables = merge_with_localized_variables(request, variables)   
     return render(request, 'conversation.html', variables)
 
 
@@ -245,7 +245,7 @@ def conversation_add_edit(request, contact_id, call_id=None):
 
 
 @login_required
-def delete_conversation(request, contact_id, call_id):
+def conversation_delete(request, contact_id, call_id):
     if contact_id is None:
         raise Http404(_(u'Contact not found'))
     elif call_id is None:
@@ -328,11 +328,11 @@ def sales_item_add_edit(request, sales_item_id=None):
         variables = {
                      'form':form, 'salesitem_id' : sales_item_id, 'validation_error_ajax' : validation_error_ajax, 
                     }
-        merge_with_localized_variables(request, variables)   
+        variables = merge_with_localized_variables(request, variables)   
         return render(request, 'sales_item_save_form.html', variables)
 
 @login_required
-def delete_sales_item(request, sales_item_id=None):
+def sales_item_delete(request, sales_item_id=None):
     if sales_item_id is None:
         raise Http404(_(u'Sales item not found'))
     else:
@@ -407,11 +407,11 @@ def deal_type_add_edit(request, deal_id=None):
     else:
         form = DealTypeForm(instance=deal)    
     variables = {'form':form, 'template_title': template_title}
-    merge_with_localized_variables(request, variables)   
+    variables = merge_with_localized_variables(request, variables)   
     return render(request, 'deal.html', variables)
 
 @login_required
-def delete_deal_type(request, deal_id=None):
+def deal_type_delete(request, deal_id=None):
     if deal_id is None:
         raise Http404(_(u'Deal Type not found'))
     else:
@@ -475,7 +475,7 @@ def register_page(request):
     else:
         form = RegistrationForm()    
     variables = {'form':form,}
-    merge_with_localized_variables(request, variables)   
+    variables = merge_with_localized_variables(request, variables)   
     return render(request, 'registration/register.html', variables)
 
 @login_required
@@ -488,7 +488,7 @@ def charts_display(request, contact_id):
         part = part_of_day_statistics(deal.conversation.conversation_datetime)
         stac[part] += 1    
     variables = {'deals':deals, 'stac':stac, 'contact':contact, }
-    merge_with_localized_variables(request, variables)   
+    variables = merge_with_localized_variables(request, variables)   
     return render(request, 'charts.html', variables)
     
 
