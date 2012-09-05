@@ -13,13 +13,13 @@ function getCookie(name) {
         }
     }
     return cookieValue;
-}
+};
 var csrftoken = getCookie('csrftoken');
 
 function csrfSafeMethod(method) {
     // these HTTP methods do not require CSRF protection
     return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-}
+};
 $.ajaxSetup({
     crossDomain: false, // obviates need for sameOrigin test
     beforeSend: function(xhr, settings) {
@@ -41,23 +41,23 @@ function ISODateString(d){
       + pad(d.getUTCHours())+':'
       + pad(d.getUTCMinutes())+':'
       + pad(d.getUTCSeconds())+'Z'
-}
+};
 
 
 function convertDateTimeToUTC(date) { 
 	return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds()); 
-	}
+};
 	
 function convertDateToUTC(date) { 
 	return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()); 
-	}
+};
 
 if (!String.prototype.trim) {
    //code for trim
    String.prototype.trim=function(){
 		return this.replace(/^\s+|\s+$/g, '');
 	};
-}
+};
 
 
 
@@ -72,7 +72,7 @@ function row_delete_ajax(event) {
         	rebind();
         });                
     }    	
-}
+};
 
 
 function filter_rows(event){
@@ -118,7 +118,7 @@ function filter_rows(event){
 	$('#search_result').load(url, function(){		
 		rebind();
 	});	
-}
+};
 
 function paginator_navigate(event) {	
 	event.preventDefault();	
@@ -129,7 +129,7 @@ function paginator_navigate(event) {
 	$('#search_result').load(url, function(){		
 		rebind();	
 	});		
-}
+};
 
 function row_edit_cancel_ajax(event){
 	event.preventDefault();
@@ -145,7 +145,7 @@ function row_edit_cancel_ajax(event){
       		rebind();
     	}
   	);
-}
+};
 
 
 function row_edit_ajax(event) {
@@ -170,7 +170,7 @@ function row_edit_ajax(event) {
       		$(".cancel_edit_button").click(row_edit_cancel_ajax);
     	}
   	);  	
-}
+};
 
 function row_add_save_ajax(event){
 	event.preventDefault();
@@ -221,7 +221,7 @@ function row_add_save_ajax(event){
       		}
     	}
   	});  	
-} 
+};
 
 
 function row_edit_save_ajax(event) {
@@ -253,7 +253,52 @@ function row_edit_save_ajax(event) {
       		rebind();	
     	}
   	});	
+};
+
+function autocomplete(query, process, path, fieldname, contact_id){
+	var url = '';
+	if(contact_id == ''){
+		url = '/autocomplete/' + path + '/';
+	}
+	else{
+		url = '/autocomplete/' + path + '/' + contact_id + '/';
+	}
+	
+	$.ajax({
+     	  type: 'GET',
+		  url: url,
+		  data: { query: query, fieldname: fieldname },		  
+		  contentType: "application/json; charset=utf-8",
+		  dataType: 'json',
+		  success: function (data) {
+		  	return process(data);
+		  }		  
+		});
 }
+
+function typeahead_sales_items(query, process){
+	autocomplete(query, process, 'sales_items', 'item_name', '')
+};
+
+function typeahead_contacts_last_name(query, process){
+	autocomplete(query, process, 'contacts', 'last_name', '')
+};
+
+function typeahead_contacts_first_name(query, process){
+	autocomplete(query, process, 'contacts', 'first_name', '')
+};
+
+function typeahead_contacts_company(query, process){
+	autocomplete(query, process, 'contacts', 'company_name', '')
+};
+
+function typeahead_contacts_email(query, process){
+	autocomplete(query, process, 'contacts', 'email', '')
+};
+
+function typeahead_conversation_subject(query, process){
+	autocomplete(query, process, 'conversations', 'subject', $('#contact_id').text())
+};
 
 
 function rebind(){
@@ -262,11 +307,23 @@ function rebind(){
 	$(".paginator_nav_links").click(paginator_navigate);
 	$(".row_edit_ajax").click(row_edit_ajax);
 	$(".row_add_button_ajax").click(row_add_save_ajax);	
-	$(".form-filter-ajax").submit(filter_rows);
-}
+	$(".form-filter-ajax").submit(filter_rows);		
+};
+
+function rebind_filters(){		
+	$(".typeahead_sales_items").typeahead({ source: typeahead_sales_items });
+	$(".typeahead_contacts_last_name").typeahead({ source: typeahead_contacts_last_name });
+	$(".typeahead_contacts_first_name").typeahead({ source: typeahead_contacts_first_name });
+	$(".typeahead_contacts_company").typeahead({ source: typeahead_contacts_company });
+	$(".typeahead_contacts_email").typeahead({ source: typeahead_contacts_email });
+	$(".typeahead_conversation_subject").typeahead({ source: typeahead_conversation_subject });	
+	
+};
+
 
 $(document).ready(function () {	
 	rebind();	
+	rebind_filters();
 });
 
 

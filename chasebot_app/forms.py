@@ -57,10 +57,10 @@ class RegistrationForm(ModelForm):
 
 
 class FilterContactsForm(Form):
-    last_name     = forms.CharField(widget= forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query'}), max_length=50)
-    first_name    = forms.CharField(widget= forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query'}), max_length=30)
-    company       = forms.CharField(widget= forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query'}), max_length=30)
-    email         = forms.EmailField(widget= forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query'}))
+    last_name     = forms.CharField(widget= forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query typeahead_contacts_last_name', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=50)
+    first_name    = forms.CharField(widget= forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query typeahead_contacts_first_name', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=30)
+    company       = forms.CharField(widget= forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query typeahead_contacts_company', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=30)
+    email         = forms.EmailField(widget= forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query typeahead_contacts_email', 'autocomplete': 'off', 'data-provide': 'typeahead'}))
 
 class ContactsForm(ModelForm):
     def __init__(self, company, *args, **kwargs):
@@ -100,10 +100,10 @@ class ContactsForm(ModelForm):
 
 
 
-class FilterCallsForm(Form):            
-    from_date   = forms.DateField(localize=True, widget=cb_DateInput(attrs={'placeholder': 'From Date...', 'class': 'placeholder_fix_css datepicker input-small search-query', }))
+class FilterConversationForm(Form):            
+    from_date   = forms.DateField(localize=True, widget=cb_DateInput(attrs={'placeholder': 'From Date...', 'class': 'placeholder_fix_css datepicker input-small search-query'}))
     to_date     = forms.DateField(localize=True, widget=cb_DateInput(attrs={'placeholder': 'To Date...', 'class': 'placeholder_fix_css datepicker input-small search-query'}))
-    subject     = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query'}), max_length=50)
+    subject     = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query typeahead_conversation_subject', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=50)
     
     
     
@@ -322,7 +322,7 @@ class FilterSalesItemForm(Form):
     def __init__(self, *args, **kwargs):
         super(FilterSalesItemForm, self).__init__(*args, **kwargs)          
     
-    item_name    = forms.CharField(widget = forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query filter_add_button'}), max_length=40)
+    item_name    = forms.CharField(widget = forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query filter_add_button typeahead_sales_items', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=40)
 
 class SalesItemForm(ModelForm):
     class Meta:

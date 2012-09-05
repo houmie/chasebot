@@ -1,17 +1,17 @@
 import datetime
 from datetime import datetime as dt 
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from chasebot_app.forms import RegistrationForm, ContactsForm, ConversationForm, SalesItemForm, DealTypeForm,\
-     DealCForm, FilterContactsForm, FilterCallsForm, FilterDealsForm, FilterSalesItemForm
+     DealCForm, FilterContactsForm, FilterConversationForm, FilterDealsForm, FilterSalesItemForm
 from chasebot_app.models import Company, Contact, Conversation, SalesItem, DealType, DealStatus, Deal, SalesTerm
 from chasebot_app.models import UserProfile
 from django.utils.translation import ugettext as _
-from django.utils import timezone
+from django.utils import timezone, simplejson
 from django.forms.models import modelformset_factory
 import uuid
 from django.db.models.aggregates import Max
@@ -143,10 +143,10 @@ def conversation_display(request, contact_id):
             subject = request.GET['subject']
             calls_queryset = calls_queryset.filter(subject__icontains=subject).order_by('subject')        
     
-    filter_form = FilterCallsForm(request.GET)
+    filter_form = FilterConversationForm(request.GET)
     calls, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, calls_queryset)    
     variables = {
-                 'calls': calls, 'contact': contact, 'filter_form' : filter_form,
+                 'calls': calls, 'contact': contact, 'filter_form' : filter_form, 
                  }
     variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
     if ajax:    
@@ -490,6 +490,57 @@ def charts_display(request, contact_id):
     variables = {'deals':deals, 'stac':stac, 'contact':contact, }
     variables = merge_with_localized_variables(request, variables)   
     return render(request, 'charts.html', variables)
+
+
+#def sales_item_autocomplete(request):
+#    if 'query' in request.GET:
+#        profile = request.user.get_profile()        
+#        fieldname = request.GET['fieldname']
+#        kwargs = {'%s__startswith' % (fieldname) : request.GET['query']}
+#        queryset = profile.company.salesitem_set.filter(**kwargs)[:10]              
+#        to_json = []
+#        for item in queryset:
+#            to_json.append(getattr(item, fieldname))        
+#        return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
+#    return HttpResponse() 
+
+def sales_item_autocomplete(request):
+    if 'query' in request.GET:
+        profile, kwargs, fieldname = get_fields_for_autocomplete(request)
+        queryset = profile.company.salesitem_set.filter(**kwargs)[:10] 
+        to_json = prepare_json_for_autocomplete(fieldname, queryset)
+        return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')        
+    return HttpResponse()
+
+def contacts_autocomplete(request):
+    if 'query' in request.GET:
+        profile, kwargs, fieldname = get_fields_for_autocomplete(request)
+        queryset = profile.company.contact_set.filter(**kwargs)[:10]
+        to_json = prepare_json_for_autocomplete(fieldname, queryset)
+        return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')        
+    return HttpResponse()
+
+def conversations_autocomplete(request, contact_id):
+    if 'query' in request.GET:
+        profile, kwargs, fieldname = get_fields_for_autocomplete(request)
+        contact = profile.company.contact_set.get(pk=contact_id)
+        queryset = contact.conversation_set.filter(**kwargs)[:10]
+        
+        to_json = prepare_json_for_autocomplete(fieldname, queryset)
+        return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')        
+    return HttpResponse()
+
+def get_fields_for_autocomplete(request):
+    profile = request.user.get_profile()
+    fieldname = request.GET['fieldname']
+    kwargs = {'%s__startswith' % (fieldname):request.GET['query']}
+    return profile, kwargs, fieldname
+
+def prepare_json_for_autocomplete(fieldname, queryset):                    
+    to_json = []
+    for item in queryset:
+        to_json.append(getattr(item, fieldname))
+    return to_json
     
 
 def part_of_day_statistics(x):
@@ -556,6 +607,7 @@ def merge_with_localized_variables(request, variables):
 def merge_with_pagination_variables(paginator, page, page_number, variables):
     variables = dict(variables.items() + get_paginator_variables(paginator, page, page_number).items())
     return variables
+
 
 
 
