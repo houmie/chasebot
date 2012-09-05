@@ -110,7 +110,7 @@ function filter_rows(event){
 			}
 			//If single paramaters are passed in...
 			else{
-				url = url + '&' + keyword + '=' + "'" + value + "'";				
+				url = url + '&' + keyword + '=' + encodeURIComponent(value);				
 			}						
 		}				 		
 	})
