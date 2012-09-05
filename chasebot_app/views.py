@@ -520,12 +520,42 @@ def contacts_autocomplete(request):
         return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')        
     return HttpResponse()
 
+def deal_autocomplete(request):
+    if 'query' in request.GET:
+        profile, kwargs, fieldname = get_fields_for_autocomplete(request)
+        try:
+            queryset = profile.company.dealtype_set.filter(**kwargs)[:10]
+        except:
+            # Foreignkey related fields
+            if fieldname == 'sales_term':
+                sales_term = SalesTerm.objects.filter(sales_term__istartswith=request.GET['query'])
+                deal_types = profile.company.dealtype_set.filter(sales_term__in=sales_term)
+                queryset = {}
+                for deal in deal_types:
+                    if queryset.has_key(deal.sales_term):
+                        continue                        
+                    queryset[deal.sales_term]=deal.sales_term
+            # Many-to-Many relationship                
+            elif fieldname == 'sales_item':
+                sales_item = profile.company.salesitem_set.filter(item_name__istartswith=request.GET['query'])
+                deal_types = profile.company.dealtype_set.filter(sales_item__in=sales_item)
+                queryset = {}
+                for deal in deal_types:
+                    for si in deal.sales_item.select_related():
+                        if queryset.has_key(si):
+                            continue                        
+                        queryset[si]=si
+                fieldname = 'item_name'
+                
+        to_json = prepare_json_for_autocomplete(fieldname, queryset)
+        return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')        
+    return HttpResponse()
+
 def conversations_autocomplete(request, contact_id):
     if 'query' in request.GET:
         profile, kwargs, fieldname = get_fields_for_autocomplete(request)
         contact = profile.company.contact_set.get(pk=contact_id)
-        queryset = contact.conversation_set.filter(**kwargs)[:10]
-        
+        queryset = contact.conversation_set.filter(**kwargs)[:10]        
         to_json = prepare_json_for_autocomplete(fieldname, queryset)
         return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')        
     return HttpResponse()
@@ -533,13 +563,13 @@ def conversations_autocomplete(request, contact_id):
 def get_fields_for_autocomplete(request):
     profile = request.user.get_profile()
     fieldname = request.GET['fieldname']
-    kwargs = {'%s__startswith' % (fieldname):request.GET['query']}
+    kwargs = {'%s__istartswith' % (fieldname):request.GET['query']}
     return profile, kwargs, fieldname
 
 def prepare_json_for_autocomplete(fieldname, queryset):                    
     to_json = []
     for item in queryset:
-        to_json.append(getattr(item, fieldname))
+        to_json.append(str(getattr(item, fieldname)))
     return to_json
     
 

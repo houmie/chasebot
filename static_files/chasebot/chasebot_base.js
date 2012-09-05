@@ -110,7 +110,7 @@ function filter_rows(event){
 			}
 			//If single paramaters are passed in...
 			else{
-				url = url + '&' + keyword + '=' + value;				
+				url = url + '&' + keyword + '=' + "'" + value + "'";				
 			}						
 		}				 		
 	})
@@ -300,6 +300,27 @@ function typeahead_conversation_subject(query, process){
 	autocomplete(query, process, 'conversations', 'subject', $('#contact_id').text())
 };
 
+function typeahead_deals_deal_name(query, process){
+	autocomplete(query, process, 'deals', 'deal_name', '')
+};
+
+function typeahead_deals_sales_item(query, process){
+	autocomplete(query, process, 'deals', 'sales_item', '')
+};
+
+function typeahead_deals_price(query, process){
+	autocomplete(query, process, 'deals', 'price', '')
+};
+
+function typeahead_deals_sales_term(query, process){
+	autocomplete(query, process, 'deals', 'sales_term', '')
+};
+
+function typeahead_deals_quantity(query, process){
+	autocomplete(query, process, 'deals', 'quantity', '')
+};
+
+
 
 function rebind(){
 	$(".row_delete_ajax").click(row_delete_ajax);	
@@ -316,8 +337,12 @@ function rebind_filters(){
 	$(".typeahead_contacts_first_name").typeahead({ source: typeahead_contacts_first_name });
 	$(".typeahead_contacts_company").typeahead({ source: typeahead_contacts_company });
 	$(".typeahead_contacts_email").typeahead({ source: typeahead_contacts_email });
-	$(".typeahead_conversation_subject").typeahead({ source: typeahead_conversation_subject });	
-	
+	$(".typeahead_conversation_subject").typeahead({ source: typeahead_conversation_subject });
+	$(".typeahead_deals_deal_name").typeahead({ source: typeahead_deals_deal_name });
+	$(".typeahead_deals_sales_item").typeahead({ source: typeahead_deals_sales_item });
+	$(".typeahead_deals_price").typeahead({ source: typeahead_deals_price });
+	$(".typeahead_deals_sales_term").typeahead({ source: typeahead_deals_sales_term });
+	$(".typeahead_deals_quantity").typeahead({ source: typeahead_deals_quantity });	
 };
 
 
