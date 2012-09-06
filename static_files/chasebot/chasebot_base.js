@@ -69,7 +69,9 @@ function row_delete_ajax(event) {
         $.post(url, function(result){
         	$('#search_result').empty();
         	$('#search_result').append(result);
-        	rebind();
+        	rebind_edit_delete($('#search_result'));
+        	rebind_paginator($('#search_result'));
+        	rebind_add();        	
         });                
     }    	
 };
@@ -116,7 +118,8 @@ function filter_rows(event){
 	})
 	//Even if no filter are set, still the query to server is required to get all list and undo filters.	
 	$('#search_result').load(url, function(){		
-		rebind_edit_delete();
+		rebind_edit_delete($('#search_result'));
+		rebind_paginator($('#search_result'));
 	});	
 };
 
@@ -127,8 +130,9 @@ function paginator_navigate(event) {
 	//var row = $('#search_result').empty();
 	
 	$('#search_result').load(url, function(){		
-		rebind_edit_delete();
-		rebind_paginator();	
+		rebind_edit_delete($('#search_result'));
+		rebind_paginator($('#search_result'));
+		rebind_add();		
 	});		
 };
 
@@ -137,13 +141,13 @@ function row_edit_cancel_ajax(event){
 	// This is a hidden field that contains the current sales_item_id hold for cancel edit mode
 	var salesitem_id = $(this).parent().children('div.salesitem_id').text();
 	var url = '/sales_item/edit/cancel/' + salesitem_id + '/';
-	var row = $(this).closest('form').closest('tr').empty(); //real row containing also the submit-edit-form
+	var row = $(this).closest('form').closest('tr'); //real row containing also the submit-edit-form
 	
 	row.load(
 		// get only the children (td) od the tr and attach them to the existing empty row.
     	url + ' td',    	
     	function () {    			              		
-      		rebind();
+      		rebind_edit_delete($(row));
     	}
   	);
 };
@@ -168,7 +172,7 @@ function row_edit_ajax(event) {
     	function () {
     		//Once loaded make sure the submit-form will be redirected to 'row_edit_save_ajax' once submitted. Url is parameter 
       		$(target).children(".save-edit-form").submit(url, row_edit_save_ajax);
-      		$(".cancel_edit_button").click(row_edit_cancel_ajax);
+      		$(target).find(".cancel_edit_button").click(row_edit_cancel_ajax);
     	}
   	);  	
 };
@@ -177,11 +181,11 @@ function row_add_save_ajax(event){
 	event.preventDefault();
 	// selector starts from Add Button (this)	
 	var url = "/sales_item/add/";	
-	var add_button_row = $(this).closest('tr'); //add_button_row inside the form
-	var row = $(add_button_row).closest('form').closest('tr'); //real row containing also the form
+	//var add_button_row = $(this).closest('tr'); //add_button_row inside the form
+	var row = $(this).closest('tr'); //real row containing also the form
 	
 	var data = {
-  			item_name: $(add_button_row).find(".item_name").val()    
+  			item_name: $(this).find("#id_item_name").val()    
   	};
   	
   	$.post(url, data, function (result) {
@@ -189,20 +193,21 @@ function row_add_save_ajax(event){
   		if ($('.validation_error_ajax', result).text() == 'True') {
   			 //back_up is a hidden field holding the original state of the add-form. If there is an error we would clone the original add-form.
   			 //This is done by cloning the middle column's children (all editing fields and buttons)
-  			 $('#backup_add').append($(row.children().get(1)).children().clone());
+  			 $('#backup_add').append($(this).clone());
     		 row.empty();
     		 var dummy = $('<td>').appendTo(row);
     		 var target = $('<td>').appendTo(row);
   			 var dummy = $('<td>').appendTo(row);    		
       		 target.append(result);   
-      		 $(".row_add_button_ajax").click(row_add_save_ajax);      		 
-      		 $(target).children(".save-edit-form").submit(url, row_edit_save_ajax); 		      		
+      		 //target.find(".row_add_button_ajax").click(row_add_save_ajax);      		 
+      		 target.children(".save-edit-form").submit(url, row_edit_save_ajax); 		      		
     	}
     	else {
     		//if there is no error then insert the added row before the current add-button row. (last row)    		
     		$('#search_result').empty();
     		$('#search_result').append(result);    		      		
-      		rebind();
+      		rebind_edit_delete($('#search_result'));
+      		rebind_paginator($('#search_result'));
       		
       		//if backup_add contains any children, it means that previously there was an error and the box is still red. We need to load our backup.
       		if($("#backup_add").children().length > 0)
@@ -245,13 +250,13 @@ function row_edit_save_ajax(event) {
   			var dummy = $('<td>').appendTo(row);    		
       		target.append(result);      		
       		$(target).children(".save-edit-form").submit(url, row_edit_save_ajax); 	
-      		$(".cancel_edit_button").click(row_edit_cancel_ajax);	      		
+      		$(target).children(".cancel_edit_button").click(row_edit_cancel_ajax);	      		
     	}
     	else {
     		//if no error, then simply add the full 'tr' html row (with delete and edit icons) behind this row and remove this row. 
-    		row.before(result);
+    		var row_before = $(result).insertBefore(row);  		
       		row.remove();      		  
-      		rebind();	
+      		rebind_edit_delete($(row_before));	
     	}
   	});	
 };
@@ -331,40 +336,26 @@ function typeahead_deals_quantity(query, process){
 };
 
 
-$.fn.isBound = function(type, fn) {
-    var data = jQuery._data(this[0], 'events')[type];
-
-    if (data === undefined || data.length === 0) {
-        return false;
-    }
-
-    return (-1 !== $.inArray(fn, data));
-};
-
-
-function rebind_edit_delete(){
-	//Unfinished
-	$(".row_delete_ajax").each(function(){
-		if (!$(this).isBound('click', row_delete_ajax)) {
-			$(".row_delete_ajax").click(row_delete_ajax);
-		}
-	});	
-	
-	$(".row_edit_ajax").click(row_edit_ajax);
-}
-
-function rebind_paginator(){
-	$(".paginator_nav_links").click(paginator_navigate);
+function rebind_paginator(parent){
+	$(parent).find(".paginator_nav_links").click(paginator_navigate);
 }
 
 
-function rebind(){	
-	$(".row_add_button_ajax").click(row_add_save_ajax);	
-	$(".form-filter-ajax").submit(filter_rows);		
+function rebind_edit_delete(parent){	
+	$(parent).find(".row_delete_ajax").click(row_delete_ajax);	
+	$(parent).find(".row_edit_ajax").click(row_edit_ajax);	
+}
+
+
+function rebind_add(){	
+	//$(".row_add_button_ajax").click(row_add_save_ajax);
+	$('#save-add-form').submit(row_add_save_ajax);	
+			
 };
 
 // These bindings are for all existing filters. Since they don't get refreshed like the lists, they don't need to be part of bind()
-function rebind_filters(){		
+function rebind_filters(){
+	$(".form-filter-ajax").submit(filter_rows);			
 	$(".typeahead_sales_items").typeahead({ source: typeahead_sales_items });
 	$(".typeahead_contacts_last_name").typeahead({ source: typeahead_contacts_last_name });
 	$(".typeahead_contacts_first_name").typeahead({ source: typeahead_contacts_first_name });
@@ -380,8 +371,9 @@ function rebind_filters(){
 
 
 $(document).ready(function () {	
-	rebind();	
-	rebind_edit_delete
+	rebind_add();
+	rebind_edit_delete($('#search_result'));
+	rebind_paginator($('#search_result'));
 	rebind_filters();
 });
 

@@ -11,12 +11,12 @@
                         {% if form.item_name.errors %}
 	                	<div class="field field_error">
 	                    	{{form.item_name}}
-	                    	<input class="btn btn-primary row_add_button_ajax" type="button" value="{% trans 'Add' %}" class="btn btn-primary" />
+	                    	<input class="btn btn-primary" type="submit" value="{% trans 'Add' %}" class="btn btn-primary" />
 	                    	{{form.item_name.errors}}                   	
 	                	</div>
 	                	{% else %}
 	                		{{form.item_name}}
-	                		<input class="btn btn-primary row_add_button_ajax" type="button" value="{% trans 'Add' %}" class="btn btn-primary" />
+	                		<input class="btn btn-primary" type="submit" value="{% trans 'Add' %}" class="btn btn-primary" />
 	                	{% endif %}	                	                        
                     </td>                    
                 </tr>
