@@ -88,7 +88,7 @@ function filter_rows(event){
 	url = url + '?ajax' 
 	 
 	//Check each input box for values and apply keyword search 
-	$('.filter_button').parent().children('input').each(function(i, v){			
+	$('.form-filter-ajax').find('input').each(function(i, v){			
 		//id_last_name -> last_name
 		var keyword = $(v).attr('id').substring(3);
 		
@@ -116,7 +116,7 @@ function filter_rows(event){
 	})
 	//Even if no filter are set, still the query to server is required to get all list and undo filters.	
 	$('#search_result').load(url, function(){		
-		rebind();
+		rebind_edit_delete();
 	});	
 };
 
@@ -127,7 +127,8 @@ function paginator_navigate(event) {
 	//var row = $('#search_result').empty();
 	
 	$('#search_result').load(url, function(){		
-		rebind();	
+		rebind_edit_delete();
+		rebind_paginator();	
 	});		
 };
 
@@ -330,12 +331,34 @@ function typeahead_deals_quantity(query, process){
 };
 
 
+$.fn.isBound = function(type, fn) {
+    var data = jQuery._data(this[0], 'events')[type];
 
-function rebind(){
-	$(".row_delete_ajax").click(row_delete_ajax);	
-	$(".filter_button").click(filter_rows);	
-	$(".paginator_nav_links").click(paginator_navigate);
+    if (data === undefined || data.length === 0) {
+        return false;
+    }
+
+    return (-1 !== $.inArray(fn, data));
+};
+
+
+function rebind_edit_delete(){
+	//Unfinished
+	$(".row_delete_ajax").each(function(){
+		if (!$(this).isBound('click', row_delete_ajax)) {
+			$(".row_delete_ajax").click(row_delete_ajax);
+		}
+	});	
+	
 	$(".row_edit_ajax").click(row_edit_ajax);
+}
+
+function rebind_paginator(){
+	$(".paginator_nav_links").click(paginator_navigate);
+}
+
+
+function rebind(){	
 	$(".row_add_button_ajax").click(row_add_save_ajax);	
 	$(".form-filter-ajax").submit(filter_rows);		
 };
@@ -358,6 +381,7 @@ function rebind_filters(){
 
 $(document).ready(function () {	
 	rebind();	
+	rebind_edit_delete
 	rebind_filters();
 });
 
