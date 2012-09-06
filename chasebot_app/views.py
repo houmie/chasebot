@@ -492,22 +492,14 @@ def charts_display(request, contact_id):
     return render(request, 'charts.html', variables)
 
 
-#def sales_item_autocomplete(request):
-#    if 'query' in request.GET:
-#        profile = request.user.get_profile()        
-#        fieldname = request.GET['fieldname']
-#        kwargs = {'%s__startswith' % (fieldname) : request.GET['query']}
-#        queryset = profile.company.salesitem_set.filter(**kwargs)[:10]              
-#        to_json = []
-#        for item in queryset:
-#            to_json.append(getattr(item, fieldname))        
-#        return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
-#    return HttpResponse() 
 
 def sales_item_autocomplete(request):
     if 'query' in request.GET:
+        #Get the prerequisite fields for autocomplete
         profile, kwargs, fieldname = get_fields_for_autocomplete(request)
-        queryset = profile.company.salesitem_set.filter(**kwargs)[:10] 
+        #filter the related queryset with the prereq fields
+        queryset = profile.company.salesitem_set.filter(**kwargs)[:10]
+        #prepare the json convertion from the search items we found  
         to_json = prepare_json_for_autocomplete(fieldname, queryset)
         return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')        
     return HttpResponse()
@@ -526,25 +518,36 @@ def deal_autocomplete(request):
         try:
             queryset = profile.company.dealtype_set.filter(**kwargs)[:10]
         except:
-            # Foreignkey related fields
+            # Foreignkey related fields must folow this pattern
             if fieldname == 'sales_term':
+                #First see which of the generic sales_terms the user tried to search against
                 sales_term = SalesTerm.objects.filter(sales_term__istartswith=request.GET['query'])
+                #Now that we know, let see which of the existing deal_types have such sales_terms we were searching for previously 
                 deal_types = profile.company.dealtype_set.filter(sales_term__in=sales_term)
+                #Create a queryset dictionary to eliminate the double entries
                 queryset = {}
-                for deal in deal_types:
+                for deal in deal_types:                    
                     if queryset.has_key(deal.sales_term):
-                        continue                        
+                        continue             
+                    #store the dealtype's sales term as one possible search suggestion...
                     queryset[deal.sales_term]=deal.sales_term
-            # Many-to-Many relationship                
+            
+            # Many-to-Many relationship fields must follow this pattern                
             elif fieldname == 'sales_item':
+                #First see which of the company wide generated sales items the user tried to search against
                 sales_item = profile.company.salesitem_set.filter(item_name__istartswith=request.GET['query'])
+                #Now that we know, let see which of the existing deal_types have such sales_item(s) we were searching for previously
                 deal_types = profile.company.dealtype_set.filter(sales_item__in=sales_item)
+                #Create a queryset dictionary to eliminate the double entries
                 queryset = {}
                 for deal in deal_types:
+                    #Since its M2M, each dealtype's sales_item could point to several items itself, hence another loop is required
                     for si in deal.sales_item.select_related():
                         if queryset.has_key(si):
                             continue                        
                         queryset[si]=si
+                #Now that we captured all possible sales_items that are used in dealtype instances
+                #We need to change the fieldname we search against to the name of sales_item's field instead so that the json method after here works. 
                 fieldname = 'item_name'
                 
         to_json = prepare_json_for_autocomplete(fieldname, queryset)
@@ -560,12 +563,14 @@ def conversations_autocomplete(request, contact_id):
         return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')        
     return HttpResponse()
 
+#Returns the profile, the passed in fieldname to search against and the kwargs that is teh filter expression
 def get_fields_for_autocomplete(request):
     profile = request.user.get_profile()
     fieldname = request.GET['fieldname']
     kwargs = {'%s__istartswith' % (fieldname):request.GET['query']}
     return profile, kwargs, fieldname
 
+#It goes through the queryset and and adds the possible search candidates to a list to be sent later as json.
 def prepare_json_for_autocomplete(fieldname, queryset):                    
     to_json = []
     for item in queryset:

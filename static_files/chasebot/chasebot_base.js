@@ -217,7 +217,7 @@ function row_add_save_ajax(event){
       		else
       		{
       			//if there was no backup, it means all good. Simply empty the value as its already added.
-      			$(add_button_row).find(".item_name").val('');
+      			$(".item_name").val('');
       		}
     	}
   	});  	
@@ -255,8 +255,13 @@ function row_edit_save_ajax(event) {
   	});	
 };
 
+//This function is kept very generic !
+//the first two are internal parameters to make typeahead work.
+//fieldname is the field to filter against.
+//contact_id is the optional id that some querysets might need as prerequisite.
 function autocomplete(query, process, path, fieldname, contact_id){
 	var url = '';
+	//If contact_id is passed in then we have a different url path to pass in the contact_id
 	if(contact_id == ''){
 		url = '/autocomplete/' + path + '/';
 	}
@@ -264,6 +269,7 @@ function autocomplete(query, process, path, fieldname, contact_id){
 		url = '/autocomplete/' + path + '/' + contact_id + '/';
 	}
 	
+	//Pass in the query (typed keywords) and the fieldname we are searching against 
 	$.ajax({
      	  type: 'GET',
 		  url: url,
@@ -276,6 +282,8 @@ function autocomplete(query, process, path, fieldname, contact_id){
 		});
 }
 
+//The average typeahead function passes in two parameters. First one is the category (which defines the related queryset) 
+//and the second is the actual field to filter.
 function typeahead_sales_items(query, process){
 	autocomplete(query, process, 'sales_items', 'item_name', '')
 };
@@ -296,6 +304,7 @@ function typeahead_contacts_email(query, process){
 	autocomplete(query, process, 'contacts', 'email', '')
 };
 
+//This method passes in three parameters, the last one is the contact_id. Since all calls must belong to a contact.
 function typeahead_conversation_subject(query, process){
 	autocomplete(query, process, 'conversations', 'subject', $('#contact_id').text())
 };
@@ -331,6 +340,7 @@ function rebind(){
 	$(".form-filter-ajax").submit(filter_rows);		
 };
 
+// These bindings are for all existing filters. Since they don't get refreshed like the lists, they don't need to be part of bind()
 function rebind_filters(){		
 	$(".typeahead_sales_items").typeahead({ source: typeahead_sales_items });
 	$(".typeahead_contacts_last_name").typeahead({ source: typeahead_contacts_last_name });
