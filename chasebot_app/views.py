@@ -309,13 +309,19 @@ def sales_item_add_edit(request, sales_item_id=None):
         if form.is_valid():
             sales_item = form.save()
             if sales_item_id is not None:
+                # Only successful Edit (POST) --> rendering only the changed row
                 variables = {'sales_items' : [sales_item]}
                 return render(request, '_sales_item_rows.html', variables)        
         else:
             validation_error_ajax = True;
+            if sales_item_id is None:
+                # Only unsuccessful Add (POST) --> rendering only the invalid Add row
+                variables = {'form' : form, 'validation_error_ajax' : validation_error_ajax}
+                return render(request, 'sales_item_add_save_form.html', variables)
     else:
         form = SalesItemForm(instance=sales_item)
     if sales_item_id is None:
+        # Only first-time GET Add or Successful Add (POST) --> The List incl. paginators will get updated
         sales_items_queryset = profile.company.salesitem_set.all().order_by('item_name')
         sales_items, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, sales_items_queryset)        
         variables = {
@@ -325,11 +331,12 @@ def sales_item_add_edit(request, sales_item_id=None):
         variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
         return render(request, 'sales_item_list.html', variables)
     else:
+        # Only first-time GET Edit or invalid POST Edit --> Edit Save row will be rendered
         variables = {
                      'form':form, 'salesitem_id' : sales_item_id, 'validation_error_ajax' : validation_error_ajax, 
                     }
         variables = merge_with_localized_variables(request, variables)   
-        return render(request, 'sales_item_save_form.html', variables)
+        return render(request, 'sales_item_edit_save_form.html', variables)
 
 @login_required
 def sales_item_delete(request, sales_item_id=None):
