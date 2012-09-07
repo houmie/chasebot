@@ -79,13 +79,18 @@ function row_delete_ajax(event) {
 
 function filter_rows(event){
 	event.preventDefault();
-	var url = window.location.pathname;		
+	var url = '';		
 	
-	//'?' found means dirty url		
-	if(url.indexOf('?') != -1) {
-		//Make Url clean (copy bit before ?)
-		url = url.substring(url.indexOf('?'));
+	//If the page containing the paginator is a modal, then we need to know its type, to modify the url accordingly 
+	//Otherwise the url would point to the page containing the modal. 
+	var modal = $('#modal_type').text();
+	if(modal != ''){
+		url = "/" + modal + "/";
 	}
+	else{
+		url = window.location.pathname;
+	}
+	
 	// With ajax as first keywork we can check against in views.py and refresh the list if all filters are cleared but the request came by ajax
 	url = url + '?ajax' 
 	 
@@ -120,16 +125,25 @@ function filter_rows(event){
 	$('#search_result').load(url, function(){		
 		rebind_edit_delete($('#search_result'));
 		rebind_paginator($('#search_result'));
+		rebind_add();
 	});	
 };
 
 function paginator_navigate(event) {	
 	event.preventDefault();	
-	var url = $(this).attr("href");
-	//e.g. get whole row to be removed	
-	//var row = $('#search_result').empty();
+	var url = '';
 	
-	$('#search_result').load(url, function(){		
+	//If the page containing the paginator is a modal, then we need to know its type, to modify the url accordingly 
+	//Otherwise the url would point to the page containing the modal. 
+	var modal = $('#modal_type').text();
+	if(modal != ''){
+		url = "/" + modal + "/" + $(this).attr("href");
+	}
+	else{
+		url = $(this).attr("href");
+	}
+		
+	$('#search_result').load(url, function(result){		
 		rebind_edit_delete($('#search_result'));
 		rebind_paginator($('#search_result'));
 		rebind_add();		
@@ -144,7 +158,7 @@ function row_edit_cancel_ajax(event){
 	var row = $(this).closest('form').closest('tr'); //real row containing also the submit-edit-form
 	
 	row.load(
-		// get only the children (td) od the tr and attach them to the existing empty row.
+		// get only the children (td) of the tr and attach them to the existing empty row.
     	url + ' td',    	
     	function () {    			              		
       		rebind_edit_delete($(row));
@@ -159,20 +173,14 @@ function row_edit_ajax(event) {
 	var url = $(this).attr("href") + "/";
   
   	//e.g. get whole row to be replaced with editing fields
-  	var row = $(this).closest('tr').empty();
-  	//First dummy is the empty column at left
-  	var dummy = $('<td>').appendTo(row);  
-  	//target is positioned in the middle
-  	var target = $('<td>').appendTo(row);
-  	//second dummy is the empty column at right
-  	var dummy = $('<td>').appendTo(row);  
-  	  	
-	target.load(
+  	var row = $(this).closest('tr');
+  	
+	row.load(
     	url,    	
     	function () {
     		//Once loaded make sure the submit-form will be redirected to 'row_edit_save_ajax' once submitted. Url is parameter 
-      		$(target).children(".save-edit-form").submit(url, row_edit_save_ajax);
-      		$(target).find(".cancel_edit_button").click(row_edit_cancel_ajax);
+      		$(row).find(".save-edit-form").submit(url, row_edit_save_ajax);
+      		$(row).find(".cancel_edit_button").click(row_edit_cancel_ajax);
     	}
   	);  	
 };
@@ -191,11 +199,8 @@ function row_add_save_ajax(event){
   	$.post(url, data, function (result) {
   		//If there are validation errors upon adding the field
   		if ($('.validation_error_ajax', result).text() == 'True') {  			 
-    		 row.empty();
-    		 var dummy = $('<td>').appendTo(row);
-    		 var target = $('<td>').appendTo(row);
-  			 var dummy = $('<td>').appendTo(row);    		
-      		 target.append(result);      		       		 
+    		 row.empty();    		 
+      		 row.append(result);      		       		 
       		 target.find("#save-add-form").submit(url, row_add_save_ajax);      		       		
     	}
     	else {
@@ -227,13 +232,10 @@ function row_edit_save_ajax(event) {
     	if ($('.validation_error_ajax', result).text() == 'True') {
     		//if so, then we empty the current row and load the invalid-indicating-forms in the row 
     		//and attach events to the still existing save and cancel buttons
-    		row.empty();
-    		var dummy = $('<td>').appendTo(row);   
-    		var target = $('<td>').appendTo(row);
-  			var dummy = $('<td>').appendTo(row);    		
-      		target.append(result);      		
-      		$(target).children(".save-edit-form").submit(url, row_edit_save_ajax); 	
-      		$(target).find(".cancel_edit_button").click(row_edit_cancel_ajax);	      		
+    		row.empty();    		    		
+      		row.append(result);      		
+      		$(row).find(".save-edit-form").submit(url, row_edit_save_ajax); 	
+      		$(row).find(".cancel_edit_button").click(row_edit_cancel_ajax);	      		
     	}
     	else {
     		//if no error, then simply add the full 'tr' html row (with delete and edit icons) behind this row and remove this row. 
@@ -336,27 +338,49 @@ function rebind_add(){
 };
 
 // These bindings are for all existing filters. Since they don't get refreshed like the lists, they don't need to be part of bind()
-function rebind_filters(){
-	$(".form-filter-ajax").submit(filter_rows);			
-	$(".typeahead_sales_items").typeahead({ source: typeahead_sales_items });
-	$(".typeahead_contacts_last_name").typeahead({ source: typeahead_contacts_last_name });
-	$(".typeahead_contacts_first_name").typeahead({ source: typeahead_contacts_first_name });
-	$(".typeahead_contacts_company").typeahead({ source: typeahead_contacts_company });
-	$(".typeahead_contacts_email").typeahead({ source: typeahead_contacts_email });
-	$(".typeahead_conversation_subject").typeahead({ source: typeahead_conversation_subject });
-	$(".typeahead_deals_deal_name").typeahead({ source: typeahead_deals_deal_name });
-	$(".typeahead_deals_sales_item").typeahead({ source: typeahead_deals_sales_item });
-	$(".typeahead_deals_price").typeahead({ source: typeahead_deals_price });
-	$(".typeahead_deals_sales_term").typeahead({ source: typeahead_deals_sales_term });
-	$(".typeahead_deals_quantity").typeahead({ source: typeahead_deals_quantity });	
+function rebind_filters(parent){
+	$(parent).find(".form-filter-ajax").submit(filter_rows);			
+	$(parent).find(".typeahead_sales_items").typeahead({ source: typeahead_sales_items });
+	$(parent).find(".typeahead_contacts_last_name").typeahead({ source: typeahead_contacts_last_name });
+	$(parent).find(".typeahead_contacts_first_name").typeahead({ source: typeahead_contacts_first_name });
+	$(parent).find(".typeahead_contacts_company").typeahead({ source: typeahead_contacts_company });
+	$(parent).find(".typeahead_contacts_email").typeahead({ source: typeahead_contacts_email });
+	$(parent).find(".typeahead_conversation_subject").typeahead({ source: typeahead_conversation_subject });
+	$(parent).find(".typeahead_deals_deal_name").typeahead({ source: typeahead_deals_deal_name });
+	$(parent).find(".typeahead_deals_sales_item").typeahead({ source: typeahead_deals_sales_item });
+	$(parent).find(".typeahead_deals_price").typeahead({ source: typeahead_deals_price });
+	$(parent).find(".typeahead_deals_sales_term").typeahead({ source: typeahead_deals_sales_term });
+	$(parent).find(".typeahead_deals_quantity").typeahead({ source: typeahead_deals_quantity });	
 };
 
+function modal_closing(event){
+	event.preventDefault();
+	$('#salesitems_modal').empty();
+}
+
+function open_modal(event){
+	event.preventDefault();
+	var url = $(this).attr("href") + "/";
+	//var map = new Object();
+	//map['modal'] = true;
+	var data = 'modal';	
+	$("#salesitems_modal").load(url, data, function() { 
+            $(this).modal('show'); // display the modal on url load
+            rebind_add();
+            rebind_edit_delete($(this));
+            rebind_paginator($(this));
+            rebind_filters($(this));
+            
+         });            
+}
 
 $(document).ready(function () {	
 	rebind_add();
 	rebind_edit_delete($('#search_result'));
 	rebind_paginator($('#search_result'));
-	rebind_filters();
+	rebind_filters($('body'));
+	$(".modal_link").click(open_modal)
+	$('#salesitems_modal').on('hidden', modal_closing);
 });
 
 

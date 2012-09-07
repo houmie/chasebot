@@ -267,12 +267,15 @@ def sales_item_display(request):
     profile = request.user.get_profile()
     sales_items_queryset = profile.company.salesitem_set.order_by('item_name')    
     ajax = False
+    is_modal = False 
         
     if 'ajax' in request.GET:
         ajax = True        
         if 'item_name' in request.GET:    
             item_name = request.GET['item_name']
-            sales_items_queryset = sales_items_queryset.filter(item_name__icontains=item_name).order_by('item_name')        
+            sales_items_queryset = sales_items_queryset.filter(item_name__icontains=item_name).order_by('item_name')
+    if 'modal' in request.GET:
+        is_modal = True        
     
     filter_form = FilterSalesItemForm(request.GET)    
     sales_items, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, sales_items_queryset)    
@@ -286,7 +289,10 @@ def sales_item_display(request):
     if ajax:    
         return render(request, 'sales_item_list.html', variables)
     else:
-        return render(request, 'sales_items.html', variables)  
+        if is_modal:
+            return render(request, 'sales_items_modal.html', variables)
+        else:
+            return render(request, 'sales_items.html', variables)  
 
 @login_required
 def sales_item_cancel(request, sales_item_id):
@@ -622,12 +628,11 @@ def makePaginator(request, ITEMS_PER_PAGE, queryset):
     return objects, paginator, page, page_number
 
 
-def get_request_parameters(request):
-    get_request = ''
+def get_request_parameters(request):    
+    get_request = '?ajax'
     for key, value in request.GET.iteritems():
-        if key == 'ajax':
-            get_request = '?ajax'
-            continue
+        if key == 'ajax' or key == 'modal':
+            continue        
         get_request = get_request + '&' + key + '=' + value
     return get_request
 

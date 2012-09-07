@@ -7,11 +7,8 @@
 		<td colspan="2">{% trans 'No sales items found.' %}</td>
 	</tr>
 {% endif %}
-	<tr class="sales_item_add_save_tr">	
-		<td></td>	      		
-		<td colspan="2">
-    		{% include 'sales_item_add_save_form.html' %}
-        </td>                
+	<tr class="sales_item_add_save_tr">		
+		{% include 'sales_item_add_save_form.html' %}                        
 	</tr>    
 
 	
