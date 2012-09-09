@@ -34,11 +34,7 @@ def set_timezone(request):
         return redirect('/')
 
 def display_current_language(request):
-    if request.LANGUAGE_CODE == 'en-gb':
-        lang = "British English"        
-    elif request.LANGUAGE_CODE == 'en':        
-        lang = "American English"           
-    return lang
+    return request.LANGUAGE_CODE
 
 def get_current_date_input_format(request):
     if request.LANGUAGE_CODE == 'en-gb':

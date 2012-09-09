@@ -3,8 +3,10 @@
 	{% for item in contacts %}
             <tr>
                 <td>
-                    <a href="/contact/edit/{{ item.id }}" title="{% trans 'Edit Contact' %}"><i class="icon-pencil"> </i></a>
-                    <a class="row_delete_ajax" href="/contact/delete/{{ item.id }}" title="{% trans 'Delete Contact' %}"><i class="icon-trash"> </i></a>
+                    <span>
+                	<a class="btn-link btn-link-left" href="/contact/edit/{{ item.id }}" title="{% trans 'Edit Contact' %}"><i class="icon-pencil icon-large"> </i></a>
+                    <a class="btn-link row_delete_ajax" href="/contact/delete/{{ item.id }}" title="{% trans 'Delete Contact' %}"><i class="icon-trash icon-large"> </i></a>
+                   </span>
                 </td>
                 <td>{{ item.last_name }}</td>
                 <td>{{ item.first_name }}</td>
@@ -13,8 +15,8 @@
                 <td>{{ item.email }}</td>
                 <td>{{ item.work_phone }}</td>
                 <td>{{ item.mobile_phone }}</td>
-                <td><a class="btn" href="/contact/{{ item.id }}/calls" title="{% trans 'Conversations' %}"><i class="icon-comment"> </i></a></td>                    
-                <td><a class="btn" href="/charts/contact/{{ item.id }}" title="{% trans 'Charts' %}"><i class="icon-signal"> </i></a></td>
+                <td><a class="btn" href="/contact/{{ item.id }}/calls" title="{% trans 'Conversations' %}"><i class="icon-comments-alt icon-large"> </i></a></td>                    
+                <td><a class="btn" href="/charts/contact/{{ item.id }}" title="{% trans 'Charts' %}"><i class="icon-bar-chart icon-large"> </i></a></td>
                 <td class="center_cb"><input type="checkbox"/></td>
             </tr>
 	{% endfor %}

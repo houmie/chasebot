@@ -3,19 +3,19 @@
 {% block title %}{% trans 'Chasebot - Home' %}{% endblock %}
 {% block head %}{{ company_name }}{% endblock %}
 {% block external %}
-	<script type="text/javascript" src="{{ STATIC_URL }}chasebot/chasebot_base.js" ></script>	
+	<!-- <script type="text/javascript" src="{{ STATIC_URL }}chasebot/chasebot_base.js" ></script>	 -->
 {% endblock %}
 {% block content %}
 
 <p>{% trans 'Welcome back' %} {{ user.username }}.</p>
 	<div>
-		<a class="btn" href="/contact/add" title="{% trans 'New Contact' %}"><i class="icon-plus"> </i><i class="icon-user"> </i></a>
-        <a class="btn" href="/deals" title="{% trans 'Deals' %}"><i class="icon-tags"> </i> {% trans 'Deals' %}</a>
+		<a class="btn" href="/contact/add" title="{% trans 'New Contact' %}"><i class="icon-plus"></i> <i class="icon-user"></i></a>
+        <a class="btn" href="/deals" title="{% trans 'Deals' %}"><i class="icon-tags"></i> {% trans 'Deals' %}</a>
 	</div>	
     <table class="table">
         <thead>
             <tr>
-            	<th></th>
+            	<th class="first_th_minwidth"></th>
                 <th>
                 	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
 	    				<div class="input-append">

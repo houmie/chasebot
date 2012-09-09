@@ -2,9 +2,9 @@
 {% if deals %}
 	{% for item in deals %}
 	    <tr>
-	        <td>
-	            <a href="/deal/edit/{{ item.id }}" title="{% trans 'Edit' %}"><i class="icon-pencil"> </i></a>
-	            <a class="row_delete_ajax" href="/deal/delete/{{ item.id }}" title="{% trans 'Delete' %}"><i class="icon-trash"> </i></a>
+	        <td>	        	
+	            <a class="btn-link btn-link-left" href="/deal/edit/{{ item.id }}" title="{% trans 'Edit' %}"><i class="icon-pencil icon-large"></i></a>
+	            <a class="btn-link row_delete_ajax" href="/deal/delete/{{ item.id }}" title="{% trans 'Delete' %}"><i class="icon-trash icon-large"></i></a>	            
 	        </td>
 	        <td>{{ item.deal_name }}</td>
 	        <td>{{ item.deal_description }}</td>             

@@ -374,13 +374,44 @@ function open_modal(event){
          });            
 }
 
-$(document).ready(function () {	
+function timezone_dropdown(event){
+	event.preventDefault();
+	$('#timezone_form').submit();			
+}
+
+function show_timezone_help(event){
+	event.preventDefault();	
+	$('#timezone_dropdown').popover('toggle');
+	isVisible = true;	
+}
+
+var isVisible = false;
+var clickedAway = false;
+
+$(document).ready(function (){	
 	rebind_add();
 	rebind_edit_delete($('#search_result'));
 	rebind_paginator($('#search_result'));
 	rebind_filters($('body'));
 	$(".modal_link").click(open_modal)
 	$('#salesitems_modal').on('hidden', modal_closing);
+	$('#timezone_dropdown').change(timezone_dropdown);	
+	$('.timezone_help').click(show_timezone_help);
+	
+// $(document).click(function(e){
+  // if(isVisible & clickedAway){
+    // $('#timezone_dropdown').popover('hide');
+    // isVisible = clickedAway = false
+  // }
+  // else {
+    // clickedAway = true
+  // }
+// });
+
+
+
+    
+
 });
 
 

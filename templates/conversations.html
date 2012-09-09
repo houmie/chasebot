@@ -3,27 +3,31 @@
 {% block title %}{% trans 'Chasebot - Conversation History' %}{% endblock %}
 {% block head %}{% trans 'Conversations with' %} {{contact.first_name}} {{ contact.last_name }}{% endblock %}
 {% block external %}
-	<script type="text/javascript" src="{{ STATIC_URL }}chasebot/chasebot_base.js" ></script>	
+	<!-- <script type="text/javascript" src="{{ STATIC_URL }}chasebot/chasebot_base.js" ></script>	 -->
 {% endblock %}
 {% block content %}	
+	<div>
+		<a class="btn" href="/" title="{% trans 'Back to Main Screen' %}"><i class="icon-arrow-left"> </i></a>
+	    <a class="btn" href="/contact/{{ contact.id }}/call/add" title="{% trans 'New Conversation' %}"> <i class="icon-plus"></i> <i class="icon-comment-alt"></i> {% trans 'New Conversation' %}</a>	    
+	</div>
 	<table class="table">
                 <thead>
                     <tr>
-                        <th>
-                        	<a class="btn" href="/" title="{% trans 'Back to Main Screen' %}"><i class="icon-arrow-left"> </i></a>
-                        	<a class="btn" href="/contact/{{ contact.id }}/call/add" title="{% trans 'New Conversation' %}"> <i class="icon-plus"> </i><i class="icon-comment"> </i></a></th>
-                        <th>
+                        <th class="first_th_minwidth">
+                        	
+                        </th>                        	
+                        <th>                        	
                         	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
 			    				<div class="input-append">
-			    				{{filter_form.from_date}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
+			    				{{filter_form.from_date}}<button type="submit" class="btn double_date_filter"><i class='icon-filter'> </i></button>
 			    				</div> 			    					    								
 		                	</form>
 		                	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
 			    				<div class="input-append">
-			    				{{filter_form.to_date}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
+			    				{{filter_form.to_date}}<button type="submit" class="btn double_date_filter"><i class='icon-filter'> </i></button>
 			    				</div>	   <br> 
 			    				{% trans 'Date' %}	    								
-		                	</form>
+		                	</form>		                	
                     	</th>                        
                         <th>
                         	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				

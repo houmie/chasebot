@@ -3,13 +3,13 @@
 {% block title %}{% trans 'Chasebot - Deals' %}{% endblock %}
 {% block head %}{% trans 'Deals' %}{% endblock %}
 {% block external %}
-<script type="text/javascript" src="{{ STATIC_URL }}chasebot/chasebot_base.js" ></script>
+<!-- <script type="text/javascript" src="{{ STATIC_URL }}chasebot/chasebot_base.js" ></script> -->
 {% endblock %}
 {% block content %}    
 	<div>
 		<a class="btn" href="/" title="{% trans 'Back to Main Screen' %}"><i class="icon-arrow-left"> </i></a>
-    	<a class="btn" href="/deal/add" title="{% trans 'New Deal' %}"><i class="icon-plus"> </i><i class="icon-tag"> </i> {% trans 'New Deal' %}</a>
-    	<a class="btn modal_link" href="/sales_items" title="{% trans 'Sale Items for Deals' %}"><i class="icon-glass"> </i> {% trans 'Sales Items' %}</a>
+    	<a class="btn" href="/deal/add" title="{% trans 'New Deal' %}"><i class="icon-plus"></i> <i class="icon-tag"></i> {% trans 'New Deal' %}</a>
+    	<a class="btn modal_link" href="/sales_items" title="{% trans 'Sale Items for Deals' %}"><i class="icon-money"></i> {% trans 'Sales Items' %}</a>
 	</div>
 	<div class="modal hide" id="salesitems_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		
@@ -18,7 +18,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th>
+                <th class="first_th_minwidth">
                 </th>
                 <th>
                 	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
