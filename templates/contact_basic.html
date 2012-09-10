@@ -32,15 +32,15 @@
             </tr>
             <tr>
                 <td>
-                    {{form.dear.label}}: {% if  form.dear.field.required %} *{% endif %}
+                    {{form.dear_name.label}}: {% if  form.dear_name.field.required %} *{% endif %}
                 </td>
                 <td>
-                	{% if form.dear.errors %}
+                	{% if form.dear_name.errors %}
                 	<div class="field field_error">
-                    	{{form.dear}} {{form.dear.errors}}                   	
+                    	{{form.dear_name}} {{form.dear_name.errors}}                   	
                 	</div>
                 	{% else %}
-                		{{form.dear}}
+                		{{form.dear_name}}
                 	{% endif %}                	
                 </td>
             </tr>

@@ -64,6 +64,9 @@ LANGUAGES = (
 )
 
 
+LOCALE_PATHS = (
+  '/home/houman/projects/chasebot/locale',
+)
 
 
 SITE_ID = 1

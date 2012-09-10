@@ -50,10 +50,10 @@ class RegistrationForm(ModelForm):
 
 
 class FilterContactsForm(Form):
-    last_name     = forms.CharField(widget= forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query typeahead_contacts_last_name', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=50)
-    first_name    = forms.CharField(widget= forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query typeahead_contacts_first_name', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=30)
-    company       = forms.CharField(widget= forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query typeahead_contacts_company', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=30)
-    email         = forms.EmailField(widget= forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query typeahead_contacts_email', 'autocomplete': 'off', 'data-provide': 'typeahead'}))
+    last_name     = forms.CharField(widget= forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_contacts_last_name', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=50)
+    first_name    = forms.CharField(widget= forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_contacts_first_name', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=30)
+    company       = forms.CharField(widget= forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_contacts_company', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=30)
+    email         = forms.EmailField(widget= forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_contacts_email', 'autocomplete': 'off', 'data-provide': 'typeahead'}))
 
 class ContactsForm(ModelForm):
     def __init__(self, company, *args, **kwargs):
@@ -65,44 +65,44 @@ class ContactsForm(ModelForm):
         model = Contact
         exclude = ('company')
         widgets = {
-                'first_name': forms.TextInput(  attrs={'placeholder': 'Enter first name here',          'class': 'placeholder_fix_css'}),
-                'last_name': forms.TextInput(   attrs={'placeholder': 'Enter last name here',           'class': 'placeholder_fix_css'}),
-                'dear': forms.TextInput(        attrs={'placeholder': 'Enter the preferred short name', 'class': 'placeholder_fix_css'}),
-                'city': forms.TextInput(        attrs={'placeholder': 'Enter the city here',            'class': 'placeholder_fix_css'}),
-                'state': forms.TextInput(       attrs={'placeholder': 'Enter the state here',           'class': 'placeholder_fix_css'}),
-                'postcode': forms.TextInput(    attrs={'placeholder': 'Enter the zip code here',        'class': 'placeholder_fix_css'}),
-                'company_name': forms.TextInput(attrs={'placeholder': 'Add a company',                  'class': 'placeholder_fix_css'}),
-                'position': forms.TextInput(    attrs={'placeholder': 'Add a position',                 'class': 'placeholder_fix_css'}),
-                'work_phone': forms.TextInput(  attrs={'placeholder': 'Add a work phone',               'class': 'placeholder_fix_css'}),
-                'home_phone': forms.TextInput(  attrs={'placeholder': 'Add a home phone',               'class': 'placeholder_fix_css'}),
-                'mobile_phone': forms.TextInput(attrs={'placeholder': 'Add a cell phone',               'class': 'placeholder_fix_css'}),
-                'fax_number': forms.TextInput(  attrs={'placeholder': 'Add a fax number',               'class': 'placeholder_fix_css'}),
-                'email': forms.TextInput(       attrs={'placeholder': 'Add an email',                   'class': 'placeholder_fix_css'}),
-                'birth_date': forms.DateInput(  attrs={'placeholder': 'Add the day of birth',           'class': 'placeholder_fix_css datepicker'}),
-                'referred_by': forms.TextInput( attrs={'placeholder': '...was referred by?', 'class': 'placeholder_fix_css'}),
-                'spouse_first_name': forms.TextInput(attrs={'placeholder': 'What is the spouse\'s name?', 'class': 'placeholder_fix_css'}),
-                'children_names': forms.TextInput(attrs={'placeholder': 'What are the children names?', 'class': 'placeholder_fix_css'}),
-                'home_town': forms.TextInput(   attrs={'placeholder': 'Enter the home town',            'class': 'placeholder_fix_css'}),
-                'address': forms.Textarea(      attrs={'rows':4, 'placeholder': 'Add an address',       'class': 'placeholder_fix_css'}),
-                'contact_notes': forms.Textarea(attrs={'rows':4, 'placeholder': 'What is the personality like?'}),
-                'contacts_interests': forms.Textarea(attrs={'rows':4, 'placeholder': 'Any particular interests?'}),
-                'spouses_interests': forms.Textarea(attrs={'rows':4, 'placeholder': 'Does the spouse have any particular interest?'}),
-                'prev_meeting_places': forms.Textarea(attrs={'rows':4, 'placeholder': 'Where did you meet so far?'})                       
+                'first_name': forms.TextInput(  attrs={'placeholder': _(u'Enter first name here'),      'class': 'placeholder_fix_css'}),
+                'last_name': forms.TextInput(   attrs={'placeholder': _(u'Enter last name here'),       'class': 'placeholder_fix_css'}),
+                'dear_name': forms.TextInput(   attrs={'placeholder': _(u'Enter preferred short name'), 'class': 'placeholder_fix_css'}),
+                'city': forms.TextInput(        attrs={'placeholder': _(u'Enter the city here'),        'class': 'placeholder_fix_css'}),
+                'state': forms.TextInput(       attrs={'placeholder': _(u'Enter the state here'),       'class': 'placeholder_fix_css'}),
+                'postcode': forms.TextInput(    attrs={'placeholder': _(u'Enter the zip code here'),    'class': 'placeholder_fix_css'}),
+                'company_name': forms.TextInput(attrs={'placeholder': _(u'Add a company'),              'class': 'placeholder_fix_css'}),
+                'position': forms.TextInput(    attrs={'placeholder': _(u'Add a position'),             'class': 'placeholder_fix_css'}),
+                'work_phone': forms.TextInput(  attrs={'placeholder': _(u'Add a work phone'),           'class': 'placeholder_fix_css'}),
+                'home_phone': forms.TextInput(  attrs={'placeholder': _(u'Add a home phone'),           'class': 'placeholder_fix_css'}),
+                'mobile_phone': forms.TextInput(attrs={'placeholder': _(u'Add a cell phone'),           'class': 'placeholder_fix_css'}),
+                'fax_number': forms.TextInput(  attrs={'placeholder': _(u'Add a fax number'),           'class': 'placeholder_fix_css'}),
+                'email': forms.TextInput(       attrs={'placeholder': _(u'Add an email'),               'class': 'placeholder_fix_css'}),
+                'birth_date': forms.DateInput(  attrs={'placeholder': _(u'Add the birthday'),           'class': 'placeholder_fix_css datepicker'}),
+                'referred_by': forms.TextInput( attrs={'placeholder': _(u'...was referred by?'),        'class': 'placeholder_fix_css'}),
+                'spouse_first_name': forms.TextInput(attrs={'placeholder': _(u'What is the spouse\'s name?'), 'class': 'placeholder_fix_css'}),
+                'children_names': forms.TextInput(attrs={'placeholder': _(u'What are the children names?'), 'class': 'placeholder_fix_css'}),
+                'home_town': forms.TextInput(   attrs={'placeholder': _(u'Enter the home town'),            'class': 'placeholder_fix_css'}),
+                'address': forms.Textarea(      attrs={'rows':4, 'placeholder': _(u'Add an address'),       'class': 'placeholder_fix_css'}),
+                'contact_notes': forms.Textarea(attrs={'rows':4, 'placeholder': _(u'What is the personality like?')}),
+                'contacts_interests': forms.Textarea(attrs={'rows':4, 'placeholder': _(u'Any particular interests?')}),
+                'spouses_interests': forms.Textarea(attrs={'rows':4, 'placeholder': _(u'Does the spouse have any particular interest?')}),
+                'prev_meeting_places': forms.Textarea(attrs={'rows':4, 'placeholder': _(u'Where did you meet so far?')})                       
             }
 
 
 
 
 class FilterConversationForm(Form):            
-    from_date   = forms.DateField(localize=True, widget=cb_DateInput(attrs={'placeholder': 'From Date...', 'class': 'placeholder_fix_css datepicker input-small search-query'}))
-    to_date     = forms.DateField(localize=True, widget=cb_DateInput(attrs={'placeholder': 'To Date...', 'class': 'placeholder_fix_css datepicker input-small search-query'}))
-    subject     = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query typeahead_conversation_subject', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=50)
+    from_date   = forms.DateField(localize=True, widget=cb_DateInput(attrs={'placeholder': _(u'From Date...'), 'class': 'placeholder_fix_css datepicker input-small search-query'}))
+    to_date     = forms.DateField(localize=True, widget=cb_DateInput(attrs={'placeholder': _(u'To Date...'), 'class': 'placeholder_fix_css datepicker input-small search-query'}))
+    subject     = forms.CharField(widget=forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_conversation_subject', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=50)
     
     
     
 class ConversationForm(ModelForm):       
-    conversation_date = forms.DateField(localize=True, widget=forms.DateInput(attrs={'placeholder': 'Add the date for this conversation', 'class': 'placeholder_fix_css datepicker'}))
-    conversation_time = forms.TimeField(localize=True, widget=forms.TimeInput(attrs={'placeholder': 'Add the time for this conversation', 'class': 'placeholder_fix_css'}))
+    conversation_date = forms.DateField(localize=True, widget=forms.DateInput(attrs={'placeholder': _(u'Add the date for this conversation'), 'class': 'placeholder_fix_css datepicker'}))
+    conversation_time = forms.TimeField(localize=True, widget=forms.TimeInput(attrs={'placeholder': _(u'Add the time for this conversation'), 'class': 'placeholder_fix_css'}))
     
     def __init__(self, company, *args, **kwargs):
         super(ConversationForm, self).__init__(*args, **kwargs)                                        
@@ -136,7 +136,7 @@ class ConversationForm(ModelForm):
         exclude = ('company', 'contact', 'conversation_datetime')
         widgets = {                    
                     'subject': forms.TextInput(attrs={'placeholder': '', 'class': 'placeholder_fix_css'}),
-                    'notes': forms.Textarea(attrs={'placeholder': 'Add relevant notes...'}),                                      
+                    'notes': forms.Textarea(attrs={'placeholder': _(u'Add relevant notes...')}),                                      
                    }
     
     def clean(self):
@@ -252,11 +252,11 @@ class FilterDealsForm(Form):
         super(FilterDealsForm, self).__init__(*args, **kwargs)
         self.fields['sales_item'].queryset = SalesItem.objects.filter(company=company)
             
-    deal_name           = forms.CharField(widget = forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query typeahead_deals_deal_name', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=40)    
-    sales_item          = forms.ModelMultipleChoiceField(queryset='', widget = forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query typeahead_deals_sales_item', 'autocomplete': 'off', 'data-provide': 'typeahead'}))    
-    price               = forms.DecimalField(widget = forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query typeahead_deals_price', 'autocomplete': 'off', 'data-provide': 'typeahead'}))
-    sales_term          = forms.ModelChoiceField(queryset=SalesTerm.objects.all(), widget = forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query typeahead_deals_sales_term', 'autocomplete': 'off', 'data-provide': 'typeahead'}))
-    quantity            = forms.IntegerField(widget = forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query typeahead_deals_quantity', 'autocomplete': 'off', 'data-provide': 'typeahead'})) 
+    deal_name           = forms.CharField(widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_deals_deal_name', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=40)    
+    sales_item          = forms.ModelMultipleChoiceField(queryset='', widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_deals_sales_item', 'autocomplete': 'off', 'data-provide': 'typeahead'}))    
+    price               = forms.DecimalField(widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_deals_price', 'autocomplete': 'off', 'data-provide': 'typeahead'}))
+    sales_term          = forms.ModelChoiceField(queryset=SalesTerm.objects.all(), widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_deals_sales_term', 'autocomplete': 'off', 'data-provide': 'typeahead'}))
+    quantity            = forms.IntegerField(widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_deals_quantity', 'autocomplete': 'off', 'data-provide': 'typeahead'})) 
 
 
 
@@ -270,14 +270,14 @@ class DealTypeForm(ModelForm):
         exclude = ('company', 'status')
         
         widgets = {
-                    'deal_name': forms.TextInput(attrs={'placeholder': 'Name the deal', 'class': 'placeholder_fix_css'}),
-                    'deal_description': forms.Textarea(attrs={'placeholder': 'Describe the deal'}),
-                    'sales_item': forms.SelectMultiple(attrs={'data-placeholder': 'What are you buying or selling?'}),
-                    #'sales_item': ChosenSelectMultiple(), #(attrs={'data-placeholder': 'What are you buying or selling?'}),
-                    'price': forms.TextInput(attrs={'placeholder': 'How much is proposed?', 'class': 'placeholder_fix_css'}),                    
-#                    'sales_term': forms.TextInput(attrs={'placeholder': 'Is it fixed or recurring?', 'class': 'placeholder_fix_css'}),
-                    'quantity': forms.TextInput(attrs={'placeholder': 'How many items?', 'class': 'placeholder_fix_css'}),
-                    #'status': forms.TextInput(attrs={'placeholder': 'How is the progress?', 'class': 'placeholder_fix_css'}),                              
+                    'deal_name': forms.TextInput(attrs={'placeholder': _(u'Name the deal'), 'class': 'placeholder_fix_css'}),
+                    'deal_description': forms.Textarea(attrs={'placeholder': _(u'Describe the deal')}),
+                    'sales_item': forms.SelectMultiple(attrs={'data-placeholder': _(u'What are you buying or selling?')}),
+                    #'sales_item': ChosenSelectMultiple(), #(attrs={'data-placeholder': _(u'What are you buying or selling?')}),
+                    'price': forms.TextInput(attrs={'placeholder': _(u'How much is proposed?'), 'class': 'placeholder_fix_css'}),                    
+#                    'sales_term': forms.TextInput(attrs={'placeholder': _(u'Is it fixed or recurring?'), 'class': 'placeholder_fix_css'}),
+                    'quantity': forms.TextInput(attrs={'placeholder': _(u'How many items?'), 'class': 'placeholder_fix_css'}),
+                    #'status': forms.TextInput(attrs={'placeholder': _(u'How is the progress?'), 'class': 'placeholder_fix_css'}),                              
                    }
 
 class DealForm(ModelForm):
@@ -295,7 +295,8 @@ class DealForm(ModelForm):
             #deal = self.save(commit=False)
             latest_deal = self.instance.contact.deal_set.filter(deal_id = self.instance.deal_id).latest('time_stamp')
             if self.instance.pk != latest_deal.pk:
-                raise forms.ValidationError(_(u'You cannot set a past deal to Win/Lost, as there is already a "%s" deal status recorded on ' % latest_deal.status)  + str(latest_deal.conversation.conversation_datetime))
+                #you should use named-string interpolation (e.g., %(day)s) instead of positional interpolation (e.g., %s or %d) whenever you have more than a single parameter. If you used positional interpolation, translations wouldn't be able to reorder placeholder text.
+                raise forms.ValidationError(_(u'You cannot set a past deal to Win/Lost, as there is already a %(latest_deal_status) deal status recorded on %(datetime)') % { 'latest_deal_status': latest_deal.status, 'datetime' : latest_deal.conversation.conversation_datetime})
         return status
         
 class DealCForm(ModelForm):
@@ -315,7 +316,7 @@ class FilterSalesItemForm(Form):
     def __init__(self, *args, **kwargs):
         super(FilterSalesItemForm, self).__init__(*args, **kwargs)          
     
-    item_name    = forms.CharField(widget = forms.TextInput(attrs={'placeholder': 'Filter here...', 'class': 'placeholder_fix_css input-small search-query filter_add_button typeahead_sales_items', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=40)
+    item_name    = forms.CharField(widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query filter_add_button typeahead_sales_items', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=40)
 
 class SalesItemForm(ModelForm):
     class Meta:

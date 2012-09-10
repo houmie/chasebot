@@ -12,7 +12,7 @@ from chasebot_app.views import logout_page, contact_delete, conversation_display
 admin.autodiscover()
 
 js_info_dict = {
-    'packages': ('chasebot_app',),
+     'packages': ('chasebot_app',),
 }
 
 urlpatterns = patterns('',
