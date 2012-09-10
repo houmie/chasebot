@@ -1,3 +1,3 @@
 $(document).ready(function () { 
-	$('#id_sales_item').chosen({no_results_text: $('#chosen_msg').text()}); 
+	$('#id_sales_item').chosen({no_results_text: gettext('No results match')}); 
 });

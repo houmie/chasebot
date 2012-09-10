@@ -1,8 +1,4 @@
-$.chasebot_dp = {}
-$.chasebot_dp.locale = '';
-
-$(document).ready(function () {		
-	// $.chasebot_dp.locale = 'dd/mm/yyyy';
+$(document).ready(function () {
 	$('.datepicker')
     	.datepicker({    		
     		format: $('#locale').text(),
