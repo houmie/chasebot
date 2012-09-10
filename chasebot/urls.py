@@ -11,6 +11,10 @@ from chasebot_app.views import logout_page, contact_delete, conversation_display
 
 admin.autodiscover()
 
+js_info_dict = {
+    'packages': ('chasebot_app',),
+}
+
 urlpatterns = patterns('',
     
     # Session management
@@ -58,6 +62,7 @@ urlpatterns = patterns('',
     #i18n
     (r'^i18n/', include('django.conf.urls.i18n')),
     (r'^timezone/', set_timezone),
+    (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
         
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),    
     url(r'^admin/', include(admin.site.urls)),

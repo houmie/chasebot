@@ -33,9 +33,6 @@ def set_timezone(request):
     else:
         return redirect('/')
 
-def display_current_language(request):
-    return request.LANGUAGE_CODE
-
 def get_current_date_input_format(request):
     if request.LANGUAGE_CODE == 'en-gb':
         return formats_en_GB.DATE_INPUT_FORMATS[0]
@@ -637,7 +634,7 @@ def get_paginator_variables(paginator, page, page_number):
     return { 'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages, 'next_page': page_number + 1, 'prev_page': page_number - 1}
 
 def get_localized_variables(request):
-    return { 'locale' : get_datepicker_format(request), 'lang': display_current_language(request), 'delete_button_confirmation': get_delete_button_confirmation(), 'timezones': pytz.common_timezones, 'chosen' : _(u'No results matched') }  
+    return { 'locale' : get_datepicker_format(request), 'delete_button_confirmation': get_delete_button_confirmation(), 'timezones': pytz.common_timezones, 'chosen' : _(u'No results matched') }  
 
 def merge_with_additional_variables(request, paginator, page, page_number, variables):
     variables = dict(variables.items() + get_paginator_variables(paginator, page, page_number).items() + get_localized_variables(request).items())

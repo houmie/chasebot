@@ -3,18 +3,11 @@ from chasebot_app.widgets import cb_DateInput
 from django.utils import timezone
 import pytz
 __author__ = 'houman'
-from django.utils.datetime_safe import strftime
-from django.contrib.localflavor.generic.forms import DateField
-from django.forms.widgets import TextInput
-from django.utils.formats import get_format
 from django import forms
 import re
-import operator
-import collections
 from django.contrib.auth.models import User
 from django.forms import ModelForm
-from chasebot_app.models import UserProfile, Contact, ContactType, Country, MaritalStatus, Conversation, SalesItem, DealType, SalesTerm,\
-    DealStatus, Deal
+from chasebot_app.models import UserProfile, Contact, ContactType, Country, MaritalStatus, Conversation, SalesItem, DealType, SalesTerm, Deal
 from django.forms.models import BaseModelFormSet
 from django.utils.translation import ugettext_lazy as _
 

@@ -77,7 +77,8 @@
 					<a class="btn btn-small cb_inline_block icon timezone_help" href="#"><i class="icon-question-sign icon-large"></i></a>
 				</div>
 			    <div class="dropdown cb_inline_block">
-			        <a href="#" class="btn dropdown-toggle" data-toggle="dropdown">{% trans 'Language' %} <span class="caret"></span> {% if lang == 'en-gb' %}<i class="famfamfam-flag-gb"></i> {% elif lang == 'en'%}<i class='famfamfam-flag-us'></i>{% endif %}</a> 
+			    	{% get_current_language as LANGUAGE_CODE %} 
+			        <a href="#" class="btn dropdown-toggle" data-toggle="dropdown">{% trans 'Language' %} <span class="caret"></span> {% if LANGUAGE_CODE == 'en-gb' %}<i class="famfamfam-flag-gb"></i> {% elif LANGUAGE_CODE == 'en'%}<i class='famfamfam-flag-us'></i>{% endif %}</a> 
 			        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
 					    {% for lang in LANGUAGES %}
 					        <li>
@@ -91,6 +92,7 @@
 			                </li>
 			            {% endfor %}    
 					</ul>
+					
 			    </div>
 			</div>
         </div>
