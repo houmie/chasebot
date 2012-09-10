@@ -65,24 +65,24 @@ class ContactsForm(ModelForm):
         model = Contact
         exclude = ('company')
         widgets = {
-                'first_name': forms.TextInput(  attrs={'placeholder': _(u'Enter first name here'),      'class': 'placeholder_fix_css'}),
-                'last_name': forms.TextInput(   attrs={'placeholder': _(u'Enter last name here'),       'class': 'placeholder_fix_css'}),
-                'dear_name': forms.TextInput(   attrs={'placeholder': _(u'Enter preferred short name'), 'class': 'placeholder_fix_css'}),
-                'city': forms.TextInput(        attrs={'placeholder': _(u'Enter the city here'),        'class': 'placeholder_fix_css'}),
-                'state': forms.TextInput(       attrs={'placeholder': _(u'Enter the state here'),       'class': 'placeholder_fix_css'}),
-                'postcode': forms.TextInput(    attrs={'placeholder': _(u'Enter the zip code here'),    'class': 'placeholder_fix_css'}),
-                'company_name': forms.TextInput(attrs={'placeholder': _(u'Add a company'),              'class': 'placeholder_fix_css'}),
-                'position': forms.TextInput(    attrs={'placeholder': _(u'Add a position'),             'class': 'placeholder_fix_css'}),
-                'work_phone': forms.TextInput(  attrs={'placeholder': _(u'Add a work phone'),           'class': 'placeholder_fix_css'}),
-                'home_phone': forms.TextInput(  attrs={'placeholder': _(u'Add a home phone'),           'class': 'placeholder_fix_css'}),
-                'mobile_phone': forms.TextInput(attrs={'placeholder': _(u'Add a cell phone'),           'class': 'placeholder_fix_css'}),
-                'fax_number': forms.TextInput(  attrs={'placeholder': _(u'Add a fax number'),           'class': 'placeholder_fix_css'}),
-                'email': forms.TextInput(       attrs={'placeholder': _(u'Add an email'),               'class': 'placeholder_fix_css'}),
+                'first_name': forms.TextInput(  attrs={'placeholder': _(u'Enter first name here'),      'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
+                'last_name': forms.TextInput(   attrs={'placeholder': _(u'Enter last name here'),       'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
+                'dear_name': forms.TextInput(   attrs={'placeholder': _(u'Enter preferred short name'), 'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
+                'city': forms.TextInput(        attrs={'placeholder': _(u'Enter the city here'),        'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
+                'state': forms.TextInput(       attrs={'placeholder': _(u'Enter the state here'),       'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
+                'postcode': forms.TextInput(    attrs={'placeholder': _(u'Enter the zip code here'),    'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
+                'company_name': forms.TextInput(attrs={'placeholder': _(u'Add a company'),              'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
+                'position': forms.TextInput(    attrs={'placeholder': _(u'Add a position'),             'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
+                'work_phone': forms.TextInput(  attrs={'placeholder': _(u'Add a work phone'),           'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
+                'home_phone': forms.TextInput(  attrs={'placeholder': _(u'Add a home phone'),           'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
+                'mobile_phone': forms.TextInput(attrs={'placeholder': _(u'Add a cell phone'),           'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
+                'fax_number': forms.TextInput(  attrs={'placeholder': _(u'Add a fax number'),           'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
+                'email': forms.TextInput(       attrs={'placeholder': _(u'Add an email'),               'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                 'birth_date': forms.DateInput(  attrs={'placeholder': _(u'Add the birthday'),           'class': 'placeholder_fix_css datepicker'}),
-                'referred_by': forms.TextInput( attrs={'placeholder': _(u'...was referred by?'),        'class': 'placeholder_fix_css'}),
-                'spouse_first_name': forms.TextInput(attrs={'placeholder': _(u'What is the spouse\'s name?'), 'class': 'placeholder_fix_css'}),
-                'children_names': forms.TextInput(attrs={'placeholder': _(u'What are the children names?'), 'class': 'placeholder_fix_css'}),
-                'home_town': forms.TextInput(   attrs={'placeholder': _(u'Enter the home town'),            'class': 'placeholder_fix_css'}),
+                'referred_by': forms.TextInput( attrs={'placeholder': _(u'...was referred by?'),        'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
+                'spouse_first_name': forms.TextInput(attrs={'placeholder': _(u'What is the spouse\'s name?'), 'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
+                'children_names': forms.TextInput(attrs={'placeholder': _(u'What are the children names?'), 'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
+                'home_town': forms.TextInput(   attrs={'placeholder': _(u'Enter the home town'),            'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                 'address': forms.Textarea(      attrs={'rows':4, 'placeholder': _(u'Add an address'),       'class': 'placeholder_fix_css'}),
                 'contact_notes': forms.Textarea(attrs={'rows':4, 'placeholder': _(u'What is the personality like?')}),
                 'contacts_interests': forms.Textarea(attrs={'rows':4, 'placeholder': _(u'Any particular interests?')}),
@@ -135,7 +135,7 @@ class ConversationForm(ModelForm):
         model = Conversation
         exclude = ('company', 'contact', 'conversation_datetime')
         widgets = {                    
-                    'subject': forms.TextInput(attrs={'placeholder': '', 'class': 'placeholder_fix_css'}),
+                    'subject': forms.TextInput(attrs={'placeholder': '', 'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                     'notes': forms.Textarea(attrs={'placeholder': _(u'Add relevant notes...')}),                                      
                    }
     
@@ -270,13 +270,13 @@ class DealTypeForm(ModelForm):
         exclude = ('company', 'status')
         
         widgets = {
-                    'deal_name': forms.TextInput(attrs={'placeholder': _(u'Name the deal'), 'class': 'placeholder_fix_css'}),
+                    'deal_name': forms.TextInput(attrs={'placeholder': _(u'Name the deal'), 'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                     'deal_description': forms.Textarea(attrs={'placeholder': _(u'Describe the deal')}),
                     'sales_item': forms.SelectMultiple(attrs={'data-placeholder': _(u'What are you buying or selling?')}),
                     #'sales_item': ChosenSelectMultiple(), #(attrs={'data-placeholder': _(u'What are you buying or selling?')}),
-                    'price': forms.TextInput(attrs={'placeholder': _(u'How much is proposed?'), 'class': 'placeholder_fix_css'}),                    
+                    'price': forms.TextInput(attrs={'placeholder': _(u'How much is proposed?'), 'class': 'placeholder_fix_css', 'autocomplete': 'off'}),                    
 #                    'sales_term': forms.TextInput(attrs={'placeholder': _(u'Is it fixed or recurring?'), 'class': 'placeholder_fix_css'}),
-                    'quantity': forms.TextInput(attrs={'placeholder': _(u'How many items?'), 'class': 'placeholder_fix_css'}),
+                    'quantity': forms.TextInput(attrs={'placeholder': _(u'How many items?'), 'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                     #'status': forms.TextInput(attrs={'placeholder': _(u'How is the progress?'), 'class': 'placeholder_fix_css'}),                              
                    }
 
@@ -323,7 +323,7 @@ class SalesItemForm(ModelForm):
         model = SalesItem
         exclude = ('company')
         widgets = {
-                   'item_name': forms.TextInput(attrs={'class': 'item_name'}),
+                   'item_name': forms.TextInput(attrs={'class': 'item_name', 'autocomplete': 'off'}),
                    }
         
     

@@ -60,7 +60,6 @@ if (!String.prototype.trim) {
 };
 
 
-
 function row_delete_ajax(event) {
     event.preventDefault();
     if (confirm($('#delete_button_confirmation').text())) {
@@ -397,6 +396,10 @@ $(document).ready(function (){
 	$('#salesitems_modal').on('hidden', modal_closing);
 	$('#timezone_dropdown').change(timezone_dropdown);	
 	$('.timezone_help').click(show_timezone_help);
+	$('.datepicker').datepicker({    		
+    		format: $('#locale').text(),
+    		autoclose: 'True'
+		});
 	
 // $(document).click(function(e){
   // if(isVisible & clickedAway){
