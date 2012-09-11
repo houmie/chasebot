@@ -19,29 +19,29 @@ msgstr ""
 
 #: chasebot/settings.py:84
 msgid "American English"
-msgstr "American English"
+msgstr "Inglés Americano"
 
 #: chasebot/settings.py:85
 msgid "British English"
-msgstr "British English"
+msgstr "Inglés británico"
 
 #: chasebot/settings.py:86
 msgid "Spanish"
-msgstr "Spanish"
+msgstr "Español"
 
 #: chasebot_app/forms.py:15
 msgid "Username"
-msgstr "Username"
+msgstr "Nombre de usuario"
 
 #: chasebot_app/forms.py:16
 #: chasebot_app/models.py:14
 #: templates/contacts.html:41
 msgid "Company"
-msgstr "Company"
+msgstr "Empresa"
 
 #: chasebot_app/forms.py:17
 msgid "Company Email"
-msgstr "Company Email"
+msgstr "Email de la Compañía"
 
 #: chasebot_app/forms.py:18
 #: chasebot_app/models.py:81
@@ -51,11 +51,11 @@ msgstr "Email"
 
 #: chasebot_app/forms.py:19
 msgid "Password"
-msgstr "Password"
+msgstr "Contraseña"
 
 #: chasebot_app/forms.py:20
 msgid "Password (Again)"
-msgstr "Password (Again)"
+msgstr "Contraseña (otra vez)"
 
 #: chasebot_app/forms.py:53
 #: chasebot_app/forms.py:54
@@ -69,300 +69,300 @@ msgstr "Password (Again)"
 #: chasebot_app/forms.py:259
 #: chasebot_app/forms.py:319
 msgid "Filter here..."
-msgstr "Filter here..."
+msgstr "Filtrar aquí ..."
 
 #: chasebot_app/forms.py:68
 msgid "Enter first name here"
-msgstr "Enter first name here"
+msgstr "Introduzca el nombre aquí"
 
 #: chasebot_app/forms.py:69
 msgid "Enter last name here"
-msgstr "Enter surname here"
+msgstr "Escriba el apellido aquí"
 
 #: chasebot_app/forms.py:70
 msgid "Enter preferred short name"
-msgstr "Enter preferred short name"
+msgstr "Introduzca el nombre preferido"
 
 #: chasebot_app/forms.py:71
 msgid "Enter the city here"
-msgstr "Enter the city here"
+msgstr "Introduce la ciudad aquí"
 
 #: chasebot_app/forms.py:72
 msgid "Enter the state here"
-msgstr "Enter the state here"
+msgstr "Escriba aquí el estado"
 
 #: chasebot_app/forms.py:73
 msgid "Enter the zip code here"
-msgstr "Enter the postcode here"
+msgstr "Introduzca el código postal aquí"
 
 #: chasebot_app/forms.py:74
 msgid "Add a company"
-msgstr "Add a company"
+msgstr "Añadir una empresa"
 
 #: chasebot_app/forms.py:75
 msgid "Add a position"
-msgstr "Add a position"
+msgstr "Añadir una posición"
 
 #: chasebot_app/forms.py:76
 msgid "Add a work phone"
-msgstr "Add a work phone"
+msgstr "Añada un teléfono de trabajo"
 
 #: chasebot_app/forms.py:77
 msgid "Add a home phone"
-msgstr "Add a home phone"
+msgstr "Añada un teléfono de casa"
 
 #: chasebot_app/forms.py:78
 msgid "Add a cell phone"
-msgstr "Add a mobile phone"
+msgstr "Añadir un teléfono móvil"
 
 #: chasebot_app/forms.py:79
 msgid "Add a fax number"
-msgstr "Add a fax number"
+msgstr "Agregar un número de fax"
 
 #: chasebot_app/forms.py:80
 msgid "Add an email"
-msgstr "Add an email"
+msgstr "Añadir un e-mail"
 
 #: chasebot_app/forms.py:81
 msgid "Add the birthday"
-msgstr "Add the birthday"
+msgstr "Agregue el cumpleaños"
 
 #: chasebot_app/forms.py:82
 msgid "...was referred by?"
-msgstr "...was referred by?"
+msgstr "... fue remitido por el camino?"
 
 #: chasebot_app/forms.py:83
 msgid "What is the spouse's name?"
-msgstr "What is the spouse's name?"
+msgstr "¿Cuál es el nombre del cónyuge?"
 
 #: chasebot_app/forms.py:84
 msgid "What are the children names?"
-msgstr "What are the children names?"
+msgstr "¿Cuáles son los nombres de los niños?"
 
 #: chasebot_app/forms.py:85
 msgid "Enter the home town"
-msgstr "Enter the home town"
+msgstr "Introduce la ciudad de origen"
 
 #: chasebot_app/forms.py:86
 msgid "Add an address"
-msgstr "Add an address"
+msgstr "Agregar una dirección"
 
 #: chasebot_app/forms.py:87
 msgid "What is the personality like?"
-msgstr "What is the personality like?"
+msgstr "¿Qué es la personalidad?"
 
 #: chasebot_app/forms.py:88
 msgid "Any particular interests?"
-msgstr "Any particular interests?"
+msgstr "Los intereses particulares?"
 
 #: chasebot_app/forms.py:89
 msgid "Does the spouse have any particular interest?"
-msgstr "Does the spouse have any particular interest?"
+msgstr "¿El cónyuge tiene algún interés particular?"
 
 #: chasebot_app/forms.py:90
 msgid "Where did you meet so far?"
-msgstr "Where did you meet so far?"
+msgstr "¿Dónde se conocieron hasta el momento?"
 
 #: chasebot_app/forms.py:97
 msgid "From Date..."
-msgstr "From Date..."
+msgstr "Desde la fecha ..."
 
 #: chasebot_app/forms.py:98
 msgid "To Date..."
-msgstr "To Date..."
+msgstr "Conocer ..."
 
 #: chasebot_app/forms.py:104
 msgid "Add the date for this conversation"
-msgstr "Add the date for this conversation"
+msgstr "Agregar la fecha para esta conversación"
 
 #: chasebot_app/forms.py:105
 msgid "Add the time for this conversation"
-msgstr "Add the time for this conversation"
+msgstr "Agregue el tiempo para esta conversación"
 
 #: chasebot_app/forms.py:139
 msgid "Add relevant notes..."
-msgstr "Add relevant notes..."
+msgstr "Añadir notas relevantes ..."
 
 #: chasebot_app/forms.py:186
 msgid "Please select a deal to add or remove it"
-msgstr "Please select a deal to add or remove it"
+msgstr "Por favor, seleccione un acuerdo para agregar o eliminar"
 
 #: chasebot_app/forms.py:187
 msgid "This deal has been selected more than once"
-msgstr "This deal has been selected more than once"
+msgstr "Este acuerdo se ha seleccionado más de una vez"
 
 #: chasebot_app/forms.py:273
 msgid "Name the deal"
-msgstr "Name the deal"
+msgstr "Nombre del acuerdo"
 
 #: chasebot_app/forms.py:274
 msgid "Describe the deal"
-msgstr "Describe the deal"
+msgstr "Describa el acuerdo"
 
 #: chasebot_app/forms.py:275
 msgid "What are you buying or selling?"
-msgstr "What are you buying or selling?"
+msgstr "Lo que está comprando o vendiendo?"
 
 #: chasebot_app/forms.py:277
 msgid "How much is proposed?"
-msgstr "How much is proposed?"
+msgstr "¿Cuánto se propone?"
 
 #: chasebot_app/forms.py:279
 msgid "How many items?"
-msgstr "How many items?"
+msgstr "¿Cuántos artículos?"
 
 #: chasebot_app/forms.py:299
 msgid "You cannot set a past deal to Win/Lost, as there is already a %(latest_deal_status) deal status recorded on %(datetime)"
-msgstr "You cannot set a past deal to Win/Lost, as there is already a %(latest_deal_status) deal status recorded on %(datetime)"
+msgstr "No se puede establecer un acuerdo pasado para ganar / perdido, como ya hay un %(latest_deal_status) Estado de acuerdo registrado en %(datetime)"
 
 #: chasebot_app/forms.py:360
 msgid "Please correct the duplicated deal types attached to this conversation."
-msgstr "Please correct the duplicated deal types attached to this conversation."
+msgstr "Por favor, corrija los tipos tratan duplicados unidos a esta conversación."
 
 #: chasebot_app/models.py:15
 msgid "Companies"
-msgstr "Companies"
+msgstr "Empresas"
 
 #: chasebot_app/models.py:25
 msgid "User Profile"
-msgstr "User Profile"
+msgstr "Perfil de usuario"
 
 #: chasebot_app/models.py:26
 msgid "User Profiles"
-msgstr "User Profiles"
+msgstr "Perfiles de usuario"
 
 #: chasebot_app/models.py:30
 #: chasebot_app/models.py:34
 msgid "Contact Type"
-msgstr "Contact Type"
+msgstr "Tipo de contacto"
 
 #: chasebot_app/models.py:35
 msgid "Contact Types"
-msgstr "Contact Types"
+msgstr "Contacto Tipos"
 
 #: chasebot_app/models.py:39
 #: chasebot_app/models.py:43
 msgid "Marital Status"
-msgstr "Marital Status"
+msgstr "Estado civil"
 
 #: chasebot_app/models.py:44
 msgid "Marital Statuses"
-msgstr "Marital Statuses"
+msgstr "Estados civiles"
 
 #: chasebot_app/models.py:48
 msgid "Country Code"
-msgstr "Country Code"
+msgstr "Código del país"
 
 #: chasebot_app/models.py:49
 #: chasebot_app/models.py:53
 msgid "Country"
-msgstr "Country"
+msgstr "País"
 
 #: chasebot_app/models.py:54
 msgid "Countries"
-msgstr "Countries"
+msgstr "Países"
 
 #: chasebot_app/models.py:58
 #: chasebot_app/models.py:62
 msgid "Sex"
-msgstr "Gender"
+msgstr "Sexo"
 
 #: chasebot_app/models.py:63
 msgid "Sexes"
-msgstr "Sexes"
+msgstr "Sexos"
 
 #: chasebot_app/models.py:67
 #: templates/contacts.html:32
 msgid "First Name"
-msgstr "First Name"
+msgstr "Nombre"
 
 #: chasebot_app/models.py:68
 #: templates/contacts.html:24
 msgid "Last Name"
-msgstr "Surname"
+msgstr "Apellido"
 
 #: chasebot_app/models.py:69
 #: templates/contacts.html:35
 msgid "Preferred Name"
-msgstr "Preferred Name"
+msgstr "Nombre Preferido"
 
 #: chasebot_app/models.py:70
 msgid "Address"
-msgstr "Address"
+msgstr "Dirección"
 
 #: chasebot_app/models.py:71
 msgid "City"
-msgstr "City"
+msgstr "Ciudad"
 
 #: chasebot_app/models.py:72
 msgid "State"
-msgstr "State"
+msgstr "Estado"
 
 #: chasebot_app/models.py:73
 msgid "Zip Code"
-msgstr "Zip Code"
+msgstr "Código postal"
 
 #: chasebot_app/models.py:75
 msgid "Company Name"
-msgstr "Company Name"
+msgstr "Nombre de la compañía"
 
 #: chasebot_app/models.py:76
 msgid "Position"
-msgstr "Position"
+msgstr "Posición"
 
 #: chasebot_app/models.py:77
 #: templates/contacts.html:52
 msgid "Work Phone"
-msgstr "Work Phone"
+msgstr "Teléfono del trabajo"
 
 #: chasebot_app/models.py:78
 msgid "Home Phone"
-msgstr "Home Phone"
+msgstr "Teléfono de la casa"
 
 #: chasebot_app/models.py:79
 #: templates/contacts.html:53
 msgid "Cell Phone"
-msgstr "Mobile Phone"
+msgstr "Teléfono móvil"
 
 #: chasebot_app/models.py:80
 msgid "Fax Number"
-msgstr "Fax Number"
+msgstr "Número de fax"
 
 #: chasebot_app/models.py:82
 msgid "Birthday"
-msgstr "Birthday"
+msgstr "Cumpleaños"
 
 #: chasebot_app/models.py:83
 msgid "Previous meetings"
-msgstr "Previous meetings"
+msgstr "Enfrentamientos previos"
 
 #: chasebot_app/models.py:85
 msgid "Referred By"
-msgstr "Referred By"
+msgstr "Referido por"
 
 #: chasebot_app/models.py:86
 msgid "Personality Notes"
-msgstr "Personality Notes"
+msgstr "Notas de Personalidad"
 
 #: chasebot_app/models.py:89
 msgid "Contact's Interests"
-msgstr "Contact's Interests"
+msgstr "Intereses contacto"
 
 #: chasebot_app/models.py:90
 msgid "Spouse's First Name"
-msgstr "Spouse's First Name"
+msgstr "Nombre del Cónyuge"
 
 #: chasebot_app/models.py:91
 msgid "Spouse's Last Name"
-msgstr "Spouse's Surname"
+msgstr "Apellido del cónyuge"
 
 #: chasebot_app/models.py:92
 msgid "Spouse's Interests"
-msgstr "Spouse's Interests"
+msgstr "Esposa de Intereses"
 
 #: chasebot_app/models.py:93
 msgid "Children Names"
-msgstr "Children Names"
+msgstr "Niños Nombres"
 
 #: chasebot_app/models.py:94
 msgid "Home Town"
@@ -371,194 +371,194 @@ msgstr "Home Town"
 #: chasebot_app/models.py:101
 #: templates/base.html:58
 msgid "Contact"
-msgstr "Contact"
+msgstr "Contacto"
 
 #: chasebot_app/models.py:102
 msgid "Contacts"
-msgstr "Contacts"
+msgstr "Contactos"
 
 #: chasebot_app/models.py:127
 msgid "Item Name"
-msgstr "Item Name"
+msgstr "Nombre del artículo"
 
 #: chasebot_app/models.py:132
 #: templates/_sales_items_table.html:13
 msgid "Sales Item"
-msgstr "Sales Item"
+msgstr "Ventas artículo"
 
 #: chasebot_app/models.py:133
 #: templates/deals.html:12
 #: templates/sales_items.html:4
 msgid "Sales Items"
-msgstr "Sales Items"
+msgstr "Venta Artículos"
 
 #: chasebot_app/models.py:136
 #: chasebot_app/models.py:140
 msgid "Sales Term"
-msgstr "Sales Term"
+msgstr "Ventas a Plazo"
 
 #: chasebot_app/models.py:141
 msgid "Sales Terms"
-msgstr "Sales Terms"
+msgstr "Condiciones de venta"
 
 #: chasebot_app/models.py:144
 #: chasebot_app/models.py:148
 msgid "Deal Status"
-msgstr "Deal Status"
+msgstr "Trato de estado"
 
 #: chasebot_app/models.py:149
 msgid "Deal Statuses"
-msgstr "Deal Statuses"
+msgstr "Status de Trato"
 
 #: chasebot_app/models.py:153
 #: chasebot_app/models.py:189
 msgid "Deal Name"
-msgstr "Deal Name"
+msgstr "Oferta Nombre"
 
 #: chasebot_app/models.py:154
 msgid "Deal Description"
-msgstr "Deal Description"
+msgstr "Oferta Descripción"
 
 #: chasebot_app/models.py:156
 #: templates/deals.html:47
 msgid "Price"
-msgstr "Price"
+msgstr "Precio"
 
 #: chasebot_app/models.py:158
 #: templates/deals.html:63
 msgid "Quantity"
-msgstr "Quantity"
+msgstr "Cantidad"
 
 #: chasebot_app/models.py:162
 msgid "Deal Type"
-msgstr "Deal Type"
+msgstr "Tipo de Trato"
 
 #: chasebot_app/models.py:163
 msgid "Deal Types"
-msgstr "Deal Types"
+msgstr "Tipos de Trato"
 
 #: chasebot_app/models.py:170
 msgid "Conversation Subject"
-msgstr "Conversation Subject"
+msgstr "Conversación Asunto"
 
 #: chasebot_app/models.py:171
 msgid "Conversation Notes"
-msgstr "Conversation Notes"
+msgstr "Notas de conversación"
 
 #: chasebot_app/models.py:174
 msgid "Conversation"
-msgstr "Conversation"
+msgstr "Conversación"
 
 #: chasebot_app/models.py:175
 #: templates/contact_list.html:18
 #: templates/contacts.html:54
 msgid "Conversations"
-msgstr "Conversations"
+msgstr "Conversaciones"
 
 #: chasebot_app/models.py:183
 #: chasebot_app/models.py:194
 msgid " - Set No."
-msgstr " - Set No."
+msgstr "Núm de Lote"
 
 #: chasebot_app/models.py:192
 msgid "Set Number"
-msgstr "Set Number"
+msgstr "Número de Lote"
 
 #: chasebot_app/models.py:196
 #: templates/deals.html:28
 msgid "Deal"
-msgstr "Deal"
+msgstr "Comerciar"
 
 #: chasebot_app/models.py:197
 #: templates/contacts.html:13
 #: templates/deals.html:4
 msgid "Deals"
-msgstr "Deals"
+msgstr "Ofertas"
 
 #: chasebot_app/views.py:90
 msgid "Add New Contact"
-msgstr "Add New Contact"
+msgstr "Añadir un nuevo contacto"
 
 #: chasebot_app/views.py:93
 #: templates/contact_list.html:7
 msgid "Edit Contact"
-msgstr "Edit Contact"
+msgstr "Editar contacto"
 
 #: chasebot_app/views.py:108
 #: chasebot_app/views.py:243
 msgid "Contact not found"
-msgstr "Contact not found"
+msgstr "Contacto no encontrado"
 
 #: chasebot_app/views.py:169
 msgid "Edit Past Conversation"
-msgstr "Edit Past Conversation"
+msgstr "Editar Conversación Pasado"
 
 #: chasebot_app/views.py:170
 msgid "Deals attached to this Conversation"
-msgstr "Deals attached to this Conversation"
+msgstr "Ofertas adjunta al presente Conversación"
 
 #: chasebot_app/views.py:245
 msgid "Conversation not found"
-msgstr "Conversation not found"
+msgstr "La conversación no se encuentra"
 
 #: chasebot_app/views.py:343
 msgid "Sales item not found"
-msgstr "Sales item not found"
+msgstr "Punto de venta que no se encuentra"
 
 #: chasebot_app/views.py:404
 msgid "Add a new deal"
-msgstr "Add a new deal"
+msgstr "Añadir un nuevo acuerdo"
 
 #: chasebot_app/views.py:407
 msgid "Edit deal"
-msgstr "Edit deal"
+msgstr "Editar trato"
 
 #: chasebot_app/views.py:422
 msgid "Deal Type not found"
-msgstr "Deal Type not found"
+msgstr "Tipo de Trato que no se encuentra"
 
 #: chasebot_app/views.py:608
 msgid "Are you sure you want to delete this row?"
-msgstr "Are you sure you want to delete this row?"
+msgstr "¿Está seguro que desea eliminar esta fila?"
 
 #: templates/_paginator.html:7
 #: templates/_paginator.html.py:9
 msgid "Previous"
-msgstr "Previous"
+msgstr "Anterior"
 
 #: templates/_paginator.html:12
 #: templates/_paginator.html.py:14
 msgid "Next"
-msgstr "Next"
+msgstr "Próxima"
 
 #: templates/_paginator.html:16
 #, python-format
 msgid "Page %(p)s of %(ps)s"
-msgstr "Page %(p)s of %(ps)s"
+msgstr "Página %(p)s de %(ps)s"
 
 #: templates/_sales_item_rows.html:5
 #: templates/conversation_list.html:7
 #: templates/deal_list.html:6
 msgid "Edit"
-msgstr "Edit"
+msgstr "Editar"
 
 #: templates/_sales_item_rows.html:6
 #: templates/conversation_list.html:8
 #: templates/deal_list.html:7
 msgid "Delete"
-msgstr "Delete"
+msgstr "Borrar"
 
 #: templates/_sales_items_table.html:6
 msgid "Back to Deals"
-msgstr "Back to Deals"
+msgstr "Realice una copia de ofertas"
 
 #: templates/base.html:56
 msgid "Home"
-msgstr "Home"
+msgstr "Inicio"
 
 #: templates/base.html:57
 msgid "About"
-msgstr "About"
+msgstr "Sobre"
 
 #: templates/base.html:61
 msgid "logout"
@@ -570,38 +570,38 @@ msgstr "login"
 
 #: templates/base.html:64
 msgid "Register"
-msgstr "Register"
+msgstr "Registro"
 
 #: templates/base.html:74
 msgid "Please set your current time zone here"
-msgstr "Please set your current time zone here"
+msgstr "Por favor, configure su zona horaria actual aquí"
 
 #: templates/base.html:84
 msgid "Language"
-msgstr "Language"
+msgstr "Idioma"
 
 #: templates/charts.html:13
 #, python-format
 msgid "Historical Charts with %(firstname)s %(lastname)s"
-msgstr "Historical Charts with %(firstname)s %(lastname)s"
+msgstr "Gráficos históricos con %(firstname)s %(lastname)s"
 
 #: templates/charts.html:14
 msgid "Best Time Of The Day For A Successful Sales Conversation"
-msgstr "Best Time Of The Day For A Successful Sales Conversation"
+msgstr "Mejor hora del día para una conversación de ventas exitosa"
 
 #: templates/charts.html:17
 #: templates/conversations.html:10
 #: templates/deals.html:10
 msgid "Back to Main Screen"
-msgstr "Back to Main Screen"
+msgstr "Volver a la pantalla principal"
 
 #: templates/charts.html:62
 msgid "No data recorded yet..."
-msgstr "No data recorded yet..."
+msgstr "No hay datos registrados sin embargo ..."
 
 #: templates/contact.html:12
 msgid "Basic"
-msgstr "Basic"
+msgstr "Básico"
 
 #: templates/contact.html:15
 msgid "Personal"
@@ -613,7 +613,7 @@ msgstr "Personal"
 #: templates/sales_item_edit_save_form.html:16
 #: templates/sales_item_edit_save_form.html:23
 msgid "Save"
-msgstr "Save"
+msgstr "Ahorrar"
 
 #: templates/contact.html:30
 #: templates/conversation.html:353
@@ -621,131 +621,131 @@ msgstr "Save"
 #: templates/sales_item_edit_save_form.html:17
 #: templates/sales_item_edit_save_form.html:24
 msgid "Cancel"
-msgstr "Cancel"
+msgstr "Cancelar"
 
 #: templates/contact_list.html:8
 msgid "Delete Contact"
-msgstr "Delete Contact"
+msgstr "Eliminar contacto"
 
 #: templates/contact_list.html:19
 #: templates/contacts.html:55
 msgid "Charts"
-msgstr "Charts"
+msgstr "Gráficos"
 
 #: templates/contact_list.html:27
 msgid "No contacts found."
-msgstr "No contacts found."
+msgstr "No se han encontrado contactos."
 
 #: templates/contacts.html:3
 msgid "Chasebot - Home"
-msgstr "Chasebot - Home"
+msgstr "Chasebot - Inicio"
 
 #: templates/contacts.html:10
 msgid "Welcome back"
-msgstr "Welcome back"
+msgstr "Bienvenido de nuevo"
 
 #: templates/contacts.html:12
 msgid "New Contact"
-msgstr "New Contact"
+msgstr "Nuevo contacto"
 
 #: templates/contacts.html:56
 msgid "Important Client"
-msgstr "Important Client"
+msgstr "Importante cliente"
 
 #: templates/conversation.html:82
 msgid "Open Deals in Progress:"
-msgstr "Open Deals in Progress:"
+msgstr "Abra ofertas en curso:"
 
 #: templates/conversation.html:127
 msgid "All open deals are already attached to this conversation."
-msgstr "All open deals are already attached to this conversation."
+msgstr "Todas las ofertas son abiertas ya están vinculados a esta conversación."
 
 #: templates/conversation.html:133
 msgid "No new deals are negotiated yet with this client."
-msgstr "No new deals are negotiated yet with this client."
+msgstr "No hay nuevos acuerdos se negocian aún con este cliente."
 
 #: templates/conversation.html:151
 msgid "Add New Deals For This Customer:"
-msgstr "Add New Deals For This Customer:"
+msgstr "Añadir nuevas ofertas para este cliente:"
 
 #: templates/conversation.html:293
 msgid "Deals attached to this Conversation:"
-msgstr "Deals attached to this Conversation:"
+msgstr "Ofertas adjuntos a esta conversación:"
 
 #: templates/conversation.html:336
 msgid "No deals attached yet to this conversation"
-msgstr "No deals attached yet to this conversation"
+msgstr "No hay ofertas unidos todavía a esta conversación"
 
 #: templates/conversation_list.html:22
 msgid "No conversations found."
-msgstr "No conversations found."
+msgstr "No hay conversaciones encontrado."
 
 #: templates/conversations.html:3
 msgid "Chasebot - Conversation History"
-msgstr "Chasebot - Conversation History"
+msgstr "Chasebot - Historial de conversaciones"
 
 #: templates/conversations.html:4
 msgid "Conversations with"
-msgstr "Conversations with"
+msgstr "Conversaciones con"
 
 #: templates/conversations.html:11
 msgid "New Conversation"
-msgstr "New Conversation"
+msgstr "Nueva conversación"
 
 #: templates/conversations.html:29
 msgid "Date"
-msgstr "Date"
+msgstr "Fecha"
 
 #: templates/conversations.html:37
 msgid "Subject"
-msgstr "Subject"
+msgstr "Sujeto"
 
 #: templates/conversations.html:41
 msgid "Notes"
-msgstr "Notes"
+msgstr "Notas"
 
 #: templates/deal_list.html:26
 msgid "No deals found."
-msgstr "No deals found."
+msgstr "No hay ofertas encontradas."
 
 #: templates/deals.html:3
 msgid "Chasebot - Deals"
-msgstr "Chasebot - Deals"
+msgstr "Chasebot - Ofertas"
 
 #: templates/deals.html:11
 msgid "New Deal"
-msgstr "New Deal"
+msgstr "Nuevo comerciar"
 
 #: templates/deals.html:12
 msgid "Sale Items for Deals"
-msgstr "Sale Items for Deals"
+msgstr "Venta Artículos para ofertas"
 
 #: templates/deals.html:32
 msgid "Description"
-msgstr "Description"
+msgstr "Descripción"
 
 #: templates/deals.html:39
 msgid "Item"
-msgstr "Item"
+msgstr "Artículo"
 
 #: templates/deals.html:55
 msgid "Term"
-msgstr "Term"
+msgstr "Plazo"
 
 #: templates/sales_item_add_save_form.html:10
 msgid "Add a new Sales Item"
-msgstr "Add a new Sales Item"
+msgstr "Agregar un elemento de Ventas nuevas"
 
 #: templates/sales_item_add_save_form.html:16
 #: templates/sales_item_add_save_form.html:21
 msgid "Add"
-msgstr "Add"
+msgstr "Añadir"
 
 #: templates/sales_item_list.html:7
 msgid "No sales items found."
-msgstr "No sales items found."
+msgstr "Copias de ventas encontrado."
 
 #: templates/sales_items.html:3
 msgid "Chasebot - Sales Items"
-msgstr "Chasebot - Sales Items"
+msgstr "Chasebot - Los artículos de venta"
 

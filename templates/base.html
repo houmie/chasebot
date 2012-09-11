@@ -81,7 +81,7 @@
 				</div>
 			    <div class="dropdown cb_inline_block">
 			    	{% get_current_language as LANGUAGE_CODE %} 
-			        <a href="#" class="btn dropdown-toggle" data-toggle="dropdown">{% trans 'Language' %} <span class="caret"></span> {% if LANGUAGE_CODE == 'en-gb' %}<i class="famfamfam-flag-gb"></i> {% elif LANGUAGE_CODE == 'en'%}<i class='famfamfam-flag-us'></i>{% endif %}</a> 
+			        <a href="#" class="btn dropdown-toggle" data-toggle="dropdown">{% trans 'Language' %} <span class="caret"></span> {% if LANGUAGE_CODE == 'en-gb' %}&nbsp;<i class="famfamfam-flag-gb"></i>{% elif LANGUAGE_CODE == 'en'%}&nbsp;<i class='famfamfam-flag-us'></i>{% elif LANGUAGE_CODE == 'es' %}&nbsp;<i class='famfamfam-flag-es'></i>{% endif %}</a> 
 			        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
 					    {% for lang in LANGUAGES %}
 					        <li>
@@ -89,7 +89,7 @@
 								   <input name="next" type="hidden" value="{{ redirect_to }}" />
 								   <input type="hidden" name="language" value="{{ lang.0 }}" />
 								   <a href="#" onclick="document.getElementsByName('setLang{{ lang.1}}')[0].submit(); return false;">
-								   {% if lang.0 == 'en-gb' %}<i class="famfamfam-flag-gb"></i>{% elif lang.0 == 'en' %}<i class="famfamfam-flag-us"></i>{% endif %} {{ lang.1 }}
+								   {% if lang.0 == 'en-gb' %}<i class="famfamfam-flag-gb"></i>{% elif lang.0 == 'en' %}<i class="famfamfam-flag-us"></i>{% elif lang.0 == 'es' %}<i class="famfamfam-flag-es"></i>{% endif %} {{ lang.1 }}
 								   </a>
 								</form>
 			                </li>
