@@ -117,7 +117,7 @@ a.btn-link-left{
 
 
 .popover{
-	z-index: 1055;
+	z-index: 1030;
 }
 
 .first_th_minwidth{
@@ -130,4 +130,8 @@ a.btn-link-left{
 
 .add_sales_item_mindwidth{
 	min-width: 155px;
+}
+
+.typeahead{
+	z-index: 1051;
 }
