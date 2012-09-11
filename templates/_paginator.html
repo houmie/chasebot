@@ -1,7 +1,7 @@
 <tr>
 	<td colspan="11">
 		{% if show_paginator %}
-		    <div class="paginator">
+		    <div class="paginator pager">
 		      {% if has_prev and get_request %}
 		        <a class="paginator_nav_links" href="{{ get_request }}&page={{ prev_page }}">&laquo; Previous</a>
 		      {% elif has_prev%}
