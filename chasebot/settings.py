@@ -38,6 +38,28 @@ DATABASES = {
     }
 }
 
+STATICFILES_STORAGE = 'pipeline.storage.PipelineStorage'
+PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
+PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
+PIPELINE_YUI_BINARY = '/usr/bin/yui-compressor'
+PIPELINE_CSS = {
+    'chasebot_css': {
+        'source_filenames': (
+          'chasebot/chasebot_styles.css',          
+        ),
+        'output_filename': 'chasebot/chasebot_styles.min.css',        
+    },
+}
+
+PIPELINE_JS = {
+    'chasebot_js': {
+        'source_filenames': (
+          'chasebot/chasebot_base.js',          
+        ),
+        'output_filename': 'chasebot/chasebot_base.min.js',
+    }
+}
+
 FORMAT_MODULE_PATH = 'chasebot.formats'
 
 # Local time zone for this installation. Choices can be found here:
@@ -135,6 +157,8 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',    
     'chasebot.middlewares.TimezoneMiddleware',
+    'django.middleware.gzip.GZipMiddleware',
+    'pipeline.middleware.MinifyHTMLMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -158,9 +182,10 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
+    'pipeline',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'chasebot_app',
+    'chasebot_app',    
 )
 
 # A sample logging configuration. The only tangible logging

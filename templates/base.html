@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load compressed %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,13 +10,15 @@
     <meta name="author" content="">
     <!-- <script src="http://code.jquery.com/jquery-latest.min.js"></script> -->
     <script src="{{ STATIC_URL }}jquery/jquery-1.8.1.min.js"></script>   
-    <script type="text/javascript" src="{{ STATIC_URL }}chasebot/chasebot_base.js" ></script> 
+    <!-- <script type="text/javascript" src="{{ STATIC_URL }}chasebot/chasebot_base.js" ></script> --> 
+    {% compressed_js 'chasebot_js' %}
     <!-- Le styles -->
     <link href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ STATIC_URL }}bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
     <link href="{{ STATIC_URL }}famfamfam_flags/famfamfam-flags.css" rel="stylesheet">
     <link href="{{ STATIC_URL }}font_awesome/css/font-awesome.css" rel="stylesheet">
-    <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}chasebot/chasebot_styles.css" />
+    <!-- <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}chasebot/chasebot_styles.css" /> -->
+    {% compressed_css 'chasebot_css' %}
     <link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}bootstrap-datepicker/css/datepicker.css" />
     <script src="{{ STATIC_URL }}chosen/chosen/chosen.jquery.min.js"></script>
 	<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}chosen/chosen/chosen.css" />
