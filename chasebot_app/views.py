@@ -489,7 +489,7 @@ def charts_display(request, contact_id):
     profile = request.user.get_profile()
     contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
     deals = contact.deal_set.all().order_by('deal_id', 'time_stamp')
-    stac = {'EM':0, 'LM':0, 'EA':0, 'LA':0, 'EE':0}
+    stac = {'VEM':0, 'EM':0, 'LM':0, 'EA':0, 'LA':0, 'EE':0, 'LE':0}
     for deal in deals:        
         part = part_of_day_statistics(deal.conversation.conversation_datetime)
         stac[part] += 1    
@@ -585,7 +585,7 @@ def prepare_json_for_autocomplete(fieldname, queryset):
     
 
 def part_of_day_statistics(x):
-    if x.hour > 6 and x.hour < 9:
+    if x.hour >= 6 and x.hour < 9:
         return 'EM'
     if x.hour >= 9 and x.hour < 12:
         return 'LM'
@@ -595,6 +595,10 @@ def part_of_day_statistics(x):
         return 'LA'
     if x.hour >= 18 and x.hour < 21:
         return 'EE'
+    if x.hour >= 21 and x.hour < 24:
+        return 'LE'
+    if x.hour >= 0 and x.hour < 6:
+        return 'VEM'
 
 def get_datepicker_format(request):
     if request.LANGUAGE_CODE == 'en':
