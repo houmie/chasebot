@@ -31,7 +31,7 @@
 	<link href="{{ STATIC_URL }}font_awesome/css/font-awesome-ie7.css" rel="stylesheet">    	
 	<![endif]-->	
     <!-- Le fav and touch icons -->
-    <link rel="shortcut icon" href="{{ STATIC_URL }}bootstrap/ico/favicon.ico">
+    <link rel="shortcut icon" href="{{ STATIC_URL }}bootstrap/ico/chasebot_favicon.ico">
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="{{ STATIC_URL }}bootstrap/ico/apple-touch-icon-144-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="{{ STATIC_URL }}bootstrap/ico/apple-touch-icon-114-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="{{ STATIC_URL }}bootstrap/ico/apple-touch-icon-72-precomposed.png">
@@ -41,7 +41,8 @@
 
 <body> 
 <div id="locale" class="hidden">{{locale}}</div>
-<div id='delete_button_confirmation' class="hidden">{{delete_button_confirmation}}</div>   
+<div id='delete_button_confirmation' class="hidden">{{delete_button_confirmation}}</div>
+<div class="logo"><img src="{{ STATIC_URL }}bootstrap/ico/chasebot_logo_mini.png" /></div>   
 <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container">
@@ -49,7 +50,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
-            </a>
+            </a>            
             <a class="brand" href="http://www.chasebot.com">Chasebot</a>
             <div class="nav-collapse">
                 <ul class="nav">
@@ -57,12 +58,12 @@
                     <!-- <li><a href="#about">{% trans 'About' %}</a></li> -->
                     <!-- <li><a href="#contact">{% trans 'Contact' %}</a></li> -->
 
-                        {% if user.is_authenticated %}
-                        <li><a href="/logout/">{% trans 'logout' %}</a></li>
-                        {% else %}
-                        <li><a href="/login/">{% trans 'login' %}</a></li>
-                        <li><a href="/register/">{% trans 'Register' %}</a></li>
-                        {% endif %}
+                    {% if user.is_authenticated %}
+                    <li><a href="/logout/">{% trans 'logout' %}</a></li>
+                    {% else %}
+                    <li><a href="/login/">{% trans 'login' %}</a></li>
+                    <li><a href="/register/">{% trans 'Register' %}</a></li>
+                    {% endif %}
 
                 </ul>
             </div><!--/.nav-collapse -->
@@ -71,13 +72,13 @@
 				    {% load tz %}{% load url from future %} 
 					<form id="timezone_form" class="cb_timezone cb_inline_block" action="/timezone/" method="POST">
 					    {% csrf_token %}
-					    <select id="timezone_dropdown" class="cb_timezone" data-trigger="manual" role="menu" aria-labelledby="dropdownMenu" name="timezone" data-content="{% trans 'Please set your current time zone here' %}" rel="popover" data-placement="left">
+					    <select id="timezone_dropdown" class="cb_timezone right-margin" data-trigger="manual" role="menu" aria-labelledby="dropdownMenu" name="timezone" data-content="{% trans 'Please set your current time zone here' %}" rel="popover" data-placement="left">
 				        {% for tz in timezones %}
 					        <option value="{{ tz }}"{% if tz == TIME_ZONE %} selected="selected"{% endif %}>{{ tz }}</option>
 				        {% endfor %}
 					    </select>
 					</form>
-					<a class="btn btn-small cb_inline_block icon timezone_help" href="#"><i class="icon-question-sign icon-large"></i></a>
+					<a class="btn btn-small cb_inline_block icon timezone_help right-margin" href="#"><i class="icon-question-sign icon-large"></i></a>
 				</div>
 			    <div class="dropdown cb_inline_block">
 			    	{% get_current_language as LANGUAGE_CODE %} 

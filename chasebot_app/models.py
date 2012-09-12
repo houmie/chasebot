@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from django_extensions.db.fields import UUIDField, CreationDateTimeField
+from django.utils.encoding import smart_unicode
 
 
 
@@ -180,7 +181,7 @@ class Conversation(models.Model):
 class Deal(models.Model):
     def __init__(self, *args, **kwargs):
         super(Deal, self).__init__(*args, **kwargs)      
-        self.deal_instance_name = self.deal_type.deal_name + _(u' - Set No.')  + str(self.set)  
+        self.deal_instance_name = self.__unicode__()  
     
     deal_id             = UUIDField()
     status              = models.ForeignKey(DealStatus, null=True, blank=True)    
@@ -190,8 +191,10 @@ class Deal(models.Model):
     time_stamp          = CreationDateTimeField()
     conversation        = models.ForeignKey(Conversation)
     set                 = models.IntegerField(_(u'Set Number'))
-    def __unicode__(self):
-        return self.deal_type.deal_name + _(u' - Set No.')  + str(self.set)
+    
+    def __unicode__(self):        
+        return u'%s%s%s' % (self.deal_type.deal_name, _(u' - Set No.'), self.set)
+    
     class Meta:
         verbose_name = _(u'Deal')
         verbose_name_plural = _(u'Deals')
