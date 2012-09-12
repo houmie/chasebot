@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from django_extensions.db.fields import UUIDField, CreationDateTimeField
 from django.utils.encoding import smart_unicode
+from django.core.validators import MinValueValidator
 
 
 
@@ -154,9 +155,9 @@ class DealType(models.Model):
     deal_name           = models.CharField(_(u'Deal Name'), max_length=40)
     deal_description    = models.TextField(_(u'Deal Description'),     blank=True)
     sales_item          = models.ManyToManyField(SalesItem)    
-    price               = models.DecimalField(_(u'Price'), decimal_places=2, max_digits=12)
+    price               = models.DecimalField(_(u'Price'), decimal_places=2, max_digits=12, validators=[MinValueValidator(0.01)])
     sales_term          = models.ForeignKey(SalesTerm)
-    quantity            = models.IntegerField(_(u'Quantity'))    
+    quantity            = models.PositiveIntegerField(_(u'Quantity'))    
     def __unicode__(self):
         return self.deal_name 
     class Meta:
@@ -190,7 +191,7 @@ class Deal(models.Model):
     deal_instance_name  = models.CharField(_(u'Deal Name'), max_length=100)    
     time_stamp          = CreationDateTimeField()
     conversation        = models.ForeignKey(Conversation)
-    set                 = models.IntegerField(_(u'Set Number'))
+    set                 = models.PositiveIntegerField(_(u'Set Number'))
     
     def __unicode__(self):        
         return u'%s%s%s' % (self.deal_type.deal_name, _(u' - Set No.'), self.set)

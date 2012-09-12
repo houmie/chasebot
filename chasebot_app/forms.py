@@ -1,8 +1,8 @@
+__author__ = 'houman'
 from django.forms.forms import Form
 from chasebot_app.widgets import cb_DateInput
 from django.utils import timezone
 import pytz
-__author__ = 'houman'
 from django import forms
 import re
 from django.contrib.auth.models import User
@@ -29,23 +29,23 @@ class RegistrationForm(ModelForm):
             password2 = self.cleaned_data['password2']
             if password == password2:
                 return password
-        raise forms.ValidationError('Passwords do not match.')
+        raise forms.ValidationError(_(u'Passwords do not match.'))
 
     def clean_username(self):
         username = self.cleaned_data['username']
         if not re.search(r'^\w+$', username):
-            raise forms.ValidationError('Username can only contain alphanumeric characters and the underscore.')
+            raise forms.ValidationError(_(u'Username can only contain alphanumeric characters and the underscore.'))
         try:
             User.objects.get(username=username)
         except User.DoesNotExist:
             return username
-        raise forms.ValidationError('Username is already taken.')
+        raise forms.ValidationError(_(u'Username is already taken.'))
 
     def clean_email(self):
         email = self.cleaned_data['email']
         users = User.objects.filter(email=email)
         if users.count() > 0:
-            raise forms.ValidationError("That email is already taken, please select another.")
+            raise forms.ValidationError(_(u"That email is already taken, please select another."))
         return email
 
 
@@ -264,6 +264,13 @@ class DealTypeForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(DealTypeForm, self).__init__(*args, **kwargs)
         self.fields['sales_item'].queryset = SalesItem.objects.filter(company=self.instance.company)                
+    
+    def clean_quantity(self):
+        if 'quantity' in self.cleaned_data:
+            quantity = self.cleaned_data['quantity']            
+            if quantity > 0:
+                return quantity
+        raise forms.ValidationError(_(u'Ensure this value is greater than %(number)s.') % {'number': 0})
     
     class Meta:
         model = DealType
