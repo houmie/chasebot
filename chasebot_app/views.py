@@ -6,9 +6,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from chasebot_app.forms import RegistrationForm, ContactsForm, ConversationForm, SalesItemForm, DealTypeForm,\
-     DealCForm, FilterContactsForm, FilterConversationForm, FilterDealsForm, FilterSalesItemForm
-from chasebot_app.models import Company, Contact, Conversation, SalesItem, DealType, DealStatus, Deal, SalesTerm
+from chasebot_app.forms import RegistrationForm, ContactsForm, ConversationForm, SalesItemForm, DealTemplateForm,\
+     DealCForm, FilterContactsForm, FilterConversationForm, FilterDealsForm, FilterSalesItemForm,\
+    DealsAddForm
+from chasebot_app.models import Company, Contact, Conversation, SalesItem, DealTemplate, DealStatus, Deal, SalesTerm
 from chasebot_app.models import UserProfile
 from django.utils.translation import ugettext as _
 from django.utils import timezone, simplejson
@@ -23,6 +24,7 @@ from chasebot.formats.en import formats as formats_en
 from chasebot.formats.en_GB import formats as formats_en_GB
 import operator
 from django.db.models.query_utils import Q
+from chasebot_app.json_extension import toJSON
 
 ITEMS_PER_PAGE = 3
 
@@ -147,6 +149,19 @@ def conversation_display(request, contact_id):
     else:
         return render(request, 'conversations.html', variables)  
     
+@login_required
+def get_deal_template(request, deal_template_id):        
+#    if 'query' in request.GET:
+    profile = request.user.get_profile()        
+    deal_template = profile.company.dealtemplate_set.get(pk=deal_template_id)
+
+#   to_json = []
+#   for item in deal_template_queryset:
+#       to_json.append(str(getattr(item, fieldname)))
+    
+    return HttpResponse(toJSON(deal_template), mimetype='application/json')        
+                
+        
 
 
 @login_required
@@ -159,10 +174,10 @@ def conversation_add_edit(request, contact_id, call_id=None):
     else:
         call = get_object_or_404(contact.conversation_set.all(), pk=call_id)
         
-    deals_formset_factory = modelformset_factory(Deal, form=DealCForm, extra=0)    
+    deals_formset_factory = modelformset_factory(Deal, form=DealCForm, extra=1, can_delete=True, max_num=5)    
     attached_deals_to_call_query = call.deal_set.all()
     
-    opendeal_formset_factory = modelformset_factory(Deal, form=DealCForm, extra=0)    
+    opendeal_formset_factory = modelformset_factory(Deal, form=DealCForm, extra=0)
     raw = contact.get_open_deals();
     opendeals_formset_query = Deal.objects.filter(id__in=[item.id for item in raw]) 
         
@@ -170,11 +185,22 @@ def conversation_add_edit(request, contact_id, call_id=None):
     deal_title = _(u'Deals attached to this Conversation')
     is_atleast_one_opendeal_attached = False
     
+    
+#    new_post = request.POST.copy()
+#            deal_types = dict()
+#            for k,v in new_post.items():
+#                if k.startswith('hidden'):
+#                    deal_types[k[7:]]= v
+#            for k,v in deal_types.iteritems():
+#                new_post[k] = v
+#            formset = deal_formset(new_post, queryset=formset_query)
+    
     if request.method == 'POST':
         non_attached_opendeal_formset = opendeal_formset_factory(request.POST, prefix='opendeals')
         attached_deals_formset = deals_formset_factory(request.POST, prefix='deals')                
-        form = ConversationForm(profile.company, request.POST, instance=call)           
-        if form.is_valid() and attached_deals_formset.is_valid() and non_attached_opendeal_formset.is_valid():
+        form = ConversationForm(profile.company, request.POST, instance=call, prefix='form')           
+        deals_add_form = DealsAddForm(profile.company, call, request.POST, prefix='deals_add_form')
+        if form.is_valid() and attached_deals_formset.is_valid() and non_attached_opendeal_formset.is_valid() and deals_add_form.is_valid():
             # Always localize the entered date by user into his timezone before saving it to database
             call = form.save(commit=False)            
             current_tz = timezone.get_current_timezone()            
@@ -184,52 +210,65 @@ def conversation_add_edit(request, contact_id, call_id=None):
             call.conversation_datetime = date_time
             call.save()
                         
-            # The row number of the five possible deals to add are captured as key, while the value is the actual deal that was selected in that given row. 
-            deal_dic = {}
-            for query, value in form.data.items():
-                if query.startswith('deal_'):
-                    deal_dic[query[5:]] = value
-            
-            #Now it needs to check if the row was really meant to be added (in case the delete button was pressed, before submitting)
-            deals_to_add = []
-            for row, value in form.data.items():
-                if row.startswith('deal_show_row_'):
-                    deals_to_add.append(deal_dic[row[14:]])
-                    
-            if deals_to_add:                
-                for deal_pk in deals_to_add:
-                    deal_type = profile.company.dealtype_set.get(pk=deal_pk)
-                    set_dic = contact.deal_set.filter(deal_type_id=deal_type.id).aggregate(Max('set'))
+#            # The row number of the five possible deals to add are captured as key, while the value is the actual deal that was selected in that given row. 
+#            deal_dic = {}
+#            for query, value in form.data.items():
+#                if query.startswith('deal_'):
+#                    deal_dic[query[5:]] = value
+#            
+#            #Now it needs to check if the row was really meant to be added (in case the delete button was pressed, before submitting)
+#            deals_to_add = []
+#            for row, value in form.data.items():
+#                if row.startswith('deal_show_row_'):
+#                    deals_to_add.append(deal_dic[row[14:]])
+#                    
+#            if deals_to_add:                
+#                for deal_pk in deals_to_add:
+#                    deal_template = profile.company.dealtemplate_set.get(pk=deal_pk)
+#                    set_dic = contact.deal_set.filter(deal_template_id=deal_template.id).aggregate(Max('set'))
+#                    set_val = set_dic.get('set__max', 0)
+#                    if not set_val:
+#                        set_val = 0                    
+#                    Deal.objects.create(deal_id=uuid.uuid1(), status=DealStatus.objects.get(pk=1), contact=call.contact, deal_template=deal_template, conversation=call, set=set_val+1)
+#            
+            for fm in attached_deals_formset:                
+                if fm.has_changed():        
+                    deal = fm.save(commit=False)
+                    set_dic = contact.deal_set.filter(deal_template_id=deal.deal_template.id).aggregate(Max('set'))
                     set_val = set_dic.get('set__max', 0)
                     if not set_val:
-                        set_val = 0                    
-                    Deal.objects.create(deal_id=uuid.uuid1(), status=DealStatus.objects.get(pk=1), contact=call.contact, deal_type=deal_type, conversation=call, set=set_val+1)
+                        set_val = 0                                 
+                    deal.contact = contact
+                    deal.conversation = call
+                    deal.status = DealStatus.objects.get(pk=1) 
+                    deal.set=set_val+1                    
+                    deal.save()
+                    fm.save_m2m()
             
-            for fm in attached_deals_formset:                
-                if fm.has_changed(): 
-                    fm.save()
+            
                     
             for fm in non_attached_opendeal_formset:                    
                 if fm.has_changed() and fm.cleaned_data['attach_deal_conversation']:
                     deal_to_add = fm.save(commit=False)                    
-                    Deal.objects.create(deal_id=deal_to_add.deal_id, status=deal_to_add.status, contact=call.contact, deal_type=deal_to_add.deal_type, conversation=call, set=deal_to_add.set)            
+                    Deal.objects.create(deal_id=deal_to_add.deal_id, status=deal_to_add.status, contact=call.contact, deal_template=deal_to_add.deal_template, conversation=call, set=deal_to_add.set)            
                             
             return HttpResponseRedirect('/contact/' + contact_id + '/calls/')        
             
     else:        
-        form = ConversationForm(profile.company, instance=call)              
-        attached_deals_formset = deals_formset_factory(queryset=attached_deals_to_call_query, prefix='deals')        
+        deals_add_form = DealsAddForm(profile.company, call, prefix='deals_add_form')
+        form = ConversationForm(profile.company, instance=call, prefix='form')              
+        attached_deals_formset = deals_formset_factory(queryset=attached_deals_to_call_query, prefix='deals')                
         exclude_attached_opendeals = []
         for attached_deal in attached_deals_to_call_query:
             for open_deal in opendeals_formset_query:
                 if attached_deal.deal_id == open_deal.deal_id:
                     exclude_attached_opendeals.append(open_deal.deal_id)
                     is_atleast_one_opendeal_attached = True        
-        exclude_attached_opendeals_query = opendeals_formset_query.exclude(deal_id__in=exclude_attached_opendeals)
+        non_attached_opendeal_query = opendeals_formset_query.exclude(deal_id__in=exclude_attached_opendeals)
         
-        non_attached_opendeal_formset = opendeal_formset_factory(queryset=exclude_attached_opendeals_query, prefix='opendeals')
+        non_attached_opendeal_formset = opendeal_formset_factory(queryset=non_attached_opendeal_query, prefix='opendeals')
     
-    variables = {'form':form, 'attached_deals_formset':attached_deals_formset, 'opendeal_formset':non_attached_opendeal_formset, 'is_atleast_one_opendeal_attached':is_atleast_one_opendeal_attached }
+    variables = {'form':form, 'deals_add_form':deals_add_form, 'attached_deals_formset':attached_deals_formset, 'opendeal_formset':non_attached_opendeal_formset, 'is_atleast_one_opendeal_attached':is_atleast_one_opendeal_attached }
     variables = merge_with_localized_variables(request, variables)   
     return render(request, 'conversation.html', variables)
 
@@ -357,9 +396,9 @@ def sales_item_delete(request, sales_item_id=None):
 
 
 @login_required
-def deal_type_display(request):    
+def deal_template_display(request):    
     profile = request.user.get_profile()
-    deals_queryset = profile.company.dealtype_set.order_by('deal_name')
+    deals_queryset = profile.company.dealtemplate_set.order_by('deal_name')
     ajax = False
     if 'ajax' in request.GET:
         ajax = True        
@@ -396,35 +435,35 @@ def deal_type_display(request):
     
 
 @login_required
-def deal_type_add_edit(request, deal_id=None):
+def deal_template_add_edit(request, deal_id=None):
     profile = request.user.get_profile()
     
     if deal_id is None:
-        deal = DealType(company=profile.company)        
+        deal = DealTemplate(company=profile.company)        
         template_title = _(u'Add a new deal')
     else:
-        deal = get_object_or_404(profile.company.dealtype_set.all(), pk=deal_id)
+        deal = get_object_or_404(profile.company.dealtemplate_set.all(), pk=deal_id)
         template_title = _(u'Edit deal')
     if request.method == 'POST':
-        form = DealTypeForm(request.POST, instance=deal)
+        form = DealTemplateForm(request.POST, instance=deal)
         if form.is_valid():
             deal = form.save()
             return HttpResponseRedirect('/deals')
     else:
-        form = DealTypeForm(instance=deal)    
+        form = DealTemplateForm(instance=deal)    
     variables = {'form':form, 'template_title': template_title}
     variables = merge_with_localized_variables(request, variables)   
     return render(request, 'deal.html', variables)
 
 @login_required
-def deal_type_delete(request, deal_id=None):
+def deal_template_delete(request, deal_id=None):
     if deal_id is None:
         raise Http404(_(u'Deal Type not found'))
     else:
         profile = request.user.get_profile()
-        deal = get_object_or_404(profile.company.dealtype_set.all(), pk=deal_id)
+        deal = get_object_or_404(profile.company.dealtemplate_set.all(), pk=deal_id)
         deal.delete()
-        deal_queryset = profile.company.dealtype_set.order_by('deal_name')   
+        deal_queryset = profile.company.dealtemplate_set.order_by('deal_name')   
         deals, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deal_queryset)          
         variables = { 'deals': deals, }
         variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
@@ -522,37 +561,37 @@ def deal_autocomplete(request):
     if 'query' in request.GET:
         profile, kwargs, fieldname = get_fields_for_autocomplete(request)
         try:
-            queryset = profile.company.dealtype_set.filter(**kwargs)[:10]
+            queryset = profile.company.dealtemplate_set.filter(**kwargs)[:10]
         except:
             # Foreignkey related fields must folow this pattern
             if fieldname == 'sales_term':
                 #First see which of the generic sales_terms the user tried to search against
                 sales_term = SalesTerm.objects.filter(sales_term__istartswith=request.GET['query'])
-                #Now that we know, let see which of the existing deal_types have such sales_terms we were searching for previously 
-                deal_types = profile.company.dealtype_set.filter(sales_term__in=sales_term)
+                #Now that we know, let see which of the existing deal_templates have such sales_terms we were searching for previously 
+                deal_templates = profile.company.dealtemplate_set.filter(sales_term__in=sales_term)
                 #Create a queryset dictionary to eliminate the double entries
                 queryset = {}
-                for deal in deal_types:                    
+                for deal in deal_templates:                    
                     if queryset.has_key(deal.sales_term):
                         continue             
-                    #store the dealtype's sales term as one possible search suggestion...
+                    #store the DealTemplate's sales term as one possible search suggestion...
                     queryset[deal.sales_term]=deal.sales_term
             
             # Many-to-Many relationship fields must follow this pattern                
             elif fieldname == 'sales_item':
                 #First see which of the company wide generated sales items the user tried to search against
                 sales_item = profile.company.salesitem_set.filter(item_name__istartswith=request.GET['query'])
-                #Now that we know, let see which of the existing deal_types have such sales_item(s) we were searching for previously
-                deal_types = profile.company.dealtype_set.filter(sales_item__in=sales_item)
+                #Now that we know, let see which of the existing deal_templates have such sales_item(s) we were searching for previously
+                deal_templates = profile.company.dealtemplate_set.filter(sales_item__in=sales_item)
                 #Create a queryset dictionary to eliminate the double entries
                 queryset = {}
-                for deal in deal_types:
-                    #Since its M2M, each dealtype's sales_item could point to several items itself, hence another loop is required
+                for deal in deal_templates:
+                    #Since its M2M, each DealTemplate's sales_item could point to several items itself, hence another loop is required
                     for si in deal.sales_item.select_related():
                         if queryset.has_key(si):
                             continue                        
                         queryset[si]=si
-                #Now that we captured all possible sales_items that are used in dealtype instances
+                #Now that we captured all possible sales_items that are used in DealTemplate instances
                 #We need to change the fieldname we search against to the name of sales_item's field instead so that the json method after here works. 
                 fieldname = 'item_name'
                 

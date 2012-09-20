@@ -77,7 +77,7 @@
 		                	<table class="table edit_table">
 		                		<thead>
 		                			<tr>
-		                				{% if opendeal_formset.forms %}	 <td>Is the conversation about this deal?</td>{%endif%}
+		                				{% if opendeal_formset.forms %}	 <td>{% trans 'Is the conversation about this deal?' %}</td>{%endif%}
 					                	<td class="bold_cb">				                		
 			        						{% trans 'Open Deals in Progress:'%}		
 				        				</td>
@@ -92,7 +92,7 @@
 					            			{{fs.attach_deal_conversation}}
 					            		</td>            		
 					                    <td>										
-											<input type="hidden" name="hidden-{{ fs.prefix }}-deal_type" value="{{fs.deal_type.value}}" />										
+											<input type="hidden" name="hidden-{{ fs.prefix }}-deal_template" value="{{fs.deal_template.value}}" />										
 											{% if opendeal_formset.non_form_errors %}
 						                	<div class="field field_error">
 						                    	{{fs.deal_instance_name}}                    	
@@ -144,148 +144,10 @@
 		    		<table id="right_side">
 		    			<tbody>
 		    				<tr>
-			            		<table class="table edit_table" id="deals">
-						            <thead>
-						            	<tr>
-						                	<td class="bold_cb">
-						                		{% trans 'Add New Deals For This Customer:' %}
-						                	</td>
-						                	<td>
-						                		<button type="button" id="add_deals_button" class="btn btn-success"><i class="icon-plus icon-white"> </i></button>                		                		
-						                	</td>   
-						                	            	
-						                </tr>
-						            </thead>
-						            <tbody>	                
-										{% if form.deal_show_row_1.value %}
-						                <tr id="tr_1">
-						            	{% else %}
-						            	<tr id="tr_1" class="hidden_cb">                    
-						            	{% endif %}                    
-						                    <td>                        
-						                        {% if form.deal_1.errors %}
-							                	<div class="field field_error">
-							                    	{{form.deal_1}} {{form.deal_1.errors}}                   	
-							                	</div>
-							                	{% else %}
-							                		{{form.deal_1}}
-							                	{% endif %}                        
-						                    </td>	                    
-						                    <td>
-						                    	<button type="button" id="remove_deals_button_1" class="btn btn-danger remove_deals_button"><i class="icon-minus icon-white"> </i></button>
-						                    </td>
-						                </tr>
-						                {% if form.deal_show_row_2.value %}
-						                <tr id="tr_2">
-						            	{% else %}
-						            	<tr id="tr_2" class="hidden_cb">                    
-						            	{% endif %}
-						                    <td>                        
-						                        {% if form.deal_2.errors %}
-							                	<div class="field field_error">
-							                    	{{form.deal_2}} {{form.deal_2.errors}}                   	
-							                	</div>
-							                	{% else %}
-							                		{{form.deal_2}}
-							                	{% endif %}                        
-						                    </td>	                    
-						                    <td>
-						                    	<button type="button" id="remove_deals_button_2" class="btn btn-danger remove_deals_button"><i class="icon-minus icon-white"> </i></button>
-						                    </td>
-						                </tr>
-						                {% if form.deal_show_row_3.value %}
-						                <tr id="tr_3">
-						            	{% else %}
-						            	<tr id="tr_3" class="hidden_cb">                    
-						            	{% endif %}                    
-						                    <td>                        
-						                        {% if form.deal_3.errors %}
-							                	<div class="field field_error">
-							                    	{{form.deal_3}} {{form.deal_3.errors}}                   	
-							                	</div>
-							                	{% else %}
-							                		{{form.deal_3}}
-							                	{% endif %}                        
-						                    </td>	                    
-						                    <td>
-						                    	<button type="button" id="remove_deals_button_3" class="btn btn-danger remove_deals_button"><i class="icon-minus icon-white"> </i></button>
-						                    </td>
-						                </tr>
-						                {% if form.deal_show_row_4.value %}
-						                <tr id="tr_4">
-						            	{% else %}
-						            	<tr id="tr_4" class="hidden_cb">                    
-						            	{% endif %}                    
-						                    <td>                        
-						                        {% if form.deal_4.errors %}
-							                	<div class="field field_error">
-							                    	{{form.deal_4}} {{form.deal_4.errors}}                   	
-							                	</div>
-							                	{% else %}
-							                		{{form.deal_4}}
-							                	{% endif %}                        
-						                    </td>	                    
-						                    <td>
-						                    	<button type="button" id="remove_deals_button_4" class="btn btn-danger remove_deals_button"><i class="icon-minus icon-white"> </i></button>
-						                    </td>
-						                </tr>
-						                {% if form.deal_show_row_5.value %}
-						                <tr id="tr_5">
-						            	{% else %}
-						            	<tr id="tr_5" class="hidden_cb">                    
-						            	{% endif %}                    
-						                    <td>                        
-						                        {% if form.deal_5.errors %}
-							                	<div class="field field_error">
-							                    	{{form.deal_5}} {{form.deal_5.errors}}                   	
-							                	</div>
-							                	{% else %}
-							                		{{form.deal_5}}
-							                	{% endif %}                        
-						                    </td>	
-						                    <td>
-						                    	<button type="button" id="remove_deals_button_5" class="btn btn-danger remove_deals_button"><i class="icon-minus icon-white"> </i></button>
-						                    </td>
-						                </tr>                
-						            	<tr id="tr_6" class="hidden_cb">            	                    
-						                    <td>                        
-						                        {% if form.deal_6.errors %}
-							                	<div class="field field_error">
-							                    	{{form.deal_6}} {{form.deal_6.errors}}                   	
-							                	</div>
-							                	{% else %}
-							                		{{form.deal_6}}
-							                	{% endif %}                        
-						                    </td>	                    
-						                    <td>
-						                    	<button type="button" id="remove_deals_button_6" class="btn btn-danger remove_deals_button"><i class="icon-minus icon-white"> </i></button>
-						                    </td>
-						                </tr>	                
-						                <tr class='hidden_cb'>
-						                	<td>
-						                		{{form.deal_show_row_1}}
-						                	</td>
-						                	<td>
-						                		{{form.deal_show_row_2}}
-						                	</td>
-						                	<td>
-						                		{{form.deal_show_row_3}}
-						                	</td>
-						                	<td>
-						                		{{form.deal_show_row_4}}
-						                	</td>
-						                	<td>
-						                		{{form.deal_show_row_5}}
-						                	</td>
-						                	<td>
-						                		{{form.deal_show_row_6}}
-						                	</td>                	
-						                </tr>					            
-						            </tbody>
-						        </table>
+			            		{% include '_deal_add_edit.html' %}			            		
 			            	</tr>
 		    				<tr>
-			    				{{ attached_deals_formset.management_form }}	                	
+			    				<!-- {{ attached_deals_formset.management_form }}	       -->          	
 				            	<table class="table edit_table">
 				            		<thead>
 				            			<tr>	                				
@@ -295,13 +157,13 @@
 						                </tr>
 				            		</thead>
 				            		<tbody>				                
-									{% if attached_deals_formset.forms %}
+									<!-- {% if attached_deals_formset.forms %}
 						                {% for fs in attached_deals_formset %}  
 						                	{{ fs.id }} 
 						            	<tr>
 						            		            		
 						                    <td>										
-												<input type="hidden" name="hidden-{{ fs.prefix }}-deal_type" value="{{fs.deal_type.value}}" />										
+												<input type="hidden" name="hidden-{{ fs.prefix }}-deal_template" value="{{fs.deal_template.value}}" />										
 												{% if attached_deals_formset.non_form_errors %}
 							                	<div class="field field_error">
 							                    	{{fs.deal_instance_name}}                    	
@@ -336,7 +198,7 @@
 												{% trans 'No deals attached yet to this conversation' %}                						
 				        					</td>
 				        				</tr>  
-				            		{% endif %}
+				            		{% endif %} -->
 				            		</tbody>
 				            	</table>
 			            	</tr>

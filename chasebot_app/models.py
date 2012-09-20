@@ -150,7 +150,7 @@ class DealStatus(models.Model):
         verbose_name = _(u'Deal Status')
         verbose_name_plural = _(u'Deal Statuses')
 
-class DealType(models.Model):    
+class DealTemplate(models.Model):    
     company             = models.ForeignKey(Company)
     deal_name           = models.CharField(_(u'Deal Name'), max_length=40)
     deal_description    = models.TextField(_(u'Deal Description'),     blank=True)
@@ -170,7 +170,8 @@ class Conversation(models.Model):
     time_stamp          = CreationDateTimeField()
     conversation_datetime = models.DateTimeField()    
     subject             = models.CharField(_(u'Conversation Subject'),      max_length=50)
-    notes               = models.TextField(_(u'Conversation Notes'),        blank=True)            
+    notes               = models.TextField(_(u'Conversation Notes'),        blank=True)
+    
     class Meta:
         get_latest_by   = 'conversation_datetime'            
         verbose_name = _(u'Conversation')
@@ -179,22 +180,38 @@ class Conversation(models.Model):
         return self.subject
 
 
-class Deal(models.Model):
+class Deal(models.Model):    
     def __init__(self, *args, **kwargs):
-        super(Deal, self).__init__(*args, **kwargs)      
-        self.deal_instance_name = self.__unicode__()  
-    
+        super(Deal, self).__init__(*args, **kwargs)     
+        
+        
     deal_id             = UUIDField()
     status              = models.ForeignKey(DealStatus, null=True, blank=True)    
     contact             = models.ForeignKey(Contact)
-    deal_type           = models.ForeignKey(DealType)
-    deal_instance_name  = models.CharField(_(u'Deal Name'), max_length=100)    
+    deal_template       = models.ForeignKey(DealTemplate)
+    deal_template_name  = models.CharField(_(u'Deal Template Name'), max_length=100, blank=True)
     time_stamp          = CreationDateTimeField()
     conversation        = models.ForeignKey(Conversation)
     set                 = models.PositiveIntegerField(_(u'Set Number'))
+    deal_instance_name  = models.CharField(_(u'Deal Name'), max_length=100, blank=True)        
+    deal_description    = models.TextField(_(u'Deal Description'),     blank=True)    
+    price               = models.DecimalField(_(u'Price'), decimal_places=2, max_digits=12, validators=[MinValueValidator(0.01)])
+    sales_item          = models.ManyToManyField(SalesItem)    
+    sales_term          = models.ForeignKey(SalesTerm)
+    quantity            = models.PositiveIntegerField(_(u'Quantity'))
     
-    def __unicode__(self):        
-        return u'%s%s%s' % (self.deal_type.deal_name, _(u' - Set No.'), self.set)
+    def __unicode__(self): 
+        deal_name = ''
+        if self.deal_template:
+            deal_name = self.deal_template.deal_name            
+        return u'{0}{1}{2}'.format(deal_name, _(u' - Set No.'), self.set)
+    
+    def save(self, *args, **kwargs):
+        self.deal_instance_name = self.__unicode__()
+        self.deal_template_name = self.deal_template.deal_name
+        super(Deal, self).save(*args, **kwargs) # Call the "real" save() method.
+        
+
     
     class Meta:
         verbose_name = _(u'Deal')

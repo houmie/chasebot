@@ -3,11 +3,11 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
 from django.views.generic.simple import direct_to_template
 from chasebot_app.views import logout_page, contact_delete, conversation_display, \
-     conversation_delete, sales_item_add_edit, sales_item_display, sales_item_delete, deal_type_display, deal_type_add_edit, deal_type_delete,\
+     conversation_delete, sales_item_add_edit, sales_item_display, sales_item_delete, deal_template_display, deal_template_add_edit, deal_template_delete,\
      charts_display, conversation_add_edit, sales_item_cancel, set_timezone,\
      contacts_display, register_page, contact_add_edit,\
     sales_item_autocomplete, contacts_autocomplete, conversations_autocomplete,\
-    deal_autocomplete
+    deal_autocomplete, get_deal_template
 
 admin.autodiscover()
 
@@ -39,6 +39,8 @@ urlpatterns = patterns('',
     (r'^contact/(?P<contact_id>\d+)/call/delete/(?P<call_id>\w+)/$', conversation_delete),
     (r'^contact/(?P<contact_id>\d+)/call/add/$', conversation_add_edit),    
     (r'^contact/(?P<contact_id>\d+)/calls/$', conversation_display),
+    
+    (r'^deal_template/(?P<deal_template_id>\d+)/$', get_deal_template),
 
     (r'^sales_item/add/$', sales_item_add_edit),    
     (r'^sales_item/edit/(?P<sales_item_id>\d+)/$', sales_item_add_edit),
@@ -46,10 +48,10 @@ urlpatterns = patterns('',
     (r'^sales_items/$', sales_item_display),
     (r'^sales_item/delete/(?P<sales_item_id>\d+)/$', sales_item_delete),
     
-    (r'^deal/add/$', deal_type_add_edit),    
-    (r'^deal/edit/(?P<deal_id>\d+)/$', deal_type_add_edit),
-    (r'^deals/$', deal_type_display),
-    (r'^deal/delete/(?P<deal_id>\d+)/$', deal_type_delete),
+    (r'^deal/add/$', deal_template_add_edit),    
+    (r'^deal/edit/(?P<deal_id>\d+)/$', deal_template_add_edit),
+    (r'^deals/$', deal_template_display),
+    (r'^deal/delete/(?P<deal_id>\d+)/$', deal_template_delete),
     
     (r'^charts/contact/(?P<contact_id>\d+)$', charts_display),
 

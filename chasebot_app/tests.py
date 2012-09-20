@@ -8,7 +8,7 @@ Replace this with more appropriate tests for your application.
 from django.test import TestCase
 from django.contrib.auth.models import User
 from chasebot_app.models import Company, UserProfile, Contact, ContactType,\
-    SalesItem, SalesTerm, Conversation, DealType, Deal, DealStatus
+    SalesItem, SalesTerm, Conversation, DealTemplate, Deal, DealStatus
 import datetime
 import uuid
 from django.utils.timezone import utc
@@ -34,18 +34,18 @@ def setup_sales_items(self):
         self.sales_item1 = SalesItem.objects.create(item_name = 'item_1',  company = self.company1)
         self.sales_item2 = SalesItem.objects.create(item_name = 'item_2',  company = self.company2)        
 
-#Fixture for creating a deal_type item per company 
-def setup_dealtype(self):
-        self.deal_type1 = DealType.objects.create(company=self.company1, deal_name='deal_name_1', sales_item=self.sales_item1, price=1, sales_term=self.sales_term, quantity=1)
-        self.deal_type2 = DealType.objects.create(company=self.company2, deal_name='deal_name_2', sales_item=self.sales_item2, price=2, sales_term=self.sales_term, quantity=2)
+#Fixture for creating a deal_template item per company 
+def setup_DealTemplate(self):
+        self.deal_template1 = DealTemplate.objects.create(company=self.company1, deal_name='deal_name_1', sales_item=self.sales_item1, price=1, sales_term=self.sales_term, quantity=1)
+        self.deal_template2 = DealTemplate.objects.create(company=self.company2, deal_name='deal_name_2', sales_item=self.sales_item2, price=2, sales_term=self.sales_term, quantity=2)
 
 #Fixture for creating a deal item per company 
 def setup_deal(self):
         self.deal_status = DealStatus.objects.create(deal_status = 'deal_status')
-        self.deal1 = Deal.objects.create(deal_id = uuid.uuid1(), status = self.deal_status, contact = self.contact1a, deal_type = self.deal_type1, deal_instance_name = 'deal_instance_name', conversation = self.call1, set = 1)
-        self.deal2 = Deal.objects.create(deal_id = uuid.uuid1(), status = self.deal_status, contact = self.contact2, deal_type = self.deal_type2, deal_instance_name = 'deal_instance_name2', conversation = self.call21, set = 1)
+        self.deal1 = Deal.objects.create(deal_id = uuid.uuid1(), status = self.deal_status, contact = self.contact1a, deal_template = self.deal_template1, conversation = self.call1, set = 1)
+        self.deal2 = Deal.objects.create(deal_id = uuid.uuid1(), status = self.deal_status, contact = self.contact2, deal_template = self.deal_template2, conversation = self.call21, set = 1)
 
-#Fixture for creating a deal_type item per company 
+#Fixture for creating a deal_template item per company 
 def setup_sales_term(self):
         self.sales_term = SalesTerm.objects.create(sales_term = 'sales_term1')
 
@@ -86,20 +86,20 @@ class SalesItemModelTest(TestCase):
         
         
       
-#Testing the ownership of the DealType belonging to a company
-class DealTypeModelTest(TestCase):
+#Testing the ownership of the DealTemplate belonging to a company
+class DealTemplateModelTest(TestCase):
     def setUp(self):
         setup_contacts(self)
         setup_sales_items(self)        
         setup_sales_term(self)        
-        setup_dealtype(self)
+        setup_DealTemplate(self)
         
-    def test_get_dealtype_for_company(self):
+    def test_get_DealTemplate_for_company(self):
         user1 = User.objects.get(username='username1')
         profile1 = user1.get_profile()
-        dealTypes = profile1.company.dealtype_set.all()      
-        lst = list(dealTypes)
-        self.assertEqual(len(lst), 1, 'Expected one dealType for this company, but got %s' % len(lst))
+        DealTemplates = profile1.company.dealtemplate_set.all()      
+        lst = list(DealTemplates)
+        self.assertEqual(len(lst), 1, 'Expected one DealTemplate for this company, but got %s' % len(lst))
         self.assertEqual(lst[0].deal_name, 'deal_name_1', 'Expected deal_name_1, but got %s' % lst[0].deal_name)
         
  
@@ -128,7 +128,7 @@ class DealModelTest(TestCase):
         setup_calls(self)
         setup_sales_items(self)        
         setup_sales_term(self)        
-        setup_dealtype(self)
+        setup_DealTemplate(self)
         setup_deal(self)
         
         

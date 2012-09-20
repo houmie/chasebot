@@ -186,7 +186,8 @@ INSTALLED_APPS = (
     'pipeline',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
-    'chasebot_app',    
+    'chasebot_app',  
+    'south',  
 )
 
 # A sample logging configuration. The only tangible logging

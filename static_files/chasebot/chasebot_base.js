@@ -387,6 +387,10 @@ function show_timezone_help(event){
 var isVisible = false;
 var clickedAway = false;
 
+
+
+
+
 $(document).ready(function (){	
 	rebind_add();
 	rebind_edit_delete($('#search_result'));

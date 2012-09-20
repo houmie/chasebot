@@ -7,7 +7,7 @@ from django import forms
 import re
 from django.contrib.auth.models import User
 from django.forms import ModelForm
-from chasebot_app.models import UserProfile, Contact, ContactType, Country, MaritalStatus, Conversation, SalesItem, DealType, SalesTerm, Deal
+from chasebot_app.models import UserProfile, Contact, ContactType, Country, MaritalStatus, Conversation, SalesItem, DealTemplate, SalesTerm, Deal
 from django.forms.models import BaseModelFormSet
 from django.utils.translation import ugettext_lazy as _
 
@@ -242,10 +242,22 @@ class ConversationForm(ModelForm):
         open_deal_list = []
         if open_deals:
             for item in open_deals:
-                open_deal_list.append(item.deal_type.pk)
-        deal_types = DealType.objects.filter(company=company)            
-        return deal_types.exclude(pk__in=open_deal_list)
-            
+                open_deal_list.append(item.deal_template.pk)
+        deal_templates = DealTemplate.objects.filter(company=company)            
+        return deal_templates.exclude(pk__in=open_deal_list)
+
+
+class DealsAddForm(Form):
+    def __init__(self, company, call, *args, **kwargs):
+        super(DealsAddForm, self).__init__(*args, **kwargs)        
+        exclude_list = []
+        for deal in call.deal_set.all():
+            exclude_list.append(deal.deal_template.pk)
+        self.fields['deal_template'].queryset = company.dealtemplate_set.exclude(id__in=exclude_list)
+        self.fields['deal_template'].required = False
+    
+    deal_template       = forms.ModelChoiceField(queryset='')
+
 
 class FilterDealsForm(Form):
     def __init__(self, company, *args, **kwargs):
@@ -260,9 +272,9 @@ class FilterDealsForm(Form):
 
 
 
-class DealTypeForm(ModelForm):    
+class DealTemplateForm(ModelForm):    
     def __init__(self, *args, **kwargs):
-        super(DealTypeForm, self).__init__(*args, **kwargs)
+        super(DealTemplateForm, self).__init__(*args, **kwargs)
         self.fields['sales_item'].queryset = SalesItem.objects.filter(company=self.instance.company)                
     
     def clean_quantity(self):
@@ -273,7 +285,7 @@ class DealTypeForm(ModelForm):
         raise forms.ValidationError(_(u'Ensure this value is greater than %(number)s.') % {'number': 0})
     
     class Meta:
-        model = DealType
+        model = DealTemplate
         exclude = ('company', 'status')
         
         widgets = {
@@ -294,7 +306,7 @@ class DealForm(ModelForm):
         
     class Meta:
         model = Deal
-        fields = {'deal_type', 'status'}
+        fields = {'deal_template', 'status'}
     
     def clean_status(self):
         status = self.cleaned_data['status']
@@ -309,14 +321,19 @@ class DealForm(ModelForm):
 class DealCForm(ModelForm):
     attach_deal_conversation  = forms.BooleanField(required=False, initial=False)
     
+    
     def __init__(self, *args, **kwargs):
-        super(DealCForm, self).__init__(*args, **kwargs)           
+        super(DealCForm, self).__init__(*args, **kwargs)        
+        self.fields['status'].widget.attrs['class'] = 'select select_status'        
         self.fields['deal_instance_name'].widget.attrs['readonly'] = 'True'
-        self.fields['status'].widget.attrs['class'] = 'select select_status'
+        self.fields['deal_template_name'].widget.attrs.update({'readonly' : 'True'})
+        self.fields['deal_template'].widget.attrs['class'] = 'hidden' 
     
     class Meta:
         model = Deal
-        fields = {'deal_instance_name', 'status', 'attach_deal_conversation'}
+        fields = {'deal_template', 'deal_template_name', 'deal_instance_name', 'status', 'attach_deal_conversation', 'deal_description', 'sales_item', 'price', 'sales_term', 'quantity', 'deal_template'}
+        
+
     
 
 class FilterSalesItemForm(Form):
@@ -359,13 +376,13 @@ class BaseDealFormSet(BaseModelFormSet):
         if any(self.errors):
             # Don't bother validating the formset unless each form is valid on its own
             return
-        deal_types = []
+        deal_templates = []
         for form in self.forms:
             
-            deal_type = form.cleaned_data['deal_type']
-            if deal_type in deal_types:
+            deal_template = form.cleaned_data['deal_template']
+            if deal_template in deal_templates:
                 raise forms.ValidationError(_(u'Please correct the duplicated deal types attached to this conversation.'))
-            deal_types.append(deal_type)
+            deal_templates.append(deal_template)
             
             
                 
