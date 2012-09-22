@@ -72,12 +72,11 @@
 			                	{% endif %}                        
 		                    </td>
 		                </tr>
-		                <tr>
-		                	{{ opendeal_formset.management_form }}
+		                <tr>		                	
 		                	<table class="table edit_table">
 		                		<thead>
 		                			<tr>
-		                				{% if opendeal_formset.forms %}	 <td>{% trans 'Is the conversation about this deal?' %}</td>{%endif%}
+		                				{% if opendeals_add_form %}	 <td>{% trans 'Is the conversation about this deal?' %}</td>{%endif%}
 					                	<td class="bold_cb">				                		
 			        						{% trans 'Open Deals in Progress:'%}		
 				        				</td>

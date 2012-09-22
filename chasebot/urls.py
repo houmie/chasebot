@@ -7,7 +7,7 @@ from chasebot_app.views import logout_page, contact_delete, conversation_display
      charts_display, conversation_add_edit, sales_item_cancel, set_timezone,\
      contacts_display, register_page, contact_add_edit,\
     sales_item_autocomplete, contacts_autocomplete, conversations_autocomplete,\
-    deal_autocomplete, get_deal_template
+    deal_autocomplete, get_deal_template, get_opendeal
 
 admin.autodiscover()
 
@@ -41,6 +41,8 @@ urlpatterns = patterns('',
     (r'^contact/(?P<contact_id>\d+)/calls/$', conversation_display),
     
     (r'^deal_template/(?P<deal_template_id>\d+)/$', get_deal_template),
+    (r'^open_deal/(?P<deal_id>\d+)/(?P<contact_id>\d+)/$', get_opendeal),
+    
 
     (r'^sales_item/add/$', sales_item_add_edit),    
     (r'^sales_item/edit/(?P<sales_item_id>\d+)/$', sales_item_add_edit),

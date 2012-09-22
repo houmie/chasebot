@@ -182,8 +182,7 @@ class Conversation(models.Model):
 
 class Deal(models.Model):    
     def __init__(self, *args, **kwargs):
-        super(Deal, self).__init__(*args, **kwargs)     
-        
+        super(Deal, self).__init__(*args, **kwargs)
         
     deal_id             = UUIDField()
     status              = models.ForeignKey(DealStatus, null=True, blank=True)    

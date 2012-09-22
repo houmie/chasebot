@@ -231,13 +231,6 @@ class ConversationForm(ModelForm):
     
     
     def get_non_open_deals(self, call, company):
-#        all_deals = Deal.objects.filter(contact=call.contact)            
-#        closed_deals = all_deals.filter(status__in=[5, 6])
-#        closed_deal_list = []
-#        if closed_deals:
-#            for item in closed_deals:
-#                closed_deal_list.append(item.deal_id)        
-#        open_deals = all_deals.exclude(deal_id__in=closed_deal_list)#.latest('time_stamp')
         open_deals = call.contact.get_open_deals()
         open_deal_list = []
         if open_deals:
@@ -251,12 +244,35 @@ class DealsAddForm(Form):
     def __init__(self, company, call, *args, **kwargs):
         super(DealsAddForm, self).__init__(*args, **kwargs)        
         exclude_list = []
-        for deal in call.deal_set.all():
+        attached_deals_to_call_query = call.deal_set.all()
+        for deal in attached_deals_to_call_query:
             exclude_list.append(deal.deal_template.pk)
         self.fields['deal_template'].queryset = company.dealtemplate_set.exclude(id__in=exclude_list)
         self.fields['deal_template'].required = False
-    
+ 
     deal_template       = forms.ModelChoiceField(queryset='')
+
+
+class OpenDealsAddForm(Form):
+    def __init__(self, company, call, contact, *args, **kwargs):
+        super(OpenDealsAddForm, self).__init__(*args, **kwargs)        
+        exclude_attached_opendeals = []
+        # The following are all deals attached to this calls.
+        attached_deals_to_call_query = call.deal_set.all()
+        raw = contact.get_open_deals();
+        # The following are all open deals (not status 5 or 6) that are attached to the whole contact 
+        opendeals_query = contact.deal_set.filter(id__in=[item.id for item in raw]) 
+        for attached_deal in attached_deals_to_call_query:
+            # Now we search if any open deals is already attached to this call, if so it shall be excluded
+            # in the open deal drop down for this call.
+            for open_deal in opendeals_query:
+                if attached_deal.deal_id == open_deal.deal_id:
+                    exclude_attached_opendeals.append(open_deal.deal_id)                            
+        self.fields['open_deal_template'].queryset = opendeals_query.exclude(deal_id__in=exclude_attached_opendeals)
+        self.fields['open_deal_template'].required = False
+ 
+    open_deal_template = forms.ModelChoiceField(queryset='')
+    
 
 
 class FilterDealsForm(Form):
@@ -319,8 +335,7 @@ class DealForm(ModelForm):
         return status
         
 class DealCForm(ModelForm):
-    attach_deal_conversation  = forms.BooleanField(required=False, initial=False)
-    
+    attached_open_deal_id  = forms.IntegerField(required=False)    
     
     def __init__(self, *args, **kwargs):
         super(DealCForm, self).__init__(*args, **kwargs)        

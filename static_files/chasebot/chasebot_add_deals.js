@@ -56,10 +56,16 @@ function cloneMore(selector, type) {
 }
 
 
-function get_deal_template(deal_template_id, type){	
-	var url = '/deal_template/' + deal_template_id + '/'
+function get_deal_template(deal_template_id, type, path, contact_id){	
 	
-	//Pass in the query (typed keywords) and the fieldname we are searching against 
+	var url = '';
+	if(contact_id == ''){
+		url = path + deal_template_id + '/';
+	}
+	else{
+		url = path + deal_template_id + '/' + contact_id;
+	}
+		
 	$.ajax({
      	  type: 'GET',
 		  url: url,
@@ -91,7 +97,19 @@ function add_deals_new(event){
 	
 	var selected_template_id = $('#id_deals_add_form-deal_template option:selected').val()
 	if (selected_template_id){
-		get_deal_template(selected_template_id, type);
+		get_deal_template(selected_template_id, type, '/deal_template/');
+	}
+}
+
+function add_opendeals_new(event){
+	event.preventDefault();
+	var type = 'deals';
+	cloneMore('#X table', type);
+	
+	var selected_template_id = $('#id_deals_add_form-deal_template option:selected').val()
+	var contact_id = 1
+	if (selected_template_id){
+		get_deal_template(selected_template_id, type, '/open_deal/', contact_id);
 	}
 }
 
@@ -123,6 +141,7 @@ $(document).ready(function () {
 	}  
   	 
 	$("#add_deals_button").click(add_deals_new);
+	$("#add_opendeals_button").click(add_opendeals_new);
 	// $('#attached_deals_tab').find('li[class!=hidden] a:first').tab('show');
 	var a = $('#attached_deals_tab').find('a:first');
 	if(!a.parent('li').hasClass('hidden')) {
