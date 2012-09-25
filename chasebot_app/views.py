@@ -25,6 +25,7 @@ from chasebot.formats.en_GB import formats as formats_en_GB
 import operator
 from django.db.models.query_utils import Q
 from chasebot_app.json_extension import toJSON
+from django.forms.formsets import formset_factory
 
 ITEMS_PER_PAGE = 3
 
@@ -196,10 +197,9 @@ def conversation_add_edit(request, contact_id, call_id=None):
     else:
         call = get_object_or_404(contact.conversation_set.all(), pk=call_id)
     
-    deals_formset_factory = modelformset_factory(Deal, form=DealCForm, extra=1, can_delete=True, max_num=5)    
-    attached_deals_to_call_query = call.deal_set.all()
-     
-    
+    deals_formset_factory = modelformset_factory(Deal, form=DealCForm, extra=0, can_delete=True, max_num=5)
+    extra_deal_formset_factory = formset_factory(DealCForm, extra=1, max_num=1)    
+    attached_deals_to_call_query = call.deal_set.all()    
     
     template_title = _(u'Edit Past Conversation')
     deal_title = _(u'Deals attached to this Conversation')
@@ -209,7 +209,7 @@ def conversation_add_edit(request, contact_id, call_id=None):
         #non_attached_opendeal_formset = opendeal_formset_factory(request.POST, prefix='opendeals')
         attached_deals_formset = deals_formset_factory(request.POST, prefix='deals')                
         form = ConversationForm(profile.company, request.POST, instance=call, prefix='form')           
-        deals_add_form = DealsAddForm(profile.company, call, request.POST, prefix='deals_add_form')
+        deals_add_form = DealsAddForm(profile.company, call, contact, request.POST, prefix='deals_add_form')
         opendeals_add_form = OpenDealsAddForm(profile.company, call, contact, request.POST, prefix='opendeals_add_form')
         if form.is_valid() and attached_deals_formset.is_valid():
             # Always localize the entered date by user into his timezone before saving it to database
@@ -227,19 +227,19 @@ def conversation_add_edit(request, contact_id, call_id=None):
                         actual_deal = contact.deal_set.get(pk=fm.cleaned_data['attached_open_deal_id'])
                         modified_deal = fm.save(commit=False)
                         actual_deal.status = modified_deal.status
-                        actual_deal.contact = modified_deal.contact
+                        actual_deal.contact = contact
                         actual_deal.deal_template = modified_deal.deal_template
                         actual_deal.deal_template_name = modified_deal.deal_template_name
-                        actual_deal.conversation = modified_deal.conversation
+                        actual_deal.conversation = call
                         actual_deal.set = modified_deal.set
                         actual_deal.deal_instance_name = modified_deal.deal_instance_name
                         actual_deal.deal_description = modified_deal.deal_description
-                        actual_deal.price = modified_deal.price
-                        actual_deal.sales_item = modified_deal.sales_item
+                        actual_deal.price = modified_deal.price                        
                         actual_deal.sales_term = modified_deal.sales_term
                         actual_deal.quantity = modified_deal.quantity
-                        actual_deal.save()
-                        fm.save_m2m()
+                        actual_deal.sales_item = modified_deal.sales_item
+                        actual_deal.save()                        
+                        #actual_deal.save_m2m()
                     else:                
                         deal = fm.save(commit=False)
                         set_dic = contact.deal_set.filter(deal_template_id=deal.deal_template.id).aggregate(Max('set'))
@@ -256,7 +256,7 @@ def conversation_add_edit(request, contact_id, call_id=None):
             return HttpResponseRedirect('/contact/' + contact_id + '/calls/')        
             
     else:        
-        deals_add_form = DealsAddForm(profile.company, call, prefix='deals_add_form')
+        deals_add_form = DealsAddForm(profile.company, call, contact, prefix='deals_add_form')
         form = ConversationForm(profile.company, instance=call, prefix='form')                      
         attached_deals_formset = deals_formset_factory(queryset=attached_deals_to_call_query, prefix='deals')
                 
@@ -267,7 +267,8 @@ def conversation_add_edit(request, contact_id, call_id=None):
                        
         opendeals_add_form = OpenDealsAddForm(profile.company, call, contact, prefix='opendeals_add_form')
     
-    variables = {'form':form, 'deals_add_form':deals_add_form, 'opendeals_add_form':opendeals_add_form, 'attached_deals_formset':attached_deals_formset, 'is_atleast_one_opendeal_attached':is_atleast_one_opendeal_attached, 'contact_id':contact.pk }
+    extra_deal_formset = extra_deal_formset_factory(prefix='extra_deal')
+    variables = {'form':form, 'deals_add_form':deals_add_form, 'opendeals_add_form':opendeals_add_form, 'attached_deals_formset':attached_deals_formset, 'is_atleast_one_opendeal_attached':is_atleast_one_opendeal_attached, 'contact_id':contact.pk, 'extra_deal_formset':extra_deal_formset }
     variables = merge_with_localized_variables(request, variables)   
     return render(request, 'conversation.html', variables)
 

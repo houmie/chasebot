@@ -129,10 +129,13 @@ class ConversationForm(ModelForm):
 
 
 class DealsAddForm(Form):
-    def __init__(self, company, call, *args, **kwargs):
+    def __init__(self, company, call, contact, *args, **kwargs):
         super(DealsAddForm, self).__init__(*args, **kwargs)        
         exclude_list = []
         attached_deals_to_call_query = call.deal_set.all()
+        opendeals_query = get_open_deals_query(contact) 
+        for deal in opendeals_query:
+            exclude_list.append(deal.deal_template.pk)
         for deal in attached_deals_to_call_query:
             exclude_list.append(deal.deal_template.pk)
         self.fields['deal_template'].queryset = company.dealtemplate_set.exclude(id__in=exclude_list)
@@ -141,15 +144,20 @@ class DealsAddForm(Form):
     deal_template       = forms.ModelChoiceField(queryset='', label=_(u'Add Deal From Template'))
 
 
+def get_open_deals_query(contact):
+    raw = contact.get_open_deals() # The following are all open deals (not status 5 or 6) that are attached to the whole contact
+    opendeals_query = contact.deal_set.filter(id__in=[item.id for item in raw])
+    return opendeals_query
+
+
+
 class OpenDealsAddForm(Form):
     def __init__(self, company, call, contact, *args, **kwargs):
-        super(OpenDealsAddForm, self).__init__(*args, **kwargs)        
+        super(OpenDealsAddForm, self).__init__(*args, **kwargs)
         exclude_attached_opendeals = []
         # The following are all deals attached to this calls.
         attached_deals_to_call_query = call.deal_set.all()
-        raw = contact.get_open_deals();
-        # The following are all open deals (not status 5 or 6) that are attached to the whole contact 
-        opendeals_query = contact.deal_set.filter(id__in=[item.id for item in raw]) 
+        opendeals_query = get_open_deals_query(contact) 
         for attached_deal in attached_deals_to_call_query:
             # Now we search if any open deals is already attached to this call, if so it shall be excluded
             # in the open deal drop down for this call.
@@ -160,6 +168,8 @@ class OpenDealsAddForm(Form):
         self.fields['open_deal_template'].required = False
  
     open_deal_template = forms.ModelChoiceField(queryset='', label=_(u'Open Deals in Progress'))
+
+    
     
 
 
@@ -202,34 +212,35 @@ class DealTemplateForm(ModelForm):
                     'quantity': forms.TextInput(attrs={'placeholder': _(u'How many items?'), 'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                     #'status': forms.TextInput(attrs={'placeholder': _(u'How is the progress?'), 'class': 'placeholder_fix_css'}),                              
                    }
-
-class DealForm(ModelForm):
-    def __init__(self, *args, **kwargs):
-        super(DealForm, self).__init__(*args, **kwargs)            
-        self.fields['status'].widget.attrs['class'] = 'select select_status'
-        
-    class Meta:
-        model = Deal
-        fields = {'deal_template', 'status'}
-    
-    def clean_status(self):
-        status = self.cleaned_data['status']
-        if status.pk == 5 or status.pk == 6:                
-            #deal = self.save(commit=False)
-            latest_deal = self.instance.contact.deal_set.filter(deal_id = self.instance.deal_id).latest('time_stamp')
-            if self.instance.pk != latest_deal.pk:
-                #you should use named-string interpolation (e.g., %(day)s) instead of positional interpolation (e.g., %s or %d) whenever you have more than a single parameter. If you used positional interpolation, translations wouldn't be able to reorder placeholder text.
-                raise forms.ValidationError(_(u'You cannot set a past deal to Win/Lost, as there is already a %(latest_deal_status) deal status recorded on %(datetime)') % { 'latest_deal_status': latest_deal.status, 'datetime' : latest_deal.conversation.conversation_datetime})
-        return status
+#
+#class DealForm(ModelForm):
+#    def __init__(self, *args, **kwargs):
+#        super(DealForm, self).__init__(*args, **kwargs)            
+#        self.fields['status'].widget.attrs['class'] = 'select select_status'
+#        
+#    class Meta:
+#        model = Deal
+#        fields = {'deal_template', 'status'}
+#    
+#    def clean_status(self):
+#        status = self.cleaned_data['status']
+#        if status.pk == 5 or status.pk == 6:                
+#            #deal = self.save(commit=False)
+#            latest_deal = self.instance.contact.deal_set.filter(deal_id = self.instance.deal_id).latest('time_stamp')
+#            if self.instance.pk != latest_deal.pk:
+#                #you should use named-string interpolation (e.g., %(day)s) instead of positional interpolation (e.g., %s or %d) whenever you have more than a single parameter. If you used positional interpolation, translations wouldn't be able to reorder placeholder text.
+#                raise forms.ValidationError(_(u'You cannot set a past deal to Win/Lost, as there is already a %(latest_deal_status) deal status recorded on %(datetime)') % { 'latest_deal_status': latest_deal.status, 'datetime' : latest_deal.conversation.conversation_datetime})
+#        return status
         
 class DealCForm(ModelForm):
     attached_open_deal_id  = forms.IntegerField(required=False)
     is_form_cloned_by_ajax = forms.BooleanField(required=False)
     is_last_active_tab = forms.BooleanField(required=False)
-    deal_template_shortname = forms.CharField(required=False, max_length=7)
+    deal_url_name = forms.CharField(required=False, max_length=40)
     
     def __init__(self, *args, **kwargs):
-        super(DealCForm, self).__init__(*args, **kwargs)        
+        super(DealCForm, self).__init__(*args, **kwargs)
+        self.fields['deal_url_name'].initial = self.instance.deal_instance_name.replace(' ', '_').replace('.','_')               
         self.fields['status'].widget.attrs['class'] = 'select select_status'        
         self.fields['deal_instance_name'].widget.attrs['readonly'] = 'True'
         self.fields['deal_template_name'].widget.attrs.update({'readonly' : 'True'})
@@ -237,7 +248,7 @@ class DealCForm(ModelForm):
     
     class Meta:
         model = Deal
-        fields = {'deal_template', 'deal_template_name', 'deal_instance_name', 'status', 'deal_description', 'sales_item', 'price', 'sales_term', 'quantity', 'deal_template'}
+        fields = {'deal_template', 'deal_template_name', 'deal_instance_name', 'status', 'deal_description', 'sales_item', 'price', 'sales_term', 'quantity', 'deal_template', 'set'}
         
 
     
