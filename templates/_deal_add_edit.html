@@ -3,21 +3,27 @@
     <tbody>
     	<tr>	                	
         	<td>                        
-                {{deals_add_form.deal_template.label}}: {% if  deals_add_form.deal_template.field.required %} *{% endif %}
+                {{deals_add_form.deal_template.label}}: 
             </td>
-            <td>                        
-                {% if deals_add_form.deal_template.errors %}
-            	<div class="field field_error">
-                	{{deals_add_form.deal_template}} {{deals_add_form.deal_template.errors}}                   	
-            	</div>
-            	{% else %}
-            		{{deals_add_form.deal_template}}
-            	{% endif %}                        
-            </td>   
-        	<td>
-        		<button type="button" id="add_deals_button" class="btn btn-success"><i class="icon-plus icon-white"> </i></button>                		                		
-        	</td>            	
+            <td>   
+            	<div class="input-append">             
+	        		{{deals_add_form.deal_template}}
+	        		<button type="button" id="add_deals_button" class="btn btn-success"><i class="icon-plus icon-white"> </i></button>
+        		</div>            	                        
+            </td>        	          	
         </tr>
+        <tr>	                	
+        	<td>                        
+                {{opendeals_add_form.open_deal_template.label}}:
+            </td>
+            <td>                
+            	<div class="input-append">
+	        		{{opendeals_add_form.open_deal_template}}            	          
+	            	<button type="button" id="add_opendeals_button" class="btn btn-success"><i class="icon-plus icon-white"> </i></button>
+            	</div>
+            	<div id="contact_id" class="hidden">{{contact_id}}</div>
+            </td>        	            	
+        </tr>        
         <tr>
         	{{ attached_deals_formset.management_form }}
 			{% if attached_deals_formset.forms %}
@@ -25,16 +31,23 @@
 					<ul class="nav nav-tabs" id="attached_deals_tab">
 					{% for fs in attached_deals_formset.forms %}
 						{{ fs.id }}						
-						<li {% if fs.instance.pk == None %}class='hidden'{% endif %}>
-							<a href="#{% if fs.instance.pk %}{% trans 'Deal' %}{{forloop.counter}}{% else %}X{% endif %}" data-toggle="tab">{% if fs.instance.pk %}{% trans 'Deal' %} {{forloop.counter}}{% else %}X{% endif %}</a>
+						<li {% if fs.is_form_cloned_by_ajax.value or fs.instance.pk %}{% else %}class='hidden'{% endif %}>
+							<!-- <a href="#{% if fs.is_form_cloned_by_ajax.value or fs.instance.pk %}{% trans 'Deal' %}{{forloop.counter0}}{% else %}X{% endif %}" data-toggle="tab">{% if fs.is_form_cloned_by_ajax.value or fs.instance.pk %}{% trans 'Deal' %} {{forloop.counter0}}{% else %}X{% endif %}</a> -->
+							<a href="#{% if fs.is_form_cloned_by_ajax.value or fs.instance.pk %}{{fs.deal_template_name.value}}{% else %}X{% endif %}" data-toggle="tab">{% if fs.is_form_cloned_by_ajax.value or fs.instance.pk %}{{fs.deal_template_name.value}}{% else %}X{% endif %}</a>
 						</li>					
 					{% endfor %}
 					</ul>	
 					<div class="tab-content" id='tab-content'>
 						{% for fs in attached_deals_formset.forms %}
 						{{ fs.id }}										
-							<div class="tab-pane" id="{% if fs.instance.pk %}{% trans 'Deal' %}{{forloop.counter}}{% else %}X{% endif %}">
+							<!-- <div class="tab-pane" id="{% if fs.is_form_cloned_by_ajax.value or fs.instance.pk %}{% trans 'Deal' %}{{forloop.counter0}}{% else %}X{% endif %}"> -->
+							<div class="tab-pane" id="{% if fs.is_form_cloned_by_ajax.value or fs.instance.pk %}{{fs.deal_template_name.value}}{% else %}X{% endif %}">								
 								<table>
+									<tr class="hidden">										
+										<td>
+											{{fs.is_form_cloned_by_ajax}}	
+										</td>
+									</tr>
 									<tr>
 										<td>                        
 					                        {{fs.deal_template_name.label}}: {% if  fs.deal_template_name.field.required %} *{% endif %}

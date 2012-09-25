@@ -105,31 +105,10 @@ class ConversationForm(ModelForm):
     conversation_time = forms.TimeField(localize=True, widget=forms.TimeInput(attrs={'placeholder': _(u'Add the time for this conversation'), 'class': 'placeholder_fix_css'}))
     
     def __init__(self, company, *args, **kwargs):
-        super(ConversationForm, self).__init__(*args, **kwargs)                                        
-        self.fields['deal_1'].queryset = self.get_non_open_deals(self.instance, company)        
-        self.fields['deal_2'].queryset = self.get_non_open_deals(self.instance, company)
-        self.fields['deal_3'].queryset = self.get_non_open_deals(self.instance, company)        
-        self.fields['deal_4'].queryset = self.get_non_open_deals(self.instance, company)        
-        self.fields['deal_5'].queryset = self.get_non_open_deals(self.instance, company)        
-        self.fields['deal_6'].queryset = self.get_non_open_deals(self.instance, company)
+        super(ConversationForm, self).__init__(*args, **kwargs)        
         local_tz = timezone.get_current_timezone()
         self.fields['conversation_date'].initial = self.instance.conversation_datetime.replace(tzinfo=pytz.utc).astimezone(local_tz).date()
-        self.fields['conversation_time'].initial = self.instance.conversation_datetime.replace(tzinfo=pytz.utc).astimezone(local_tz).time()         
-    
-        
-    deal_1      =   forms.ModelChoiceField(required=False, queryset = '')     
-    deal_2      =   forms.ModelChoiceField(required=False, queryset = '')    
-    deal_3      =   forms.ModelChoiceField(required=False, queryset = '')    
-    deal_4      =   forms.ModelChoiceField(required=False, queryset = '')    
-    deal_5      =   forms.ModelChoiceField(required=False, queryset = '')    
-    deal_6      =   forms.ModelChoiceField(required=False, queryset = '')   
-    
-    deal_show_row_1   = forms.BooleanField(required=False, initial=False)
-    deal_show_row_2   = forms.BooleanField(required=False, initial=False)
-    deal_show_row_3   = forms.BooleanField(required=False, initial=False)
-    deal_show_row_4   = forms.BooleanField(required=False, initial=False)
-    deal_show_row_5   = forms.BooleanField(required=False, initial=False)
-    deal_show_row_6   = forms.BooleanField(required=False, initial=False)
+        self.fields['conversation_time'].initial = self.instance.conversation_datetime.replace(tzinfo=pytz.utc).astimezone(local_tz).time()    
     
     class Meta:
         model = Conversation
@@ -138,97 +117,6 @@ class ConversationForm(ModelForm):
                     'subject': forms.TextInput(attrs={'placeholder': '', 'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                     'notes': forms.Textarea(attrs={'placeholder': _(u'Add relevant notes...')}),                                      
                    }
-    
-    def clean(self):
-        cleaned_data = super(ConversationForm, self).clean()
-        deal_1 = cleaned_data.get('deal_1')
-        deal_2 = cleaned_data.get('deal_2')
-        deal_3 = cleaned_data.get('deal_3')
-        deal_4 = cleaned_data.get('deal_4')
-        deal_5 = cleaned_data.get('deal_5')
-        deal_6 = cleaned_data.get('deal_6')
-        
-        deal_show_row_1 = cleaned_data.get('deal_show_row_1')
-        deal_show_row_2 = cleaned_data.get('deal_show_row_2')
-        deal_show_row_3 = cleaned_data.get('deal_show_row_3')
-        deal_show_row_4 = cleaned_data.get('deal_show_row_4')
-        deal_show_row_5 = cleaned_data.get('deal_show_row_5')
-        deal_show_row_6 = cleaned_data.get('deal_show_row_6')
-        
-#        selection = [deal_show_row_1, deal_show_row_2, deal_show_row_3, deal_show_row_4, deal_show_row_5]
-#        c = collections.Counter(selection)
-#        duplicates = [i for i in c if c[i] > 1]
-
-        duplicates = {}
-        
-        
-        if deal_show_row_1:
-            if deal_1:
-                duplicates[deal_1.pk] = duplicates.get(deal_1.pk, 0) + 1
-        if deal_show_row_2:
-            if deal_2:
-                duplicates[deal_2.pk] = duplicates.get(deal_2.pk, 0) + 1
-        if deal_show_row_3:
-            if deal_3:
-                duplicates[deal_3.pk] = duplicates.get(deal_3.pk, 0) + 1
-        if deal_show_row_4:
-            if deal_4:
-                duplicates[deal_4.pk] = duplicates.get(deal_4.pk, 0) + 1
-        if deal_show_row_5:
-            if deal_5:
-                duplicates[deal_5.pk] = duplicates.get(deal_5.pk, 0) + 1
-        if deal_show_row_6:
-            if deal_6:
-                duplicates[deal_6.pk] = duplicates.get(deal_6.pk, 0) + 1      
-        
-        #sorted_duplicates = sorted(duplicates.iteritems(), key=operator.itemgetter(1), reserve=True)
-        
-        msg_required = _(u'Please select a deal to add or remove it')
-        msg_duplication = _(u'This deal has been selected more than once')
-        
-        if deal_show_row_1:
-            if not deal_1:
-                self._errors['deal_1'] = self.error_class([msg_required])
-            else:
-                if duplicates[deal_1.pk] > 1:
-                    self._errors['deal_1'] = self.error_class([msg_duplication])
-                                                    
-        if deal_show_row_2:
-            if not deal_2:
-                self._errors['deal_2'] = self.error_class([msg_required])
-            else:
-                if duplicates[deal_2.pk] > 1:
-                    self._errors['deal_2'] = self.error_class([msg_duplication])
-        if deal_show_row_3:
-            if not deal_3:
-                self._errors['deal_3'] = self.error_class([msg_required])
-            else:
-                if duplicates[deal_3.pk] > 1:
-                    self._errors['deal_3'] = self.error_class([msg_duplication])
-                    
-        if deal_show_row_4:
-            if not deal_4:
-                self._errors['deal_4'] = self.error_class([msg_required])
-            else:
-                if duplicates[deal_4.pk] > 1:
-                    self._errors['deal_4'] = self.error_class([msg_duplication])
-                    
-        if deal_show_row_5:
-            if not deal_5:
-                self._errors['deal_5'] = self.error_class([msg_required])
-            else:
-                if duplicates[deal_5.pk] > 1:
-                    self._errors['deal_5'] = self.error_class([msg_duplication])
-                    
-        if deal_show_row_6:
-            if not deal_6:
-                self._errors['deal_6'] = self.error_class([msg_required])
-            else:
-                if duplicates[deal_6.pk] > 1:
-                    self._errors['deal_6'] = self.error_class([msg_duplication])
-        return cleaned_data;
-    
-    
     
     def get_non_open_deals(self, call, company):
         open_deals = call.contact.get_open_deals()
@@ -250,7 +138,7 @@ class DealsAddForm(Form):
         self.fields['deal_template'].queryset = company.dealtemplate_set.exclude(id__in=exclude_list)
         self.fields['deal_template'].required = False
  
-    deal_template       = forms.ModelChoiceField(queryset='')
+    deal_template       = forms.ModelChoiceField(queryset='', label=_(u'Add Deal From Template'))
 
 
 class OpenDealsAddForm(Form):
@@ -271,7 +159,7 @@ class OpenDealsAddForm(Form):
         self.fields['open_deal_template'].queryset = opendeals_query.exclude(deal_id__in=exclude_attached_opendeals)
         self.fields['open_deal_template'].required = False
  
-    open_deal_template = forms.ModelChoiceField(queryset='')
+    open_deal_template = forms.ModelChoiceField(queryset='', label=_(u'Open Deals in Progress'))
     
 
 
@@ -335,7 +223,10 @@ class DealForm(ModelForm):
         return status
         
 class DealCForm(ModelForm):
-    attached_open_deal_id  = forms.IntegerField(required=False)    
+    attached_open_deal_id  = forms.IntegerField(required=False)
+    is_form_cloned_by_ajax = forms.BooleanField(required=False)
+    is_last_active_tab = forms.BooleanField(required=False)
+    deal_template_shortname = forms.CharField(required=False, max_length=7)
     
     def __init__(self, *args, **kwargs):
         super(DealCForm, self).__init__(*args, **kwargs)        
@@ -346,7 +237,7 @@ class DealCForm(ModelForm):
     
     class Meta:
         model = Deal
-        fields = {'deal_template', 'deal_template_name', 'deal_instance_name', 'status', 'attach_deal_conversation', 'deal_description', 'sales_item', 'price', 'sales_term', 'quantity', 'deal_template'}
+        fields = {'deal_template', 'deal_template_name', 'deal_instance_name', 'status', 'deal_description', 'sales_item', 'price', 'sales_term', 'quantity', 'deal_template'}
         
 
     

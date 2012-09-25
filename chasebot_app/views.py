@@ -162,6 +162,28 @@ def get_opendeal(request, deal_id, contact_id=None):
     deal = contact.deal_set.get(pk=deal_id)
     return HttpResponse(toJSON(deal), mimetype='application/json')  
         
+def get_next_available_key(deal_template_shortnames, rawkey, counter=None):            
+    if not counter and len(rawkey) > 7:
+        counter = 2
+        
+    if counter:
+        key = rawkey[:6] + str(counter)
+    else:
+        key = rawkey
+    
+    if key in deal_template_shortnames:
+        get_next_available_key(deal_template_shortnames, rawkey, (counter + 1))
+    else:
+        deal_template_shortnames[key] = ''
+    return key
+
+
+def get_deal_template_shortname(template_name, deal_template_shortnames):
+    #profile = request.user.get_profile() 
+    #deal_templates_query = profile.company.dealtemplate_set.all()    
+    #for deal in deal_templates_query:        
+    shortname = get_next_available_key(deal_template_shortnames, template_name)    
+    return shortname 
 
 
 @login_required
@@ -176,6 +198,8 @@ def conversation_add_edit(request, contact_id, call_id=None):
     
     deals_formset_factory = modelformset_factory(Deal, form=DealCForm, extra=1, can_delete=True, max_num=5)    
     attached_deals_to_call_query = call.deal_set.all()
+     
+    
     
     template_title = _(u'Edit Past Conversation')
     deal_title = _(u'Deals attached to this Conversation')
@@ -223,21 +247,27 @@ def conversation_add_edit(request, contact_id, call_id=None):
                         if not set_val:
                             set_val = 0                                 
                         deal.contact = contact
-                        deal.conversation = call
-                        deal.status = DealStatus.objects.get(pk=1) 
+                        deal.conversation = call                        
                         if deal.pk is None:
-                            deal.set=set_val+1                    
+                            deal.status = DealStatus.objects.get(pk=1)
+                            deal.set=set_val+1                        
                         deal.save()
                         fm.save_m2m()
             return HttpResponseRedirect('/contact/' + contact_id + '/calls/')        
             
     else:        
         deals_add_form = DealsAddForm(profile.company, call, prefix='deals_add_form')
-        form = ConversationForm(profile.company, instance=call, prefix='form')              
-        attached_deals_formset = deals_formset_factory(queryset=attached_deals_to_call_query, prefix='deals')                
+        form = ConversationForm(profile.company, instance=call, prefix='form')                      
+        attached_deals_formset = deals_formset_factory(queryset=attached_deals_to_call_query, prefix='deals')
+                
+#        deal_template_shortnames = {}
+#        for fs in attached_deals_formset:
+#            if fs.initial and fs.initial['deal_template_name']:
+#                fs.fields['deal_template_shortname'].initial = get_deal_template_shortname(fs.initial['deal_template_name'], deal_template_shortnames) 
+                       
         opendeals_add_form = OpenDealsAddForm(profile.company, call, contact, prefix='opendeals_add_form')
     
-    variables = {'form':form, 'deals_add_form':deals_add_form, 'opendeals_add_form':opendeals_add_form, 'attached_deals_formset':attached_deals_formset, 'is_atleast_one_opendeal_attached':is_atleast_one_opendeal_attached }
+    variables = {'form':form, 'deals_add_form':deals_add_form, 'opendeals_add_form':opendeals_add_form, 'attached_deals_formset':attached_deals_formset, 'is_atleast_one_opendeal_attached':is_atleast_one_opendeal_attached, 'contact_id':contact.pk }
     variables = merge_with_localized_variables(request, variables)   
     return render(request, 'conversation.html', variables)
 

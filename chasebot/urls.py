@@ -62,7 +62,7 @@ urlpatterns = patterns('',
     (r'^autocomplete/conversations/(?P<contact_id>\d+)/$', conversations_autocomplete),   
     (r'^autocomplete/deals/$', deal_autocomplete),
          
-            
+
     #i18n
     (r'^i18n/', include('django.conf.urls.i18n')),
     (r'^timezone/', set_timezone),
