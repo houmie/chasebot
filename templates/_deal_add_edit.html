@@ -33,8 +33,8 @@
 						<tr class="hidden1">										
 							<td>
 								<!-- {{fs.is_form_cloned_by_ajax}} -->	
-								{{fs.attached_open_deal_id}}		
-								{{fs.deal_url_name}}						
+								{{fs.attached_open_deal_id}}
+								{{fs.is_last_active_tab}}														
 							</td>
 						</tr>
 						<tr>
@@ -170,7 +170,7 @@
 						{{ fs.id }}						
 						<li>
 							<!-- <a href="#{% if fs.is_form_cloned_by_ajax.value or fs.instance.pk %}{% trans 'Deal' %}{{forloop.counter0}}{% else %}X{% endif %}" data-toggle="tab">{% if fs.is_form_cloned_by_ajax.value or fs.instance.pk %}{% trans 'Deal' %} {{forloop.counter0}}{% else %}X{% endif %}</a> -->
-							<a href="#{{fs.deal_url_name.value}}" data-toggle="tab">{{fs.deal_template_name.value}}</a>
+							<a href="#{{fs.deal_template_name.value|slugify}}" data-toggle="tab">{% if fs.attached_open_deal_id.value %}{{fs.deal_instance_name.value}}{% else %}{{fs.deal_template_name.value}}{%endif%}</a>
 						</li>					
 					{% endfor %}
 					</ul>	
@@ -178,13 +178,13 @@
 						{% for fs in attached_deals_formset %}
 						{{ fs.id }}										
 							<!-- <div class="tab-pane" id="{% if fs.is_form_cloned_by_ajax.value or fs.instance.pk %}{% trans 'Deal' %}{{forloop.counter0}}{% else %}X{% endif %}"> -->
-							<div class="tab-pane" id="{{fs.deal_url_name.value}}">								
+							<div class="tab-pane" id="{{fs.deal_template_name.value|slugify}}">								
 								<table>
 									<tr class="hidden1">										
 										<td>
 											<!-- {{fs.is_form_cloned_by_ajax}} -->
 											{{fs.attached_open_deal_id}}		
-											{{fs.deal_url_name}}								
+											{{fs.is_last_active_tab}}																	
 										</td>
 									</tr>
 									<tr>

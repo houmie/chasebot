@@ -22,8 +22,8 @@ function add_deals(e){
 
 function cloneMore(selector, type) {
     var newElement = $(selector).clone(true);
-    //var total = $('#id_' + type + '-TOTAL_FORMS').val();
-    var total = $(selector).length;
+    var total = $('#id_' + type + '-TOTAL_FORMS').val();
+    //var total = $(selector).length-1;
     
     newElement.find(':input').each(function() {
         var name = $(this).attr('name').replace('extra_deal-' + 0 + '-', type + '-' + total + '-');
@@ -38,7 +38,7 @@ function cloneMore(selector, type) {
 	newElement.find('#id_deals-' + total + '-is_form_cloned_by_ajax').prop('checked', true);
     
     total++;
-    $('#id_' + type + '-TOTAL_FORMS').val(total);
+    $('#id_' + type + '-TOTAL_FORMS').attr('value', total);
     
     return newElement;
     
@@ -111,7 +111,7 @@ function get_deal_or_dealtemplate(selected_id, type, newElement, path, contact_i
 			}
 		    else{
 		    	newname = template_name;
-		    	newElement.find('#id_deals-' + (total-1) + '-set').attr('value', 1);
+		    	//newElement.find('#id_deals-' + (total-1) + '-set').attr('value', 1);
 		    }		    	
 		     
 		    a.setAttribute('href', '#' + newname.replace(/ /g,"_").replace(/\./g,"_"));
@@ -121,6 +121,8 @@ function get_deal_or_dealtemplate(selected_id, type, newElement, path, contact_i
 			
 			var li=document.createElement('li');
 			li.appendChild(a);
+			
+			$(a).on('shown', show_tab);
 		    
 		    $('#attached_deals_tab').append(li);
 		    
@@ -135,7 +137,8 @@ function get_deal_or_dealtemplate(selected_id, type, newElement, path, contact_i
 			else
 				$("#id_opendeals_add_form-open_deal_template option[value='" + selected_id + "']").remove();
 					  				
-			$('#attached_deals_tab a:last').tab('show');		  	
+			//$('#attached_deals_tab a:last').tab('show');		  	
+			$(a).tab('show');
 		  }		  
 		});
 	
@@ -143,6 +146,7 @@ function get_deal_or_dealtemplate(selected_id, type, newElement, path, contact_i
 		
 	
 }
+
 
 
 function add_deals_new(event){
@@ -187,6 +191,11 @@ function attach_open_deal(e){
 	$('.select_status').closest('tr').find('input:checkbox').attr('checked', true);
 }
 
+function show_tab(e){
+	var current_tab_href = $(this).attr('href');
+	$(current_tab_href).find('.last_active_tab').attr('checked', true);	
+}
+
 $(document).ready(function () {	
 	for(i=1;i<=5;i++)
 	{
@@ -198,12 +207,12 @@ $(document).ready(function () {
   	 
 	$("#add_deals_button").click(add_deals_new);
 	$("#add_opendeals_button").click(add_opendeals_new);
-	// $('#attached_deals_tab').find('li[class!=hidden] a:first').tab('show');
-	//var a = $('#attached_deals_tab').find('a:first');
-	// if(!a.parent('li').hasClass('hidden')) {
-	    // a.tab('show');
-	// }
-	$('#attached_deals_tab li:not(.hidden) a:first').tab('show');
+	//li:not(.hidden)
+	
+	$('a[data-toggle="tab"]').on('shown', show_tab);
+	
+	if($('#attached_deals_tab > li.active').length == 0)
+		$('#attached_deals_tab a:first').tab('show');
 
 	
 	$('.remove_deals_button').click(remove_deal);  

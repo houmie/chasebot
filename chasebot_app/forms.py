@@ -235,20 +235,19 @@ class DealTemplateForm(ModelForm):
 class DealForm(ModelForm):
     attached_open_deal_id  = forms.IntegerField(required=False)
     is_form_cloned_by_ajax = forms.BooleanField(required=False)
-    is_last_active_tab = forms.BooleanField(required=False)
-    deal_url_name = forms.CharField(required=False, max_length=40)
+    is_last_active_tab = forms.BooleanField(required=False)    
     
     def __init__(self, *args, **kwargs):
-        super(DealForm, self).__init__(*args, **kwargs)
-        self.fields['deal_url_name'].initial = self.instance.deal_instance_name.replace(' ', '_').replace('.','_')               
+        super(DealForm, self).__init__(*args, **kwargs)                       
         self.fields['status'].widget.attrs['class'] = 'select select_status'        
         self.fields['deal_instance_name'].widget.attrs['readonly'] = 'True'
         self.fields['deal_template_name'].widget.attrs.update({'readonly' : 'True'})
-        self.fields['deal_template'].widget.attrs['class'] = 'hidden' 
-    
+        self.fields['deal_template'].widget.attrs['class'] = 'hidden'
+        self.fields['is_last_active_tab'].widget.attrs['class'] = 'last_active_tab'
+            
     class Meta:
         model = Deal
-        fields = {'deal_template', 'deal_template_name', 'deal_instance_name', 'status', 'deal_description', 'sales_item', 'price', 'sales_term', 'quantity', 'deal_template', 'deal_url_name'}
+        fields = {'deal_template', 'deal_template_name', 'deal_instance_name', 'status', 'deal_description', 'sales_item', 'price', 'sales_term', 'quantity', 'deal_template', 'is_last_active_tab'}
         
 
     
