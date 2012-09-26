@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from chasebot_app.forms import RegistrationForm, ContactsForm, ConversationForm, SalesItemForm, DealTemplateForm,\
-     DealCForm, FilterContactsForm, FilterConversationForm, FilterDealsForm, FilterSalesItemForm,\
+     DealForm, FilterContactsForm, FilterConversationForm, FilterDealsForm, FilterSalesItemForm,\
     DealsAddForm, OpenDealsAddForm
 from chasebot_app.models import Company, Contact, Conversation, SalesItem, DealTemplate, DealStatus, Deal, SalesTerm
 from chasebot_app.models import UserProfile
@@ -197,8 +197,8 @@ def conversation_add_edit(request, contact_id, call_id=None):
     else:
         call = get_object_or_404(contact.conversation_set.all(), pk=call_id)
     
-    deals_formset_factory = modelformset_factory(Deal, form=DealCForm, extra=0, can_delete=True, max_num=5)
-    extra_deal_formset_factory = formset_factory(DealCForm, extra=1, max_num=1)    
+    deals_formset_factory = modelformset_factory(Deal, form=DealForm, extra=0, can_delete=True, max_num=5)
+    extra_deal_formset_factory = formset_factory(DealForm, extra=1, max_num=1)    
     attached_deals_to_call_query = call.deal_set.all()    
     
     template_title = _(u'Edit Past Conversation')
@@ -223,23 +223,26 @@ def conversation_add_edit(request, contact_id, call_id=None):
             
             for fm in attached_deals_formset:                
                 if fm.has_changed():
-                    if fm.cleaned_data['attached_open_deal_id']:
+                    if fm.cleaned_data['attached_open_deal_id']: 
                         actual_deal = contact.deal_set.get(pk=fm.cleaned_data['attached_open_deal_id'])
-                        modified_deal = fm.save(commit=False)
-                        actual_deal.status = modified_deal.status
-                        actual_deal.contact = contact
-                        actual_deal.deal_template = modified_deal.deal_template
-                        actual_deal.deal_template_name = modified_deal.deal_template_name
-                        actual_deal.conversation = call
-                        actual_deal.set = modified_deal.set
-                        actual_deal.deal_instance_name = modified_deal.deal_instance_name
-                        actual_deal.deal_description = modified_deal.deal_description
-                        actual_deal.price = modified_deal.price                        
-                        actual_deal.sales_term = modified_deal.sales_term
-                        actual_deal.quantity = modified_deal.quantity
-                        actual_deal.sales_item = modified_deal.sales_item
-                        actual_deal.save()                        
-                        #actual_deal.save_m2m()
+                        modified_deal = fm.save(commit=False)                        
+                        deal = Deal.objects.create(
+                                            deal_id=actual_deal.deal_id, 
+                                            status=modified_deal.status, 
+                                            contact=call.contact, 
+                                            deal_template=modified_deal.deal_template,
+                                            deal_template_name=modified_deal.deal_template_name,  
+                                            conversation=call, 
+                                            set=actual_deal.set,
+                                            deal_instance_name=modified_deal.deal_instance_name,
+                                            deal_description = modified_deal.deal_description,
+                                            price = modified_deal.price,                        
+                                            sales_term = modified_deal.sales_term,
+                                            quantity = modified_deal.quantity                                            
+                                            )
+                        for item in fm.cleaned_data['sales_item']:
+                            deal.sales_item.add(item)
+                        deal.save();
                     else:                
                         deal = fm.save(commit=False)
                         set_dic = contact.deal_set.filter(deal_template_id=deal.deal_template.id).aggregate(Max('set'))

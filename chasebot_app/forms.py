@@ -232,14 +232,14 @@ class DealTemplateForm(ModelForm):
 #                raise forms.ValidationError(_(u'You cannot set a past deal to Win/Lost, as there is already a %(latest_deal_status) deal status recorded on %(datetime)') % { 'latest_deal_status': latest_deal.status, 'datetime' : latest_deal.conversation.conversation_datetime})
 #        return status
         
-class DealCForm(ModelForm):
+class DealForm(ModelForm):
     attached_open_deal_id  = forms.IntegerField(required=False)
     is_form_cloned_by_ajax = forms.BooleanField(required=False)
     is_last_active_tab = forms.BooleanField(required=False)
     deal_url_name = forms.CharField(required=False, max_length=40)
     
     def __init__(self, *args, **kwargs):
-        super(DealCForm, self).__init__(*args, **kwargs)
+        super(DealForm, self).__init__(*args, **kwargs)
         self.fields['deal_url_name'].initial = self.instance.deal_instance_name.replace(' ', '_').replace('.','_')               
         self.fields['status'].widget.attrs['class'] = 'select select_status'        
         self.fields['deal_instance_name'].widget.attrs['readonly'] = 'True'
@@ -248,7 +248,7 @@ class DealCForm(ModelForm):
     
     class Meta:
         model = Deal
-        fields = {'deal_template', 'deal_template_name', 'deal_instance_name', 'status', 'deal_description', 'sales_item', 'price', 'sales_term', 'quantity', 'deal_template', 'set'}
+        fields = {'deal_template', 'deal_template_name', 'deal_instance_name', 'status', 'deal_description', 'sales_item', 'price', 'sales_term', 'quantity', 'deal_template', 'deal_url_name'}
         
 
     

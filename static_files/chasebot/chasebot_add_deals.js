@@ -93,9 +93,12 @@ function get_deal_or_dealtemplate(selected_id, type, newElement, path, contact_i
 		  	else
 		  		newElement.find('#id_deals-' + (total-1) + '-status>option:eq(1)').prop('selected', true);		  	
 		  	
-		  	newElement.find('#id_deals-' + (total-1) + '-deal_template').val(selected_id);
-		  	for (i=0; i<data[0].fields['sales_item'].length;i++)
-				newElement.find('#id_deals-' + (total-1) + '-sales_item').val(data[0].fields['sales_item'][i]-1);
+		  	newElement.find('#id_deals-' + (total-1) + '-deal_template').val(data[0].fields['deal_template']);
+		  	var vals = [];
+		  	for (i=0; i<=data[0].fields['sales_item'].length;i++)
+		  		vals.push(data[0].fields['sales_item'][i]);
+		  	newElement.find('#id_deals-' + (total-1) + '-sales_item').val(vals);
+				// newElement.find('#id_deals-' + (total-1) + '-sales_item').val(data[0].fields['sales_item'][i]).prop("selected", true);
 						
 			var a=document.createElement('a');
 		    a.setAttribute('data-toggle', 'tab');
@@ -106,8 +109,10 @@ function get_deal_or_dealtemplate(selected_id, type, newElement, path, contact_i
 				newElement.find('#id_deals-' + (total-1) + '-attached_open_deal_id').attr('value', selected_id);
 				newElement.find('#id_deals-' + (total-1) + '-set').attr('value', data[0].fields['set']);
 			}
-		    else
+		    else{
 		    	newname = template_name;
+		    	newElement.find('#id_deals-' + (total-1) + '-set').attr('value', 1);
+		    }		    	
 		     
 		    a.setAttribute('href', '#' + newname.replace(/ /g,"_").replace(/\./g,"_"));
 		    
