@@ -262,11 +262,6 @@ def conversation_add_edit(request, contact_id, call_id=None):
         deals_add_form = DealsAddForm(profile.company, call, contact, prefix='deals_add_form')
         form = ConversationForm(profile.company, instance=call, prefix='form')                      
         attached_deals_formset = deals_formset_factory(queryset=attached_deals_to_call_query, prefix='deals')
-                
-#        deal_template_shortnames = {}
-#        for fs in attached_deals_formset:
-#            if fs.initial and fs.initial['deal_template_name']:
-#                fs.fields['deal_template_shortname'].initial = get_deal_template_shortname(fs.initial['deal_template_name'], deal_template_shortnames) 
                        
         opendeals_add_form = OpenDealsAddForm(profile.company, call, contact, prefix='opendeals_add_form')
     

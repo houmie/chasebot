@@ -242,7 +242,7 @@ class DealForm(ModelForm):
         self.fields['status'].widget.attrs['class'] = 'select select_status'        
         self.fields['deal_instance_name'].widget.attrs['readonly'] = 'True'
         self.fields['deal_template_name'].widget.attrs.update({'readonly' : 'True'})
-        self.fields['deal_template'].widget.attrs['class'] = 'hidden'
+        #self.fields['deal_template'].widget.attrs['class'] = 'hidden'
         self.fields['is_last_active_tab'].widget.attrs['class'] = 'last_active_tab'
             
     class Meta:

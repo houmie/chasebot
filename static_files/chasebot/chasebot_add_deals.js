@@ -93,7 +93,10 @@ function get_deal_or_dealtemplate(selected_id, type, newElement, path, contact_i
 		  	else
 		  		newElement.find('#id_deals-' + (total-1) + '-status>option:eq(1)').prop('selected', true);		  	
 		  	
-		  	newElement.find('#id_deals-' + (total-1) + '-deal_template').val(data[0].fields['deal_template']);
+		  	if('deal_template' in data[0].fields)
+		  		newElement.find('#id_deals-' + (total-1) + '-deal_template').val(data[0].fields['deal_template']);
+		  	else
+		  		newElement.find('#id_deals-' + (total-1) + '-deal_template').val(data[0].pk);
 		  	var vals = [];
 		  	for (i=0; i<=data[0].fields['sales_item'].length;i++)
 		  		vals.push(data[0].fields['sales_item'][i]);
@@ -192,7 +195,10 @@ function attach_open_deal(e){
 }
 
 function show_tab(e){
+	//Uncheck all active tab checkboxes
+	$('.last_active_tab').attr('checked', false);
 	var current_tab_href = $(this).attr('href');
+	//Check current active tab as active tab
 	$(current_tab_href).find('.last_active_tab').attr('checked', true);	
 }
 
