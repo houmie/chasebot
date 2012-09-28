@@ -14,7 +14,7 @@ body {
 	border: 2px solid #FF0000;
 }*/
 
-div.field_error input[type=text] , div.field_error select{
+div.field_error input[type=text] , div.field_error select, li.field_error{
 	color: red;
 	border: 2px solid #FF0000;	 
 }

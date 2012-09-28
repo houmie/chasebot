@@ -225,11 +225,12 @@ class DealForm(ModelForm):
         self.fields['deal_template_name'].widget.attrs.update({'readonly' : 'True'})
         self.fields['deal_template'].widget.attrs['class'] = 'hidden'
         self.fields['is_last_active_tab'].widget.attrs['class'] = 'last_active_tab'
-        self.fields['sales_item'].widget.attrs['class'] = 'sales_item'
-            
+    
     class Meta:
         model = Deal
-        fields = {'deal_template', 'deal_template_name', 'deal_instance_name', 'status', 'deal_description', 'sales_item', 'price', 'sales_term', 'quantity', 'deal_template', 'is_last_active_tab'}
+        fields = {'deal_template', 'deal_template_name', 'deal_instance_name', 'status', 
+                  'deal_description', 'sales_item', 'price', 'sales_term', 'quantity', 
+                  'is_last_active_tab'}
         
 
     
