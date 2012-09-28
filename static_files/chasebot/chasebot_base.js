@@ -391,7 +391,7 @@ var clickedAway = false;
 
 
 
-$(document).ready(function (){	
+$(document).ready(function (){	 	
 	rebind_add();
 	rebind_edit_delete($('#search_result'));
 	rebind_paginator($('#search_result'));

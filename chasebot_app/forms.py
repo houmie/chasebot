@@ -141,7 +141,7 @@ class DealsAddForm(Form):
         self.fields['deal_template'].queryset = company.dealtemplate_set.exclude(id__in=exclude_list)
         self.fields['deal_template'].required = False
  
-    deal_template       = forms.ModelChoiceField(queryset='', label=_(u'Add Deal From Template'))
+    deal_template       = forms.ModelChoiceField(queryset='', label=_(u'Negotiate a New Deal'))
 
 
 def get_open_deals_query(contact):
@@ -167,7 +167,7 @@ class OpenDealsAddForm(Form):
         self.fields['open_deal_template'].queryset = opendeals_query.exclude(deal_id__in=exclude_attached_opendeals)
         self.fields['open_deal_template'].required = False
  
-    open_deal_template = forms.ModelChoiceField(queryset='', label=_(u'Open Deals in Progress'))
+    open_deal_template = forms.ModelChoiceField(queryset='', label=_(u'Continue with a Deal in Progress'))
 
     
     
@@ -190,6 +190,7 @@ class DealTemplateForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(DealTemplateForm, self).__init__(*args, **kwargs)
         self.fields['sales_item'].queryset = SalesItem.objects.filter(company=self.instance.company)                
+        self.fields['sales_item'].widget.attrs['class'] = 'sales_item'
     
     def clean_quantity(self):
         if 'quantity' in self.cleaned_data:
@@ -212,29 +213,9 @@ class DealTemplateForm(ModelForm):
                     'quantity': forms.TextInput(attrs={'placeholder': _(u'How many items?'), 'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                     #'status': forms.TextInput(attrs={'placeholder': _(u'How is the progress?'), 'class': 'placeholder_fix_css'}),                              
                    }
-#
-#class DealForm(ModelForm):
-#    def __init__(self, *args, **kwargs):
-#        super(DealForm, self).__init__(*args, **kwargs)            
-#        self.fields['status'].widget.attrs['class'] = 'select select_status'
-#        
-#    class Meta:
-#        model = Deal
-#        fields = {'deal_template', 'status'}
-#    
-#    def clean_status(self):
-#        status = self.cleaned_data['status']
-#        if status.pk == 5 or status.pk == 6:                
-#            #deal = self.save(commit=False)
-#            latest_deal = self.instance.contact.deal_set.filter(deal_id = self.instance.deal_id).latest('time_stamp')
-#            if self.instance.pk != latest_deal.pk:
-#                #you should use named-string interpolation (e.g., %(day)s) instead of positional interpolation (e.g., %s or %d) whenever you have more than a single parameter. If you used positional interpolation, translations wouldn't be able to reorder placeholder text.
-#                raise forms.ValidationError(_(u'You cannot set a past deal to Win/Lost, as there is already a %(latest_deal_status) deal status recorded on %(datetime)') % { 'latest_deal_status': latest_deal.status, 'datetime' : latest_deal.conversation.conversation_datetime})
-#        return status
         
 class DealForm(ModelForm):
-    attached_open_deal_id  = forms.IntegerField(required=False)
-    is_form_cloned_by_ajax = forms.BooleanField(required=False)
+    attached_open_deal_id  = forms.IntegerField(required=False)    
     is_last_active_tab = forms.BooleanField(required=False)    
     
     def __init__(self, *args, **kwargs):
@@ -242,8 +223,9 @@ class DealForm(ModelForm):
         self.fields['status'].widget.attrs['class'] = 'select select_status'        
         self.fields['deal_instance_name'].widget.attrs['readonly'] = 'True'
         self.fields['deal_template_name'].widget.attrs.update({'readonly' : 'True'})
-        #self.fields['deal_template'].widget.attrs['class'] = 'hidden'
+        self.fields['deal_template'].widget.attrs['class'] = 'hidden'
         self.fields['is_last_active_tab'].widget.attrs['class'] = 'last_active_tab'
+        self.fields['sales_item'].widget.attrs['class'] = 'sales_item'
             
     class Meta:
         model = Deal

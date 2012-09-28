@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load tz %}
 {% block external %}
+	
 	<script type="text/javascript" src="{{ STATIC_URL }}chasebot/chasebot_add_deals.js"></script>
 {% endblock %}
 {% block title %}{{ template_title }}{% endblock %}
@@ -72,70 +73,6 @@
 			                	{% endif %}                        
 		                    </td>
 		                </tr>
-		                <tr>		                	
-		                	<table class="table edit_table">
-		                		<thead>
-		                			<tr>
-		                				{% if opendeals_add_form %}	 <td>{% trans 'Is the conversation about this deal?' %}</td>{%endif%}
-					                	<td class="bold_cb">				                		
-			        						{% trans 'Open Deals in Progress:'%}		
-				        				</td>
-					                </tr>
-		                		</thead>
-		                		<tbody>				                
-	                			{% if opendeal_formset.forms %}	                			
-					                {% for fs in opendeal_formset %}  
-					                	{{ fs.id }} 
-					            	<tr>
-					            		<td>
-					            			
-					            		</td>            		
-					                    <td>										
-											<input type="hidden" name="hidden-{{ fs.prefix }}-deal_template" value="{{fs.deal_template.value}}" />										
-											{% if opendeal_formset.non_form_errors %}
-						                	<div class="field field_error">
-						                    	{{fs.deal_instance_name}}                    	
-						                	</div>
-						                	{% else %}
-						                		{{fs.deal_instance_name}}					                		
-						                	{% endif %}
-					                    </td>
-					                    <td>                        
-					                        {% if fs.status.errors %}
-						                	<div class="field field_error">
-						                    	{{fs.status}} {{fs.status.errors}}                   	
-						                	</div>
-						                	{% else %}
-						                		{{fs.status}}					                		
-						                	{% endif %}                        
-					                    </td>
-					            	</tr>            	
-				            		{% endfor %}
-				            		{% if opendeal_formset.non_form_errors %}
-			            			<tr>
-			            				<td>
-			            					<div class="field field_error">
-			            						{{opendeal_formset.non_form_errors}}
-			            					</div>
-			            				</td>
-			            			</tr>	
-				            		{% endif %}
-			            		{% elif is_atleast_one_opendeal_attached %}
-				            		<tr>
-	                					<td>
-											{% trans 'All open deals are already attached to this conversation.' %}                						
-	                					</td>
-	                				</tr>
-	            				{% else %}
-	            					<tr>
-	                					<td>
-											{% trans 'No new deals are negotiated yet with this client.' %}                						
-	                					</td>
-	                				</tr>  
-			            		{% endif %}
-		                		</tbody>
-		                	</table>
-		                </tr>        	
 		            </tbody>
 		        </table>
 		    </div>
@@ -144,64 +81,7 @@
 		    			<tbody>
 		    				<tr>
 			            		{% include '_deal_add_edit.html' %}			            		
-			            	</tr>
-		    				<tr>
-			    				<!-- {{ attached_deals_formset.management_form }}	       -->          	
-				            	<table class="table edit_table">
-				            		<thead>
-				            			<tr>	                				
-						                	<td class="bold_cb">				                		
-				        						{% trans 'Deals attached to this Conversation:' %}			
-					        				</td>
-						                </tr>
-				            		</thead>
-				            		<tbody>				                
-									<!-- {% if attached_deals_formset.forms %}
-						                {% for fs in attached_deals_formset %}  
-						                	{{ fs.id }} 
-						            	<tr>
-						            		            		
-						                    <td>										
-												<input type="hidden" name="hidden-{{ fs.prefix }}-deal_template" value="{{fs.deal_template.value}}" />										
-												{% if attached_deals_formset.non_form_errors %}
-							                	<div class="field field_error">
-							                    	{{fs.deal_instance_name}}                    	
-							                	</div>
-							                	{% else %}
-							                		{{fs.deal_instance_name}}					                		
-							                	{% endif %}
-						                    </td>
-						                    <td>                        
-						                        {% if fs.status.errors %}
-							                	<div class="field field_error">
-							                    	{{fs.status}} {{fs.status.errors}}                   	
-							                	</div>
-							                	{% else %}
-							                		{{fs.status}}					                		
-							                	{% endif %}                        
-						                    </td>
-						            	</tr>            	
-					            		{% endfor %}
-					            		{% if attached_deals_formset.non_form_errors %}
-				            			<tr>
-				            				<td>
-				            					<div class="field field_error">
-				            						{{attached_deals_formset.non_form_errors}}
-				            					</div>
-				            				</td>
-				            			</tr>	
-					            		{% endif %}
-				            		{% else %}
-					            		<tr>
-				        					<td>
-												{% trans 'No deals attached yet to this conversation' %}                						
-				        					</td>
-				        				</tr>  
-				            		{% endif %} -->
-				            		</tbody>
-				            	</table>
-			            	</tr>
-			            	
+			            	</tr>			            	
 		    			</tbody>
 		    		</table>	        
 		    	</div>    

@@ -30,9 +30,8 @@
         		{% for fs in extra_deal_formset%}
         			{{fs.id}}
         			<table>
-						<tr class="hidden1">										
-							<td>
-								<!-- {{fs.is_form_cloned_by_ajax}} -->	
+						<tr class="hidden">										
+							<td>								
 								{{fs.attached_open_deal_id}}
 								{{fs.is_last_active_tab}}														
 							</td>
@@ -150,6 +149,14 @@
 		                    </td>
 	                    </tr>
 	                    <tr>
+	                    	<td>
+	                    		{{fs.DELETE.label}}:
+	                    	</td>
+	                    	<td>
+	                    		{{fs.DELETE}}
+	                    	</td>				                    	
+                    	</tr>	
+	                    <tr>
 	                    	<td>                        
 		                        
 		                    </td>
@@ -168,21 +175,18 @@
 					<ul class="nav nav-tabs" id="attached_deals_tab">
 					{% for fs in attached_deals_formset %}
 						{{ fs.id }}						
-						<li {% if fs.is_last_active_tab.value%}class="active"{% endif %}>
-							<!-- <a href="#{% if fs.is_form_cloned_by_ajax.value or fs.instance.pk %}{% trans 'Deal' %}{{forloop.counter0}}{% else %}X{% endif %}" data-toggle="tab">{% if fs.is_form_cloned_by_ajax.value or fs.instance.pk %}{% trans 'Deal' %} {{forloop.counter0}}{% else %}X{% endif %}</a> -->
-							<a href="#{{fs.deal_template_name.value|slugify}}" data-toggle="tab">{% if fs.attached_open_deal_id.value %}{{fs.deal_instance_name.value}}{% else %}{{fs.deal_template_name.value}}{%endif%}</a>
+						<li {% if fs.is_last_active_tab.value%}class="active"{% endif %}>							
+							<a href="#{% if fs.attached_open_deal_id.value or fs.instance.pk %}{{fs.deal_instance_name.value|slugify}}{% else %}{{fs.deal_template_name.value|slugify}}{%endif%}" data-toggle="tab">{% if fs.attached_open_deal_id.value or fs.instance.pk %}{{fs.deal_instance_name.value}}{% else %}{{fs.deal_template_name.value}}{%endif%}</a>
 						</li>					
 					{% endfor %}
 					</ul>	
 					<div class="tab-content" id='tab-content'>
 						{% for fs in attached_deals_formset %}
-						{{ fs.id }}										
-							<!-- <div class="tab-pane" id="{% if fs.is_form_cloned_by_ajax.value or fs.instance.pk %}{% trans 'Deal' %}{{forloop.counter0}}{% else %}X{% endif %}"> -->
-							<div class="tab-pane {% if fs.is_last_active_tab.value%}active{% endif %}" id="{{fs.deal_template_name.value|slugify}}">								
+						{{ fs.id }}							
+							<div class="tab-pane {% if fs.is_last_active_tab.value%}active{% endif %}" id="{% if fs.attached_open_deal_id.value or fs.instance.pk %}{{fs.deal_instance_name.value|slugify}}{% else %}{{fs.deal_template_name.value|slugify}}{%endif%}">								
 								<table>
-									<tr class="hidden1">										
-										<td>
-											<!-- {{fs.is_form_cloned_by_ajax}} -->
+									<tr class="hidden">										
+										<td>											
 											{{fs.attached_open_deal_id}}		
 											{{fs.is_last_active_tab}}																	
 										</td>
@@ -299,6 +303,14 @@
 						                	{% endif %}                        
 					                    </td>
 				                    </tr>
+				                    <tr>
+				                    	<td>
+				                    		{{fs.DELETE.label}}:
+				                    	</td>
+				                    	<td>
+				                    		{{fs.DELETE}}
+				                    	</td>				                    	
+			                    	</tr>				                    
 				                    <tr>
 				                    	<td>                        
 					                        

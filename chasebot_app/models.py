@@ -111,7 +111,7 @@ class Contact(models.Model):
                 INNER JOIN (    \
                     SELECT    \
                         deal_id,    \
-                        MAX(ARRAY[EXTRACT(EPOCH FROM time_stamp),id])    \
+                        MAX(ARRAY[EXTRACT(EPOCH FROM deal_datetime),id])    \
                         AS compound_time_stamp    \
                     FROM    \
                         chasebot_app_deal    \
@@ -119,7 +119,7 @@ class Contact(models.Model):
                 ) AS l2    \
                 ON    \
                 l1.deal_id = l2.deal_id AND    \
-                  EXTRACT(EPOCH FROM l1.time_stamp) = l2.compound_time_stamp[1] AND    \
+                  EXTRACT(EPOCH FROM l1.deal_datetime) = l2.compound_time_stamp[1] AND    \
                   l1.id = l2.compound_time_stamp[2]    \
                   WHERE contact_id = %s and l1.deal_id not in (select deal_id from chasebot_app_deal where status_id in (5, 6))'
         return Deal.objects.raw(query, [self.id])
@@ -167,7 +167,6 @@ class DealTemplate(models.Model):
 
 class Conversation(models.Model):
     contact             = models.ForeignKey(Contact)
-    time_stamp          = CreationDateTimeField()
     conversation_datetime = models.DateTimeField()    
     subject             = models.CharField(_(u'Conversation Subject'),      max_length=50)
     notes               = models.TextField(_(u'Conversation Notes'),        blank=True)
@@ -189,7 +188,7 @@ class Deal(models.Model):
     contact             = models.ForeignKey(Contact)
     deal_template       = models.ForeignKey(DealTemplate)
     deal_template_name  = models.CharField(_(u'Deal Template Name'), max_length=100, blank=True)
-    time_stamp          = CreationDateTimeField()
+    deal_datetime       = models.DateTimeField()
     conversation        = models.ForeignKey(Conversation)
     set                 = models.PositiveIntegerField(_(u'Set Number'))
     deal_instance_name  = models.CharField(_(u'Deal Name'), max_length=100, blank=True)        
