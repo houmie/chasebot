@@ -132,10 +132,13 @@ class DealsAddForm(Form):
     def __init__(self, company, call, contact, *args, **kwargs):
         super(DealsAddForm, self).__init__(*args, **kwargs)        
         exclude_list = []
+        # The following are all deals attached to this calls.
         attached_deals_to_call_query = call.deal_set.all()
         opendeals_query = get_open_deals_query(contact) 
+        #The dropdown should not show templates, whos instances are still open but not yet attached. Only negotiate a new deal, if the existing deals are closed.  
         for deal in opendeals_query:
             exclude_list.append(deal.deal_template.pk)
+        #The dropdown should also not show templates, whos instances are attached to this call.
         for deal in attached_deals_to_call_query:
             exclude_list.append(deal.deal_template.pk)
         self.fields['deal_template'].queryset = company.dealtemplate_set.exclude(id__in=exclude_list)

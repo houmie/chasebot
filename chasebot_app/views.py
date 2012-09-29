@@ -165,8 +165,11 @@ def get_opendeal(request, deal_id, contact_id=None):
         
 
 def remove_redundant_future_deals(contact, deal):
+    #we need to remove all later entries of this instance on later conversations, if it has been closed.
+    #The deal date_time is always the same as the conversation datetime, hence when we delete all deal instances for later than this closed deal,
+    #we would be removing those later deal instances from future conversations.
     if (deal.status.pk in [5, 6]):
-        later_deals_to_be_removed = contact.deal_set.filter(deal_datetime__gt=deal.deal_datetime)
+        later_deals_to_be_removed = contact.deal_set.filter(deal_id = deal.deal_id).filter(deal_datetime__gt=deal.deal_datetime)
         for bad_deal in later_deals_to_be_removed:
             bad_deal.delete()    
     
@@ -182,7 +185,9 @@ def conversation_add_edit(request, contact_id, call_id=None):
     else:
         call = get_object_or_404(contact.conversation_set.all(), pk=call_id)
     
+    #All kind of deals attached (open or new) will be defined here
     deals_formset_factory = modelformset_factory(Deal, form=DealForm, extra=0, can_delete=True, max_num=5)
+    #This formset contains an empty template in order to be cloned with jquery later on and added to attached_deals for saving
     extra_deal_formset_factory = formset_factory(DealForm, extra=1, max_num=1, can_delete=True)    
     attached_deals_to_call_query = call.deal_set.all()    
             
@@ -201,16 +206,19 @@ def conversation_add_edit(request, contact_id, call_id=None):
             call.conversation_datetime = date_time
             call.save()
             
-            for fm in attached_deals_formset:            
+            for fm in attached_deals_formset:                            
                 to_delete = fm.cleaned_data['DELETE']
                 if to_delete:
-                    deal_to_delete = fm.save(commit=False)
+                    deal_to_delete = fm.save(commit=False)                    
                     deal_to_delete.delete()
                     continue
                 if fm.has_changed():
+                    # If the open_deal_id exists this is a open deal (continuation of an existing deal instance)
                     if fm.cleaned_data['attached_open_deal_id']: 
                         actual_deal = contact.deal_set.get(pk=fm.cleaned_data['attached_open_deal_id'])
-                        modified_deal = fm.save(commit=False)                        
+                        modified_deal = fm.save(commit=False)
+                        #when adding an Open deals, we create a new entry but keep the same deal_id (UUID) and same set number.
+                        #Until this instance has been closed. Where from then on the instance won't appear in the open deals dropdown any more. 
                         deal = Deal.objects.create(
                                             deal_id=actual_deal.deal_id,
                                             deal_datetime=call.conversation_datetime, 
@@ -226,33 +234,43 @@ def conversation_add_edit(request, contact_id, call_id=None):
                                             sales_term = modified_deal.sales_term,
                                             quantity = modified_deal.quantity                                            
                                             )
+                        #Saving M2M 
                         for item in fm.cleaned_data['sales_item']:
                             deal.sales_item.add(item)
                         deal.save();
+                        #If the open deal instance is closed, we need to remove all later entries of this instance on later conversations.
                         remove_redundant_future_deals(contact, deal)
                     else:                
-                        deal = fm.save(commit=False)
-                        set_dic = contact.deal_set.filter(deal_template_id=deal.deal_template.id).aggregate(Max('set'))
-                        set_val = set_dic.get('set__max', 0)
-                        if not set_val:
-                            set_val = 0                                 
+                        #At this point it is a change to an existing attached deal OR
+                        #It is adding a new deal to this conversation
+                        deal = fm.save(commit=False)                                                         
                         deal.contact = contact
                         deal.conversation = call   
                         deal.deal_datetime=call.conversation_datetime
                         if deal.pk is None:
-                            deal.status = DealStatus.objects.get(pk=1)
+                            #At this point it can only be a new deal added, 
+                            #hence a new UUID will be automatically created and the max set nr will be increased by one and status is set to 0% pending
+                            deal.status = DealStatus.objects.get(pk=1)                             
+                            set_dic = contact.deal_set.filter(deal_template_id=deal.deal_template.id).aggregate(Max('set'))                            
+                            set_val = set_dic.get('set__max', 0)
+                            if not set_val:
+                                set_val = 0
                             deal.set=set_val+1                        
                         deal.save()
                         fm.save_m2m()
+                        #If the attached or even new deal are closed, we need to remove all later entries of this instance on later conversations.
                         remove_redundant_future_deals(contact, deal)
             return HttpResponseRedirect('/contact/' + contact_id + '/calls/')        
             
-    else:        
+    else:
+        #Deals_add_form contains only one dropdown to add new deals. It contains the logic for excluding open/attached deals accordingly 
         deals_add_form = DealsAddForm(profile.company, call, contact, prefix='deals_add_form')
         form = ConversationForm(profile.company, instance=call, prefix='form')                      
         attached_deals_formset = deals_formset_factory(queryset=attached_deals_to_call_query, prefix='deals')                       
+        #opendeass_add_form contains only one dropdown to add open deals. It contains the logic for excluding open/attached deals accordingly
         opendeals_add_form = OpenDealsAddForm(profile.company, call, contact, prefix='opendeals_add_form')
     
+    #The extra deal formset will always be independent of POST/GET since its hidden and remains empty as a starting point for cloning
     extra_deal_formset = extra_deal_formset_factory(prefix='extra_deal')
     variables = {'form':form, 'deals_add_form':deals_add_form, 'opendeals_add_form':opendeals_add_form, 'attached_deals_formset':attached_deals_formset, 'contact_id':contact.pk, 'extra_deal_formset':extra_deal_formset }
     variables = merge_with_localized_variables(request, variables)   

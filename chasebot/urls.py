@@ -40,6 +40,7 @@ urlpatterns = patterns('',
     (r'^contact/(?P<contact_id>\d+)/call/add/$', conversation_add_edit),    
     (r'^contact/(?P<contact_id>\d+)/calls/$', conversation_display),
     
+    #Ajax
     (r'^deal_template/(?P<deal_template_id>\d+)/$', get_deal_template),
     (r'^open_deal/(?P<deal_id>\d+)/(?P<contact_id>\d+)/$', get_opendeal),
     
