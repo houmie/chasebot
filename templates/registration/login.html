@@ -1,18 +1,54 @@
 {% extends "base.html" %}
-{% block title %}Django Bookmarks - user login{% endblock %}
-{% block head %}User login{% endblock %}
-{% block content %}{% if form.errors %}
-<p>Your username and password didn't match</p>
-{% endif %}
-<form action="." method="post">
-    <p>
-        <label for="id_username">Username:</label>{{ form.username }}
-    </p>
-    <p>
-        <label for="id_password">Password:</label>{{ form.password }}
-    </p>
+{% load i18n %}
+{% block title %}User Login{% endblock %}
+{% block head %}User Login{% endblock %}
+{% block content %}
+
+<form action="." method="post">    
+    <table class="table edit_table">
+    	<tr>
+    		<td>
+    			{{ form.username.label }}:    			
+    		</td>
+    		<td>
+    			{% if form.username.errors %}
+					<div class="field field_error cb_inline">
+						{{ form.username }}	{{ form.username.errors }}	
+					</div>
+				{% else %}
+					{{form.username}}
+				{% endif %}
+    		</td>
+    	</tr>
+    	<tr>
+    		<td>
+    			{{ form.password.label }}:
+    		</td>
+    		<td>
+    			{% if form.password.errors %}
+				<div class="field field_error cb_inline">
+			    	{{form.password}} {{form.password.errors}}                   	
+				</div>
+				{% else %}
+					{{form.password}}
+				{% endif %}    			
+    		</td>
+    	</tr>
+    </table>           
+    
+	{% if form.errors %}	
+		{% for key, err in form.errors.items %}
+			{% if key == 'username' or key == 'password' %}
+			{% else %}
+				<div class="field field_error">{{err}}</div>
+			{% endif%}
+		{% endfor %}
+	{% endif %}
+    
     {% csrf_token %}
     <input type="hidden" name="next" value="/" />
-    <input type="submit" value="login" />
-</form>{% endblock %}
+    <input type="submit" value="{% trans 'Login' %}" class="btn btn-primary"/>
+</form>
+{% endblock %}
+
 

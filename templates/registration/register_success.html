@@ -1,9 +1,9 @@
 {% extends "base.html" %}
-{% block title %}Regiustration Successful{% endblock %}
-{% block head %}Registration Completed Succesfully{% endblock %}
+{% load i18n %}
+{% block external %}<meta http-equiv="refresh" content="5;url=/login/">{% endblock %}
+{% block title %}{% trans 'Registration Successful' %}{% endblock %}
+{% block head %}{% trans 'Registration Completed Succesfully' %}{% endblock %}
 {% block content %}
-Thank you for registering. Your information has been
-saved in the database. Now you can either
-<a href="/login/">login</a> or go back to the
-<a href="/">main page</a>.
+{% trans 'Thank you for registeration.'  %}
+{% trans 'You will be redirected to the login page in 5 seconds...' %}
 {% endblock %}

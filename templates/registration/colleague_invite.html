@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}{% trans 'Invite Your Colleagues' %}{% endblock %}
+{% block head %}{% trans 'Invite Your Colleagues' %}{% endblock %}
+{% block content %}
+{% blocktrans %}Enter your colleague's name and email below, and click "send invite" to invite your colleague to join Chasebot{% endblocktrans %}
+<form method="post" action=".">
+	{% csrf_token %}
+  <table class="table edit_table">
+    	<tr>
+    		<td>
+    			{{ form.name.label }}:    			
+    		</td>
+    		<td>
+    			{% if form.name.errors %}
+					<div class="field field_error cb_inline">
+						{{ form.name }}	{{ form.name.errors }}	
+					</div>
+				{% else %}
+					{{form.name}}
+				{% endif %}
+    		</td>
+    	</tr>
+    	<tr>
+    		<td>
+    			{{ form.email.label }}:
+    		</td>
+    		<td>
+    			{% if form.email.errors %}
+				<div class="field field_error cb_inline">
+			    	{{form.email}} {{form.email.errors}}                   	
+				</div>
+				{% else %}
+					{{form.email}}
+				{% endif %}    			
+    		</td>
+    	</tr>
+    </table>  
+  <input type="submit" value="{% trans 'Send Invite' %}" class="btn btn-primary"/>
+</form>
+{% endblock %}

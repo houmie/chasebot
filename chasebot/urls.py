@@ -7,7 +7,8 @@ from chasebot_app.views import logout_page, contact_delete, conversation_display
      charts_display, conversation_add_edit, sales_item_cancel, set_timezone,\
      contacts_display, register_page, contact_add_edit,\
     sales_item_autocomplete, contacts_autocomplete, conversations_autocomplete,\
-    deal_autocomplete, get_deal_template, get_opendeal
+    deal_autocomplete, get_deal_template, get_opendeal, colleague_invite,\
+    colleague_accept
 
 admin.autodiscover()
 
@@ -28,6 +29,8 @@ urlpatterns = patterns('',
     (r'^password_reset_complete/$','django.contrib.auth.views.password_reset_complete'),
     (r'^register/$', register_page),
     (r'^register/success/$', direct_to_template, {'template': 'registration/register_success.html'}),
+    (r'^colleague/invite/$', colleague_invite),
+    (r'^colleague/accept/(\w+)/$', colleague_accept),
 
     #Browsing
     (r'^$', contacts_display),
@@ -43,8 +46,7 @@ urlpatterns = patterns('',
     #Ajax
     (r'^deal_template/(?P<deal_template_id>\d+)/$', get_deal_template),
     (r'^open_deal/(?P<deal_id>\d+)/(?P<contact_id>\d+)/$', get_opendeal),
-    
-
+        
     (r'^sales_item/add/$', sales_item_add_edit),    
     (r'^sales_item/edit/(?P<sales_item_id>\d+)/$', sales_item_add_edit),
     (r'^sales_item/edit/cancel/(?P<sales_item_id>\d+)/$', sales_item_cancel),    

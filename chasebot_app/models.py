@@ -4,6 +4,10 @@ from django.utils.translation import ugettext_lazy as _
 from django_extensions.db.fields import UUIDField, CreationDateTimeField
 from django.utils.encoding import smart_unicode
 from django.core.validators import MinValueValidator
+from chasebot import settings
+from django.template.loader import get_template
+from django.template.context import Context
+from django.core.mail import send_mail
 
 
 
@@ -208,8 +212,6 @@ class Deal(models.Model):
         self.deal_instance_name = self.__unicode__()
         self.deal_template_name = self.deal_template.deal_name
         super(Deal, self).save(*args, **kwargs) # Call the "real" save() method.
-        
-
     
     class Meta:
         verbose_name = _(u'Deal')
@@ -217,7 +219,22 @@ class Deal(models.Model):
     
     
 
+class Invitation(models.Model):
+    name = models.CharField(max_length=50)
+    email = models.EmailField()
+    code = models.CharField(max_length=20)
+    sender = models.ForeignKey(User)
     
+    def __unicode__(self):
+        return u'%s, %s' % (self.sender.username, self.email)    
+
+    def send(self):
+        subject = u'Invitation to join Chasebot'
+        link = 'http://%s/colleague/accept/%s/' % (settings.SITE_HOST, self.code)
+        template = get_template('invitation_email.txt')
+        context = Context({'name': self.name, 'link': link, 'sender': self.sender.username, })
+        message = template.render(context)
+        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [self.email])    
     
 
     

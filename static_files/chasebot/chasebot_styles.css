@@ -14,7 +14,7 @@ body {
 	border: 2px solid #FF0000;
 }*/
 
-div.field_error input[type=text] , div.field_error select, li.field_error{
+div.field_error input[type=text], div.field_error input[type=password], div.field_error select, li.field_error{
 	color: red;
 	border: 2px solid #FF0000;	 
 }
@@ -25,7 +25,7 @@ div.field_error ul{
 
 
 
-div.field_error li{
+div.field_error li, div.field_error p{
 	color: red;
 }
 
@@ -75,6 +75,11 @@ td.center_cb{
 
 .cb_align_right {
     float: right;
+}
+
+
+.cb_inline ul, li {
+    display: inline;
 }
 
 .cb_inline_block {
@@ -147,3 +152,4 @@ a.btn-link-left{
 	left: 25px; 
 	z-index: 1031
 }
+

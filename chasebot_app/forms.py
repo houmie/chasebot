@@ -7,21 +7,31 @@ from django import forms
 import re
 from django.contrib.auth.models import User
 from django.forms import ModelForm
-from chasebot_app.models import UserProfile, Contact, ContactType, Country, MaritalStatus, Conversation, SalesItem, DealTemplate, SalesTerm, Deal
+from chasebot_app.models import Contact, ContactType, Country, MaritalStatus, Conversation, SalesItem, DealTemplate, SalesTerm, Deal,\
+    Invitation
 from django.forms.models import BaseModelFormSet
 from django.utils.translation import ugettext_lazy as _
 
-class RegistrationForm(ModelForm):
+class RegistrationForm(Form):
+    def __init__(self, *args, **kwargs):
+        company_name = kwargs.pop('_company_name', None)
+        company_email = kwargs.pop('_company_email', None)
+        is_accept_invite = kwargs.pop('is_accept_invite', None)
+        super(RegistrationForm, self).__init__(*args, **kwargs)
+        if is_accept_invite:                        
+            self.fields['company_name'].required = False;
+            self.fields['company_email'].required = False;
+            self.fields['company_name'].widget.attrs['readonly'] = True
+            self.fields['company_email'].widget.attrs['readonly'] = True
+            self.fields['company_name'].initial = company_name
+            self.fields['company_email'].initial = company_email
+    
     username        = forms.CharField(label = _(u'Username'), max_length=30)
     company_name    = forms.CharField(label = _(u'Company'), max_length=50)
     company_email   = forms.EmailField(label= _(u'Company Email'))
     email           = forms.EmailField(label= _(u'Email'))
     password        = forms.CharField(label = _(u'Password'), widget=forms.PasswordInput(render_value=False))
     password2       = forms.CharField(label = _(u'Password (Again)'), widget=forms.PasswordInput(render_value=False))
-
-    class Meta:
-        model = UserProfile
-        exclude = ('user', 'company')
 
     def clean_password2(self):
         if 'password' in self.cleaned_data:
@@ -45,7 +55,7 @@ class RegistrationForm(ModelForm):
         email = self.cleaned_data['email']
         users = User.objects.filter(email=email)
         if users.count() > 0:
-            raise forms.ValidationError(_(u"That email is already taken, please select another."))
+            raise forms.ValidationError(_(u"The email is already taken, please select another."))
         return email
 
 
@@ -287,7 +297,10 @@ class BaseDealFormSet(BaseModelFormSet):
             deal_templates.append(deal_template)
             
             
-                
+class ColleagueInviteForm(ModelForm):
+    class Meta:
+        model = Invitation
+        fields = {'name', 'email'}
             
         
    

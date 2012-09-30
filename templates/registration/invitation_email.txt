@@ -1,0 +1,7 @@
+Hi {{ name }},
+{{ sender }} invited you to join Chasebot,  
+  a social Sales Automation CRM where you can increase your sales quote!
+
+To accept the invitation, please click the link below:
+{{ link }}
+-- Chasebot.com

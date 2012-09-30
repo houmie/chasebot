@@ -8,8 +8,9 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from chasebot_app.forms import RegistrationForm, ContactsForm, ConversationForm, SalesItemForm, DealTemplateForm,\
      DealForm, FilterContactsForm, FilterConversationForm, FilterDealsForm, FilterSalesItemForm,\
-    DealsAddForm, OpenDealsAddForm
-from chasebot_app.models import Company, Contact, Conversation, SalesItem, DealTemplate, DealStatus, Deal, SalesTerm
+    DealsAddForm, OpenDealsAddForm, ColleagueInviteForm
+from chasebot_app.models import Company, Contact, Conversation, SalesItem, DealTemplate, DealStatus, Deal, SalesTerm,\
+    Invitation
 from chasebot_app.models import UserProfile
 from django.utils.translation import ugettext as _
 from django.utils import timezone, simplejson
@@ -26,6 +27,7 @@ import operator
 from django.db.models.query_utils import Q
 from chasebot_app.json_extension import toJSON
 from django.forms.formsets import formset_factory
+from django.contrib import messages
 
 ITEMS_PER_PAGE = 3
 
@@ -483,47 +485,45 @@ def register_page(request):
     if request.user.is_authenticated():
         return HttpResponseRedirect('/')    
     if request.method == 'POST':
-        form = RegistrationForm(request.POST)
+        if 'invitation' in request.session:
+            invitation = Invitation.objects.get(id=request.session['invitation'])
+            profile = invitation.sender.get_profile()            
+            form = RegistrationForm(request.POST, is_accept_invite = True, _company_name = profile.company.company_name, _company_email = profile.company.company_email)
+        else:
+            form = RegistrationForm(request.POST)
         if form.is_valid():
-            usr = User.objects.create_user(
+            user = User.objects.create_user(
                 username=form.cleaned_data['username'],
                 password=form.cleaned_data['password2'],
                 email=form.cleaned_data['email']
             )
-            usr.save()
+            
+            if 'invitation' in request.session:
+                # Retrieve the invitation object.
+                invitation = Invitation.objects.get(id=request.session['invitation'])                
+                profile = invitation.sender.get_profile()                
+                userProfile = UserProfile(user=user, company = profile.company)
+                userProfile.save()
+                # Delete the invitation from the database and session.
+                invitation.delete()
+                del request.session['invitation']
+            else:            
+                company = Company.objects.create(
+                    company_name = form.cleaned_data['company_name'],
+                    company_email = form.cleaned_data['company_email']
+                )
+                userProfile = UserProfile(user=user, company = company)
+                userProfile.save()                
 
-            company = Company.objects.create()
-            company.company_name = form.cleaned_data['company_name']
-            company.company_email = form.cleaned_data['company_email']
-            company.save()
-
-            userProfile = UserProfile(user=usr, company = company)
-            userProfile.save()
-
-#            userProfile = usr.get_profile()
-#            userProfile.company = company
-#            userProfile.save()
-
-
-            #usr.UserProfile.company.company_name=form.cleaned_data['company_name']
-            #usr.save()
-
-#            if 'invitation' in request.session:
-#                # Retrieve the invitation object.
-#                invitation = Invitation.objects.get(id=request.session['invitation'])
-#                # Create friendship from user to sender.
-#                friendship = Friendship(from_friend=user, to_friend=invitation.sender)
-#                friendship.save()
-#                # Create friendship from sender to user.
-#                friendship = Friendship (from_friend=invitation.sender, to_friend=user)
-#                friendship.save()
-#                # Delete the invitation from the database and session.
-#                invitation.delete()
-#                del request.session['invitation']
             return HttpResponseRedirect('/register/success/')
     else:
-        form = RegistrationForm()    
-    variables = {'form':form,}
+        if 'invitation' in request.session:
+            invitation = Invitation.objects.get(id=request.session['invitation'])
+            profile = invitation.sender.get_profile()            
+            form = RegistrationForm(is_accept_invite = True, _company_name = profile.company.company_name, _company_email = profile.company.company_email)
+        else:            
+            form = RegistrationForm()     
+    variables = {'form':form}
     variables = merge_with_localized_variables(request, variables)   
     return render(request, 'registration/register.html', variables)
 
@@ -625,6 +625,36 @@ def prepare_json_for_autocomplete(fieldname, queryset):
     for item in queryset:
         to_json.append(str(getattr(item, fieldname)))
     return to_json
+
+
+@login_required
+def colleague_invite(request):
+    request.LANGUAGE_CODE
+    if request.method == 'POST':
+        form = ColleagueInviteForm(request.POST)
+        if form.is_valid():
+            invitation = Invitation(
+                                    name=form.cleaned_data['name'],
+                                    email=form.cleaned_data['email'],
+                                    code=User.objects.make_random_password(20),
+                                    sender=request.user
+                                    )
+            invitation.save()
+            try:
+                invitation.send()                
+                messages.success(request, _(u'An invitation was sent to %s.') % invitation.email)
+            except Exception:                
+                messages.error(request, _(u'An error happened when sending the invitation.'))            
+            return HttpResponseRedirect('/colleague/invite/')
+    else:
+        form = ColleagueInviteForm()
+    variables = {'form': form }
+    return render(request, 'registration/colleague_invite.html', variables)
+
+def colleague_accept(request, code):
+    invitation = get_object_or_404(Invitation, code__exact=code)
+    request.session['invitation'] = invitation.id
+    return HttpResponseRedirect('/register/')
     
 
 def part_of_day_statistics(x):
