@@ -8,8 +8,14 @@ f = open('/home/houman/projects/chasebot/database/country_code_drupal_nov_2011.t
 
 
 cur.execute("INSERT INTO chasebot_app_company (company_name, company_email) VALUES ('Venus Cloud Ltd', 'info@venuscloud.com');")
-#cur.execute("INSERT INTO chasebot_app_company (company_name, company_email) VALUES ('Your Company Ltd', 'info@venuscloud.com');")
-cur.execute("INSERT INTO chasebot_app_userprofile (user_id, company_id) VALUES (1, 1);")
+
+cur.execute("INSERT INTO chasebot_app_licensetemplate (name, max_users, description, price) VALUES ('Solo', '1', 'Solo plan (1 user, 5 GB file storage, max 20,000 contacts)', '24');")
+cur.execute("INSERT INTO chasebot_app_licensetemplate (name, max_users, description, price) VALUES ('Basic', '2', 'Free plan (2 users, no file storage, max 275 contacts)', '0');")
+cur.execute("INSERT INTO chasebot_app_licensetemplate (name, max_users, description, price) VALUES ('Standard', '6', 'For small teams (6 users, 6 GB file storage, max 6,000 contacts)', '19');")
+cur.execute("INSERT INTO chasebot_app_licensetemplate (name, max_users, description, price) VALUES ('Premium', '15', 'For mid-sized teams (15 users, 15 GB file storage, 15,000 contacts)', '39');")
+cur.execute("INSERT INTO chasebot_app_licensetemplate (name, max_users, description, price) VALUES ('Coorporate', '42', 'For large teams (40 users, 40 GB file storage, 40,0000 contacts)', '89');")
+
+cur.execute("INSERT INTO chasebot_app_userprofile (user_id, company_id, is_cb_superuser, license_id) VALUES (1, 1, TRUE, 3);")
 
 cur.execute("INSERT INTO chasebot_app_contacttype (contact_type) VALUES ('Supplier'),('Customer');")
 cur.execute("INSERT INTO chasebot_app_gender (gender) VALUES ('Female'),('Male');")

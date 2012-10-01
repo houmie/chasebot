@@ -1,6 +1,6 @@
 import datetime
 from datetime import datetime as dt 
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, HttpResponseForbidden
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -10,9 +10,9 @@ from chasebot_app.forms import RegistrationForm, ContactsForm, ConversationForm,
      DealForm, FilterContactsForm, FilterConversationForm, FilterDealsForm, FilterSalesItemForm,\
     DealsAddForm, OpenDealsAddForm, ColleagueInviteForm
 from chasebot_app.models import Company, Contact, Conversation, SalesItem, DealTemplate, DealStatus, Deal, SalesTerm,\
-    Invitation
+    Invitation, LicenseTemplate
 from chasebot_app.models import UserProfile
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, ungettext
 from django.utils import timezone, simplejson
 from django.forms.models import modelformset_factory
 import uuid
@@ -488,21 +488,21 @@ def register_page(request):
         if 'invitation' in request.session:
             invitation = Invitation.objects.get(id=request.session['invitation'])
             profile = invitation.sender.get_profile()            
-            form = RegistrationForm(request.POST, is_accept_invite = True, _company_name = profile.company.company_name, _company_email = profile.company.company_email)
+            form = RegistrationForm(request.POST, is_accept_invite = True, _company_name = profile.company.company_name, _company_email = profile.company.company_email, _email = invitation.email)
         else:
             form = RegistrationForm(request.POST)
         if form.is_valid():
             user = User.objects.create_user(
                 username=form.cleaned_data['username'],
                 password=form.cleaned_data['password2'],
-                email=form.cleaned_data['email']
+                email=form.cleaned_data['email']                
             )
             
             if 'invitation' in request.session:
                 # Retrieve the invitation object.
                 invitation = Invitation.objects.get(id=request.session['invitation'])                
                 profile = invitation.sender.get_profile()                
-                userProfile = UserProfile(user=user, company = profile.company)
+                userProfile = UserProfile(user=user, company = profile.company, is_cb_superuser=False, license = profile.license)
                 userProfile.save()
                 # Delete the invitation from the database and session.
                 invitation.delete()
@@ -512,17 +512,17 @@ def register_page(request):
                     company_name = form.cleaned_data['company_name'],
                     company_email = form.cleaned_data['company_email']
                 )
-                userProfile = UserProfile(user=user, company = company)
-                userProfile.save()                
+                userProfile = UserProfile(user=user, company = company, is_cb_superuser=False, license = LicenseTemplate.objects.get(pk=3))
+                userProfile.save()
 
             return HttpResponseRedirect('/register/success/')
     else:
         if 'invitation' in request.session:
             invitation = Invitation.objects.get(id=request.session['invitation'])
             profile = invitation.sender.get_profile()            
-            form = RegistrationForm(is_accept_invite = True, _company_name = profile.company.company_name, _company_email = profile.company.company_email)
+            form = RegistrationForm(is_accept_invite = True, _company_name = profile.company.company_name, _company_email = profile.company.company_email, _email = invitation.email)
         else:            
-            form = RegistrationForm()     
+            form = RegistrationForm()
     variables = {'form':form}
     variables = merge_with_localized_variables(request, variables)   
     return render(request, 'registration/register.html', variables)
@@ -629,7 +629,10 @@ def prepare_json_for_autocomplete(fieldname, queryset):
 
 @login_required
 def colleague_invite(request):
-    request.LANGUAGE_CODE
+    profile = request.user.get_profile()
+    if not profile.is_cb_superuser:
+        return HttpResponseForbidden()
+    
     if request.method == 'POST':
         form = ColleagueInviteForm(request.POST)
         if form.is_valid():
@@ -648,8 +651,15 @@ def colleague_invite(request):
             return HttpResponseRedirect('/colleague/invite/')
     else:
         form = ColleagueInviteForm()
-    variables = {'form': form }
+    
+    user_profiles = profile.company.userprofile_set.all()
+       
+    license_template = profile.license
+    count = (license_template.max_users-len(user_profiles))
+    template_announcement_1 = ungettext(u'Currently you can invite %(count)s more colleague to Chasebot', u'Currently you can invite %(count)s more colleagues to Chasebot', count) % {'count' : count}
+    variables = {'form': form, 'license': license_template, 'user_profiles':user_profiles, 'template_announcement_1':template_announcement_1}
     return render(request, 'registration/colleague_invite.html', variables)
+
 
 def colleague_accept(request, code):
     invitation = get_object_or_404(Invitation, code__exact=code)

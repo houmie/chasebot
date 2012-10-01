@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from django_extensions.db.fields import UUIDField, CreationDateTimeField
-from django.utils.encoding import smart_unicode
 from django.core.validators import MinValueValidator
 from chasebot import settings
 from django.template.loader import get_template
@@ -21,10 +20,25 @@ class Company(models.Model):
         verbose_name_plural = _(u'Companies')
 
 
+class LicenseTemplate(models.Model):
+    name        = models.CharField(_('License Type'), max_length=50)
+    description = models.TextField(_('Description'))
+    max_users   = models.PositiveIntegerField(_('Maximum Users'))
+    price       = models.DecimalField(_(u'Price'), decimal_places=2, max_digits=12, validators=[MinValueValidator(0.01)])
+        
+    def __unicode__(self):
+        return u'%s' % (self.name)
+    class Meta:
+        verbose_name = _(u'License')
+        verbose_name_plural = _(u'Licenses')
+
 
 class UserProfile(models.Model):
     user                = models.OneToOneField(User)
     company             = models.ForeignKey(Company)
+    is_cb_superuser     = models.BooleanField()
+    license             = models.ForeignKey(LicenseTemplate)
+    
     def __unicode__(self):
         return u'%s, %s' % (self.user.username, self.company.company_name)
     class Meta:
@@ -231,7 +245,7 @@ class Invitation(models.Model):
     def send(self):
         subject = u'Invitation to join Chasebot'
         link = 'http://%s/colleague/accept/%s/' % (settings.SITE_HOST, self.code)
-        template = get_template('invitation_email.txt')
+        template = get_template('registration/invitation_email.txt')
         context = Context({'name': self.name, 'link': link, 'sender': self.sender.username, })
         message = template.render(context)
         send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [self.email])    

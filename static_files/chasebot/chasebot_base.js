@@ -388,7 +388,13 @@ var isVisible = false;
 var clickedAway = false;
 
 
-
+function invite_colleague(event){
+	event.preventDefault();
+	$(this).button('loading');
+	//$(this).button('reset')
+	$('#form_invite').submit();
+	
+}
 
 
 $(document).ready(function (){	 	
@@ -404,6 +410,7 @@ $(document).ready(function (){
     		format: $('#locale').text(),
     		autoclose: 'True'
 		});
+	$('#invite-button').click(invite_colleague)
 	
 // $(document).click(function(e){
   // if(isVisible & clickedAway){

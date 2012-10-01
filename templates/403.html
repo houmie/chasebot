@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block external %}<meta http-equiv="refresh" content="5;url=/">{% endblock %}
+{% block title %}{% trans 'Access Restricted' %}{% endblock %}
+{% block content %}
+<h1>{% trans 'Access Restricted' %}</h1>
+
+<p>{% trans 'Sorry, but you seem to be not the super user of your company.' %}</p>
+<p>{% trans 'The person that purchased a license from Chasebot will automatically be the superuser and may access this page.' %}</p>
+<p>{% trans 'You will be redirected to the main page in 5 seconds...' %}</p>
+{% endblock %}

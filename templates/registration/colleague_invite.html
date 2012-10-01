@@ -3,8 +3,77 @@
 {% block title %}{% trans 'Invite Your Colleagues' %}{% endblock %}
 {% block head %}{% trans 'Invite Your Colleagues' %}{% endblock %}
 {% block content %}
-{% blocktrans %}Enter your colleague's name and email below, and click "send invite" to invite your colleague to join Chasebot{% endblocktrans %}
-<form method="post" action=".">
+
+<table class="table">
+	<caption><strong>{% trans 'Your company is currently using the following license:' %}</strong></caption>
+	<thead>
+		<tr>
+			<td>
+				{% trans 'License Type' %}
+			</td>
+			<td>
+				{% trans 'License Description' %}				
+			</td>		
+			<td>
+				{% trans 'Maximum Users' %}				
+			</td>
+			<td>
+				{% trans 'Price' %}
+			</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>
+				{{license.name}}
+			</td>
+			<td>
+				{{license.description}}
+			</td>		
+			<td>
+				{{license.max_users}}
+			</td>
+			<td>
+				{{license.price}}
+			</td>
+		</tr>
+	</tbody>	
+</table>
+
+<table class="table">
+	<caption><strong>{% trans 'The following users in your company are currently working with Chasebot:' %}</strong></caption>
+	<thead>
+		<tr>
+			<td>{% trans 'First Name' %}</td>
+			<td>{% trans 'Last Name' %}</td>
+			<td>{% trans 'Username' %}</td>
+			<td>{% trans 'Email' %}</td>
+			<td>{% trans 'Superuser' %}</td>
+		</tr>
+	</thead>
+	<tbody>
+		{% for up in user_profiles %}
+		<tr>
+			<td>{{up.user.first_name}}</td>
+			<td>{{up.user.last_name}}</td>
+			<td>{{up.user.username}}</td>
+			<td>{{up.user.email}}</td>
+			<td>{% if up.is_cb_superuser %}{% trans 'Yes' %}{% else %}{% trans 'No' %}{% endif %}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+	
+</table>
+
+<div class="alert alert-info">
+	{{template_announcement_1}}
+</div>
+
+<p>
+{% blocktrans %}Enter your colleague's name and email below to join your company on Chasebot.{% endblocktrans %}
+</p>
+
+<form id="form_invite" method="post" action=".">
 	{% csrf_token %}
   <table class="table edit_table">
     	<tr>
@@ -35,7 +104,8 @@
 				{% endif %}    			
     		</td>
     	</tr>
-    </table>  
-  <input type="submit" value="{% trans 'Send Invite' %}" class="btn btn-primary"/>
+    </table> 
+  
+  <input id="invite-button" autocomplete="off" type="submit" class="btn btn-primary" data-loading-text="{% trans 'Please wait for the signal...' %}" value="{% trans 'Send Invite' %}"/>
 </form>
 {% endblock %}

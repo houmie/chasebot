@@ -16,6 +16,7 @@ class RegistrationForm(Form):
     def __init__(self, *args, **kwargs):
         company_name = kwargs.pop('_company_name', None)
         company_email = kwargs.pop('_company_email', None)
+        email = kwargs.pop('_email', None)
         is_accept_invite = kwargs.pop('is_accept_invite', None)
         super(RegistrationForm, self).__init__(*args, **kwargs)
         if is_accept_invite:                        
@@ -25,6 +26,7 @@ class RegistrationForm(Form):
             self.fields['company_email'].widget.attrs['readonly'] = True
             self.fields['company_name'].initial = company_name
             self.fields['company_email'].initial = company_email
+            self.fields['email'].initial = email
     
     username        = forms.CharField(label = _(u'Username'), max_length=30)
     company_name    = forms.CharField(label = _(u'Company'), max_length=50)
