@@ -228,7 +228,7 @@ class DealTemplateForm(ModelForm):
                     'quantity': forms.TextInput(attrs={'placeholder': _(u'How many items?'), 'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                     #'status': forms.TextInput(attrs={'placeholder': _(u'How is the progress?'), 'class': 'placeholder_fix_css'}),                              
                    }
-        
+
 class DealForm(ModelForm):
     attached_open_deal_id  = forms.IntegerField(required=False)    
     is_last_active_tab = forms.BooleanField(required=False)    
