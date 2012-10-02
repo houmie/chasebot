@@ -6,43 +6,54 @@
 	
 {% endblock %}
 {% block content %}	
-	<div>
-		<a class="btn right-margin" href="/" title="{% trans 'Back to Main Screen' %}"><i class="icon-arrow-left"> </i></a>
-	    <a class="btn" href="/contact/{{ contact.id }}/call/add" title="{% trans 'New Conversation' %}"> <i class="icon-plus"></i>&nbsp;<i class="icon-comment-alt"></i> {% trans 'New Conversation' %}</a>	    
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span2">
+			<!--Sidebar content-->
+			<h4>{% trans 'Filter' %}</h4>
+			<p>{% trans 'Choose the filters below to find a specific conversation.' %}</p>
+			{% trans 'Date' %}
+			<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
+				<div class="input-append">
+				{{filter_form.from_date}}<button type="submit" class="btn double_date_filter"><i class='icon-filter'> </i></button>
+				</div> 			    					    								
+        	</form>
+        	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
+				<div class="input-append">
+				{{filter_form.to_date}}<button type="submit" class="btn double_date_filter"><i class='icon-filter'> </i></button>
+				</div>	   					    								
+        	</form>
+        	{% trans 'Subject' %}
+        	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
+				<div class="input-append">
+				{{filter_form.subject}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
+				</div>	   					    								
+        	</form>		             
+        	<div id='contact_id' class="hidden">{{contact.id}}</div> 
+		</div>
+		<div class="span10">
+			<!--Body content-->  
+			
+			<div>
+				<a class="btn right-margin" href="/" title="{% trans 'Back to Main Screen' %}"><i class="icon-arrow-left"> </i></a>
+			    <a class="btn" href="/contact/{{ contact.id }}/call/add" title="{% trans 'New Conversation' %}"> <i class="icon-plus"></i>&nbsp;<i class="icon-comment-alt"></i> {% trans 'New Conversation' %}</a>	    
+			</div>
+			<table class="table">
+		                <thead>
+		                    <tr>
+		                        <th class="first_th_minwidth"></th>                        	
+		                        <th>{% trans 'Date' %}</th>  
+		                        <th>{% trans 'Time' %}</th>                       
+		                        <th>{% trans 'Subject' %}</th>
+		                        <th>{% trans 'Notes' %}</th>                        
+		                    </tr>
+		                </thead>
+		                <tbody id="search_result">
+		                    {% include 'conversation_list.html' %}
+		                </tbody>
+		            </table>        
+		</div>
 	</div>
-	<table class="table">
-                <thead>
-                    <tr>
-                        <th class="first_th_minwidth">
-                        	
-                        </th>                        	
-                        <th>                        	
-                        	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
-			    				<div class="input-append">
-			    				{{filter_form.from_date}}<button type="submit" class="btn double_date_filter"><i class='icon-filter'> </i></button>
-			    				</div> 			    					    								
-		                	</form>
-		                	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
-			    				<div class="input-append">
-			    				{{filter_form.to_date}}<button type="submit" class="btn double_date_filter"><i class='icon-filter'> </i></button>
-			    				</div>	   <br> 
-			    				{% trans 'Date' %}	    								
-		                	</form>		                	
-                    	</th>                        
-                        <th>
-                        	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
-			    				<div class="input-append">
-			    				{{filter_form.subject}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
-			    				</div>	   <br> 
-			    				{% trans 'Subject' %}	    								
-		                	</form>		             
-		                	<div id='contact_id' class="hidden">{{contact.id}}</div>   	                        	
-                    	</th>
-                        <th>{% trans 'Notes' %}</th>                        
-                    </tr>
-                </thead>
-                <tbody id="search_result">
-                    {% include 'conversation_list.html' %}
-                </tbody>
-            </table>            
+</div>
+   
 {% endblock %}

@@ -7,60 +7,69 @@
 {% endblock %}
 {% block content %}
 
-<p>{% trans 'Welcome back' %} {{ user.username }}.</p>
-	<div>
-		<a class="btn right-margin" href="/contact/add" title="{% trans 'New Contact' %}"><i class="icon-plus"></i> <i class="icon-user"></i></a>
-        <a class="btn" href="/deals" title="{% trans 'Deals' %}"><i class="icon-tags"></i> {% trans 'Deals' %}</a>
-	</div>	
-    <table class="table">
-        <thead>
-            <tr>
-            	<th class="first_th_minwidth"></th>
-                <th>
-                	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
-	    				<div class="input-append">
-	    				{{filter_form.last_name}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
-	    				</div>	   
-	    				{% trans 'Last Name' %}	    								
-                	</form>  
-                </th>
-                <th>
-                	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
-	    				<div class="input-append">
-	    				{{filter_form.first_name}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
-	    				</div>
-	    				{% trans 'First Name' %}	    								
-                	</form>
-            	</th>
-                <th>{% trans 'Preferred Name' %}</th>
-                <th>
-                	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
-	    				<div class="input-append">
-	    				{{filter_form.company}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
-	    				</div>	  
-	    				{% trans 'Company' %}	    								
-                	</form>                	
-            	</th>
-                <th>
-                	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
-	    				<div class="input-append">
-	    				{{filter_form.email}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
-	    				</div>	   
-	    				{% trans 'Email' %}	    								
-                	</form>                	
-            	</th>
-                <th>{% trans 'Work Phone' %}</th>
-                <th>{% trans 'Cell Phone' %}</th>
-                <th>{% trans 'Conversations' %}</th>
-                <th>{% trans 'Charts' %}</th>
-                <th>{% trans 'Important Client' %}</th>
-            </tr>
-        </thead>
-        <tbody id="search_result">
-            {% include 'contact_list.html' %}
-        </tbody>
-    </table>
-     
-   
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span2">
+			<!--Sidebar content-->
+				<h4>{% trans 'Filter' %}</h4>
+				<p>{% trans 'Choose the filters below to find a specific contact.' %}</p>
+				{% trans 'Last Name' %}	
+				<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
+    				<div class="input-append">
+    				{{filter_form.last_name}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
+    				</div>	    				    								
+            	</form>
+            	{% trans 'First Name' %}
+            	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
+    				<div class="input-append">
+    				{{filter_form.first_name}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
+    				</div>    					    								
+            	</form>
+            	{% trans 'Company' %}	  
+            	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
+					<div class="input-append">
+					{{filter_form.company}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
+					</div>					  								
+		    	</form> 
+		    	{% trans 'Email' %}
+		    	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
+    				<div class="input-append">
+    				{{filter_form.email}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
+    				</div>    					    								
+            	</form>
+			
+		</div>
+		<div class="span10">
+		<!--Body content-->
+
+		<p>{% trans 'Welcome back' %} {{ user.username }}.</p>
+		<div>
+			<a class="btn right-margin" href="/contact/add" title="{% trans 'New Contact' %}"><i class="icon-plus"></i> <i class="icon-user"></i></a>
+	        <a class="btn" href="/deals" title="{% trans 'Deals' %}"><i class="icon-tags"></i> {% trans 'Deals' %}</a>
+		</div>	
+	    <table class="table">
+	        <thead>
+	            <tr>
+	            	<th class="first_th_minwidth"></th>
+	                <th>{% trans 'Last Name' %}</th>
+	                <th>{% trans 'First Name' %}</th>
+	                <th>{% trans 'Preferred Name' %}</th>
+	                <th>{% trans 'Company' %}</th>
+	                <th>{% trans 'Email' %}</th>
+	                <th>{% trans 'Work Phone' %}</th>
+	                <th>{% trans 'Cell Phone' %}</th>
+	                <th>{% trans 'Conversations' %}</th>
+	                <th>{% trans 'Charts' %}</th>
+	                <th>{% trans 'Important Client' %}</th>
+	            </tr>
+	        </thead>
+	        <tbody id="search_result">
+	            {% include 'contact_list.html' %}
+	        </tbody>
+	    </table>
+	     
+	   </div>
+	</div>
+</div>
 
 {% endblock %}

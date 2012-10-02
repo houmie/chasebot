@@ -5,68 +5,71 @@
 {% block external %}
 
 {% endblock %}
-{% block content %}    
-	<div>
-		<a class="btn right-margin" href="/" title="{% trans 'Back to Main Screen' %}"><i class="icon-arrow-left"> </i></a>
-    	<a class="btn right-margin" href="/deal/add" title="{% trans 'New Deal' %}"><i class="icon-plus"></i> <i class="icon-tag"></i> {% trans 'New Deal' %}</a>
-    	<a class="btn modal_link" href="/sales_items" title="{% trans 'Sale Items for Deals' %}"><i class="icon-money"></i> {% trans 'Sales Items' %}</a>
-	</div>
-	<div class="modal hide" id="salesitems_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+{% block content %}
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span2">
+			<!--Sidebar content-->
+			<h4>{% trans 'Filter' %}</h4>
+			<p>{% trans 'Choose the filters below to find a specific deal.' %}</p>
+			{% trans 'Deal Name' %}	
+			<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
+				<div class="input-append">
+				{{filter_form.deal_name}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
+				</div>				
+        	</form>
+        	{% trans 'Sales Item' %}
+        	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
+				<div class="input-append">
+				{{filter_form.sales_item}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
+				</div>				
+        	</form> 
+        	{% trans 'Price' %}
+        	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">
+				<div class="input-append">
+				{{filter_form.price}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
+				</div>
+        	</form>
+        	{% trans 'Term' %}
+        	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">
+				<div class="input-append">
+				{{filter_form.sales_term}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
+				</div>				
+        	</form>
+        	{% trans 'Quantity' %}
+        	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">
+				<div class="input-append">
+				{{filter_form.quantity}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
+				</div>				
+        	</form>  
+		 </div>
+		<div class="span10">
+			<!--Body content-->  
 		
+			<div>
+				<a class="btn right-margin" href="/" title="{% trans 'Back to Main Screen' %}"><i class="icon-arrow-left"> </i></a>
+		    	<a class="btn right-margin" href="/deal/add" title="{% trans 'New Deal' %}"><i class="icon-plus"></i> <i class="icon-tag"></i> {% trans 'New Deal' %}</a>
+		    	<a class="btn modal_link" href="/sales_items" title="{% trans 'Sale Items for Deals' %}"><i class="icon-money"></i> {% trans 'Sales Items' %}</a>
+			</div>
+			<div class="modal hide" id="salesitems_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">				
+			</div>		
+		    <table class="table">
+		        <thead>
+		            <tr>
+		                <th class="first_th_minwidth"></th>
+		                <th>{% trans 'Deal' %}</th>
+		                <th>{% trans 'Description' %}</th>    
+		                <th>{% trans 'Item' %}</th>
+		                <th>{% trans 'Price' %}</th>
+		                <th>{% trans 'Term' %}</th>
+		                <th>{% trans 'Quantity' %}</th>                
+		            </tr>
+		        </thead>
+		        <tbody id="search_result">
+		            {% include 'deal_list.html'%}
+		        </tbody>
+		    </table>    
+		</div>
 	</div>
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th class="first_th_minwidth">
-                </th>
-                <th>
-                	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
-	    				<div class="input-append">
-	    				{{filter_form.deal_name}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
-	    				</div>	   
-	    				{% trans 'Deal' %}
-                	</form>
-            	</th>
-                <th>
-                	{% trans 'Description' %}
-            	</th>    
-                <th>
-                	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
-	    				<div class="input-append">
-	    				{{filter_form.sales_item}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
-	    				</div>	    
-	    				{% trans 'Item' %}
-                	</form>                	
-            	</th>
-                <th>
-                	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">
-	    				<div class="input-append">
-	    				{{filter_form.price}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
-	    				</div> 
-	    				{% trans 'Price' %}
-                	</form>                	
-            	</th>
-                <th>
-                	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">
-	    				<div class="input-append">
-	    				{{filter_form.sales_term}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
-	    				</div>	   
-	    				{% trans 'Term' %}
-                	</form>                	
-            	</th>
-                <th>
-                	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">
-	    				<div class="input-append">
-	    				{{filter_form.quantity}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
-	    				</div>	  
-	    				{% trans 'Quantity' %}
-                	</form>                	
-            	</th>                
-            </tr>
-        </thead>
-        <tbody id="search_result">
-            {% include 'deal_list.html'%}
-        </tbody>
-    </table>    
+</div> 
 {% endblock %}

@@ -90,7 +90,7 @@ class ContactsForm(ModelForm):
                 'mobile_phone': forms.TextInput(attrs={'placeholder': _(u'Add a cell phone'),           'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                 'fax_number': forms.TextInput(  attrs={'placeholder': _(u'Add a fax number'),           'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                 'email': forms.TextInput(       attrs={'placeholder': _(u'Add an email'),               'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
-                'birth_date': forms.DateInput(  attrs={'placeholder': _(u'Add the birthday'),           'class': 'placeholder_fix_css datepicker'}),
+                'birth_date': forms.DateInput(  attrs={'placeholder': _(u'Add the birthday'),           'class': 'placeholder_fix_css date_picker'}),
                 'referred_by': forms.TextInput( attrs={'placeholder': _(u'...was referred by?'),        'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                 'spouse_first_name': forms.TextInput(attrs={'placeholder': _(u'What is the spouse\'s name?'), 'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                 'children_names': forms.TextInput(attrs={'placeholder': _(u'What are the children names?'), 'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
@@ -106,14 +106,14 @@ class ContactsForm(ModelForm):
 
 
 class FilterConversationForm(Form):            
-    from_date   = forms.DateField(localize=True, widget=cb_DateInput(attrs={'placeholder': _(u'From Date...'), 'class': 'placeholder_fix_css datepicker input-small search-query'}))
-    to_date     = forms.DateField(localize=True, widget=cb_DateInput(attrs={'placeholder': _(u'To Date...'), 'class': 'placeholder_fix_css datepicker input-small search-query'}))
+    from_date   = forms.DateField(localize=True, widget=cb_DateInput(attrs={'placeholder': _(u'From Date...'), 'class': 'placeholder_fix_css date_picker input-small search-query'}))
+    to_date     = forms.DateField(localize=True, widget=cb_DateInput(attrs={'placeholder': _(u'To Date...'), 'class': 'placeholder_fix_css date_picker input-small search-query'}))
     subject     = forms.CharField(widget=forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_conversation_subject', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=50)
     
     
     
 class ConversationForm(ModelForm):       
-    conversation_date = forms.DateField(localize=True, widget=forms.DateInput(attrs={'placeholder': _(u'Add the date for this conversation'), 'class': 'placeholder_fix_css datepicker'}))
+    conversation_date = forms.DateField(localize=True, widget=forms.DateInput(attrs={'placeholder': _(u'Add the date for this conversation'), 'class': 'placeholder_fix_css date_picker'}))
     conversation_time = forms.TimeField(localize=True, widget=forms.TimeInput(attrs={'placeholder': _(u'Add the time for this conversation'), 'class': 'placeholder_fix_css'}))
     
     def __init__(self, company, *args, **kwargs):

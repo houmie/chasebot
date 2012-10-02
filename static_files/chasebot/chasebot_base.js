@@ -406,7 +406,7 @@ $(document).ready(function (){
 	$('#salesitems_modal').on('hidden', modal_closing);
 	$('#timezone_dropdown').change(timezone_dropdown);	
 	$('.timezone_help').click(show_timezone_help);
-	$('.datepicker').datepicker({    		
+	$('.date_picker').datepicker({    		
     		format: $('#locale').text(),
     		autoclose: 'True'
 		});

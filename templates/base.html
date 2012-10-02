@@ -106,8 +106,7 @@
 <div class="container">
 
     <h2>{% block head %}{% endblock %}</h2>
-	{% if messages %}
-		
+	{% if messages %}		
 		  {% for message in messages %}		  
 		  	{% if message.tags %}
 		  		{%if message.tags == 'success'%}
