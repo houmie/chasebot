@@ -336,6 +336,16 @@ function rebind_add(){
 			
 };
 
+
+function clear_filter(event){
+	event.preventDefault();
+	$(this).siblings().children('input').val('');
+	$(this).closest('form').submit();
+	
+}
+
+
+
 // These bindings are for all existing filters. Since they don't get refreshed like the lists, they don't need to be part of bind()
 function rebind_filters(parent){
 	$(parent).find(".form-filter-ajax").submit(filter_rows);			
@@ -350,6 +360,7 @@ function rebind_filters(parent){
 	$(parent).find(".typeahead_deals_price").typeahead({ source: typeahead_deals_price });
 	$(parent).find(".typeahead_deals_sales_term").typeahead({ source: typeahead_deals_sales_term });
 	$(parent).find(".typeahead_deals_quantity").typeahead({ source: typeahead_deals_quantity });	
+	$(parent).find(".filter-close").click(clear_filter);
 };
 
 function modal_closing(event){

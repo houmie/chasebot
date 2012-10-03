@@ -154,3 +154,16 @@ a.btn-link-left{
 }
 
 textarea { resize:vertical; }
+
+.filter-close {
+	float: none;
+	position: relative;
+	left: 5em;
+	/*left: 1.50em;*/
+	top: 1.25em;
+	z-index: 3;
+}
+
+/*.no-float{
+	float: none;
+}*/
