@@ -86,6 +86,7 @@ LANGUAGES = (
     ('es', ugettext('Spanish'))
 )
 
+MODELTRANSLATION_TRANSLATION_REGISTRY = 'chasebot_app.translation'
 
 LOCALE_PATHS = (
   '/home/houman/projects/chasebot/locale',
@@ -188,6 +189,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'chasebot_app',  
     'south',  
+    'modeltranslation',
 )
 
 # A sample logging configuration. The only tangible logging

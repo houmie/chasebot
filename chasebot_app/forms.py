@@ -244,7 +244,7 @@ class DealForm(ModelForm):
     class Meta:
         model = Deal
         fields = {'deal_template', 'deal_template_name', 'deal_instance_name', 'status', 
-                  'deal_description', 'sales_item', 'price', 'sales_term', 'quantity', 
+                  'deal_description', 'sales_item', 'price', 'currency', 'sales_term', 'quantity', 
                   'is_last_active_tab'}
         
 

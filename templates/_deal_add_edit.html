@@ -122,6 +122,20 @@
 	                    </tr>
 	                    <tr>
 							<td>                        
+		                        {{fs.currency.label}}: {% if  fs.currency.field.required %} *{% endif %}
+		                    </td>
+		                    <td>
+		                    	{% if fs.currency.errors %}
+			                	<div class="field field_error">
+			                    	{{fs.currency}} {{fs.currency.errors}}                   	
+			                	</div>
+			                	{% else %}
+			                		{{fs.currency}}
+			                	{% endif %}				                    	
+		                    </td>
+	                    </tr>
+	                    <tr>
+							<td>                        
 		                        {{fs.quantity.label}}: {% if  fs.quantity.field.required %} *{% endif %}
 		                    </td>
 		                    <td>
@@ -272,6 +286,20 @@
 						                	</div>
 						                	{% else %}
 						                		{{fs.price}}
+						                	{% endif %}				                    	
+					                    </td>
+				                    </tr>
+				                    <tr>
+										<td>                        
+					                        {{fs.currency.label}}: {% if  fs.currency.field.required %} *{% endif %}
+					                    </td>
+					                    <td>
+					                    	{% if fs.currency.errors %}
+						                	<div class="field field_error">
+						                    	{{fs.currency}} {{fs.currency.errors}}                   	
+						                	</div>
+						                	{% else %}
+						                		{{fs.currency}}
 						                	{% endif %}				                    	
 					                    </td>
 				                    </tr>

@@ -67,6 +67,7 @@ function get_deal_or_dealtemplate(selected_id, type, newElement, path, contact_i
 		  	newElement.find('#id_deals-' + total + '-deal_description').attr('value', data[0].fields['deal_description']);
 		  	newElement.find('#id_deals-' + total + '-sales_term').val(data[0].fields['sales_term']);		  			  	
 		  	newElement.find('#id_deals-' + total + '-price').attr('value', data[0].fields['price']);
+		  	newElement.find('#id_deals-' + total + '-currency').val(data[0].fields['currency']);
 		  	newElement.find('#id_deals-' + total + '-quantity').attr('value', data[0].fields['quantity']);		  	
 	  		
 	  		if ('status' in data[0].fields)

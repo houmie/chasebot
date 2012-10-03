@@ -78,6 +78,20 @@
 		                </tr>
 		                <tr>
 		                    <td>                        
+		                        {{form.currency.label}}: {% if  form.currency.field.required %} *{% endif %}
+		                    </td>
+		                    <td>                        
+		                        {% if form.currency.errors %}
+			                	<div class="field field_error">
+			                    	{{form.currency}} {{form.currency.errors}}                   	
+			                	</div>
+			                	{% else %}
+			                		{{form.currency}}
+			                	{% endif %}                        
+		                    </td>
+		                </tr>
+		                <tr>
+		                    <td>                        
 		                        {{form.sales_term.label}}: {% if  form.sales_term.field.required %} *{% endif %}
 		                    </td>
 		                    <td>                        

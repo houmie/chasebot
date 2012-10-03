@@ -13,25 +13,25 @@
 			<!--Sidebar content-->
 				<h4>{% trans 'Filter' %}</h4>
 				<p>{% trans 'Choose the filters below to find a specific contact.' %}</p>
-				{% trans 'Last Name' %}	
+				{% trans 'Last Name' %} <a class="close no-float" href="#">&times;</a>
 				<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
     				<div class="input-append">
     				{{filter_form.last_name}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
     				</div>	    				    								
             	</form>
-            	{% trans 'First Name' %}
+            	{% trans 'First Name' %} <a class="close no-float" href="#">&times;</a>
             	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
     				<div class="input-append">
     				{{filter_form.first_name}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
     				</div>    					    								
             	</form>
-            	{% trans 'Company' %}	  
+            	{% trans 'Company' %} <button class="btn-link btn-mini">{% trans 'clear' %}</button>	  
             	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
 					<div class="input-append">
 					{{filter_form.company}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
 					</div>					  								
 		    	</form> 
-		    	{% trans 'Email' %}
+		    	{% trans 'Email' %} <button class="btn-link btn-mini">{% trans 'clear' %}</button>
 		    	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
     				<div class="input-append">
     				{{filter_form.email}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>

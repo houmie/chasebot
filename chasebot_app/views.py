@@ -192,7 +192,7 @@ def conversation_add_edit(request, contact_id, call_id=None):
     #This formset contains an empty template in order to be cloned with jquery later on and added to attached_deals for saving
     extra_deal_formset_factory = formset_factory(DealForm, extra=1, max_num=1, can_delete=True)    
     attached_deals_to_call_query = call.deal_set.all()    
-            
+    
     if request.method == 'POST':        
         attached_deals_formset = deals_formset_factory(request.POST, prefix='deals')                
         form = ConversationForm(profile.company, request.POST, instance=call, prefix='form')           
@@ -232,7 +232,8 @@ def conversation_add_edit(request, contact_id, call_id=None):
                                             set=actual_deal.set,
                                             deal_instance_name=modified_deal.deal_instance_name,
                                             deal_description = modified_deal.deal_description,
-                                            price = modified_deal.price,                        
+                                            price = modified_deal.price,        
+                                            currency = modified_deal.currency,                
                                             sales_term = modified_deal.sales_term,
                                             quantity = modified_deal.quantity                                            
                                             )

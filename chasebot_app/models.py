@@ -75,7 +75,7 @@ class Country(models.Model):
 
 
 class Gender(models.Model):
-    gender       = models.CharField(_(u'Sex'), max_length=10)    
+    gender       = models.CharField(_(u'Sex'), max_length=25)    
     def __unicode__(self):
         return self.gender
     class Meta:
@@ -168,11 +168,22 @@ class DealStatus(models.Model):
         verbose_name = _(u'Deal Status')
         verbose_name_plural = _(u'Deal Statuses')
 
+
+class Currency(models.Model):
+    currency            = models.CharField(_(u'Currency'), max_length=20)    
+    def __unicode__(self):
+        return self.currency
+    class Meta:
+        verbose_name = _(u'Currency')
+        verbose_name_plural = _(u'Currencies')
+
+
 class DealTemplate(models.Model):    
     company             = models.ForeignKey(Company)
     deal_name           = models.CharField(_(u'Deal Name'), max_length=40)
     deal_description    = models.TextField(_(u'Deal Description'),     blank=True)
     sales_item          = models.ManyToManyField(SalesItem)    
+    currency            = models.ForeignKey(Currency)
     price               = models.DecimalField(_(u'Price'), decimal_places=2, max_digits=12, validators=[MinValueValidator(0.01)])
     sales_term          = models.ForeignKey(SalesTerm)
     quantity            = models.PositiveIntegerField(_(u'Quantity'))    
@@ -212,7 +223,8 @@ class Deal(models.Model):
     deal_instance_name  = models.CharField(_(u'Deal Name'), max_length=100, blank=True)        
     deal_description    = models.TextField(_(u'Deal Description'),     blank=True)    
     price               = models.DecimalField(_(u'Price'), decimal_places=2, max_digits=12, validators=[MinValueValidator(0.01)])
-    sales_item          = models.ManyToManyField(SalesItem)    
+    sales_item          = models.ManyToManyField(SalesItem)
+    currency            = models.ForeignKey(Currency)
     sales_term          = models.ForeignKey(SalesTerm)
     quantity            = models.PositiveIntegerField(_(u'Quantity'))
     
