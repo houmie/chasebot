@@ -45,7 +45,10 @@
 		 </div>
 		<div class="span10">
 			<!--Body content-->  
-		
+			<ul class="breadcrumb">
+				<li><a href="/">{% trans 'Home' %}</a> <span class="divider">/</span></li>
+	    		<li class="active">{% trans 'Deals'%}</li>	    	
+    		</ul>
 			<div>
 				<a class="btn right-margin" href="/" title="{% trans 'Back to Main Screen' %}"><i class="icon-arrow-left"> </i></a>
 		    	<a class="btn right-margin" href="/deal/add" title="{% trans 'New Deal' %}"><i class="icon-plus"></i> <i class="icon-tag"></i> {% trans 'New Deal' %}</a>
