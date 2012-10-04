@@ -7,6 +7,11 @@
 {% block title %}{{ template_title }}{% endblock %}
 {% block head %}{{ template_title }}{% endblock %}
 {% block content %}
+<ul class="breadcrumb">
+	<li><a href="/">{% trans 'Home' %}</a> <span class="divider">></span></li>
+	<li><a href="/deals/">{% trans 'Deals' %}</a> <span class="divider">></span></li>
+	<li class="active">{% trans 'New Deal'%}</li>	    	
+</ul>
 <form method="post" action=".">
     {% csrf_token %}
     <div class="row-fluid">

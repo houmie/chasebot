@@ -171,6 +171,8 @@ div.filter-container {
     position:relative;
 }
 
-/*.no-float{
-	float: none;
-}*/
+.span10_border {
+	border-bottom: 1px solid #DDDDDD;
+	border-left: 1px solid #DDDDDD;
+	border-right: 1px solid #DDDDDD;
+}

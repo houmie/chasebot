@@ -3,9 +3,22 @@
 {% block title %}{{ template_title }}{% endblock %}
 {% block head %}{{ template_title }}{% endblock %}
 {% block content %}
+<ul class="breadcrumb">
+	<li><a href="/">{% trans 'Home' %}</a> <span class="divider">></span></li>
+	<li class="active">{% trans 'New Contact'%}</li>	    	
+</ul>
 <form method="post" action=".">
     {% csrf_token %}
     <div class="row-fluid">
+    	<div class="span2 well well-small">
+    		<p>
+    			{%blocktrans%}Enter your contact's data here so you can negotiate deals with later on.{%endblocktrans%}
+    		</p>
+    		<p>
+    			{%blocktrans%}Do not forget clicking on Personal tab and insert some personal information, which might help you later on in a negotiation to close a deal successfully.{%endblocktrans%}
+    		</p>
+    	</div>
+    	<div class="span10">    	
         <div class="tabbable"> <!-- Only required for left/right tabs -->
             <ul class="nav nav-tabs">
                 <li class="active">
@@ -23,11 +36,10 @@
                     {% include "contact_personal.html" %}
                 </div>
             </div>
-        </div>
-    </div>
-    <p>
+        </div>    
         <input type="submit" value="{% trans 'Save' %}" class="btn btn-primary" />
-        <input name="cancel" type="button" value="{% trans 'Cancel' %}" class="btn" onclick="history.go(-1)"/>
-    </p>
+        <input name="cancel" type="button" value="{% trans 'Cancel' %}" class="btn" onclick="history.go(-1)"/>    
+    	</div>
+    </div>    
 </form>
 {% endblock %}
