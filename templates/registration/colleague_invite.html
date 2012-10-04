@@ -3,8 +3,11 @@
 {% block title %}{% trans 'Invite Your Colleagues' %}{% endblock %}
 {% block head %}{% trans 'Invite Your Colleagues' %}{% endblock %}
 {% block content %}
-
-<table class="table">
+<ul class="breadcrumb">
+	<li><a href="/">{% trans 'Home' %}</a> <span class="divider">></span></li>
+	<li class="active">{% trans 'Invite'%}</li>	    	
+</ul>
+<table class="table cb_invite_table cb_invite_table2">
 	<caption><strong>{% trans 'Your company is currently using the following license:' %}</strong></caption>
 	<thead>
 		<tr>
@@ -16,6 +19,9 @@
 			</td>		
 			<td>
 				{% trans 'Maximum Users' %}				
+			</td>
+			<td>
+				{% trans 'Currency' %}
 			</td>
 			<td>
 				{% trans 'Price' %}
@@ -34,14 +40,17 @@
 				{{license.max_users}}
 			</td>
 			<td>
+				{{license.currency}}
+			</td>
+			<td>
 				{{license.price}}
 			</td>
 		</tr>
 	</tbody>	
 </table>
 
-<table class="table">
-	<caption><strong>{% trans 'The following users in your company are currently working with Chasebot:' %}</strong></caption>
+<table class="table cb_invite_table2 table-striped">
+	<caption><strong>{% trans 'The following users in your company are currently registered with Chasebot:' %}</strong></caption>
 	<thead>
 		<tr>
 			<td>{% trans 'First Name' %}</td>
@@ -65,47 +74,49 @@
 	
 </table>
 
-<div class="alert alert-info">
+<div class="alert alert-info cb_invite_table3">
 	{{template_announcement_1}}
 </div>
 
+<div class="cb_invite_table4">
 <p>
 {% blocktrans %}Enter your colleague's name and email below to join your company on Chasebot.{% endblocktrans %}
 </p>
 
 <form id="form_invite" method="post" action=".">
 	{% csrf_token %}
-  <table class="table edit_table">
-    	<tr>
-    		<td>
-    			{{ form.name.label }}:    			
-    		</td>
-    		<td>
-    			{% if form.name.errors %}
+	<table class="table edit_table">
+		<tr>
+			<td>
+				{{ form.name.label }}:    			
+			</td>
+			<td>
+				{% if form.name.errors %}
 					<div class="field field_error cb_inline">
 						{{ form.name }}	{{ form.name.errors }}	
 					</div>
 				{% else %}
 					{{form.name}}
 				{% endif %}
-    		</td>
-    	</tr>
-    	<tr>
-    		<td>
-    			{{ form.email.label }}:
-    		</td>
-    		<td>
-    			{% if form.email.errors %}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				{{ form.email.label }}:
+			</td>
+			<td>
+				{% if form.email.errors %}
 				<div class="field field_error cb_inline">
 			    	{{form.email}} {{form.email.errors}}                   	
 				</div>
 				{% else %}
 					{{form.email}}
 				{% endif %}    			
-    		</td>
-    	</tr>
-    </table> 
+			</td>
+		</tr>
+	</table> 
   
   <input id="invite-button" autocomplete="off" type="submit" class="btn btn-primary" data-loading-text="{% trans 'Please wait for the signal...' %}" value="{% trans 'Send Invite' %}"/>
 </form>
+</div>
 {% endblock %}

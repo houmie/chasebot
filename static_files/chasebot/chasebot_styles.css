@@ -171,8 +171,20 @@ div.filter-container {
     position:relative;
 }
 
-.span10_border {
-	border-bottom: 1px solid #DDDDDD;
-	border-left: 1px solid #DDDDDD;
-	border-right: 1px solid #DDDDDD;
+.cb_invite_table{
+	border: 1px dashed #000;  	
+}	
+
+.cb_invite_table2{	
+  	margin: 2em 2em 5em 2em;
+  	padding: 2em;
 }
+
+.cb_invite_table3{	
+  	margin: 0em -2em 0em 2em; 
+}
+
+.cb_invite_table4{	
+ 	margin: 0em 2em 0em 2em;
+  	padding: 2em; 
+}	

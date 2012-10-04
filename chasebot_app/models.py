@@ -20,11 +20,21 @@ class Company(models.Model):
         verbose_name_plural = _(u'Companies')
 
 
+class Currency(models.Model):
+    currency            = models.CharField(_(u'Currency'), max_length=20)    
+    def __unicode__(self):
+        return self.currency
+    class Meta:
+        verbose_name = _(u'Currency')
+        verbose_name_plural = _(u'Currencies')
+
+
 class LicenseTemplate(models.Model):
     name        = models.CharField(_('License Type'), max_length=50)
     description = models.TextField(_('Description'))
     max_users   = models.PositiveIntegerField(_('Maximum Users'))
     price       = models.DecimalField(_(u'Price'), decimal_places=2, max_digits=12, validators=[MinValueValidator(0.01)])
+    currency    = models.ForeignKey(Currency)
         
     def __unicode__(self):
         return u'%s' % (self.name)
@@ -167,15 +177,6 @@ class DealStatus(models.Model):
     class Meta:
         verbose_name = _(u'Deal Status')
         verbose_name_plural = _(u'Deal Statuses')
-
-
-class Currency(models.Model):
-    currency            = models.CharField(_(u'Currency'), max_length=20)    
-    def __unicode__(self):
-        return self.currency
-    class Meta:
-        verbose_name = _(u'Currency')
-        verbose_name_plural = _(u'Currencies')
 
 
 class DealTemplate(models.Model):    

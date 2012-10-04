@@ -19,26 +19,26 @@
     		</p>
     	</div>
     	<div class="span10">    	
-        <div class="tabbable"> <!-- Only required for left/right tabs -->
-            <ul class="nav nav-tabs">
-                <li class="active">
-                    <a href="#tab1" data-toggle="tab">{% trans 'Basic' %}</a>
-                </li>
-                <li>
-                    <a href="#tab2" data-toggle="tab">{% trans 'Personal' %}</a>
-                </li>
-            </ul>
-            <div class="tab-content">
-                <div class="tab-pane active" id="tab1">
-                    {% include "contact_basic.html" %}
-                </div>
-                <div class="tab-pane" id="tab2">                	
-                    {% include "contact_personal.html" %}
-                </div>
-            </div>
-        </div>    
-        <input type="submit" value="{% trans 'Save' %}" class="btn btn-primary" />
-        <input name="cancel" type="button" value="{% trans 'Cancel' %}" class="btn" onclick="history.go(-1)"/>    
+	        <div class="tabbable"> <!-- Only required for left/right tabs -->
+	            <ul class="nav nav-tabs">
+	                <li class="active">
+	                    <a href="#tab1" data-toggle="tab">{% trans 'Basic' %}</a>
+	                </li>
+	                <li>
+	                    <a href="#tab2" data-toggle="tab">{% trans 'Personal' %}</a>
+	                </li>
+	            </ul>
+	            <div class="tab-content">
+	                <div class="tab-pane active" id="tab1">
+	                    {% include "contact_basic.html" %}
+	                </div>
+	                <div class="tab-pane" id="tab2">                	
+	                    {% include "contact_personal.html" %}
+	                </div>
+	            </div>
+	        </div>    
+	        <input type="submit" value="{% trans 'Save' %}" class="btn btn-primary" />
+	        <input name="cancel" type="button" value="{% trans 'Cancel' %}" class="btn" onclick="history.go(-1)"/>    
     	</div>
     </div>    
 </form>
