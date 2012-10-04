@@ -339,9 +339,8 @@ function rebind_add(){
 
 function clear_filter(event){
 	event.preventDefault();
-	$(this).siblings().children('input').val('');
-	$(this).closest('form').submit();
-	
+	$(this).siblings('input').val('');
+	$(this).closest('form').submit();	
 }
 
 

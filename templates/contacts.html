@@ -14,31 +14,27 @@
 				<h4>{% trans 'Filter' %}</h4>
 				<p>{% trans 'Choose the filters below to find a specific contact.' %}</p>
 				{% trans 'Last Name' %} 
-				<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">
-					<a class="close filter-close" href="#">&times;</a>						    				
-    				<div class="input-append">					
-    				{{filter_form.last_name}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
-    				</div>	    				    								
+				<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">											    				
+    				<div class="input-append filter-container">
+    				{{filter_form.last_name}}<div class="close filter-close">&times;</div><button type="submit" class="btn filter-button"><i class='icon-filter'> </i></button>
+    				</div>
             	</form>
             	{% trans 'First Name' %} 
-            	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">
-            		<a class="close filter-close" href="#">&times;</a>	    				
-    				<div class="input-append">
-    				{{filter_form.first_name}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
+            	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">            			    				
+    				<div class="input-append filter-container">
+    				{{filter_form.first_name}}<div class="close filter-close">&times;</div><button type="submit" class="btn"><i class='icon-filter'> </i></button>
     				</div>    					    								
             	</form>
             	{% trans 'Company' %}   
-            	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">
-            		<a class="close filter-close" href="#">&times;</a>		    				
-					<div class="input-append">
-					{{filter_form.company}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
+            	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">            			
+					<div class="input-append filter-container">
+					{{filter_form.company}}<div class="close filter-close">&times;</div><button type="submit" class="btn"><i class='icon-filter'> </i></button>
 					</div>					  								
 		    	</form> 
 		    	{% trans 'Email' %} 
-		    	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">
-		    		<a class="close filter-close" href="#">&times;</a>	    				
-    				<div class="input-append">
-    				{{filter_form.email}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
+		    	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">		    			
+    				<div class="input-append filter-container">
+    				{{filter_form.email}}<div class="close filter-close">&times;</div><button type="submit" class="btn"><i class='icon-filter'> </i></button>
     				</div>    					    								
             	</form>
 			

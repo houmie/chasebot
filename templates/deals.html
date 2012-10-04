@@ -14,32 +14,32 @@
 			<p>{% trans 'Choose the filters below to find a specific deal.' %}</p>
 			{% trans 'Deal Name' %}	
 			<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
-				<div class="input-append">
-				{{filter_form.deal_name}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
+				<div class="input-append filter-container">
+				{{filter_form.deal_name}}<div class="close filter-close">&times;</div><button type="submit" class="btn"><i class='icon-filter'> </i></button>
 				</div>				
         	</form>
         	{% trans 'Sales Item' %}
         	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
-				<div class="input-append">
-				{{filter_form.sales_item}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
+				<div class="input-append filter-container">
+				{{filter_form.sales_item}}<div class="close filter-close">&times;</div><button type="submit" class="btn"><i class='icon-filter'> </i></button>
 				</div>				
         	</form> 
         	{% trans 'Price' %}
         	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">
-				<div class="input-append">
-				{{filter_form.price}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
+				<div class="input-append filter-container">
+				{{filter_form.price}}<div class="close filter-close">&times;</div><button type="submit" class="btn"><i class='icon-filter'> </i></button>
 				</div>
         	</form>
         	{% trans 'Term' %}
         	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">
-				<div class="input-append">
-				{{filter_form.sales_term}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
+				<div class="input-append filter-container">
+				{{filter_form.sales_term}}<div class="close filter-close">&times;</div><button type="submit" class="btn"><i class='icon-filter'> </i></button>
 				</div>				
         	</form>
         	{% trans 'Quantity' %}
         	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">
-				<div class="input-append">
-				{{filter_form.quantity}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
+				<div class="input-append filter-container">
+				{{filter_form.quantity}}<div class="close filter-close">&times;</div><button type="submit" class="btn"><i class='icon-filter'> </i></button>
 				</div>				
         	</form>  
 		 </div>

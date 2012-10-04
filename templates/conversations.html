@@ -14,19 +14,19 @@
 			<p>{% trans 'Choose the filters below to find a specific conversation.' %}</p>
 			{% trans 'Date' %}
 			<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
-				<div class="input-append">
-				{{filter_form.from_date}}<button type="submit" class="btn double_date_filter"><i class='icon-filter'> </i></button>
+				<div class="input-append filter-container">
+					{{filter_form.from_date}}<div class="close filter-close">&times;</div><button type="submit" class="btn double_date_filter"><i class='icon-filter'> </i></button>
 				</div> 			    					    								
         	</form>
         	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
-				<div class="input-append">
-				{{filter_form.to_date}}<button type="submit" class="btn double_date_filter"><i class='icon-filter'> </i></button>
+				<div class="input-append filter-container">
+					{{filter_form.to_date}}<div class="close filter-close">&times;</div><button type="submit" class="btn double_date_filter"><i class='icon-filter'> </i></button>
 				</div>	   					    								
         	</form>
         	{% trans 'Subject' %}
         	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
-				<div class="input-append">
-				{{filter_form.subject}}<button type="submit" class="btn"><i class='icon-filter'> </i></button>
+				<div class="input-append filter-container">
+					{{filter_form.subject}}<div class="close filter-close">&times;</div><button type="submit" class="btn"><i class='icon-filter'> </i></button>
 				</div>	   					    								
         	</form>		             
         	<div id='contact_id' class="hidden">{{contact.id}}</div> 

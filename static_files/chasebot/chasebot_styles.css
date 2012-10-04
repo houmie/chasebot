@@ -155,13 +155,20 @@ a.btn-link-left{
 
 textarea { resize:vertical; }
 
-.filter-close {
-	float: none;
-	position: relative;
-	left: 5em;
-	/*left: 1.50em;*/
-	top: 1.25em;
-	z-index: 3;
+button.filter-button{
+	left: 20px;
+}
+
+.filter-close {  
+    float: none;
+    position:absolute;
+    right:50px;
+    top:3px;
+    z-index: 3;
+}
+
+div.filter-container {
+    position:relative;
 }
 
 /*.no-float{

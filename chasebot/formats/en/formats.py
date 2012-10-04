@@ -18,7 +18,7 @@ DATE_INPUT_FORMATS = (
     # '%d %b %Y', '%d %b, %Y',            # '25 Oct 2006', '25 Oct, 2006'
     # '%B %d %Y', '%B %d, %Y',            # 'October 25 2006', 'October 25, 2006'
     # '%d %B %Y', '%d %B, %Y',            # '25 October 2006', '25 October, 2006'
-    '%m-%d-%Y', '%m-%d-%y', '%m/%d/%Y', '%m/%d/%y',
+    '%m/%d/%Y', '%m-%d-%y', '%m/%d/%Y', '%m/%d/%y',
 )
 TIME_INPUT_FORMATS = (
     #'%H:%M:%S',     # '14:30:59'
