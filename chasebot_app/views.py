@@ -691,9 +691,6 @@ def get_datepicker_format(request):
         locale = 'dd/mm/yyyy'
     return locale
 
-    
-def get_delete_button_confirmation():
-    return _(u'Are you sure you want to delete this row?')
 
 def makePaginator(request, ITEMS_PER_PAGE, queryset):
     paginator = Paginator(queryset, ITEMS_PER_PAGE)
@@ -719,10 +716,10 @@ def get_request_parameters(request):
 
 
 def get_paginator_variables(paginator, page, page_number):
-    return { 'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages, 'next_page': page_number + 1, 'prev_page': page_number - 1}
+    return {'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages, 'next_page': page_number + 1, 'prev_page': page_number - 1}
 
 def get_localized_variables(request):
-    return { 'locale' : get_datepicker_format(request), 'delete_button_confirmation': get_delete_button_confirmation(), 'timezones': pytz.common_timezones}  
+    return { 'locale' : get_datepicker_format(request), 'timezones': pytz.common_timezones}  
 
 def merge_with_additional_variables(request, paginator, page, page_number, variables):
     variables = dict(variables.items() + get_paginator_variables(paginator, page, page_number).items() + get_localized_variables(request).items())

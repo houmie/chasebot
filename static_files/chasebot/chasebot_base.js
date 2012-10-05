@@ -62,7 +62,7 @@ if (!String.prototype.trim) {
 
 function row_delete_ajax(event) {
     event.preventDefault();
-    if (confirm($('#delete_button_confirmation').text())) {
+    if (confirm(gettext('Are you sure you want to delete this row?'))) {
     	var url = $(this).attr("href") + "/";
     	  		
         $.post(url, function(result){
