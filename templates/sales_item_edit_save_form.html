@@ -6,8 +6,8 @@
 	        <table class="table edit_table table-condensed">
 	            <tbody>
 	                <tr>
-	                    <td>                        
-	                        {{form.item_name.label}}: {% if  form.item_name.field.required %} *{% endif %}
+	                    <td>
+	                    	{% if  form.item_name.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.item_name.label}}: *</div>{%else%}{{form.item_name.label}}:{% endif %}                       
 	                    </td>
 	                    <td class="input-append">                        
 	                        {% if form.item_name.errors %}

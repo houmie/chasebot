@@ -3,8 +3,8 @@
         <table class="table edit_table">
             <tbody>
             <tr>
-                <td>
-                    {{form.first_name.label}}: {% if  form.first_name.field.required %} *{% endif %}
+                <td>                    
+                    {% if  form.first_name.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.first_name.label}}: *</div>{%else%}{{form.first_name.label}}:{% endif %}
                 </td>
                 <td>                	
                     {% if form.first_name.errors %}
@@ -18,7 +18,7 @@
             </tr>
             <tr>
                 <td>
-                    {{form.last_name.label}}: {% if  form.last_name.field.required %} *{% endif %}
+                    {% if  form.last_name.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.last_name.label}}: *</div>{%else%}{{form.last_name.label}}:{% endif %}
                 </td>
                 <td>                	
                     {% if form.last_name.errors %}
@@ -32,7 +32,7 @@
             </tr>
             <tr>
                 <td>
-                    {{form.dear_name.label}}: {% if  form.dear_name.field.required %} *{% endif %}
+                	{% if  form.dear_name.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.dear_name.label}}: *</div>{%else%}{{form.dear_name.label}}:{% endif %}                    
                 </td>
                 <td>
                 	{% if form.dear_name.errors %}
@@ -46,7 +46,7 @@
             </tr>
             <tr>
                 <td>
-                    {{form.company_name.label}}: {% if  form.company_name.field.required %} *{% endif %}
+                	{% if  form.company_name.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.company_name.label}}: *</div>{%else%}{{form.company_name.label}}:{% endif %}                    
                 </td>
                 <td>
                 	{% if form.company_name.errors %}
@@ -64,8 +64,8 @@
                 </td>
             </tr>
             <tr>
-                <td>
-                    {{form.work_phone.label}}: {% if  form.work_phone.field.required %} *{% endif %}
+                <td>                    
+                    {% if  form.work_phone.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.work_phone.label}}: *</div>{%else%}{{form.work_phone.label}}:{% endif %}
                 </td>
                 <td>
                 	{% if form.work_phone.errors %}
@@ -79,7 +79,7 @@
             </tr>
             <tr>
                 <td>
-                    {{form.mobile_phone.label}}: {% if  form.mobile_phone.field.required %} *{% endif %}
+                	{% if  form.mobile_phone.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.mobile_phone.label}}: *</div>{%else%}{{form.mobile_phone.label}}:{% endif %}                    
                 </td>
                 <td>
                 	{% if form.mobile_phone.errors %}
@@ -92,8 +92,8 @@
                 </td>
             </tr>
             <tr>
-                <td>
-                    {{form.home_phone.label}}: {% if  form.home_phone.field.required %} *{% endif %}
+                <td>                    
+                    {% if  form.home_phone.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.home_phone.label}}: *</div>{%else%}{{form.home_phone.label}}:{% endif %}
                 </td>
                 <td>
                 	{% if form.home_phone.errors %}
@@ -107,7 +107,7 @@
             </tr>
             <tr>
                 <td>
-                    {{form.fax_number.label}}: {% if  form.fax_number.field.required %} *{% endif %}
+                	{% if  form.fax_number.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.fax_number.label}}: *</div>{%else%}{{form.fax_number.label}}:{% endif %}                    
                 </td>
                 <td>
                 	{% if form.fax_number.errors %}
@@ -127,8 +127,8 @@
         <table class="table edit_table">
             <tbody>
             <tr>
-                <td>
-                    {{form.email.label}}: {% if  form.email.field.required %} *{% endif %}
+                <td>                    
+                    {% if  form.email.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.email.label}}: *</div>{%else%}{{form.email.label}}:{% endif %}
                 </td>
                 <td>
                 	{% if form.email.errors %}
@@ -142,7 +142,7 @@
             </tr>
             <tr>
                 <td>
-                    {{form.contact_type.label}}: {% if  form.contact_type.field.required %} *{% endif %}
+                	{% if  form.contact_type.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.contact_type.label}}: *</div>{%else%}{{form.contact_type.label}}:{% endif %}                    
                 </td>
                 <td>
                 	{% if form.contact_type.errors %}
@@ -155,8 +155,8 @@
                 </td>
             </tr>
             <tr>
-                <td>
-                    {{form.position.label}}: {% if  form.position.field.required %} *{% endif %}
+                <td>                    
+                    {% if  form.position.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.position.label}}: *</div>{%else%}{{form.position.label}}:{% endif %}
                 </td>
                 <td>
                 	{% if form.position.errors %}
@@ -170,7 +170,7 @@
             </tr>
             <tr>
                 <td>
-                    {{form.gender.label}}: {% if  form.gender.field.required %} *{% endif %}
+                	{% if  form.gender.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.gender.label}}: *</div>{%else%}{{form.gender.label}}:{% endif %}
                 </td>
                 <td>
                 	{% if form.gender.errors %}
@@ -183,8 +183,8 @@
                 </td>
             </tr>
             <tr>
-                <td>
-                    {{form.address.label}}: {% if  form.address.field.required %} *{% endif %}
+                <td>                    
+                    {% if  form.address.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.address.label}}: *</div>{%else%}{{form.address.label}}:{% endif %}
                 </td>
                 <td>
                 	{% if form.address.errors %}
@@ -198,7 +198,7 @@
             </tr>
             <tr>
                 <td>
-                    {{form.state.label}}: {% if  form.state.field.required %} *{% endif %}
+                	{% if  form.state.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.state.label}}: *</div>{%else%}{{form.state.label}}:{% endif %}                    
                 </td>
                 <td>        			
         			{% if form.state.errors %}
@@ -211,8 +211,8 @@
                 </td>
             </tr>
             <tr>
-                <td>
-                    {{form.city.label}}: {% if  form.city.field.required %} *{% endif %}
+                <td>                    
+                    {% if  form.city.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.city.label}}: *</div>{%else%}{{form.city.label}}:{% endif %}
                 </td>
                 <td>                	
                     {% if form.city.errors %}
@@ -226,7 +226,7 @@
             </tr>
             <tr>
                 <td>
-                    {{form.postcode.label}}: {% if  form.post_code.field.required %} *{% endif %}
+                	{% if  form.postcode.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.postcode.label}}: *</div>{%else%}{{form.postcode.label}}:{% endif %}                    
                 </td>
                 <td>                	
                 	{% if form.postcode.errors %}
@@ -239,8 +239,8 @@
                 </td>
             </tr>
             <tr>
-                <td>
-                    {{form.country.label}}: {% if  form.country.field.required %} *{% endif %}
+                <td>                    
+                    {% if  form.country.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.country.label}}: *</div>{%else%}{{form.country.label}}:{% endif %}
                 </td>
                 <td>                	
                 	{% if form.country.errors %}

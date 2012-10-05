@@ -17,8 +17,8 @@
 		        <table class="table edit_table">
 		            <tbody>
 		                <tr>
-		                    <td>                        
-		                        {{form.conversation_date.label}}: {% if  form.conversation_date.field.required %} *{% endif %}
+		                    <td>
+		                    	{% if  form.conversation_date.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.conversation_date.label}}: *</div>{%else%}{{form.conversation_date.label}}:{% endif %}                       
 		                    </td>
 		                    <td>                        
 		                        {% if form.conversation_date.errors %}
@@ -32,8 +32,8 @@
 		                    </td>
 		                </tr>    
 		                <tr>
-		                    <td>                        
-		                        {{form.conversation_time.label}}: {% if  form.conversation_time.field.required %} *{% endif %}
+		                    <td>      
+		                    	{% if  form.conversation_time.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.conversation_time.label}}: *</div>{%else%}{{form.conversation_time.label}}:{% endif %}		                        
 		                    </td>
 		                    <td>                        
 		                        {% if form.conversation_time.errors %}
@@ -46,8 +46,8 @@
 		                    </td>
 		                </tr>            
 		                <tr>
-		                    <td>                        
-		                        {{form.subject.label}}: {% if  form.subject.field.required %} *{% endif %}
+		                    <td>
+		                    	{% if  form.subject.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.subject.label}}: *</div>{%else%}{{form.subject.label}}:{% endif %}                        
 		                    </td>
 		                    <td>                        
 		                        {% if form.subject.errors %}
@@ -60,8 +60,8 @@
 		                    </td>
 		                </tr>            
 		                <tr>
-		                    <td>                        
-		                        {{form.notes.label}}: {% if  form.notes.field.required %} *{% endif %}
+		                    <td>
+		                        {% if  form.notes.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.notes.label}}: *</div>{%else%}{{form.notes.label}}:{% endif %}
 		                    </td>
 		                    <td>                        
 		                        {% if form.notes.errors %}
@@ -89,9 +89,9 @@
 		</div>
 	</div>
 
-    <p>
-        <input type="submit" value="{% trans 'Save' %}" class="btn btn-primary" />
-        <input name="cancel" type="button" value="{% trans 'Cancel' %}" class="btn" onclick="history.go(-1)"/>
-    </p>
+    <div class="cb_req_legend">{% trans '* Required fields' %}</div>  
+    <input type="submit" value="{% trans 'Save' %}" class="btn btn-primary" />
+    <input name="cancel" type="button" value="{% trans 'Cancel' %}" class="btn" onclick="history.go(-1)"/>
+    
 </form>
 {% endblock %}

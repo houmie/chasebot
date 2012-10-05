@@ -6,8 +6,8 @@
 	        <table class="table edit_table table-condensed">	        	
 	            <tbody>
 	                <tr>
-	                    <td class="add_sales_item_mindwidth">                        
-	                        <p>{% trans 'Add a new Sales Item' %}: {% if  form.item_name.field.required %} *{% endif %}</p>
+	                    <td class="add_sales_item_mindwidth">	                    	                     
+	                    	<p>{% if  form.item_name.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{% trans 'Add a new Sales Item' %}: *</div>{%else%}{% trans 'Add a new Sales Item' %}:{% endif %}</p>
 	                    </td>
 	                    <td class="input-append">                        
 	                        {% if form.item_name.errors %}

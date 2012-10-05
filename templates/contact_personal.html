@@ -4,7 +4,7 @@
             <tbody>
                 <tr>
                     <td>                        
-                        {{form.birth_date.label}}: {% if  form.birth_date.field.required %} *{% endif %}
+                        {% if  form.birth_date.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.birth_date.label}}: *</div>{%else%}{{form.birth_date.label}}:{% endif %}
                     </td>
                     <td>                        
                         {% if form.birth_date.errors %}
@@ -17,8 +17,8 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>                        
-                        {{form.home_town.label}}: {% if  form.home_town.field.required %} *{% endif %}
+                    <td>
+                    	{% if  form.home_town.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.home_town.label}}: *</div>{%else%}{{form.home_town.label}}:{% endif %}                        
                     </td>
                     <td>                        
                         {% if form.home_town.errors %}
@@ -31,8 +31,8 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>                        
-                        {{form.referred_by.label}}: {% if  form.referred_by.field.required %} *{% endif %}
+                    <td>       
+                    	{% if  form.referred_by.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.referred_by.label}}: *</div>{%else%}{{form.referred_by.label}}:{% endif %}                 
                     </td>
                     <td>                        
                         {% if form.referred_by.errors %}
@@ -46,7 +46,7 @@
                 </tr>
                 <tr>
                     <td>                        
-                        {{form.contacts_interests.label}}: {% if  form.contacts_interests.field.required %} *{% endif %}
+                        {% if  form.contacts_interests.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.contacts_interests.label}}: *</div>{%else%}{{form.contacts_interests.label}}:{% endif %}
                     </td>
                     <td>
                     	{% if form.contacts_interests.errors %}
@@ -59,8 +59,8 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>                        
-                        {{form.contact_notes.label}}: {% if  form.contact_notes.field.required %} *{% endif %}
+                    <td>
+                    	{% if  form.contact_notes.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.contact_notes.label}}: *</div>{%else%}{{form.contact_notes.label}}:{% endif %}                        
                     </td>
                     <td>                        
                         {% if form.contact_notes.errors %}
@@ -79,8 +79,8 @@
         <table class="table edit_table">
             <tbody>
                 <tr>
-                    <td>                        
-                        {{form.marital_status.label}}: {% if  form.marital_status.field.required %} *{% endif %}
+                    <td>
+                    	{% if  form.marital_status.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.marital_status.label}}: *</div>{%else%}{{form.marital_status.label}}:{% endif %}                        
                     </td>
                     <td>
                     	{% if form.marital_status.errors %}
@@ -93,8 +93,8 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>                        
-                        {{form.spouse_first_name.label}}: {% if  form.spouse_first_name.field.required %} *{% endif %}
+                    <td>  
+                    	{% if  form.spouse_first_name.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.spouse_first_name.label}}: *</div>{%else%}{{form.spouse_first_name.label}}:{% endif %}                      
                     </td>
                     <td>
                     	{% if form.spouse_first_name.errors %}
@@ -107,8 +107,8 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>                        
-                        {{form.spouses_interests.label}}: {% if  form.spouses_interests.field.required %} *{% endif %}
+                    <td>
+                    	{% if  form.spouses_interests.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.spouses_interests.label}}: *</div>{%else%}{{form.spouses_interests.label}}:{% endif %}                                              
                     </td>
                     <td>                        
                         {% if form.spouses_interests.errors %}
@@ -122,7 +122,7 @@
                 </tr>
                 <tr>
                     <td>                        
-                        {{form.children_names.label}}: {% if  form.children_names.field.required %} *{% endif %}
+                        {% if  form.children_names.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.children_names.label}}: *</div>{%else%}{{form.children_names.label}}:{% endif %}
                     </td>
                     <td>                        
                         {% if form.children_names.errors %}
@@ -136,7 +136,7 @@
                 </tr>
                 <tr>
                     <td>
-                    	{{form.prev_meeting_places.label}}: {% if  form.prev_meeting_places.field.required %} *{% endif %}                        
+                    	{% if  form.prev_meeting_places.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.prev_meeting_places.label}}: *</div>{%else%}{{form.prev_meeting_places.label}}:{% endif %}                        
                     </td>
                     <td>
                         {% if form.prev_meeting_places.errors %}
