@@ -1,97 +1,113 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load tz %}
-{% block external %}
-	
+{% block external %}	
 	<script type="text/javascript" src="{{ STATIC_URL }}chasebot/chasebot_add_deals.js"></script>
 {% endblock %}
 {% block title %}{{ template_title }}{% endblock %}
-{% block head %}{{ template_title }}{% endblock %}
+{% block head %}<i class="icon-comment-alt"></i> {{ template_title }}{% endblock %}
 {% block content %}
+<ul class="breadcrumb">
+	<li><a href="/">{% trans 'Home' %}</a> <span class="divider">></span></li>
+	<li><a href="/contact/{{contact_id}}/calls/">{% trans 'Conversation' %}</a> <span class="divider">></span></li>
+	<li class="active">{{ template_title }}</li>	    	
+</ul>
 <form method="post" action=".">
     {% csrf_token %}		
 	<div class="row-fluid">
-		<div class="span12">
-			<div class="row-fluid">
-		    	<div class="span6">
-		        <table class="table edit_table">
-		            <tbody>
-		                <tr>
-		                    <td>
-		                    	{% if  form.conversation_date.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.conversation_date.label}}: *</div>{%else%}{{form.conversation_date.label}}:{% endif %}                       
-		                    </td>
-		                    <td>                        
-		                        {% if form.conversation_date.errors %}
-			                	<div class="field field_error">
-			                    	{{form.conversation_date}} {{form.conversation_date.errors}}                   	
-			                	</div>
-			                	{% else %}
-			                		{{form.conversation_date}}
-			                	{% endif %}   
-			                	{% get_current_timezone as TIME_ZONE %}{{TIME_ZONE}}                     
-		                    </td>
-		                </tr>    
-		                <tr>
-		                    <td>      
-		                    	{% if  form.conversation_time.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.conversation_time.label}}: *</div>{%else%}{{form.conversation_time.label}}:{% endif %}		                        
-		                    </td>
-		                    <td>                        
-		                        {% if form.conversation_time.errors %}
-			                	<div class="field field_error">
-			                    	{{form.conversation_time}} {{form.conversation_time.errors}}                   	
-			                	</div>
-			                	{% else %}
-			                		{{form.conversation_time}}
-			                	{% endif %}                        
-		                    </td>
-		                </tr>            
-		                <tr>
-		                    <td>
-		                    	{% if  form.subject.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.subject.label}}: *</div>{%else%}{{form.subject.label}}:{% endif %}                        
-		                    </td>
-		                    <td>                        
-		                        {% if form.subject.errors %}
-			                	<div class="field field_error">
-			                    	{{form.subject}} {{form.subject.errors}}                   	
-			                	</div>
-			                	{% else %}
-			                		{{form.subject}}
-			                	{% endif %}                        
-		                    </td>
-		                </tr>            
-		                <tr>
-		                    <td>
-		                        {% if  form.notes.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.notes.label}}: *</div>{%else%}{{form.notes.label}}:{% endif %}
-		                    </td>
-		                    <td>                        
-		                        {% if form.notes.errors %}
-			                	<div class="field field_error">
-			                    	{{form.notes}} {{form.notes.errors}}                   	
-			                	</div>
-			                	{% else %}
-			                		{{form.notes}}
-			                	{% endif %}                        
-		                    </td>
-		                </tr>
-		            </tbody>
-		        </table>
-		    </div>
-		    	<div class="span6">
-		    		<table id="right_side">
-		    			<tbody>
-		    				<tr>
-			            		{% include '_deal_add_edit.html' %}			            		
-			            	</tr>			            	
-		    			</tbody>
-		    		</table>	        
-		    	</div>    
+		<div class="span2 well well-small">
+    		<p>
+    			{%blocktrans%}You may capture details of the conversation and negotiate new deals by choosing a new deal template.{%endblocktrans%}
+    		</p>    		
+    		<p>
+    			{%blocktrans%}You may also continue negotiating an existing deal and trying to close it.{%endblocktrans%}
+    		</p>    		
+    	</div>
+    	<div class="span10">
+			<div class="span12">
+				<div class="row-fluid">
+			    	<div class="span6">
+			        <table class="table edit_table">
+			        	<thead>
+			        		<tr>
+			        			<td class="minwidth">
+			        				
+			        			</td>
+			        			<td>
+			        				
+			        			</td>
+			        		</tr>
+			        	</thead>
+			            <tbody>
+			                <tr>
+			                    <td>
+			                    	{% if  form.conversation_date.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.conversation_date.label}}: *</div>{%else%}{{form.conversation_date.label}}:{% endif %}                       
+			                    </td>
+			                    <td>                        
+			                        {% if form.conversation_date.errors %}
+				                	<div class="field field_error">
+				                    	{{form.conversation_date}} {{form.conversation_date.errors}}                   	
+				                	</div>
+				                	{% else %}
+				                		{{form.conversation_date}}
+				                	{% endif %}   
+				                	{% get_current_timezone as TIME_ZONE %}{{TIME_ZONE}}                     
+			                    </td>
+			                </tr>    
+			                <tr>
+			                    <td>      
+			                    	{% if  form.conversation_time.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.conversation_time.label}}: *</div>{%else%}{{form.conversation_time.label}}:{% endif %}		                        
+			                    </td>
+			                    <td>                        
+			                        {% if form.conversation_time.errors %}
+				                	<div class="field field_error">
+				                    	{{form.conversation_time}} {{form.conversation_time.errors}}                   	
+				                	</div>
+				                	{% else %}
+				                		{{form.conversation_time}}
+				                	{% endif %}                        
+			                    </td>
+			                </tr>            
+			                <tr>
+			                    <td>
+			                    	{% if  form.subject.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.subject.label}}: *</div>{%else%}{{form.subject.label}}:{% endif %}                        
+			                    </td>
+			                    <td>                        
+			                        {% if form.subject.errors %}
+				                	<div class="field field_error">
+				                    	{{form.subject}} {{form.subject.errors}}                   	
+				                	</div>
+				                	{% else %}
+				                		{{form.subject}}
+				                	{% endif %}                        
+			                    </td>
+			                </tr>            
+			                <tr>
+			                    <td>
+			                        {% if  form.notes.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.notes.label}}: *</div>{%else%}{{form.notes.label}}:{% endif %}
+			                    </td>
+			                    <td>                        
+			                        {% if form.notes.errors %}
+				                	<div class="field field_error">
+				                    	{{form.notes}} {{form.notes.errors}}                   	
+				                	</div>
+				                	{% else %}
+				                		{{form.notes}}
+				                	{% endif %}                        
+			                    </td>
+			                </tr>
+			            </tbody>
+			        </table>
+			    </div>
+			    	<div class="span6">
+			    		{% include '_deal_add_edit.html' %}	        
+			    	</div>    
+				</div>
 			</div>
+			<div class="cb_req_legend">{% trans '* Required fields' %}</div>  
+    		<input type="submit" value="{% trans 'Save' %}" class="btn btn-primary" />
+    		<input name="cancel" type="button" value="{% trans 'Cancel' %}" class="btn" onclick="history.go(-1)"/>
 		</div>
-	</div>
-
-    <div class="cb_req_legend">{% trans '* Required fields' %}</div>  
-    <input type="submit" value="{% trans 'Save' %}" class="btn btn-primary" />
-    <input name="cancel" type="button" value="{% trans 'Cancel' %}" class="btn" onclick="history.go(-1)"/>
-    
+	</div>    
 </form>
 {% endblock %}

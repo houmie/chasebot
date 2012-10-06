@@ -193,3 +193,7 @@ div.filter-container {
 	margin: 0em 0em 3em 0em;
 	padding: 0em;
 }
+
+td.minwidth{
+	min-width: 5em;
+}

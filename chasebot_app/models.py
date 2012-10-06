@@ -198,8 +198,8 @@ class DealTemplate(models.Model):
 class Conversation(models.Model):
     contact             = models.ForeignKey(Contact)
     conversation_datetime = models.DateTimeField()    
-    subject             = models.CharField(_(u'Conversation Subject'),      max_length=50)
-    notes               = models.TextField(_(u'Conversation Notes'),        blank=True)
+    subject             = models.CharField(_(u'Subject'),      max_length=50)
+    notes               = models.TextField(_(u'Notes'),        blank=True)
     
     class Meta:
         get_latest_by   = 'conversation_datetime'            

@@ -113,8 +113,8 @@ class FilterConversationForm(Form):
     
     
 class ConversationForm(ModelForm):       
-    conversation_date = forms.DateField(localize=True, widget=forms.DateInput(attrs={'placeholder': _(u'Add the date for this conversation'), 'class': 'placeholder_fix_css date_picker'}))
-    conversation_time = forms.TimeField(localize=True, widget=forms.TimeInput(attrs={'placeholder': _(u'Add the time for this conversation'), 'class': 'placeholder_fix_css'}))
+    conversation_date = forms.DateField(label='Date', localize=True, widget=forms.DateInput(attrs={'placeholder': _(u'Add the date for this conversation'), 'class': 'placeholder_fix_css date_picker'}))
+    conversation_time = forms.TimeField(label='Time', localize=True, widget=forms.TimeInput(attrs={'placeholder': _(u'Add the time for this conversation'), 'class': 'placeholder_fix_css'}))
     
     def __init__(self, company, *args, **kwargs):
         super(ConversationForm, self).__init__(*args, **kwargs)        
@@ -126,7 +126,7 @@ class ConversationForm(ModelForm):
         model = Conversation
         exclude = ('company', 'contact', 'conversation_datetime')
         widgets = {                    
-                    'subject': forms.TextInput(attrs={'placeholder': '', 'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
+                    'subject': forms.TextInput(attrs={'placeholder': _(u'What is this conversation about?'), 'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                     'notes': forms.Textarea(attrs={'placeholder': _(u'Add relevant notes...')}),                                      
                    }
     
