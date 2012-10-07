@@ -421,6 +421,16 @@ $(document).ready(function (){
     		autoclose: 'True'
 		});
 	$('#invite-button').click(invite_colleague)
+	$('#star').raty({
+	  cancel    : true,
+	  cancelOff : 'cancel-off.png',
+	  cancelOn  : 'cancel-on.png',
+	  half      : false,
+	  size      : 24,	  
+	  starOff   : 'star-off.png',
+	  starOn    : 'star-on.png',
+	  path      : $.chasebot.STATIC_URL + 'raty/img/'
+	});
 	
 // $(document).click(function(e){
   // if(isVisible & clickedAway){
