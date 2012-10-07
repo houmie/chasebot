@@ -119,6 +119,41 @@
                 	{% endif %}                	
                 </td>
             </tr>
+            <tr>
+                <td>
+                	{% if  form.important_client.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.important_client.label}}: *</div>{%else%}{{form.important_client.label}}:{% endif %}                    
+                </td>
+                <td>
+                	<!-- -->  
+            		<!-- <fieldset class="rating">					    
+					    <input name="important_client" type="radio" id="star3" name="rating" value="3" /><label for="star3" title="Very Important">Very Important</label>
+					    <input name="important_client" type="radio" id="star2" name="rating" value="2" /><label for="star2" title="Important">Important</label>
+					    <input name="important_client" type="radio" id="star1" name="rating" value="1" /><label for="star1" title="Less Important">Less Important</label>
+					</fieldset>              	 -->
+					<!-- <fieldset class="rating">
+					{% for radio in form.important_client reversed%}
+						{% if not forloop.last %}
+							{{radio.tag}}<label for="star3" title="{{radio.choice_label}}">{{radio.choice_label}}</label>
+						{% endif %}
+					{% endfor %}
+					</fieldset> -->
+					<!-- <div class="wrapper">	
+						<input type="radio" name="radiobutton" id="star-1"/><label for="star-1"></label>
+						<input type="radio" name="radiobutton" id="star-2"/><label for="star-2"></label>
+						<input type="radio" name="radiobutton" id="star-3"/><label for="star-3"></label>
+						<input type="radio" name="radiobutton" id="star-4"/><label for="star-4"></label>
+						<input type="radio" name="radiobutton" id="star-5"/><label for="star-5"></label>	
+					</div> -->
+					<!-- <div class="wrapper">
+					{{form.important_client}}
+					</div> -->
+					{% for radio in form.important_client reversed%}
+						{% if not forloop.last %}
+							<label><img src="{{ STATIC_URL }}small-sprite.gif" width="0" height="1" alt="stars">{{radio.tag}}{{radio.choice_label}}</label><br>
+						{% endif %}
+					{% endfor %}
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>

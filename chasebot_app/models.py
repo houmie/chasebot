@@ -94,6 +94,12 @@ class Gender(models.Model):
 
 
 class Contact(models.Model):
+    RATING_CHOICES = (               
+               (1, _(u'Less Important')),
+               (2, _(u'Important')),
+               (3, _(u'Very Important')),
+               )
+    
     first_name          = models.CharField(_(u'First Name'),             max_length=30, blank=True)
     last_name           = models.CharField(_(u'Last Name'),              max_length=50)
     dear_name           = models.CharField(_(u'Preferred Name'),         max_length=15, blank=True)
@@ -123,6 +129,7 @@ class Contact(models.Model):
     children_names      = models.CharField(_(u'Children Names'),         max_length=75, blank=True)
     home_town           = models.CharField(_(u'Home Town'),              max_length=30, blank=True)
     company             = models.ForeignKey(Company)    
+    important_client    = models.PositiveSmallIntegerField(_(u'Important Client'), blank=True, null=True, choices=RATING_CHOICES)
 
     def __unicode__(self):
         return self.last_name

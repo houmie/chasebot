@@ -72,7 +72,7 @@ class ContactsForm(ModelForm):
         super(ContactsForm, self).__init__(*args, **kwargs)
         # limit selection list to just items for this account
         #self.fields['contact_type'].queryset = ContactType.objects.filter(company=company)
-
+    
     class Meta:
         model = Contact
         exclude = ('company')
@@ -99,7 +99,8 @@ class ContactsForm(ModelForm):
                 'contact_notes': forms.Textarea(attrs={'rows':4, 'placeholder': _(u'What is the personality like?')}),
                 'contacts_interests': forms.Textarea(attrs={'rows':4, 'placeholder': _(u'Any particular interests?')}),
                 'spouses_interests': forms.Textarea(attrs={'rows':4, 'placeholder': _(u'Does the spouse have any particular interest?')}),
-                'prev_meeting_places': forms.Textarea(attrs={'rows':4, 'placeholder': _(u'Where did you meet so far?')})                       
+                'prev_meeting_places': forms.Textarea(attrs={'rows':4, 'placeholder': _(u'Where did you meet so far?')}), 
+                'important_client': forms.RadioSelect()                      
             }
 
 

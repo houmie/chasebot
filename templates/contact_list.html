@@ -17,7 +17,9 @@
                 <td>{{ item.mobile_phone }}</td>
                 <td><a class="btn" href="/contact/{{ item.id }}/calls" title="{% trans 'Conversations' %}"><i class="icon-comments-alt icon-large"> </i></a></td>                    
                 <td><a class="btn" href="/charts/contact/{{ item.id }}" title="{% trans 'Charts' %}"><i class="icon-bar-chart icon-large"> </i></a></td>
-                <td class="center_cb"><input type="checkbox"/></td>
+                <td class="center_cb">
+                	{{ item.important_client}}
+            	</td>
             </tr>
 	{% endfor %}
 	{% include '_paginator.html' %}
