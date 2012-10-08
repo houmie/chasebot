@@ -8,7 +8,7 @@ from chasebot_app.views import logout_page, contact_delete, conversation_display
      contacts_display, register_page, contact_add_edit,\
     sales_item_autocomplete, contacts_autocomplete, conversations_autocomplete,\
     deal_autocomplete, get_deal_template, get_opendeal, colleague_invite,\
-    colleague_accept
+    colleague_accept, demo
 
 admin.autodiscover()
 
@@ -31,6 +31,7 @@ urlpatterns = patterns('',
     (r'^register/success/$', direct_to_template, {'template': 'registration/register_success.html'}),
     (r'^colleague/invite/$', colleague_invite),
     (r'^colleague/accept/(\w+)/$', colleague_accept),
+    (r'^demo/$', demo),
 
     #Browsing
     (r'^$', contacts_display),

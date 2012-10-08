@@ -64,11 +64,12 @@
                     <!-- <li><a href="#contact">{% trans 'Contact' %}</a></li> -->
 
                     {% if user.is_authenticated %}
-                    <li><a href="/colleague/invite/">{% trans 'Invite' %}</a></li>
-                    <li><a href="/logout/">{% trans 'Logout' %}</a></li>
+                    	<li><a href="/colleague/invite/">{% trans 'Invite' %}</a></li>
+                    	<li><a href="/logout/">{% trans 'Logout' %}</a></li>
                     {% else %}
-                    <li><a href="/login/">{% trans 'Login' %}</a></li>
-                    <li><a href="/register/">{% trans 'Register' %}</a></li>
+                    	<li><a href="/login/">{% trans 'Login' %}</a></li>
+                    	<li><a href="/register/">{% trans 'Register' %}</a></li>
+                    	<li><a href="/demo/">{% trans 'Live Demo' %}</a></li>
                     {% endif %}
 
                 </ul>

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block external %}
+{% endblock %}
+{% block title %}{{ template_title }}{% endblock %}
+{% block head %}<i class="icon-beaker"></i> {{ template_title }}{% endblock %}
+{% block content %}
+	username: {{username}}
+	password: {{password}}
+{% endblock %}

@@ -1,6 +1,8 @@
 # Django settings for Chasebot project.
 import os
-
+from datetime import timedelta
+import djcelery
+djcelery.setup_loader()
 
 LOGIN_URL = '/login/'
 
@@ -190,7 +192,10 @@ INSTALLED_APPS = (
     'chasebot_app',  
     'south',  
     'modeltranslation',
+    'djcelery',
 )
+
+BROKER_URL = 'amqp://guest:guest@localhost:5672/'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
@@ -219,4 +224,13 @@ LOGGING = {
             'propagate': True,
         },
     }
+}
+
+
+CELERYBEAT_SCHEDULE = {
+    'runs-every-30-seconds': {
+        'task': 'tasks.add',
+        'schedule': timedelta(seconds=30),
+        'args': (16, 16)
+    },
 }

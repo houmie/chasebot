@@ -28,6 +28,9 @@ from django.db.models.query_utils import Q
 from chasebot_app.json_extension import toJSON
 from django.forms.formsets import formset_factory
 from django.contrib import messages
+from random import choice
+from string import ascii_lowercase, digits
+import random
 
 ITEMS_PER_PAGE = 3
 
@@ -515,7 +518,7 @@ def register_page(request):
                     company_name = form.cleaned_data['company_name'],
                     company_email = form.cleaned_data['company_email']
                 )
-                userProfile = UserProfile(user=user, company = company, is_cb_superuser=False, license = LicenseTemplate.objects.get(pk=3))
+                userProfile = UserProfile(user=user, company = company, is_cb_superuser=True, license = LicenseTemplate.objects.get(pk=2))
                 userProfile.save()
 
             return HttpResponseRedirect('/register/success/')
@@ -529,6 +532,56 @@ def register_page(request):
     variables = {'form':form}
     variables = merge_with_localized_variables(request, variables)   
     return render(request, 'registration/register.html', variables)
+
+
+def generate_random_username(length=4, chars=ascii_lowercase+digits, split=4, delimiter='-'):
+    username = ''.join([choice(chars) for i in xrange(length)])
+    if split:
+        username = delimiter.join([username[start:start+split] for start in range(0, len(username), split)])
+    try:
+        User.objects.get(username=username)
+        return generate_random_username(length=length, chars=chars, split=split, delimiter=delimiter)
+    except User.DoesNotExist:
+        return username;
+
+def GenerateUsername():
+    i = 0
+    MAX = 1000000
+    while(i < MAX):
+        username = str(random.randint(0,MAX))
+        try:
+            User.objects.get(username=username)
+        except User.DoesNotExist:
+            return username
+    raise Exception('All random username are taken')
+
+
+
+def demo(request):
+    if request.user.is_authenticated():
+        return HttpResponseRedirect('/')
+
+    username = generate_random_username()
+    password = User.objects.make_random_password(7)
+    user = User.objects.create_user(                
+                username=username,
+                password=password,
+                email='testuser@your_company.com'
+            )
+    user.first_name = _(u'Testuser')
+    user.last_name = _(u'Testuser')
+    user.save()    
+        
+    company = Company.objects.create(
+                company_name = _(u'Your Company'),
+                company_email = 'info@your_company.com'
+            )
+    
+    userProfile = UserProfile(user=user, company = company, is_cb_superuser=True, license = LicenseTemplate.objects.get(pk=3))
+    userProfile.save()
+    variables = {'username':username, 'password':password}
+    return render(request, 'demo.html', variables)
+
 
 @login_required
 def charts_display(request, contact_id):
