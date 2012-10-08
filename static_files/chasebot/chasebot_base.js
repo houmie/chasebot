@@ -145,7 +145,8 @@ function paginator_navigate(event) {
 	$('#search_result').load(url, function(result){		
 		rebind_edit_delete($('#search_result'));
 		rebind_paginator($('#search_result'));
-		rebind_add();		
+		rebind_add();	
+		rebind_ratings($('#search_result'));	
 	});		
 };
 
@@ -330,6 +331,55 @@ function rebind_edit_delete(parent){
 	$(parent).find(".row_edit_ajax").click(row_edit_ajax);	
 }
 
+// This rebinds all rating classes within the templates (not forms)
+function rebind_ratings(parent){
+	$(parent).find('.rating').each(function(i, v){
+		// The radio button template tag shows which button was selected from None, 1, 2, 3. The number is then taken to use as score.
+		var selection = 0;
+		if($(v).text().trim() != 'None'){
+			selection = parseInt($(v).text().trim());							
+		}			
+		$(v).children('.star_small').raty({
+				  score		: selection,				  
+				  readOnly  : true,				  
+				  half      : false,
+				  size      : 24,	 
+				  hints		: [gettext('Less Important'), gettext('Important'), gettext('Very Important')], 
+				  starOff   : 'star-off.png',
+				  starOn    : 'star-on.png',
+				  number    : 3,
+				  path      : $.chasebot.STATIC_URL + 'raty/img/'
+		});
+	});
+}
+
+// This binds the single rating class within the add or edit form
+function bind_rating_form(){
+	$('#star').raty({
+	  cancel    : true,
+	  cancelOff : 'cancel-off-big.png',
+	  cancelOn  : 'cancel-on-big.png',
+	  cancelHint: gettext('Cancel this rating'),
+	  half      : false,
+	  size      : 24,	 
+	  hints		: [gettext('Less Important'), gettext('Important'), gettext('Very Important')], 
+	  starOff   : 'star-off-big.png',
+	  starOn    : 'star-on-big.png',
+	  number    : 3,
+	  path      : $.chasebot.STATIC_URL + 'raty/doc/img/',
+	  click		: function(score, evt) {
+	  	if(score)
+	  		$('#id_important_client_' + score).attr('checked', true);
+	  	else
+	  		$('#id_important_client_0').attr('checked', true);	  	  
+	  }	  
+	});
+	
+	for(var i = 1; i<=3 ;i++)
+		if($('#id_important_client_' + i).is(':checked'))
+			$('#star').raty('score', i);
+}
+
 
 function rebind_add(){
 	$('#save-add-form').submit(row_add_save_ajax);	
@@ -407,30 +457,24 @@ function invite_colleague(event){
 }
 
 
+
 $(document).ready(function (){	 	
 	rebind_add();
 	rebind_edit_delete($('#search_result'));
 	rebind_paginator($('#search_result'));
 	rebind_filters($('body'));
+	rebind_ratings($('#search_result'));
 	$(".modal_link").click(open_modal)
 	$('#salesitems_modal').on('hidden', modal_closing);
 	$('#timezone_dropdown').change(timezone_dropdown);	
 	$('.timezone_help').click(show_timezone_help);
-	$('.date_picker').datepicker({    		
-    		format: $('#locale').text(),
-    		autoclose: 'True'
-		});
-	$('#invite-button').click(invite_colleague)
-	$('#star').raty({
-	  cancel    : true,
-	  cancelOff : 'cancel-off.png',
-	  cancelOn  : 'cancel-on.png',
-	  half      : false,
-	  size      : 24,	  
-	  starOff   : 'star-off.png',
-	  starOn    : 'star-on.png',
-	  path      : $.chasebot.STATIC_URL + 'raty/img/'
-	});
+	$('.date_picker').datepicker({ format: $('#locale').text(),	autoclose: 'True' });
+	$('#invite-button').click(invite_colleague);	
+	bind_rating_form();
+	
+		
+	
+	
 	
 // $(document).click(function(e){
   // if(isVisible & clickedAway){

@@ -100,7 +100,7 @@ class ContactsForm(ModelForm):
                 'contacts_interests': forms.Textarea(attrs={'rows':4, 'placeholder': _(u'Any particular interests?')}),
                 'spouses_interests': forms.Textarea(attrs={'rows':4, 'placeholder': _(u'Does the spouse have any particular interest?')}),
                 'prev_meeting_places': forms.Textarea(attrs={'rows':4, 'placeholder': _(u'Where did you meet so far?')}), 
-                'important_client': forms.RadioSelect(attrs={'class':'hidden'})                      
+                'important_client': forms.RadioSelect()                      
             }
 
 

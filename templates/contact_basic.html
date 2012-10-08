@@ -124,7 +124,9 @@
                 	{% if  form.important_client.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.important_client.label}}: *</div>{%else%}{{form.important_client.label}}:{% endif %}                    
                 </td>
                 <td>
-                	{{form.important_client}}
+                	<div class='hidden'>
+                		{{form.important_client}}
+            		</div>
                 	<div id="star"></div>
                 </td>
             </tr>
