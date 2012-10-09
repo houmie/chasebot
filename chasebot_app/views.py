@@ -10,7 +10,7 @@ from chasebot_app.forms import RegistrationForm, ContactsForm, ConversationForm,
      DealForm, FilterContactsForm, FilterConversationForm, FilterDealsForm, FilterSalesItemForm,\
     DealsAddForm, OpenDealsAddForm, ColleagueInviteForm
 from chasebot_app.models import Company, Contact, Conversation, SalesItem, DealTemplate, DealStatus, Deal, SalesTerm,\
-    Invitation, LicenseTemplate
+    Invitation, LicenseTemplate, ContactType, Country, MaritalStatus, Gender
 from chasebot_app.models import UserProfile
 from django.utils.translation import ugettext as _, ungettext
 from django.utils import timezone, simplejson
@@ -31,6 +31,7 @@ from django.contrib import messages
 from random import choice
 from string import ascii_lowercase, digits
 import random
+from django.contrib.auth import authenticate, login
 
 ITEMS_PER_PAGE = 3
 
@@ -579,8 +580,17 @@ def demo(request):
     
     userProfile = UserProfile(user=user, company = company, is_cb_superuser=True, license = LicenseTemplate.objects.get(pk=3))
     userProfile.save()
-    variables = {'username':username, 'password':password}
-    return render(request, 'demo.html', variables)
+    
+    user = authenticate(username=username, password=password)
+    login(request, user)
+    
+    profile = user.get_profile()
+    
+    profile.company.contact_set.create(first_name = 'John', last_name = 'Johnson', dear_name = '', address = '34 Awesome street', city='Nottinghill', postcode='2W3 5TD', country=Country.objects.get(pk=1), contact_type = ContactType.objects.get(pk=2), company_name='Johnson Brothers co.', position='Director', work_phone='020 555 78754', email='john@johnsonbro.com', birth_date='1973-12-17', contact_notes=_(u'John is a very kind and down to earth person'), marital_status=MaritalStatus.objects.get(pk=2), gender=Gender.objects.get(pk=2), contacts_interests=_(u'Skiing, Hiking'), spouse_first_name='Maria', spouses_interests=_(u'Singing in the choir'), children_names='Dennis 4, Elena 6', home_town='London', important_client=2)
+    
+    messages.success(request, _(u'Username:') + ' ' + username + ' - ' + _(u'Password:') + ' ' + password + ' ' + _(u'Please write down the username and password, so you can login later and continue.'))
+    messages.warning(request, _('This test account is valid for only for 30 days and will then be deleted.'))    
+    return redirect('/')
 
 
 @login_required
