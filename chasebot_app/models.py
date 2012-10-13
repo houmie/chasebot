@@ -109,7 +109,7 @@ class Contact(models.Model):
     postcode            = models.CharField(_(u'Zip Code'),               max_length=30, blank=True)
     country             = models.ForeignKey(Country,                     null=True, blank=True)
     company_name        = models.CharField(_(u'Company Name'),           max_length=30, blank=True)
-    position            = models.CharField(_(u'Position'),               max_length=10, blank=True)
+    position            = models.CharField(_(u'Position'),               max_length=30, blank=True)
     work_phone          = models.CharField(_(u'Work Phone'),             max_length=30, blank=True)
     home_phone          = models.CharField(_(u'Home Phone'),             max_length=30, blank=True)
     mobile_phone        = models.CharField(_(u'Cell Phone'),             max_length=30, blank=True)
