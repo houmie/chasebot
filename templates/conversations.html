@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block title %}{% trans 'Chasebot - Conversation History' %}{% endblock %}
-{% block head %}<i class="icon-comments-alt"></i> {% trans 'Conversations with' %} {{contact.first_name}} {{ contact.last_name }}{% endblock %}
+{% block head %}<i class="icon-comments-alt"></i> {{contact.first_name}} {{ contact.last_name }} - {{ contact.company_name}}{% endblock %}
 {% block external %}
 	
 {% endblock %}
@@ -41,6 +41,26 @@
 				<a class="btn right-margin" href="/" title="{% trans 'Back to Main Screen' %}"><i class="icon-arrow-left"> </i></a>
 			    <a class="btn" href="/contact/{{ contact.id }}/call/add" title="{% trans 'New Conversation' %}"><i class="icon-comment-alt"></i> {% trans 'New Conversation' %}</a>	    
 			</div>
+			<table class="table">
+				<thead>
+					<tr>
+						<th></th>
+						<th>{% trans 'Preferred Name' %}</th>
+						<th>{% trans 'Email' %}</th>
+						<th>{% trans 'Work Phone' %}</th>
+						<th>{% trans 'Cell Phone' %}</th>
+					</tr>								
+				</thead>
+				<tbody>
+					<tr>
+						<th><a class="btn btn-mini" href=""><div style="font-size: 16px;"><i class="icon-eye-open"></i></div></a></th>
+						<th>{{contact.dear_name}}</th>
+						<th><a href="mailto:{{contact.email}}">{{contact.email}}</a></th>
+						<th>{{contact.work_phone}}</th>
+						<th>{{contact.mobile_phone}}</th>
+					</tr>
+				</tbody>
+			</table>
 			<table class="table">
 		                <thead>
 		                    <tr>
