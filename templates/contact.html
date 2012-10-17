@@ -27,6 +27,9 @@
 	                <li>
 	                    <a href="#tab2" data-toggle="tab">{% trans 'Personal' %}</a>
 	                </li>
+	                <li>
+		                <a href="#tab3" data-toggle="tab">{% trans 'Personality Notes' %}</a>
+		            </li>
 	            </ul>
 	            <div class="tab-content">
 	                <div class="tab-pane active" id="tab1">
@@ -35,10 +38,24 @@
 	                <div class="tab-pane" id="tab2">                	
 	                    {% include "contact_personal.html" %}
 	                </div>
+	                <div class="tab-pane" id="tab3">        		
+		        		<div>
+		        			{% if  form.contact_notes.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.contact_notes.label}}: *</div>{%else%}{{form.contact_notes.label}}:{% endif %}
+		        		</div>
+		        		<div>
+		        			{% if form.contact_notes.errors %}
+		                	<div class="field field_error">
+		                    	{{form.contact_notes}} {{form.contact_notes.errors}}                   	
+		                	</div>
+		                	{% else %}
+		                		{{form.contact_notes}}
+		                	{% endif %}
+		        		</div>
+		    		</div>
 	            </div>
 	        </div>  
 	        <div class="cb_req_legend">{% trans '* Required fields' %}</div>  
-	        <input type="submit" value="{% trans 'Save' %}" class="btn btn-primary" />
+	        <input type="submit" value="{% trans 'Save All' %}" class="btn btn-primary" />
 	        <input name="cancel" type="button" value="{% trans 'Cancel' %}" class="btn" onclick="history.go(-1)"/>    
     	</div>
     </div>    

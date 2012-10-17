@@ -9,9 +9,36 @@
 {% block content %}
 <ul class="breadcrumb">
 	<li><a href="/">{% trans 'Home' %}</a> <span class="divider">></span></li>
-	<li><a href="/contact/{{contact_id}}/calls/">{% trans 'Conversation' %}</a> <span class="divider">></span></li>
+	<li><a href="/contact/{{contact.pk}}/calls/">{% trans 'Conversation' %}</a> <span class="divider">></span></li>
 	<li class="active">{{ template_title }}</li>	    	
 </ul>
+<table class="table">
+	<thead>
+		<tr>
+			<th></th>
+			<th>{% trans 'First Name' %}</th>
+			<th>{% trans 'Last Name' %}</th>
+			<th>{% trans 'Preferred Name' %}</th>
+			<th>{% trans 'Email' %}</th>
+			<th>{% trans 'Work Phone' %}</th>
+			<th>{% trans 'Cell Phone' %}</th>
+		</tr>								
+	</thead>
+	<tbody>
+		<tr>			
+			<th><a class="btn btn-mini" data-toggle="modal" href="#business_card_modal"><div style="font-size: 16px;"><i class="icon-eye-open"></i></div></a></th>
+			<th>{{contact.first_name}}</th>
+			<th>{{contact.last_name}}</th>
+			<th>{{contact.dear_name}}</th>
+			<th><a href="mailto:{{contact.email}}">{{contact.email}}</a></th>
+			<th>{{contact.work_phone}}</th>
+			<th>{{contact.mobile_phone}}</th>
+		</tr>
+	</tbody>
+</table>
+<div class="modal hide fade" id="business_card_modal" tabindex="-1" role="dialog" aria-labelledby="businesscard_label" aria-hidden="true">
+	{% include 'business_card.html' %}
+</div>
 <form method="post" action=".">
     {% csrf_token %}		
 	<div class="row-fluid">

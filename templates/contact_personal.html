@@ -57,26 +57,12 @@
 	                		{{form.contacts_interests}}
 	                	{% endif %}                        
                     </td>
-                </tr>
-                <tr>
-                    <td>
-                    	{% if  form.contact_notes.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.contact_notes.label}}: *</div>{%else%}{{form.contact_notes.label}}:{% endif %}                        
-                    </td>
-                    <td>                        
-                        {% if form.contact_notes.errors %}
-	                	<div class="field field_error">
-	                    	{{form.contact_notes}} {{form.contact_notes.errors}}                   	
-	                	</div>
-	                	{% else %}
-	                		{{form.contact_notes}}
-	                	{% endif %}
-                    </td>
-                </tr>
+                </tr>                
             </tbody>
         </table>
     </div>
     <div class="span6">
-        <table class="table edit_table">
+        <table class="table edit_table table-condensed">
             <tbody>
                 <tr>
                     <td>

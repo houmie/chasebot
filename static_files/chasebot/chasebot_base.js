@@ -417,7 +417,7 @@ function modal_closing(event){
 	$('#salesitems_modal').empty();
 }
 
-function open_modal(event){
+function open_modal_sales_item(event){
 	event.preventDefault();
 	var url = $(this).attr("href") + "/";
 	//var map = new Object();
@@ -428,8 +428,7 @@ function open_modal(event){
             rebind_add();
             rebind_edit_delete($(this));
             rebind_paginator($(this));
-            rebind_filters($(this));
-            
+            rebind_filters($(this));            
          });            
 }
 
@@ -464,7 +463,9 @@ $(document).ready(function (){
 	rebind_paginator($('#search_result'));
 	rebind_filters($('body'));
 	rebind_ratings($('#search_result'));
-	$(".modal_link").click(open_modal)
+	rebind_ratings($('#business_card_modal'));
+	$(".modal_link_sales_item").click(open_modal_sales_item);
+	//$(".modal_link_business_card").click(open_modal_business_card);
 	$('#salesitems_modal').on('hidden', modal_closing);
 	$('#timezone_dropdown').change(timezone_dropdown);	
 	$('.timezone_help').click(show_timezone_help);

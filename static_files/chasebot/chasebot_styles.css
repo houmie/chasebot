@@ -153,7 +153,7 @@ a.btn-link-left{
 	z-index: 1031
 }
 
-textarea { resize:vertical; }
+textarea { resize:vertical; width: auto;}
 
 button.filter-button{
 	left: 20px;
