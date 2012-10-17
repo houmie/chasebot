@@ -18,274 +18,285 @@
         </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="tab1">
-                <div class="span12">
-				    <div class="span6">
-				        <table class="table edit_table table-condensed">
-				            <tbody>
-					            <tr>
-					            	<td>
-					            		{% trans 'First Name' %}:
-					            	</td>
-					                <td>                    
-					                    {{ contact.first_name}}
-					                </td>				                
-					            </tr>
-					            <tr>
-					            	<td>
-					            		{% trans 'Last Name' %}:
-					            	</td>
-					                <td>
-					                    {{ contact.last_name }}
-					                </td>				                
-					            </tr>
-					            <tr>
-					            	<td>
-					            		{% trans 'Preferred Name' %}:
-					            	</td>
-					                <td>
-					                	{{contact.dear_name}}
-					                </td>
-					            </tr>
-					            <tr>
-					            	<td>
-					            		{% trans 'Company' %}:
-					            	</td>
-					                <td>
-					                	{{contact.company_name}}
-				                	</td>				                
-					            </tr>
-					            <tr>
-					                <td>
-					                    <br/>
-					                </td>
-					            </tr>
-					            <tr>
-					            	<td>
-					            		{% trans 'Work Phone' %}:
-					            	</td>
-					                <td>           
-					                	{{contact.work_phone}}				                    
-					                </td>
-					            </tr>
-					            <tr>
-					                <td>
-					                	{% trans 'Cell Phone' %}				                	                    
-					                </td>
-					                <td>
-					                	{{contact.mobile_phone}}
-					                </td>
-					            </tr>
-					            <tr>
-					                <td>
-					                	{% trans 'Home Phone' %}				                	                    
-					                </td>
-					                <td>
-					                	{{contact.home_phone}}
-					                </td>
-					            </tr>
-					            <tr>
-					                <td>
-					                	{% trans 'Fax Number' %}				                	                    
-					                </td>
-					                <td>
-					                	{{contact.fax_number}}
-					                </td>
-					            </tr>
-					            <tr>
-					                <td>
-					                	{% trans 'Important Client' %}				                	                    
-					                </td>
-					                <td class="rating center_cb">
-					                	<div class="hidden">
-					                		{{ contact.important_client}}
-					            		</div>
-					                	<div class="star_small"></div>
-					            	</td>
-					            </tr>
-				            </tbody>
-				        </table>
-				    </div>
-				
-				    <div class="span6">
-				        <table class="table edit_table table-condensed">
-				            <tbody>
-				            	<tr>
-					                <td>
-					                	{% trans 'Email' %}				                	                    
-					                </td>
-					                <td>
-					                	{{contact.email}}
-					                </td>
-					            </tr>
-				            	<tr>
-					                <td>
-					                	{% trans 'Contact Type' %}				                	                    
-					                </td>
-					                <td>
-					                	{{contact.contact_type}}
-					                </td>
-					            </tr>
-				            	<tr>
-					                <td>
-					                	{% trans 'Position' %}				                	                    
-					                </td>
-					                <td>
-					                	{{contact.position}}
-					                </td>
-					            </tr>
-				            	<tr>
-					                <td>
-					                	{% trans 'Sex' %}				                	                    
-					                </td>
-					                <td>
-					                	{{contact.gender}}
-					                </td>
-					            </tr>
-					            <tr>
-					            	<td>
-					            		<br/>
-					            	</td>
-					            </tr>
-				            	<tr>
-					                <td>
-					                	{% trans 'Address' %}				                	                    
-					                </td>
-					                <td>
-					                	{{contact.address}}
-					                </td>
-					            </tr>
-				            	<tr>
-					                <td>
-					                	{% trans 'State' %}				                	                    
-					                </td>
-					                <td>
-					                	{{contact.state}}
-					                </td>
-					            </tr>
-				            	<tr>
-					                <td>
-					                	{% trans 'City' %}				                	                    
-					                </td>
-					                <td>
-					                	{{contact.city}}
-					                </td>
-					            </tr>
-				            	<tr>
-					                <td>
-					                	{% trans 'Zip Code' %}				                	                    
-					                </td>
-					                <td>
-					                	{{contact.postcode}}
-					                </td>
-					            </tr>
-				            	<tr>
-					                <td>
-					                	{% trans 'Country' %}				                	                    
-					                </td>
-					                <td>
-					                	{{contact.country}}
-					                </td>
-					            </tr>
-				            </tbody>
-				        </table>
-				    </div>
+                <div class="row-fluid">
+                	<div class="span12">
+                		<div class="row-fluid">
+						    <div class="span6">
+						        <table class="table edit_table table-condensed">
+						            <tbody>
+							            <tr>
+							            	<td>
+							            		{% trans 'First Name' %}:
+							            	</td>
+							                <td>                    
+							                    {{ contact.first_name}}
+							                </td>				                
+							            </tr>
+							            <tr>
+							            	<td>
+							            		{% trans 'Last Name' %}:
+							            	</td>
+							                <td>
+							                    {{ contact.last_name }}
+							                </td>				                
+							            </tr>
+							            <tr>
+							            	<td>
+							            		{% trans 'Preferred Name' %}:
+							            	</td>
+							                <td>
+							                	{{contact.dear_name}}
+							                </td>
+							            </tr>
+							            <tr>
+							            	<td>
+							            		{% trans 'Company' %}:
+							            	</td>
+							                <td>
+							                	{{contact.company_name}}
+						                	</td>				                
+							            </tr>
+							            <tr>
+							                <td>
+							                    <br/>
+							                </td>
+							            </tr>
+							            <tr>
+							            	<td>
+							            		{% trans 'Work Phone' %}:
+							            	</td>
+							                <td>           
+							                	{{contact.work_phone}}				                    
+							                </td>
+							            </tr>
+							            <tr>
+							                <td>
+							                	{% trans 'Cell Phone' %}				                	                    
+							                </td>
+							                <td>
+							                	{{contact.mobile_phone}}
+							                </td>
+							            </tr>
+							            <tr>
+							                <td>
+							                	{% trans 'Home Phone' %}				                	                    
+							                </td>
+							                <td>
+							                	{{contact.home_phone}}
+							                </td>
+							            </tr>
+							            <tr>
+							                <td>
+							                	{% trans 'Fax Number' %}				                	                    
+							                </td>
+							                <td>
+							                	{{contact.fax_number}}
+							                </td>
+							            </tr>
+							            <tr>
+							                <td>
+							                	{% trans 'Important Client' %}				                	                    
+							                </td>
+							                <td class="rating center_cb">
+							                	<div class="hidden">
+							                		{{ contact.important_client}}
+							            		</div>
+							                	<div class="star_small"></div>
+							            	</td>
+							            </tr>
+						            </tbody>
+						        </table>
+						    </div>
+						    <div class="span6">
+						        <table class="table edit_table table-condensed">
+						            <tbody>
+						            	<tr>
+							                <td>
+							                	{% trans 'Email' %}				                	                    
+							                </td>
+							                <td>
+							                	{{contact.email}}
+							                </td>
+							            </tr>
+						            	<tr>
+							                <td>
+							                	{% trans 'Contact Type' %}				                	                    
+							                </td>
+							                <td>
+							                	{{contact.contact_type}}
+							                </td>
+							            </tr>
+						            	<tr>
+							                <td>
+							                	{% trans 'Position' %}				                	                    
+							                </td>
+							                <td>
+							                	{{contact.position}}
+							                </td>
+							            </tr>
+						            	<tr>
+							                <td>
+							                	{% trans 'Sex' %}				                	                    
+							                </td>
+							                <td>
+							                	{{contact.gender}}
+							                </td>
+							            </tr>
+							            <tr>
+							            	<td>
+							            		<br/>
+							            	</td>
+							            </tr>
+						            	<tr>
+							                <td>
+							                	{% trans 'Address' %}				                	                    
+							                </td>
+							                <td>
+							                	{{contact.address}}
+							                </td>
+							            </tr>
+						            	<tr>
+							                <td>
+							                	{% trans 'State' %}				                	                    
+							                </td>
+							                <td>
+							                	{{contact.state}}
+							                </td>
+							            </tr>
+						            	<tr>
+							                <td>
+							                	{% trans 'City' %}				                	                    
+							                </td>
+							                <td>
+							                	{{contact.city}}
+							                </td>
+							            </tr>
+						            	<tr>
+							                <td>
+							                	{% trans 'Zip Code' %}				                	                    
+							                </td>
+							                <td>
+							                	{{contact.postcode}}
+							                </td>
+							            </tr>
+						            	<tr>
+							                <td>
+							                	{% trans 'Country' %}				                	                    
+							                </td>
+							                <td>
+							                	{{contact.country}}
+							                </td>
+							            </tr>
+						            </tbody>
+						        </table>
+						    </div>
+						</div>
+					</div>
 				</div>
             </div>
             <div class="tab-pane" id="tab2">                	
-                <div class="span12">
-				    <div class="span6">
-				        <table class="table edit_table table-condensed">
-				            <tbody>
-				                <tr>
-				                    <td>  
-				                    	{% trans 'Birthday' %}:				                        
-				                    </td>
-				                    <td>
-				                    	{{contact.birth_date}}
-				                    </td>				                    
-				                </tr>
-				                <tr>
-				                    <td>  
-				                    	{% trans 'Home Town' %}:				                        
-				                    </td>
-				                    <td>
-				                    	{{contact.home_town}}
-				                    </td>				                    
-				                </tr>
-				                <tr>
-				                    <td>  
-				                    	{% trans 'Referred By' %}:				                        
-				                    </td>
-				                    <td>
-				                    	{{contact.referred_by}}
-				                    </td>				                    
-				                </tr>
-				                <tr>
-				                    <td>  
-				                    	{% trans "Contact's Interests" %}:				                        
-				                    </td>
-				                    <td>
-				                    	{{contact.contacts_interests}}
-				                    </td>				                    
-				                </tr>				                
-				            </tbody>
-				        </table>
-				    </div>
-				    <div class="span6">
-				        <table class="table edit_table table-condensed">
-				            <tbody>
-				                <tr>
-				                    <td>  
-				                    	{% trans 'Marital Status' %}:				                        
-				                    </td>
-				                    <td>
-				                    	{{contact.marital_status}}
-				                    </td>				                    
-				                </tr>
-				                <tr>
-				                    <td>  
-				                    	{% trans "Spouse's First Name" %}:				                        
-				                    </td>
-				                    <td>
-				                    	{{contact.spouse_first_name}}
-				                    </td>				                    
-				                </tr>
-				                <tr>
-				                    <td>  
-				                    	{% trans "Spouse's Interests" %}:
-				                    </td>
-				                    <td>
-				                    	{{contact.spouses_interests}}
-				                    </td>				                    
-				                </tr>
-				                <tr>
-				                    <td>  
-				                    	{% trans 'Children Names' %}:				                        
-				                    </td>
-				                    <td>
-				                    	{{contact.children_names}}
-				                    </td>				                    
-				                </tr>
-				                <tr>
-				                    <td>  
-				                    	{% trans 'Previous Meeting Places' %}:				                        
-				                    </td>
-				                    <td>
-				                    	{{contact.prev_meeting_places}}
-				                    </td>				                    
-				                </tr>
-				            </tbody>
-				        </table>
-				    </div>
+                <div class="row-fluid">
+                	<div class="span12">
+                		<div class="row-fluid">
+				    		<div class="span6">
+						        <table class="table edit_table table-condensed">
+						            <tbody>
+						                <tr>
+						                    <td>  
+						                    	{% trans 'Birthday' %}:				                        
+						                    </td>
+						                    <td>
+						                    	{{contact.birth_date}}
+						                    </td>				                    
+						                </tr>
+						                <tr>
+						                    <td>  
+						                    	{% trans 'Home Town' %}:				                        
+						                    </td>
+						                    <td>
+						                    	{{contact.home_town}}
+						                    </td>				                    
+						                </tr>
+						                <tr>
+						                    <td>  
+						                    	{% trans 'Referred By' %}:				                        
+						                    </td>
+						                    <td>
+						                    	{{contact.referred_by}}
+						                    </td>				                    
+						                </tr>
+						                <tr>
+						                    <td>  
+						                    	{% trans "Contact's Interests" %}:				                        
+						                    </td>
+						                    <td>
+						                    	{{contact.contacts_interests}}
+						                    </td>				                    
+						                </tr>				                
+						            </tbody>
+						        </table>
+						    </div>
+						    <div class="span6">
+						        <table class="table edit_table table-condensed">
+						            <tbody>
+						                <tr>
+						                    <td>  
+						                    	{% trans 'Marital Status' %}:				                        
+						                    </td>
+						                    <td>
+						                    	{{contact.marital_status}}
+						                    </td>				                    
+						                </tr>
+						                <tr>
+						                    <td>  
+						                    	{% trans "Spouse's First Name" %}:				                        
+						                    </td>
+						                    <td>
+						                    	{{contact.spouse_first_name}}
+						                    </td>				                    
+						                </tr>
+						                <tr>
+						                    <td>  
+						                    	{% trans "Spouse's Interests" %}:
+						                    </td>
+						                    <td>
+						                    	{{contact.spouses_interests}}
+						                    </td>				                    
+						                </tr>
+						                <tr>
+						                    <td>  
+						                    	{% trans 'Children Names' %}:				                        
+						                    </td>
+						                    <td>
+						                    	{{contact.children_names}}
+						                    </td>				                    
+						                </tr>
+						                <tr>
+						                    <td>  
+						                    	{% trans 'Previous Meeting Places' %}:				                        
+						                    </td>
+						                    <td>
+						                    	{{contact.prev_meeting_places}}
+						                    </td>				                    
+						                </tr>
+						            </tbody>
+						        </table>
+						    </div>
+						</div>
+					</div>
 				</div>
             </div>
-        	<div class="tab-pane" id="tab3">        		
-        		<div>
-        			{% if contact.contact_notes %}
-        				{{contact.contact_notes}}
-    				{% else %}
-    					{% trans 'No notes found.' %}
-					{% endif %}
+        	<div class="tab-pane" id="tab3">
+        		<div class="row-fluid">
+                	<div class="span12">        		
+		        		<div>
+		        			{% if contact.contact_notes %}
+		        				{{contact.contact_notes}}
+		    				{% else %}
+		    					{% trans 'No notes found.' %}
+							{% endif %}
+		        		</div>
+	        		</div>
         		</div>
     		</div>
         </div>

@@ -562,7 +562,7 @@ def charts_display(request, contact_id):
     for deal in deals:        
         part = part_of_day_statistics(deal.conversation.conversation_datetime)
         stac[part] += 1    
-    variables = {'deals':deals, 'stac':stac, 'contact':contact, }
+    variables = {'deals':deals, 'stac':stac, 'contact':contact}
     variables = merge_with_localized_variables(request, variables)   
     return render(request, 'charts.html', variables)
 

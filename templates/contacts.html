@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block title %}{% trans 'Chasebot - Home' %}{% endblock %}
+{% block title %}{% trans 'Home' %}{% endblock %}
 {% block head %}{{ company_name }}{% endblock %}
 {% block external %}
 
@@ -53,12 +53,12 @@
 	        <thead>
 	            <tr>
 	            	<th class="first_th_minwidth"></th>
+	            	<th>{% trans 'Conversations' %}</th>
+	                <th>{% trans 'Charts' %}</th>
 	                <th>{% trans 'Last Name' %}</th>
 	                <th>{% trans 'First Name' %}</th>
 	                <th>{% trans 'Preferred Name' %}</th>
-	                <th>{% trans 'Company' %}</th>
-	                <th>{% trans 'Conversations' %}</th>
-	                <th>{% trans 'Charts' %}</th>
+	                <th>{% trans 'Company' %}</th>	                
 	                <th>{% trans 'Important Client' %}</th>
 	            </tr>
 	        </thead>

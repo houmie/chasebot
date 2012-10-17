@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block title %}{{ template_title }}{% endblock %}
+{% block title %}{% trans 'Charts' %}{% endblock %}
 {% block external %}
 	<!--[if lt IE 9]><script language="javascript" type="text/javascript" src="{{ STATIC_URL }}jqPlot/excanvas.min.js"></script><![endif]-->
 	<script type="text/javascript" src="{{ STATIC_URL }}jqPlot/jquery.jqplot.min.js"></script>	 

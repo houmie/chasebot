@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block title %}{% trans 'Chasebot - Conversation History' %}{% endblock %}
+{% block title %}{% trans 'Conversation History' %}{% endblock %}
 {% block head %}<i class="icon-comments-alt"></i> {{contact.first_name}} {{ contact.last_name }} - {{ contact.company_name}}{% endblock %}
 {% block external %}
 	
@@ -65,19 +65,19 @@
 				{% include 'business_card.html' %}
 			</div>
 			<table class="table">
-		                <thead>
-		                    <tr>
-		                        <th class="first_th_minwidth"></th>                        	
-		                        <th>{% trans 'Date' %}</th>  
-		                        <th>{% trans 'Time' %}</th>                       
-		                        <th>{% trans 'Subject' %}</th>
-		                        <th>{% trans 'Notes' %}</th>                        
-		                    </tr>
-		                </thead>
-		                <tbody id="search_result">
-		                    {% include 'conversation_list.html' %}
-		                </tbody>
-		            </table>        
+                <thead>
+                    <tr>
+                        <th class="first_th_minwidth"></th>                        	
+                        <th>{% trans 'Date' %}</th>  
+                        <th>{% trans 'Time' %}</th>                       
+                        <th>{% trans 'Subject' %}</th>
+                        <th>{% trans 'Notes' %}</th>                        
+                    </tr>
+                </thead>
+                <tbody id="search_result">
+                    {% include 'conversation_list.html' %}
+                </tbody>
+            </table>        
 		</div>
 	</div>
 </div>

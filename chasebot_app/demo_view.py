@@ -902,6 +902,6 @@ def demo(request):
         deal3.sales_item.add(item)
     deal3.save()
 
-    messages.success(request, _(u'Username:') + ' ' + username + ' - ' + _(u'Password:') + ' ' + password + ' ' + _(u'Please write down the username and password, so you can login later and continue.'))
+    messages.success(request, _(u'Username:') + ' ' + username + ' - ' + _(u'Password:') + ' ' + password + ' ' + _(u'You may send yourself the login and password by email.'), extra_tags='demo')
     messages.warning(request, _(u'This test account is valid for only for 30 days and will then be deleted.'))    
     return redirect('/')
