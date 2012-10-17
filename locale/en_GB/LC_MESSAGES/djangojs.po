@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chasebot 1.0.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-10 19:34+0100\n"
-"PO-Revision-Date: 2012-09-10 20:14+0100\n"
+"POT-Creation-Date: 2012-10-17 13:00+0100\n"
+"PO-Revision-Date: 2012-10-17 15:43+0100\n"
 "Last-Translator: Houman Khorasani <houman@venuscloud.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -17,7 +17,35 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
+#: static_files/chasebot/chasebot_add_deals.js:55
+msgid "To be set after saving..."
+msgstr "To be set after saving..."
+
+#: static_files/chasebot/chasebot_add_deals.js:196
 #: static_files/chasebot/chasebot_chosen.js:2
 msgid "No results match"
 msgstr "No results match BB"
+
+#: static_files/chasebot/chasebot_base.js:65
+msgid "Are you sure you want to delete this row?"
+msgstr "Are you sure you want to delete this row?"
+
+#: static_files/chasebot/chasebot_base.js:347
+#: static_files/chasebot/chasebot_base.js:365
+msgid "Less Important"
+msgstr "Less Important"
+
+#: static_files/chasebot/chasebot_base.js:347
+#: static_files/chasebot/chasebot_base.js:365
+msgid "Important"
+msgstr "Important"
+
+#: static_files/chasebot/chasebot_base.js:347
+#: static_files/chasebot/chasebot_base.js:365
+msgid "Very Important"
+msgstr "Very Important"
+
+#: static_files/chasebot/chasebot_base.js:362
+msgid "Cancel this rating"
+msgstr "Cancel this rating"
 

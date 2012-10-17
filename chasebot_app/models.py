@@ -30,9 +30,9 @@ class Currency(models.Model):
 
 
 class LicenseTemplate(models.Model):
-    name        = models.CharField(_('License Type'), max_length=50)
-    description = models.TextField(_('Description'))
-    max_users   = models.PositiveIntegerField(_('Maximum Users'))
+    name        = models.CharField(_(u'License Type'), max_length=50)
+    description = models.TextField(_(u'Description'))
+    max_users   = models.PositiveIntegerField(_(u'Maximum Users'))
     price       = models.DecimalField(_(u'Price'), decimal_places=2, max_digits=12, validators=[MinValueValidator(0.01)])
     currency    = models.ForeignKey(Currency)
         

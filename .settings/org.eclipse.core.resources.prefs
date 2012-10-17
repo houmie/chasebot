@@ -2,4 +2,4 @@ eclipse.preferences.version=1
 encoding//chasebot/formats/en/formats.py=utf-8
 encoding//chasebot/formats/en_GB/formats.py=utf-8
 encoding//chasebot/formats/es/formats.py=utf-8
-encoding//database/sql_script_generator.py=utf8
+encoding//database/sql_script_generator.py=utf-8

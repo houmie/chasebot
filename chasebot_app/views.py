@@ -671,7 +671,7 @@ def colleague_invite(request):
             invitation.save()
             try:
                 invitation.send()                
-                messages.success(request, _(u'An invitation was sent to %s.') % invitation.email)
+                messages.success(request, _(u'An invitation was sent to %(name)s.') % {'name' : invitation.email})
             except Exception:                
                 messages.error(request, _(u'An error happened when sending the invitation.'))            
             return HttpResponseRedirect('/colleague/invite/')
