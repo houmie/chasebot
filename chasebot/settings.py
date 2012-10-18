@@ -197,7 +197,7 @@ INSTALLED_APPS = (
     'chasebot_app',  
     'south',  
     'modeltranslation',
-    'djcelery',
+    #'djcelery',
 )
 
 BROKER_URL = 'amqp://guest:guest@localhost:5672/'
