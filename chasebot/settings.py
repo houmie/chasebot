@@ -29,7 +29,7 @@ TEST_NAME = 'testdb_'
 
 MANAGERS = ADMINS
 
-GEOIP_PATH = '/home/houman/projects/chasebot/database/GeoIPv6.dat'
+GEOIP_PATH = '/home/houman/projects/chasebot/database/'
 #GEOS_LIBRARY_PATH = '/opt/geos/lib/libgeos_c.so'
 
 DATABASES = {
