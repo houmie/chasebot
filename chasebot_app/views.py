@@ -760,7 +760,6 @@ def merge_with_pagination_variables(paginator, page, page_number, variables):
 
 
 
-
 #@login_required
 #def _deal_status_view(request, call_id=None):        
 #    conversation_deal = Conversation_Deal.objects.filter(conversation_id__in=call_id)    

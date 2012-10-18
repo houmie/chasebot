@@ -29,9 +29,13 @@ TEST_NAME = 'testdb_'
 
 MANAGERS = ADMINS
 
+GEOIP_PATH = '/home/houman/projects/chasebot/database/GeoIPv6.dat'
+#GEOS_LIBRARY_PATH = '/opt/geos/lib/libgeos_c.so'
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        #'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'Ch4s3b0tDB',                      # Or path to database file if using sqlite3.
         'USER': 'django_user',                      # Not used with sqlite3.
         'PASSWORD': 'houmie123',                  # Not used with sqlite3.
@@ -186,6 +190,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
+    'django.contrib.gis',
     'pipeline',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',

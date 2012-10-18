@@ -12,6 +12,8 @@ from string import ascii_lowercase, digits
 from django.contrib.auth import authenticate, login
 from django.utils import timezone
 from django.shortcuts import redirect
+from django.contrib.gis.geoip import GeoIP
+
 
 def generate_random_username(length=4, chars=ascii_lowercase+digits, split=4, delimiter='-'):
     username = ''.join([choice(chars) for i in xrange(length)])
@@ -22,6 +24,14 @@ def generate_random_username(length=4, chars=ascii_lowercase+digits, split=4, de
         return generate_random_username(length=length, chars=chars, split=split, delimiter=delimiter)
     except User.DoesNotExist:
         return username;
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[-1].strip()
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
 
 
 def demo(request):
@@ -44,7 +54,16 @@ def demo(request):
                 company_email = 'info@your_company.com'
             )
     
-    userProfile = UserProfile(user=user, company = company, is_cb_superuser=True, license = LicenseTemplate.objects.get(pk=3))
+    g = GeoIP()
+    ip=get_client_ip(request)
+    country = ''
+    
+    if ip:
+        country = g.country(ip)['country_name']
+    
+
+    
+    userProfile = UserProfile(user=user, company = company, is_cb_superuser=True, license = LicenseTemplate.objects.get(pk=3), ip=ip, country=country)
     userProfile.save()
     
     user = authenticate(username=username, password=password)
@@ -902,6 +921,6 @@ def demo(request):
         deal3.sales_item.add(item)
     deal3.save()
 
-    messages.success(request, _(u'Username') + ': ' + username + ' - ' + _(u'Password') + ': ' + password + ' ' + _(u'please write down your username and password.'), extra_tags='demo')
+    messages.success(request, _(u'Username') + ': ' + username + ' - ' + _(u'Password') + ': ' + password + ' ' + _(u'please write down your username and password.'))
     messages.warning(request, _(u'This test account is valid for only for 30 days and will then be deleted.'))    
     return redirect('/')
