@@ -153,6 +153,13 @@ a.btn-link-left{
 	z-index: 1031
 }
 
+.release_logo{
+	position: absolute; 
+	top: 25px; 
+	left: 165px; 
+	z-index: 1031
+}
+
 textarea { resize:vertical; width: auto;}
 
 button.filter-button{
@@ -196,4 +203,15 @@ div.filter-container {
 
 td.minwidth{
 	min-width: 5em;
+}
+
+.navbar .nav > li > a.cb_live_demo {
+	background-color: orange;
+	text-shadow: none;
+	color: white;
+}
+
+.navbar .nav > li > a.cb_live_demo:hover, .navbar .nav > li > a.cb_live_demo:focus {
+	background-color: transparent;	
+	color: orange;
 }

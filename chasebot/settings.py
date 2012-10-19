@@ -1,8 +1,8 @@
 # Django settings for Chasebot project.
 import os
 from datetime import timedelta
-import djcelery 
-djcelery.setup_loader()
+#import djcelery 
+#djcelery.setup_loader()
 
 LOGIN_URL = '/login/'
 

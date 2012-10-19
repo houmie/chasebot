@@ -34,6 +34,13 @@
 				{% endif %}    			
     		</td>
     	</tr>
+    	<tr>
+    		<td></td>
+    		<td>
+    			<input type="hidden" name="next" value="/" />
+    			<input type="submit" value="{% trans 'Login' %}" class="btn btn-primary"/>
+    		</td>
+    	</tr>
     </table>           
     
 	{% if form.errors %}	
@@ -46,8 +53,7 @@
 	{% endif %}
     
     {% csrf_token %}
-    <input type="hidden" name="next" value="/" />
-    <input type="submit" value="{% trans 'Login' %}" class="btn btn-primary"/>
+    
 </form>
 {% endblock %}
 

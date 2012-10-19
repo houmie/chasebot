@@ -57,6 +57,7 @@
                 <span class="icon-bar"></span>
             </a>
             <a class="brand" href="http://www.chasebot.com">Chasebot</a>
+            <img class="release_logo" src="{{ STATIC_URL }}/img/alpha.png" />
             <div class="nav-collapse">
                 <ul class="nav">
                     <li class="active"><a href="/">{% trans 'Home' %}</a></li>
@@ -69,7 +70,7 @@
                     {% else %}
                     	<li><a href="/login/">{% trans 'Login' %}</a></li>
                     	<li><a href="/register/">{% trans 'Register' %}</a></li>
-                    	<li><a href="/demo/">{% trans 'Live Demo' %}</a></li>
+                    	<li><a class="cb_live_demo" href="/demo/">{% trans 'Live Demo' %}</a></li>
                     {% endif %}
 
                 </ul>
