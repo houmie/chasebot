@@ -146,18 +146,19 @@ a.btn-link-left{
 }
 
 
+
 .logo{
-	position: absolute; 
-	top: 5px; 
-	left: 25px; 
-	z-index: 1031
+    position: absolute;
+    top: 5px;
+    left: 25px;
+    z-index: 1031    
 }
 
-.release_logo{
-	position: absolute; 
-	top: 25px; 
-	left: 165px; 
-	z-index: 1031
+.release_logo{    
+    position: absolute;
+    top: 23px;
+    left: 60px;
+    z-index: 1031
 }
 
 textarea { resize:vertical; width: auto;}
