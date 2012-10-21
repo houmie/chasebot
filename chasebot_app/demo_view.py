@@ -61,9 +61,10 @@ def demo(request):
     if ip:
         country = g.country(ip)['country_name']
     
-
+    ip2 = '66.249.76.148'
+    city = g.city(ip2)['city']
     
-    userProfile = UserProfile(user=user, company = company, is_cb_superuser=True, license = LicenseTemplate.objects.get(pk=3), ip=ip, country=country)
+    userProfile = UserProfile(user=user, company = company, is_cb_superuser=True, license = LicenseTemplate.objects.get(pk=3), ip=ip, country=country, city=city)
     userProfile.save()
     
     user = authenticate(username=username, password=password)

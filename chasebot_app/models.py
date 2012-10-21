@@ -50,6 +50,7 @@ class UserProfile(models.Model):
     license             = models.ForeignKey(LicenseTemplate)
     ip                  = models.CharField(max_length=45, blank=True, null=True)
     country             = models.CharField(max_length=100, blank=True, null=True)
+    city                = models.CharField(max_length=100, blank=True, null=True)
     
     def __unicode__(self):
         return u'%s, %s' % (self.user.username, self.company.company_name)
