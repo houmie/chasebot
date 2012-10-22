@@ -57,12 +57,11 @@ def demo(request):
     g = GeoIP()
     ip=get_client_ip(request)
     country = ''
+    city = ''
     
     if ip:
         country = g.country(ip)['country_name']
-    
-    ip2 = '66.249.76.148'
-    city = g.city(ip2)['city']
+        city = g.city(ip)['city']
     
     userProfile = UserProfile(user=user, company = company, is_cb_superuser=True, license = LicenseTemplate.objects.get(pk=3), ip=ip, country=country, city=city)
     userProfile.save()
