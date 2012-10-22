@@ -60,10 +60,13 @@ def demo(request):
     city = ''
     
     if ip:
-        country = g.city(ip)['country_name']
-        city = g.city(ip)['city']
-        if not country: 
-            country = g.country(ip)['country_name']         
+        try:
+            country = g.city(ip)['country_name']
+            city = g.city(ip)['city']
+            if not country: 
+                country = g.country(ip)['country_name']
+        except TypeError:
+            pass
     
     userProfile = UserProfile(user=user, company = company, is_cb_superuser=True, license = LicenseTemplate.objects.get(pk=3), ip=ip, country=country, city=city)
     userProfile.save()
