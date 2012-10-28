@@ -451,10 +451,16 @@ function invite_colleague(event){
 	event.preventDefault();
 	$(this).button('loading');
 	//$(this).button('reset')
-	$('#form_invite').submit();
-	
+	$('#form_invite').submit();	
 }
 
+
+function demo(event){
+	event.preventDefault();
+	$(this).button('loading');
+	//$(this).button('reset')
+	$('#form_demo').submit();	
+}
 
 
 $(document).ready(function (){	 	
@@ -470,7 +476,8 @@ $(document).ready(function (){
 	$('#timezone_dropdown').change(timezone_dropdown);	
 	$('.timezone_help').click(show_timezone_help);
 	$('.date_picker').datepicker({ format: $('#locale').text(),	autoclose: 'True' });
-	$('#invite-button').click(invite_colleague);	
+	$('#invite-button').click(invite_colleague);
+	$('#demo-button').click(demo);	
 	bind_rating_form();
 	
 		

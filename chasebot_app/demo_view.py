@@ -11,8 +11,9 @@ from random import choice
 from string import ascii_lowercase, digits
 from django.contrib.auth import authenticate, login
 from django.utils import timezone
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.contrib.gis.geoip import GeoIP
+from chasebot_app.forms import UserRegistrationForm
 
 
 def generate_random_username(length=4, chars=ascii_lowercase+digits, split=4, delimiter='-'):
@@ -38,12 +39,24 @@ def demo(request):
     if request.user.is_authenticated():
         return HttpResponseRedirect('/')
 
-    username = generate_random_username()
-    password = User.objects.make_random_password(7)
+    if request.method == 'POST':        
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            demo_continue(request, form.cleaned_data['username'], form.cleaned_data['password'], form.cleaned_data['email'])
+            return redirect('/')
+    else:
+        form = UserRegistrationForm()
+    variables = {'form': form}
+    return render(request, 'demo.html', variables)
+
+def demo_continue(request, username, password, email):
+    
+    #username = generate_random_username()
+    #password = User.objects.make_random_password(7)
     user = User.objects.create_user(                
                 username=username,
                 password=password,
-                email='testuser@your_company.com'
+                email=email
             )
     user.first_name = _(u'Testuser')
     user.last_name = _(u'Testuser')
@@ -51,7 +64,7 @@ def demo(request):
         
     company = Company.objects.create(
                 company_name = _(u'Your Company Ltd'),
-                company_email = 'info@your_company.com'
+                company_email = email
             )
     
     g = GeoIP()
@@ -926,6 +939,7 @@ def demo(request):
         deal3.sales_item.add(item)
     deal3.save()
 
-    messages.success(request, _(u'Username') + ': ' + username + ' - ' + _(u'Password') + ': ' + password + ' ' + _(u'please write down your username and password.'))
-    messages.warning(request, _(u'This test account is valid for only for 30 days and will then be deleted.'))    
-    return redirect('/')
+    #messages.success(request, _(u'Username') + ': ' + username + ' - ' + _(u'Password') + ': ' + password + ' ' + _(u'please write down your username and password.'))
+    messages.success(request, _(u'Congratulations. Your live demo account is now ready.'))
+    messages.warning(request, _(u'This test account is valid for only 30 days and will then be deleted.'))    
+    

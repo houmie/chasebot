@@ -3,8 +3,79 @@
 {% block external %}
 {% endblock %}
 {% block title %}{{ template_title }}{% endblock %}
-{% block head %}<i class="icon-beaker"></i> {{ template_title }}{% endblock %}
+{% block head %}<i class="icon-beaker"></i> {% trans 'Welcome to Free Live Demo' %}{% endblock %}
 {% block content %}
-	username: {{username}}
-	password: {{password}}
+
+<h5>{% trans 'Simply enter a memorable username, password and your email to continue:' %}</h5>
+
+<form id="form_demo" class="cb_margin_top" method="post" action=".">
+    <table class="table edit_table">
+    	<tr>
+    		<td>
+    			{{ form.username.label }}:    			
+    		</td>
+    		<td>
+    			{% if form.username.errors %}
+					<div class="field field_error cb_inline">
+						{{ form.username }}	{{ form.username.errors }}	
+					</div>
+				{% else %}
+					{{form.username}}
+				{% endif %}
+    		</td>
+    	</tr>    	
+    	<tr>
+    		<td>
+    			{{ form.email.label }}:
+    		</td>
+    		<td>
+    			{% if form.email.errors %}
+				<div class="field field_error cb_inline">
+			    	{{form.email}} {{form.email.errors}}                   	
+				</div>
+				{% else %}
+					{{form.email}}
+				{% endif %}    			
+    		</td>
+    	</tr>
+    	<tr>
+    		<td>
+    			{{ form.password.label }}:
+    		</td>
+    		<td>
+    			{% if form.password.errors %}
+				<div class="field field_error cb_inline">
+			    	{{form.password}} {{form.password.errors}}                   	
+				</div>
+				{% else %}
+					{{form.password}}
+				{% endif %}    			
+    		</td>
+    	</tr>
+    	<tr>
+    		<td>
+    			{{ form.password2.label }}:
+    		</td>
+    		<td>
+    			{% if form.password2.errors %}
+				<div class="field field_error cb_inline">
+			    	{{form.password2}} {{form.password2.errors}}                   	
+				</div>
+				{% else %}
+					{{form.password2}}
+				{% endif %}    			
+    		</td>
+    	</tr>
+    	<tr>
+    		<td>
+
+    		</td>
+    		<td>
+    			<input id="demo-button" autocomplete="off" type="submit" class="btn btn-primary" data-loading-text="{% trans 'Loading Demo. Please wait...' %}" value="{% trans 'Start Free Demo' %}"/>    			
+    		</td>
+    	</tr>
+    </table>  
+    
+    {% csrf_token %}
+</form>
 {% endblock %}

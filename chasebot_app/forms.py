@@ -12,28 +12,13 @@ from chasebot_app.models import Contact, ContactType, Country, MaritalStatus, Co
 from django.forms.models import BaseModelFormSet
 from django.utils.translation import ugettext_lazy as _
 
-class RegistrationForm(Form):
-    def __init__(self, *args, **kwargs):
-        company_name = kwargs.pop('_company_name', None)
-        company_email = kwargs.pop('_company_email', None)
-        email = kwargs.pop('_email', None)
-        is_accept_invite = kwargs.pop('is_accept_invite', None)
-        super(RegistrationForm, self).__init__(*args, **kwargs)
-        if is_accept_invite:                        
-            self.fields['company_name'].required = False;
-            self.fields['company_email'].required = False;
-            self.fields['company_name'].widget.attrs['readonly'] = True
-            self.fields['company_email'].widget.attrs['readonly'] = True
-            self.fields['company_name'].initial = company_name
-            self.fields['company_email'].initial = company_email
-            self.fields['email'].initial = email
+   
     
-    username        = forms.CharField(label = _(u'Username'), max_length=30)
-    company_name    = forms.CharField(label = _(u'Company'), max_length=50)
-    company_email   = forms.EmailField(label= _(u'Company Email'))
+class UserRegistrationForm(Form):
+    username        = forms.CharField(label = _(u'Username'), max_length=30)    
     email           = forms.EmailField(label= _(u'Email'))
     password        = forms.CharField(label = _(u'Password'), widget=forms.PasswordInput(render_value=False))
-    password2       = forms.CharField(label = _(u'Password (Again)'), widget=forms.PasswordInput(render_value=False))
+    password2       = forms.CharField(label = _(u'Password (retype)'), widget=forms.PasswordInput(render_value=False))
 
     def clean_password2(self):
         if 'password' in self.cleaned_data:
@@ -60,6 +45,24 @@ class RegistrationForm(Form):
             raise forms.ValidationError(_(u"The email is already taken, please select another."))
         return email
 
+class RegistrationForm(UserRegistrationForm):
+    def __init__(self, *args, **kwargs):
+        company_name = kwargs.pop('_company_name', None)
+        company_email = kwargs.pop('_company_email', None)
+        email = kwargs.pop('_email', None)
+        is_accept_invite = kwargs.pop('is_accept_invite', None)
+        super(RegistrationForm, self).__init__(*args, **kwargs)
+        if is_accept_invite:                        
+            self.fields['company_name'].required = False;
+            self.fields['company_email'].required = False;
+            self.fields['company_name'].widget.attrs['readonly'] = True
+            self.fields['company_email'].widget.attrs['readonly'] = True
+            self.fields['company_name'].initial = company_name
+            self.fields['company_email'].initial = company_email
+            self.fields['email'].initial = email
+        
+    company_name    = forms.CharField(label = _(u'Company'), max_length=50)
+    company_email   = forms.EmailField(label= _(u'Company Email'))    
 
 class FilterContactsForm(Form):
     last_name     = forms.CharField(widget= forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_contacts_last_name', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=50)
