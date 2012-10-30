@@ -35,7 +35,8 @@ GEOIP_PATH = '/home/houman/projects/chasebot/database/'
 DATABASES = {
     'default': {
         #'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        #'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'ENGINE': 'django.contrib.gis.db.backends.mysql',
         'NAME': 'Ch4s3b0tDB',                      # Or path to database file if using sqlite3.
         'USER': 'django_user',                      # Not used with sqlite3.
         'PASSWORD': 'houmie123',                  # Not used with sqlite3.
@@ -47,7 +48,7 @@ DATABASES = {
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
-PIPELINE_YUI_BINARY = '/usr/bin/yui-compressor'
+PIPELINE_YUI_BINARY = '/venuscloud/chasebot-env/site/chasebot/node_modules/yuglify/bin/yuglify'
 PIPELINE_CSS = {
     'chasebot_css': {
         'source_filenames': (
