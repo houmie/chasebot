@@ -143,23 +143,24 @@ class Contact(models.Model):
     
 #   Show all open deals for this contact  
     def get_open_deals(self):
-        query =     'SELECT l1.*   \
-                FROM    \
-                  chasebot_app_deal AS l1    \
-                INNER JOIN (    \
-                    SELECT    \
-                        deal_id,    \
-                        MAX(ARRAY[EXTRACT(EPOCH FROM deal_datetime),id])    \
-                        AS compound_time_stamp    \
-                    FROM    \
-                        chasebot_app_deal    \
-                    GROUP BY deal_id    \
-                ) AS l2    \
-                ON    \
-                l1.deal_id = l2.deal_id AND    \
-                  EXTRACT(EPOCH FROM l1.deal_datetime) = l2.compound_time_stamp[1] AND    \
-                  l1.id = l2.compound_time_stamp[2]    \
-                  WHERE contact_id = %s and l1.deal_id not in (select deal_id from chasebot_app_deal where status_id in (5, 6))'
+        query = 'SELECT l1.* \
+                 FROM chasebot_app_deal AS l1 \
+                 INNER JOIN ( \
+                    SELECT deal_id, MAX(deal_datetime) AS time_stamp_max \
+                    FROM chasebot_app_deal \
+                    GROUP BY deal_id \
+                 ) AS l2 \
+                 ON    \
+                 l1.deal_id     = l2.deal_id AND \
+                 l1.deal_datetime = l2.time_stamp_max \
+                 INNER JOIN ( \
+                 SELECT deal_id, deal_datetime, MAX(id) AS trans_max \
+                 FROM chasebot_app_deal \
+                 GROUP BY deal_id, deal_datetime \
+                 ) AS l3 \
+                 ON \
+                 l1.deal_id     = l3.deal_id AND l1.deal_datetime = l3.deal_datetime AND l1.id   = l3.trans_max \
+                 WHERE contact_id = %s and l1.deal_id not in (select deal_id from chasebot_app_deal where status_id in (5, 6))'
         return Deal.objects.raw(query, [self.id])
 
 
