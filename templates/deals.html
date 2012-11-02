@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block title %}{% trans 'Inventory' %}{% endblock %}
-{% block head %}<i class="icon-tags"></i> {% trans 'Inventory' %}{% endblock %}
+{% block title %}{% trans 'Deal Packages' %}{% endblock %}
+{% block head %}<i class="icon-tags"></i> {% trans 'Deal Packages' %}{% endblock %}
 {% block external %}
 
 {% endblock %}
 {% block content %}
 <ul class="breadcrumb">
 	<li><a href="/">{% trans 'Home' %}</a> <span class="divider">></span></li>
-	<li class="active">{% trans 'Inventory'%}</li>	    	
+	<li class="active">{% trans 'Deal Packages'%}</li>	    	
 </ul>
 <div class="container-fluid">
 	<div class="row-fluid">
@@ -51,8 +51,8 @@
 			<!--Body content-->			
 			<div>
 				<a class="btn right-margin" href="/" title="{% trans 'Back to Main Screen' %}"><i class="icon-arrow-left"> </i></a>
-		    	<a class="btn right-margin" href="/deal/add" title="{% trans 'New Deal Template' %}"><i class="icon-tag"></i> {% trans 'New Deal Template' %}</a>
-		    	<a class="btn modal_link_sales_item" href="/sales_items" title="{% trans 'Sale Items for Deals' %}"><i class="icon-gift"></i> {% trans 'Sales Items' %}</a>
+		    	<a class="btn modal_link_sales_item right-margin" href="/sales_items" title="{% trans 'Sales Items' %}"><i class="icon-gift"></i> {% trans 'Sales Items' %}</a>
+		    	<a class="btn" href="/deal/add" title="{% trans 'New Deal Package' %}"><i class="icon-tag"></i> {% trans 'New Deal Package' %}</a>		    	
 			</div>
 			<div class="modal hide" id="salesitems_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">				
 			</div>		

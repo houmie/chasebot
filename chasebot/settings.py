@@ -48,7 +48,7 @@ DATABASES = {
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
-PIPELINE_YUI_BINARY = '/venuscloud/chasebot-env/site/chasebot/node_modules/yuglify/bin/yuglify'
+PIPELINE_YUI_BINARY = '/home/houman/node_modules/yuglify/bin/yuglify'
 PIPELINE_CSS = {
     'chasebot_css': {
         'source_filenames': (

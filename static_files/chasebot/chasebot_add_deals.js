@@ -30,7 +30,7 @@ function get_deal_or_dealtemplate(selected_id, type, newElement, path, contact_i
 		url = path + selected_id + '/';
 	}
 			
-	//Here we make an ajax call to the server to get the data from the selected deal template or get the data from the last open deal instance,
+	//Here we make an ajax call to the server to get the data from the selected deal package or get the data from the last open deal instance,
 	//In either case the user can then override these values  
 	$.ajax({
      	  type: 'GET',
@@ -132,7 +132,7 @@ function get_deal_or_dealtemplate(selected_id, type, newElement, path, contact_i
 				$("#id_opendeals_add_form-open_deal_template option[value='" + selected_id + "']").remove();
 			}
 			else{
-				//In case of adding a new deal we need to remove the selected deal template from the dropdown, so it can't be added again to the same call.
+				//In case of adding a new deal we need to remove the selected deal package from the dropdown, so it can't be added again to the same call.
 				$("#id_deals_add_form-deal_template option[value='" + selected_id + "']").remove();				
 			}
 
@@ -157,7 +157,7 @@ function add_deals(event){
 	var type = 'deals';
 	var newElement = cloneMore('#X table', type);
 	
-	//Getting the deal template id from the selected dropdown
+	//Getting the deal package id from the selected dropdown
 	var selected_id = $('#id_deals_add_form-deal_template option:selected').val()
 	if (selected_id){		
 		get_deal_or_dealtemplate(selected_id, type, newElement,  '/deal_template/');		

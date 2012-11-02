@@ -199,6 +199,7 @@ def conversation_add_edit(request, contact_id, call_id=None):
     #This formset contains an empty template in order to be cloned with jquery later on and added to attached_deals for saving
     extra_deal_formset_factory = formset_factory(DealForm, extra=1, max_num=1, can_delete=True)    
     attached_deals_to_call_query = call.deal_set.all()    
+    validation_error_ajax = False
     
     if request.method == 'POST':        
         attached_deals_formset = deals_formset_factory(request.POST, prefix='deals')                
@@ -270,7 +271,9 @@ def conversation_add_edit(request, contact_id, call_id=None):
                         fm.save_m2m()
                         #If the attached or even new deal are closed, we need to remove all later entries of this instance on later conversations.
                         remove_redundant_future_deals(contact, deal)
-            return HttpResponseRedirect('/contact/' + contact_id + '/calls/')        
+            return HttpResponseRedirect('/contact/' + contact_id + '/calls/')    
+        else:
+            validation_error_ajax = True    
             
     else:
         #Deals_add_form contains only one dropdown to add new deals. It contains the logic for excluding open/attached deals accordingly 
@@ -282,9 +285,9 @@ def conversation_add_edit(request, contact_id, call_id=None):
     
     #The extra deal formset will always be independent of POST/GET since its hidden and remains empty as a starting point for cloning
     extra_deal_formset = extra_deal_formset_factory(prefix='extra_deal')
-    variables = {'form':form, 'template_title':template_title, 'deals_add_form':deals_add_form, 'opendeals_add_form':opendeals_add_form, 'attached_deals_formset':attached_deals_formset, 'contact':contact, 'extra_deal_formset':extra_deal_formset }
+    variables = {'form':form, 'template_title':template_title, 'deals_add_form':deals_add_form, 'opendeals_add_form':opendeals_add_form, 'attached_deals_formset':attached_deals_formset, 'contact':contact, 'extra_deal_formset':extra_deal_formset, 'validation_error_ajax':validation_error_ajax }
     variables = merge_with_localized_variables(request, variables)   
-    return render(request, 'conversation.html', variables)
+    return render(request, '_conversation.html', variables)
 
 
 
@@ -454,10 +457,10 @@ def deal_template_add_edit(request, deal_id=None):
     
     if deal_id is None:
         deal = DealTemplate(company=profile.company)        
-        template_title = _(u'Add New Deal Template')
+        template_title = _(u'Add New Deal Package')
     else:
         deal = get_object_or_404(profile.company.dealtemplate_set.all(), pk=deal_id)
-        template_title = _(u'Edit Deal Template')
+        template_title = _(u'Edit Deal Package')
     if request.method == 'POST':
         form = DealTemplateForm(request.POST, instance=deal)
         if form.is_valid():

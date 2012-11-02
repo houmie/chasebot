@@ -3,7 +3,7 @@
 {% block title %}{% trans 'Conversation History' %}{% endblock %}
 {% block head %}<i class="icon-comments-alt"></i> {{contact.first_name}} {{ contact.last_name }} - {{ contact.company_name}}{% endblock %}
 {% block external %}
-	
+
 {% endblock %}
 {% block content %}
 <ul class="breadcrumb">
@@ -39,8 +39,8 @@
 			<!--Body content-->			
 			<div>
 				<a class="btn right-margin" href="/" title="{% trans 'Back to Main Screen' %}"><i class="icon-arrow-left"> </i></a>
-			    <a class="btn" href="/contact/{{ contact.id }}/call/add" title="{% trans 'New Conversation' %}"><i class="icon-comment-alt"></i> {% trans 'New Conversation' %}</a>	    
-			</div>			
+			    <a id="new_conversation_button" class="btn" href="/contact/{{ contact.id }}/call/add" title="{% trans 'New Conversation' %}"><i class="icon-comment-alt"></i> {% trans 'New Conversation' %}</a>	    
+			</div>
 			<table class="table">
 				<thead>
 					<tr>
@@ -64,6 +64,7 @@
 			<div class="modal hide fade" id="business_card_modal" tabindex="-1" role="dialog" aria-labelledby="businesscard_label" aria-hidden="true">
 				{% include 'business_card.html' %}
 			</div>
+			<h4>{%trans 'Conversation History'%}</h4>
 			<table class="table">
                 <thead>
                     <tr>
@@ -77,9 +78,10 @@
                 <tbody id="search_result">
                     {% include 'conversation_list.html' %}
                 </tbody>
-            </table>        
+            </table>                  
 		</div>
 	</div>
+	<div id="new_conversation_div"></div>  
 </div>
    
 {% endblock %}

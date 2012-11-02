@@ -188,10 +188,8 @@ function row_edit_ajax(event) {
 function row_add_save_ajax(event){
 	event.preventDefault();
 	// selector starts from Add Button (this)	
-	var url = "/sales_item/add/";	
-	//var add_button_row = $(this).closest('tr'); //add_button_row inside the form
-	var row = $(this).closest('tr'); //real row containing also the form
-	
+	var url = "/sales_item/add/";		
+	var row = $(this).closest('tr'); //real row containing also the form	
 	var data = {
   			item_name: $(this).find("#id_item_name").val()    
   	};
@@ -209,10 +207,8 @@ function row_add_save_ajax(event){
     		$('#search_result').append(result);    		      		
       		rebind_edit_delete($('#search_result'));
       		rebind_paginator($('#search_result'));
-      		$("#save-add-form").submit(url, row_add_save_ajax);   
-      		
-      		$(".item_name").val('');
-      		
+      		$("#save-add-form").submit(url, row_add_save_ajax);      		
+      		$(".item_name").val('');      		
     	}
   	});  	
 };
@@ -462,6 +458,48 @@ function demo(event){
 	$('#form_demo').submit();	
 }
 
+function cancel_new_conversation(event){
+	alert("cancel clicked");
+	debugger;
+	event.preventDefault();
+	$('#new_conversation_div').empty();
+}
+
+function submit_new_conversation(event){
+	event.preventDefault();
+	var url = $(this).closest('#new_conversation_form').attr('action');
+	var data = $(this).closest('#new_conversation_form').serialize();
+	$.post(url, data, function (result) {
+		if ($('#validation_error_ajax', result).text() == 'True') {  			 
+		 	$('#new_conversation_div').empty();    		 
+		 	$('#new_conversation_div').append(result);      		       		 
+	 		//rebind_conversation('#new_conversation_div')  		       		
+		}
+		else{
+			$('#new_conversation_div').empty();
+		}
+	});
+}
+
+
+// function rebind_conversation(parent){
+	// $(parent).find('.new_conversation_cancel_button').click(cancel_new_conversation);
+		// // $('#new_conversation_submit_button').click(submit_new_conversation);
+	// $(parent).find('.new_conversation_form').submit(submit_new_conversation);
+// }
+
+
+function new_conversation(event){
+	alert("new_conversation clicked")
+	event.preventDefault();
+	var url = $(this).attr("href") + "/";
+	$('#new_conversation_div').load(url, function(){			
+		alert("data loaded")	
+		$('#new_conversation_cancel_button').off('click').on('click',cancel_new_conversation);   
+		//$('#new_conversation_submit_button').click(submit_new_conversation);		
+	});	
+}
+
 
 $(document).ready(function (){	 	
 	rebind_add();
@@ -477,7 +515,8 @@ $(document).ready(function (){
 	$('.timezone_help').click(show_timezone_help);
 	$('.date_picker').datepicker({ format: $('#locale').text(),	autoclose: 'True' });
 	$('#invite-button').click(invite_colleague);
-	$('#demo-button').click(demo);	
+	$('#demo-button').click(demo);
+	$('#new_conversation_button').on('click',new_conversation);
 	bind_rating_form();
 	
 		
