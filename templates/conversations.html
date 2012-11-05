@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load tz %}
 {% block title %}{% trans 'Conversation History' %}{% endblock %}
 {% block head %}<i class="icon-comments-alt"></i> {{contact.first_name}} {{ contact.last_name }} - {{ contact.company_name}}{% endblock %}
 {% block external %}
-
+	<script type="text/javascript" src="{{ STATIC_URL }}chasebot/chasebot_add_deals.js"></script>
 {% endblock %}
 {% block content %}
 <ul class="breadcrumb">
@@ -80,7 +81,7 @@
                 </tbody>
             </table>                  
 		</div>
-	</div>
+	</div>	
 	<div id="new_conversation_div"></div>  
 </div>
    

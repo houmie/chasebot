@@ -39,7 +39,7 @@ urlpatterns = patterns('',
     (r'^contact/delete/(?P<contact_id>\d+)/$', contact_delete),
     (r'^contact/edit/(?P<contact_id>\d+)/$', contact_add_edit),
     (r'^contact/add/', contact_add_edit),
-        
+
     (r'^contact/(?P<contact_id>\d+)/call/edit/(?P<call_id>\w+)/$', conversation_add_edit),
     (r'^contact/(?P<contact_id>\d+)/call/delete/(?P<call_id>\w+)/$', conversation_delete),
     (r'^contact/(?P<contact_id>\d+)/call/add/$', conversation_add_edit),    

@@ -458,9 +458,8 @@ function demo(event){
 	$('#form_demo').submit();	
 }
 
-function cancel_new_conversation(event){
-	alert("cancel clicked");
-	debugger;
+function cancel_new_conversation(event){	
+	//debugger;
 	event.preventDefault();
 	$('#new_conversation_div').empty();
 }
@@ -470,10 +469,10 @@ function submit_new_conversation(event){
 	var url = $(this).closest('#new_conversation_form').attr('action');
 	var data = $(this).closest('#new_conversation_form').serialize();
 	$.post(url, data, function (result) {
-		if ($('#validation_error_ajax', result).text() == 'True') {  			 
-		 	$('#new_conversation_div').empty();    		 
+		if ($(result).find('#new_validation_error_ajax').text() == 'True') {						 
+		 	$('#new_conversation_div').empty();
 		 	$('#new_conversation_div').append(result);      		       		 
-	 		//rebind_conversation('#new_conversation_div')  		       		
+	 		rebind_new_conversation('#new_conversation_div');  		       		
 		}
 		else{
 			$('#new_conversation_div').empty();
@@ -482,22 +481,18 @@ function submit_new_conversation(event){
 }
 
 
-// function rebind_conversation(parent){
-	// $(parent).find('.new_conversation_cancel_button').click(cancel_new_conversation);
-		// // $('#new_conversation_submit_button').click(submit_new_conversation);
-	// $(parent).find('.new_conversation_form').submit(submit_new_conversation);
-// }
+function rebind_new_conversation(parent){
+	$(parent).find('#new_conversation_cancel_button').off('click').on('click', cancel_new_conversation);   
+	$(parent).find('#new_conversation_form').off('submit').on('submit', submit_new_conversation);
+}
 
 
-function new_conversation(event){
-	alert("new_conversation clicked")
+function new_conversation(event){	
 	event.preventDefault();
-	var url = $(this).attr("href") + "/";
-	$('#new_conversation_div').load(url, function(){			
-		alert("data loaded")	
-		$('#new_conversation_cancel_button').off('click').on('click',cancel_new_conversation);   
-		//$('#new_conversation_submit_button').click(submit_new_conversation);		
-	});	
+	var url = $(this).attr("href") + "/";	
+	$('#new_conversation_div').load(url, function(result){					
+		rebind_new_conversation('#new_conversation_div');		
+	});
 }
 
 
@@ -516,7 +511,7 @@ $(document).ready(function (){
 	$('.date_picker').datepicker({ format: $('#locale').text(),	autoclose: 'True' });
 	$('#invite-button').click(invite_colleague);
 	$('#demo-button').click(demo);
-	$('#new_conversation_button').on('click',new_conversation);
+	$('#new_conversation_button').off('click').on('click',new_conversation);
 	bind_rating_form();
 	
 		
