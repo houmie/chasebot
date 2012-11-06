@@ -83,7 +83,7 @@ function filter_rows(event){
 	//If the page containing the paginator is a modal, then we need to know its type, to modify the url accordingly 
 	//Otherwise the url would point to the page containing the modal. 
 	var modal = $('#modal_type').text();
-	if(modal != ''){
+	if($.chasebot.MODAL_OPEN){
 		url = "/" + modal + "/";
 	}
 	else{
@@ -91,7 +91,7 @@ function filter_rows(event){
 	}
 	
 	// With ajax as first keywork we can check against in views.py and refresh the list if all filters are cleared but the request came by ajax
-	url = url + '?ajax' 
+	url = url + '?ajax';
 	 
 	//Check each input box for values and apply keyword search 
 	$('.form-filter-ajax').find('input').each(function(i, v){			
@@ -135,7 +135,7 @@ function paginator_navigate(event) {
 	//If the page containing the paginator is a modal, then we need to know its type, to modify the url accordingly 
 	//Otherwise the url would point to the page containing the modal. 
 	var modal = $('#modal_type').text();
-	if(modal != ''){
+	if($.chasebot.MODAL_OPEN){
 		url = "/" + modal + "/" + $(this).attr("href");
 	}
 	else{
@@ -411,16 +411,22 @@ function rebind_filters(parent){
 function modal_closing(event){
 	event.preventDefault();
 	$('#salesitems_modal').empty();
+	$.chasebot.MODAL_OPEN = false;
+}
+
+function modal_opening(event){
+	event.preventDefault();
+	$.chasebot.MODAL_OPEN = true;
 }
 
 function open_modal_sales_item(event){
-	event.preventDefault();
+	event.preventDefault();	
 	var url = $(this).attr("href") + "/";
 	//var map = new Object();
 	//map['modal'] = true;
 	var data = 'modal';	
-	$("#salesitems_modal").load(url, data, function() { 
-            $(this).modal('show'); // display the modal on url load
+	$("#salesitems_modal").load(url, data, function() {		 
+            $(this).modal('show'); // display the modal on url load            
             rebind_add();
             rebind_edit_delete($(this));
             rebind_paginator($(this));
@@ -476,6 +482,12 @@ function submit_new_conversation(event){
 		}
 		else{
 			$('#new_conversation_div').empty();
+			url = window.location.pathname + '?ajax';
+			$('#search_result').load(url, function(){		
+				rebind_edit_delete($('#search_result'));
+				rebind_paginator($('#search_result'));
+				rebind_add();
+			});	
 		}
 	});
 }
@@ -485,7 +497,6 @@ function rebind_new_conversation(parent){
 	$(parent).find('#new_conversation_cancel_button').off('click').on('click', cancel_new_conversation);   
 	$(parent).find('#new_conversation_form').off('submit').on('submit', submit_new_conversation);
 }
-
 
 function new_conversation(event){	
 	event.preventDefault();
@@ -506,6 +517,7 @@ $(document).ready(function (){
 	$(".modal_link_sales_item").click(open_modal_sales_item);
 	//$(".modal_link_business_card").click(open_modal_business_card);
 	$('#salesitems_modal').on('hidden', modal_closing);
+	$('#salesitems_modal').on('shown', modal_opening);
 	$('#timezone_dropdown').change(timezone_dropdown);	
 	$('.timezone_help').click(show_timezone_help);
 	$('.date_picker').datepicker({ format: $('#locale').text(),	autoclose: 'True' });

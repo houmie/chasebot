@@ -142,7 +142,7 @@ def conversation_display(request, contact_id):
             else:
                 to_date = timezone.now()        
             calls_queryset = calls_queryset.filter(conversation_datetime__range=(from_date, to_date))
-        if 'subject' in request.GET:    
+        if 'subject' in request.GET:
             subject = request.GET['subject']
             calls_queryset = calls_queryset.filter(subject__icontains=subject).order_by('subject')        
     
@@ -155,7 +155,7 @@ def conversation_display(request, contact_id):
     if ajax:    
         return render(request, 'conversation_list.html', variables)
     else:
-        return render(request, 'conversations.html', variables)  
+        return render(request, 'conversations.html', variables)
     
 @login_required
 def get_deal_template(request, deal_template_id):        
@@ -180,7 +180,6 @@ def remove_redundant_future_deals(contact, deal):
         for bad_deal in later_deals_to_be_removed:
             bad_deal.delete()    
     
-
 
 @login_required
 def conversation_add_edit(request, contact_id, call_id=None):
@@ -286,7 +285,9 @@ def conversation_add_edit(request, contact_id, call_id=None):
     #The extra deal formset will always be independent of POST/GET since its hidden and remains empty as a starting point for cloning
     extra_deal_formset = extra_deal_formset_factory(prefix='extra_deal')
     variables = {'form':form, 'template_title':template_title, 'deals_add_form':deals_add_form, 'opendeals_add_form':opendeals_add_form, 'attached_deals_formset':attached_deals_formset, 'contact':contact, 'extra_deal_formset':extra_deal_formset, 'validation_error_ajax':validation_error_ajax }
-    variables = merge_with_localized_variables(request, variables)   
+    variables = merge_with_localized_variables(request, variables)  
+    if 'ajax' in request.GET:
+        return render(request, 'conversation.html', variables)    
     return render(request, '_conversation.html', variables)
 
 
