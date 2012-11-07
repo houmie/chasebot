@@ -15,10 +15,10 @@ from django.utils.translation import ugettext_lazy as _
    
     
 class UserRegistrationForm(Form):
-    username        = forms.CharField(label = _(u'Username'), max_length=30)    
-    email           = forms.EmailField(label= _(u'Email'))
-    password        = forms.CharField(label = _(u'Password'), widget=forms.PasswordInput(render_value=False))
-    password2       = forms.CharField(label = _(u'Password (retype)'), widget=forms.PasswordInput(render_value=False))
+    username        = forms.CharField(widget=forms.TextInput(attrs={'placeholder': _(u'Enter a memorable username...')}), label = _(u'Username'), max_length=30)
+    email           = forms.EmailField(widget=forms.TextInput(attrs={'placeholder': _(u'Enter your email address...')}), label= _(u'Email'))
+    password        = forms.CharField(label = _(u'Password'), widget=forms.PasswordInput(render_value=False,attrs={'placeholder': _(u'Enter a memorable password...')}))
+    password2       = forms.CharField(label = _(u'Password (retype)'), widget=forms.PasswordInput(render_value=False, attrs={'placeholder': _(u'Retype your password...')}))
 
     def clean_password2(self):
         if 'password' in self.cleaned_data:

@@ -6,6 +6,15 @@ body {
     border-top: 0;
 }
 
+.demo_table th, .demo_table td {
+	border-top: 0;
+	padding: 0px;
+}
+
+.demo_table td{
+	width: 1em;
+}
+
 .sales_item_add_save_tr th, .sales_item_add_save_tr td {
 	border-top: 0;
 }

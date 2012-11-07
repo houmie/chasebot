@@ -3,13 +3,13 @@
 {% block external %}
 {% endblock %}
 {% block title %}{{ template_title }}{% endblock %}
-{% block head %}<i class="icon-beaker"></i> {% trans 'Welcome to Free Live Demo' %}{% endblock %}
+{% block head %}<i class="icon-beaker"></i> {% trans 'Welcome to the free live demo' %}{% endblock %}
 {% block content %}
 
 <h5>{% trans 'Simply enter a memorable username, password and your email to continue:' %}</h5>
 
 <form id="form_demo" class="cb_margin_top" method="post" action=".">
-    <table class="table edit_table">
+    <table class="table demo_table">
     	<tr>
     		<td>
     			{{ form.username.label }}:    			
