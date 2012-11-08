@@ -478,7 +478,8 @@ function submit_new_conversation(event){
 		if ($(result).find('#new_validation_error_ajax').text() == 'True') {						 
 		 	$('#new_conversation_div').empty();
 		 	$('#new_conversation_div').append(result);      		       		 
-	 		rebind_new_conversation('#new_conversation_div');  		       		
+	 		rebind_new_conversation('#new_conversation_div'); 
+	 		rebind_add_deals(); 		       		
 		}
 		else{
 			$('#new_conversation_div').empty();
@@ -502,7 +503,8 @@ function new_conversation(event){
 	event.preventDefault();
 	var url = $(this).attr("href") + "/";	
 	$('#new_conversation_div').load(url, function(result){					
-		rebind_new_conversation('#new_conversation_div');		
+		rebind_new_conversation('#new_conversation_div');
+		rebind_add_deals();		
 	});
 }
 

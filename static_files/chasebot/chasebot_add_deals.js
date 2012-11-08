@@ -188,7 +188,7 @@ function show_tab(e){
 	//now the last_actice_tab boolean is set to true of the current tab 
 }
 
-$(document).ready(function () {	
+function rebind_add_deals(){
 	//Upon opening make sure that all deals from attached_deal_formset will get chosenified. 
 	// Attention: Do NOT chosenify the extra-deal form, or it would break.
 	var total = $('#id_deals-TOTAL_FORMS').val();
@@ -206,5 +206,8 @@ $(document).ready(function () {
 	//Useful when there are validation errors on request.POST and we need to re-activate the previous active tab. 
 	if($('#attached_deals_tab > li.active').length == 0)
 		$('#attached_deals_tab a:first').tab('show');
+}
 
+$(document).ready(function () {	
+	rebind_add_deals();
 });

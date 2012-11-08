@@ -411,6 +411,15 @@ def sales_item_delete(request, sales_item_id=None):
         variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
     return render(request, 'sales_item_list.html', variables)
 
+@login_required
+def open_deals(request):
+    profile = request.user.get_profile()
+    dic = {}
+    for contact in profile.company.contact_set.all():
+        deals = contact.get_open_deals()
+        dic[contact] = deals
+    return HttpResponse(simplejson.dumps(dic), mimetype='application/json')        
+        
 
 
 @login_required
