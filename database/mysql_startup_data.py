@@ -3,13 +3,13 @@
 
 import MySQLdb
 
-conn = MySQLdb.connect('localhost', 'django_user', 'houmie123', 'Ch4s3b0tDB')
+conn = MySQLdb.connect('localhost', 'django_user', 'houmie123', 'Ch4s3b0tDB', charset='utf8')
 cur = conn.cursor()
 
 f = open('/home/houman/projects/chasebot/database/country_code_drupal_nov_2011.txt')
 
 cur.execute("INSERT INTO chasebot_app_company (company_name, company_email) VALUES ('Venus Cloud Ltd', 'info@venuscloud.com');")
-cur.execute("INSERT INTO chasebot_app_currency (currency) VALUES ('$ - USD'),('€ - EUR'), ('£ - GBP'), ('$ - CAD'), ('$ - AUD'), ('R$ - BRL');")
+cur.execute("INSERT INTO chasebot_app_currency (currency) VALUES ('USD - $'),('EUR - €'), ('GBP - £'), ('CAD - $'), ('AUD - $'), ('BRL - R$');")
 cur.execute("INSERT INTO chasebot_app_licensetemplate (name, max_users, description, currency_id, price) VALUES ('Solo', '1', 'Solo plan (1 user, 5 GB file storage, max 20,000 contacts)', 1,  '24');")
 cur.execute("INSERT INTO chasebot_app_licensetemplate (name, max_users, description, currency_id, price) VALUES ('Basic', '2', 'Free plan (2 users, no file storage, max 275 contacts)', 1, '0');")
 cur.execute("INSERT INTO chasebot_app_licensetemplate (name, max_users, description, currency_id, price) VALUES ('Standard', '6', 'For small teams (6 users, 6 GB file storage, max 6,000 contacts)', 1, '19');")
