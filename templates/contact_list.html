@@ -8,7 +8,7 @@
                     <a class="btn-link row_delete_ajax" href="/contact/delete/{{ item.id }}" title="{% trans 'Delete Contact' %}"><i class="icon-trash icon-large"> </i></a>
                    </span>
                 </td>
-                <td><a class="btn" href="/contact/{{ item.id }}/calls" title="{% trans 'Conversations' %}"><i class="icon-comments-alt icon-large"> </i></a></td>                    
+                <td><a class="btn conversation" href="/contact/{{ item.id }}/calls" title="{% trans 'Conversations' %}"><i class="icon-comments-alt icon-large"> </i></a></td>                    
                 <td><a class="btn" href="/charts/contact/{{ item.id }}" title="{% trans 'Charts' %}"><i class="icon-bar-chart icon-large"> </i></a></td>
                 <td>{{ item.last_name }}</td>
                 <td>{{ item.first_name }}</td>

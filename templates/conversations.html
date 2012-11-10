@@ -40,7 +40,8 @@
 			<!--Body content-->			
 			<div>
 				<a class="btn right-margin" href="/" title="{% trans 'Back to Main Screen' %}"><i class="icon-arrow-left"> </i></a>
-			    <a id="new_conversation_button" class="btn" href="/contact/{{ contact.id }}/call/add" title="{% trans 'New Conversation' %}"><i class="icon-comment-alt"></i> {% trans 'New Conversation' %}</a>	    
+			    <a id="new_conversation_button" class="btn right-margin" href="/contact/{{ contact.id }}/call/add" title="{% trans 'New Conversation' %}"><i class="icon-comment-alt"></i> {% trans 'New Conversation' %}</a>
+			    <a id="deals_in_progress_calls" class="btn" data-toggle="button" href="/?ajax&open_deals" title="{% trans 'Show Only Deals In Progress' %}"><i class="icon-legal"></i> {% trans 'Show Only Deals In Progress' %}</a>	    
 			</div>
 			<table class="table">
 				<thead>

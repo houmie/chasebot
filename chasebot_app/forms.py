@@ -135,7 +135,7 @@ class ConversationForm(ModelForm):
                    }
     
     def get_non_open_deals(self, call, company):
-        open_deals = call.contact.get_open_deals()
+        open_deals = call.contact.get_raw_open_deals()
         open_deal_list = []
         if open_deals:
             for item in open_deals:
@@ -150,7 +150,7 @@ class DealsAddForm(Form):
         exclude_list = []
         # The following are all deals attached to this calls.
         attached_deals_to_call_query = call.deal_set.all()
-        opendeals_query = get_open_deals_query(contact) 
+        opendeals_query = contact.get_open_deals_query() 
         #The dropdown should not show templates, whos instances are still open but not yet attached. Only negotiate a new deal, if the existing deals are closed.  
         for deal in opendeals_query:
             exclude_list.append(deal.deal_template.pk)
@@ -163,10 +163,7 @@ class DealsAddForm(Form):
     deal_template       = forms.ModelChoiceField(queryset='', label=_(u'Negotiate a New Deal'))
 
 
-def get_open_deals_query(contact):
-    raw = contact.get_open_deals() # The following are all open deals (not status 5 or 6) that are attached to the whole contact
-    opendeals_query = contact.deal_set.filter(id__in=[item.id for item in raw])
-    return opendeals_query
+
 
 
 
@@ -176,7 +173,7 @@ class OpenDealsAddForm(Form):
         exclude_attached_opendeals = []
         # The following are all deals attached to this calls.
         attached_deals_to_call_query = call.deal_set.all()
-        opendeals_query = get_open_deals_query(contact) 
+        opendeals_query = contact.get_open_deals_query() 
         for attached_deal in attached_deals_to_call_query:
             # Now we search if any open deals is already attached to this call, if so it shall be excluded
             # in the open deal drop down for this call.

@@ -142,7 +142,7 @@ class Contact(models.Model):
         verbose_name_plural = _(u'Contacts')
     
 #   Show all open deals for this contact  
-    def get_open_deals(self):
+    def get_raw_open_deals(self):
         query = 'SELECT l1.* \
                  FROM chasebot_app_deal AS l1 \
                  INNER JOIN ( \
@@ -162,6 +162,11 @@ class Contact(models.Model):
                  l1.deal_id     = l3.deal_id AND l1.deal_datetime = l3.deal_datetime AND l1.id   = l3.trans_max \
                  WHERE contact_id = %s and l1.deal_id not in (select deal_id from chasebot_app_deal where status_id in (5, 6))'
         return Deal.objects.raw(query, [self.id])
+    
+    def get_open_deals_query(self):
+        raw = self.get_raw_open_deals() # The following are all open deals (not status 5 or 6) that are attached to the whole contact
+        opendeals_query = self.deal_set.filter(id__in=[item.id for item in raw])
+        return opendeals_query
 
 
 class SalesItem(models.Model):        

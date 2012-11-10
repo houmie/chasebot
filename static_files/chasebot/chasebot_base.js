@@ -493,6 +493,21 @@ function submit_new_conversation(event){
 	});
 }
 
+// function open_deal_conversations(event){
+	// event.preventDefault();
+	// var url = $(this).attr("href");	
+	// $('#new_conversation_div').load(url, function(result){					
+		// rebind_new_conversation('#new_conversation_div');
+		// rebind_add_deals();		
+	// });
+// }
+
+
+function rebind_conversations(){
+	$('.conversation').attr('href', function(i, current){
+		return current + '?open_deals';
+	})
+}
 
 function rebind_new_conversation(parent){
 	$(parent).find('#new_conversation_cancel_button').off('click').on('click', cancel_new_conversation);   
@@ -507,6 +522,61 @@ function new_conversation(event){
 		rebind_add_deals();		
 	});
 }
+
+function deals_in_progress_coversations(event){
+	event.preventDefault();
+	if($(this).hasClass('active')){
+		var url = '/?ajax';
+		$('#search_result').load(url, function(result){					
+			rebind_edit_delete($('#search_result'));
+			rebind_paginator($('#search_result'));
+			rebind_add();	
+			rebind_ratings($('#search_result'));			
+			$('#contacts_title').text(gettext("Contacts"));
+		});	
+	}
+	else{
+		var url = '/?ajax&open_deals';
+		$('#search_result').load(url, function(result){					
+			rebind_edit_delete($('#search_result'));
+			rebind_paginator($('#search_result'));
+			rebind_add();	
+			rebind_ratings($('#search_result'));
+			rebind_conversations();	
+			$('#contacts_title').text(gettext("Contacts with deals in progress"));
+		});			
+	}
+}
+
+
+function deals_in_progress(event){
+	event.preventDefault();
+	if($(this).hasClass('active')){
+		var url = '/?ajax';
+		$('#search_result').load(url, function(result){					
+			rebind_edit_delete($('#search_result'));
+			rebind_paginator($('#search_result'));
+			rebind_add();	
+			rebind_ratings($('#search_result'));			
+			$('#contacts_title').text(gettext("Contacts"));
+			$.chasebot.IS_SHOW_DEALS_ONLY =  false;
+		});	
+	}
+	else{		
+		var url = '/?ajax&open_deals';
+		$('#search_result').load(url, function(result){					
+			rebind_edit_delete($('#search_result'));
+			rebind_paginator($('#search_result'));
+			rebind_add();	
+			rebind_ratings($('#search_result'));
+			rebind_conversations();	
+			$('#contacts_title').text(gettext("Contacts with deals in progress"));
+			$.chasebot.IS_SHOW_DEALS_ONLY =  true;
+		});			
+	}	
+}
+
+
 
 
 $(document).ready(function (){	 	
@@ -526,25 +596,9 @@ $(document).ready(function (){
 	$('#invite-button').click(invite_colleague);
 	$('#demo-button').click(demo);
 	$('#new_conversation_button').off('click').on('click',new_conversation);
+	$('#deals_in_progress').off('click').on('click', deals_in_progress);
+	$('#deals_in_progress_calls').off('click').on('click', deals_in_progress_coversations);	
 	bind_rating_form();
-	
-		
-	
-	
-	
-// $(document).click(function(e){
-  // if(isVisible & clickedAway){
-    // $('#timezone_dropdown').popover('hide');
-    // isVisible = clickedAway = false
-  // }
-  // else {
-    // clickedAway = true
-  // }
-// });
-
-
-
-    
 
 });
 

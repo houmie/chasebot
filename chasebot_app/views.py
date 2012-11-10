@@ -57,15 +57,57 @@ def create_date_from_javascript_date(request, date, to_date_format = None):
     date_time = current_tz.localize(date_time_unaware)            
     return date_time
 
+
+def get_raw_all_open_deals():
+    query = 'SELECT id, contact_id, l1.deal_id \
+             FROM chasebot_app_deal AS l1 \
+             INNER JOIN ( \
+                 SELECT deal_id, MAX(deal_datetime) AS time_stamp_max \
+                 FROM chasebot_app_deal \
+                 GROUP BY deal_id \
+            ) AS l2 \
+            ON \
+            l1.deal_id     = l2.deal_id AND \
+            l1.deal_datetime = l2.time_stamp_max \
+            INNER JOIN ( \
+                 SELECT deal_id, deal_datetime, MAX(id) AS trans_max \
+                 FROM chasebot_app_deal \
+                 GROUP BY deal_id, deal_datetime \
+                 ) AS l3 \
+            ON \
+            l1.deal_id     = l3.deal_id AND l1.deal_datetime = l3.deal_datetime AND l1.id   = l3.trans_max \
+            WHERE l1.deal_id not in (select deal_id from chasebot_app_deal where status_id in (5, 6))' 
+    return Deal.objects.raw(query)
+    
+
+@login_required
+def contacts_with_open_deals(request, company):    
+    raw = get_raw_all_open_deals() 
+    contacts_query = company.contact_set.filter(id__in=[item.contact_id for item in raw])        
+    return contacts_query
+
+@login_required
+def conversations_with_open_deals(request, contact):    
+    raw = get_raw_all_open_deals() 
+    deals_query = contact.deal_set.filter(deal_id__in=[item.deal_id for item in raw])
+    conversations_query = contact.conversation_set.filter(id__in=[item.conversation.id for item in deals_query])        
+    return conversations_query
+   
+
 @login_required
 def contacts_display(request):      
     profile = request.user.get_profile()
     company_name = profile.company.company_name
-    contacts_queryset = profile.company.contact_set.all().order_by('last_name')    
+        
     ajax = False
     
     if 'ajax' in request.GET:
         ajax = True
+        if 'open_deals' in request.GET:
+            contacts_queryset = contacts_with_open_deals(request, profile.company)
+        else:
+            contacts_queryset = profile.company.contact_set.all().order_by('last_name')
+        
         if 'last_name' in request.GET:    
             last_name = request.GET['last_name']
             contacts_queryset = contacts_queryset.filter(last_name__icontains=last_name).order_by('last_name')
@@ -78,6 +120,8 @@ def contacts_display(request):
         if 'email' in request.GET:    
             email = request.GET['email']
             contacts_queryset = contacts_queryset.filter(email__icontains=email).order_by('email')
+    else:
+        contacts_queryset = profile.company.contact_set.all().order_by('last_name')        
     
     filter_form = FilterContactsForm(request.GET)
     contacts, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, contacts_queryset)    
@@ -131,10 +175,15 @@ def contact_delete(request, contact_id):
 def conversation_display(request, contact_id):    
     profile = request.user.get_profile()
     contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
-    calls_queryset = contact.conversation_set.all().order_by('-conversation_datetime')
+    
+    if 'open_deals' in request.GET:
+        calls_queryset = conversations_with_open_deals(request, contact)
+    else:
+        calls_queryset = contact.conversation_set.all().order_by('-conversation_datetime')
+    
     ajax = False    
     if 'ajax' in request.GET:
-        ajax = True
+        ajax = True            
         if 'from_date' in request.GET:                        
             from_date = create_date_from_javascript_date(request, request.GET['from_date'])
             if 'to_date' in request.GET:
@@ -144,7 +193,7 @@ def conversation_display(request, contact_id):
             calls_queryset = calls_queryset.filter(conversation_datetime__range=(from_date, to_date))
         if 'subject' in request.GET:
             subject = request.GET['subject']
-            calls_queryset = calls_queryset.filter(subject__icontains=subject).order_by('subject')        
+            calls_queryset = calls_queryset.filter(subject__icontains=subject).order_by('subject')          
     
     filter_form = FilterConversationForm(request.GET)
     calls, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, calls_queryset)    
@@ -286,7 +335,7 @@ def conversation_add_edit(request, contact_id, call_id=None):
     extra_deal_formset = extra_deal_formset_factory(prefix='extra_deal')
     variables = {'form':form, 'template_title':template_title, 'deals_add_form':deals_add_form, 'opendeals_add_form':opendeals_add_form, 'attached_deals_formset':attached_deals_formset, 'contact':contact, 'extra_deal_formset':extra_deal_formset, 'validation_error_ajax':validation_error_ajax }
     variables = merge_with_localized_variables(request, variables)  
-    if 'ajax' in request.GET:
+    if 'full' in request.GET:
         return render(request, 'conversation.html', variables)    
     return render(request, '_conversation.html', variables)
 
@@ -411,15 +460,7 @@ def sales_item_delete(request, sales_item_id=None):
         variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
     return render(request, 'sales_item_list.html', variables)
 
-@login_required
-def open_deals(request):
-    profile = request.user.get_profile()
-    dic = {}
-    for contact in profile.company.contact_set.all():
-        deals = contact.get_open_deals()
-        dic[contact] = deals
-    return HttpResponse(simplejson.dumps(dic), mimetype='application/json')        
-        
+
 
 
 @login_required
