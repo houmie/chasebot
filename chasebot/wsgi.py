@@ -17,10 +17,10 @@ import os
 import sys
 
 #Production Settings
-#SITE_DIR = '/venuscloud/chasebot_env/site'
-#import site
-#site.addsitedir(SITE_DIR)
-#sys.path.append(SITE_DIR)
+SITE_DIR = '/home/hooman/venuscloud/chasebot_env/site'
+import site
+site.addsitedir(SITE_DIR)
+sys.path.append(SITE_DIR)
 
 #Old Production Settings
 #sys.path.append('/venuscloud/chasebot')
