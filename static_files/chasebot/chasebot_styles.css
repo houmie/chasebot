@@ -229,3 +229,11 @@ td.minwidth{
 .cb_margin_top {
 	margin-top: 40px;
 }
+
+.cb_margin_bottom{
+	margin-bottom: 5px;
+}
+
+input.cb_edit_save{
+	width: 55px;
+}

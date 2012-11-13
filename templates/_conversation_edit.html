@@ -1,0 +1,98 @@
+{% load i18n %}
+{% load tz %}
+<td>
+	<form id="edit_conversation_form" method="post" action="/contact/{{contact.id}}/call/edit/">
+	    {% csrf_token %}
+	        <table class="table edit_table">
+	            <tbody>
+	            	<tr>
+	            		<td>
+	            			<input id="edit_conversation_submit_button" type="submit" value="{% trans 'Save' %}" class="btn btn-primary cb_edit_save cb_margin_bottom" />
+		    				<input id="edit_conversation_cancel_button" type="button" value="{% trans 'Cancel' %}" class="btn cb_edit_save" />
+	            		</td>
+	            	</tr>
+	                <tr>
+	                    <td>                        
+	                        {% if form.conversation_date.errors %}
+		                	<div class="field field_error">
+		                    	{{form.conversation_date}} {{form.conversation_date.errors}}                   	
+		                	</div>
+		                	{% else %}
+		                		{{form.conversation_date}}
+		                	{% endif %}   					                	           
+	                    </td>
+	                </tr>    
+	                <tr>
+	                    <td>                        
+	                        {% if form.conversation_time.errors %}
+		                	<div class="field field_error">
+		                    	{{form.conversation_time}} {{form.conversation_time.errors}}                   	
+		                	</div>
+		                	{% else %}
+		                		{{form.conversation_time}}
+		                	{% endif %}    
+		                	{% get_current_timezone as TIME_ZONE %}{{TIME_ZONE}}                              
+	                    </td>
+	                </tr>            
+	                <tr>
+	                    <td>                        
+	                        {% if form.subject.errors %}
+		                	<div class="field field_error">
+		                    	{{form.subject}} {{form.subject.errors}}                   	
+		                	</div>
+		                	{% else %}
+		                		{{form.subject}}
+		                	{% endif %}                        
+	                    </td>
+	                </tr>            
+	                <tr>
+	                    <td>
+	                    	<div class="accordion" id="accordion1">
+								<div class="accordion-group">
+									<div class="accordion-heading">
+										<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#collapse1">
+											{% trans 'Click here to see and edit the notes' %}
+										</a>
+									</div>
+									<div id="collapse1" class="accordion-body collapse">
+										<div class="accordion-inner">
+											{% if form.notes.errors %}
+						                	<div class="field field_error">
+						                    	{{form.notes}} {{form.notes.errors}}                   	
+						                	</div>
+						                	{% else %}
+						                		{{form.notes}}
+						                	{% endif %}
+										</div>
+									</div>
+								</div>
+							</div>                                                
+	                    </td>
+	                </tr>
+	                <tr>
+	                	<td>
+	                		<div class="accordion" id="accordion2">
+								<div class="accordion-group">
+									<div class="accordion-heading">
+										<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse2">
+											{% trans 'Click here to see and edit the deals' %}
+										</a>
+									</div>
+									<div id="collapse2" class="accordion-body collapse">
+										<div class="accordion-inner">
+	                						{% include '_deal_edit.html' %}
+	            						</div>
+	        						</div>
+	    						</div>
+							</div>	
+	                	</td>
+	                </tr>					                					                
+	            	<tr>
+	            		<td>
+	            			<div id="new_validation_error_ajax" class="hidden">{{validation_error_ajax}}</div>
+	            		</td>
+	            	</tr>
+	            </tbody>
+	        </table>    
+	</form>	
+</td>

@@ -336,8 +336,10 @@ def conversation_add_edit(request, contact_id, call_id=None):
     extra_deal_formset = extra_deal_formset_factory(prefix='extra_deal')
     variables = {'form':form, 'template_title':template_title, 'deals_add_form':deals_add_form, 'opendeals_add_form':opendeals_add_form, 'attached_deals_formset':attached_deals_formset, 'contact':contact, 'extra_deal_formset':extra_deal_formset, 'validation_error_ajax':validation_error_ajax }
     variables = merge_with_localized_variables(request, variables)  
-    if 'full' in request.GET:
-        return render(request, 'conversation.html', variables)    
+#    if 'full' in request.GET:
+#        return render(request, 'conversation.html', variables)
+    if call_id:
+        return render(request, '_conversation_edit.html', variables)      
     return render(request, '_conversation.html', variables)
 
 

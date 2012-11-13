@@ -174,13 +174,14 @@ function row_edit_ajax(event) {
   
   	//e.g. get whole row to be replaced with editing fields
   	var row = $(this).closest('tr');
-  	
+  	row.empty();
 	row.load(
     	url,    	
-    	function () {
+    	function (result) {
     		//Once loaded make sure the submit-form will be redirected to 'row_edit_save_ajax' once submitted. Url is parameter 
       		$(row).find(".save-edit-form").submit(url, row_edit_save_ajax);
       		$(row).find(".cancel_edit_button").click(row_edit_cancel_ajax);
+      		rebind_add_deals();
     	}
   	);  	
 };

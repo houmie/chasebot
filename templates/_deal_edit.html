@@ -1,0 +1,354 @@
+{% load i18n %}
+<table class="table edit_table" id="deals">	
+    <tbody>
+    	<tr>        	
+            <td>   
+            	<div class="input-append">             
+	        		{{deals_add_form.deal_template}}
+	        		<button type="button" id="add_deals_button" class="btn btn-success"><i class="icon-plus icon-white"> </i></button>
+        		</div>            	                        
+            </td>        	          	
+        </tr>
+        <tr>        	
+            <td>                
+            	<div class="input-append">
+	        		{{opendeals_add_form.open_deal_template}}            	          
+	            	<button type="button" id="add_opendeals_button" class="btn btn-success"><i class="icon-plus icon-white"> </i></button>
+            	</div>
+            	<div id="contact_id" class="hidden">{{contact.pk}}</div>
+            </td>        	            	
+        </tr>    
+        <tr class="hidden">
+        	<td id="X" class="hidden">
+        		{{extra_deal_formset.management_form}}
+        		{% for fs in extra_deal_formset%}
+        			{{fs.id}}
+        			<table>
+						<tr class="hidden">										
+							<td>								
+								{{fs.attached_open_deal_id}}
+								{{fs.is_last_active_tab}}														
+							</td>
+						</tr>
+						<tr>
+							<td>                    
+								{% if  fs.deal_template_name.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.deal_template_name.label}}: *</div>{%else%}{{fs.deal_template_name.label}}:{% endif %}
+		                    </td>
+		                    <td>
+		                    	{% if fs.deal_template_name.errors %}
+			                	<div class="field field_error">
+			                    	{{fs.deal_template_name}} {{fs.deal_template_name.errors}}                   	
+			                	</div>
+			                	{% else %}
+			                		{{fs.deal_template_name}}
+			                	{% endif %}				                    	
+		                    </td>
+	                    </tr>
+	                    <tr>
+							<td>
+								{% if  fs.deal_instance_name.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.deal_instance_name.label}}: *</div>{%else%}{{fs.deal_instance_name.label}}:{% endif %}                        
+		                    </td>
+		                    <td>
+		                    	{% if fs.deal_instance_name.errors %}
+			                	<div class="field field_error">
+			                    	{{fs.deal_instance_name}} {{fs.deal_instance_name.errors}}                   	
+			                	</div>
+			                	{% else %}
+			                		{{fs.deal_instance_name}}
+			                	{% endif %}				                    	
+		                    </td>
+	                    </tr>
+	                    <tr>
+							<td>  
+								{% if  fs.deal_description.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.deal_description.label}}: *</div>{%else%}{{fs.deal_description.label}}:{% endif %}                      
+		                    </td>
+		                    <td>
+		                    	{% if fs.deal_description.errors %}
+			                	<div class="field field_error">
+			                    	{{fs.deal_description}} {{fs.deal_description.errors}}                   	
+			                	</div>
+			                	{% else %}
+			                		{{fs.deal_description}}
+			                	{% endif %}				                    	
+		                    </td>
+	                    </tr>
+	                    <tr>
+							<td>                  
+								{% if  fs.sales_item.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.sales_item.label}}: *</div>{%else%}{{fs.sales_item.label}}:{% endif %}      
+		                    </td>
+		                    <td>
+		                    	{% if fs.sales_item.errors %}
+			                	<div class="field field_error">
+			                    	{{fs.sales_item}} {{fs.sales_item.errors}}                   	
+			                	</div>
+			                	{% else %}
+			                		{{fs.sales_item}}
+			                	{% endif %}				                    	
+		                    </td>
+	                    </tr>
+	                    <tr>
+							<td>
+								{% if  fs.sales_term.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.sales_term.label}}: *</div>{%else%}{{fs.sales_term.label}}:{% endif %}                        
+		                    </td>
+		                    <td>
+		                    	{% if fs.sales_term.errors %}
+			                	<div class="field field_error">
+			                    	{{fs.sales_term}} {{fs.sales_term.errors}}                   	
+			                	</div>
+			                	{% else %}
+			                		{{fs.sales_term}}
+			                	{% endif %}				                    	
+		                    </td>
+	                    </tr>
+	                    <tr>
+							<td>  
+								{% if  fs.price.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.price.label}}: *</div>{%else%}{{fs.price.label}}:{% endif %}                      
+		                    </td>
+		                    <td>
+		                    	{% if fs.price.errors %}
+			                	<div class="field field_error">
+			                    	{{fs.price}} {{fs.price.errors}}                   	
+			                	</div>
+			                	{% else %}
+			                		{{fs.price}}
+			                	{% endif %}				                    	
+		                    </td>
+	                    </tr>
+	                    <tr>
+							<td>       
+								{% if  fs.currency.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.currency.label}}: *</div>{%else%}{{fs.currency.label}}:{% endif %}                 
+		                    </td>
+		                    <td>
+		                    	{% if fs.currency.errors %}
+			                	<div class="field field_error">
+			                    	{{fs.currency}} {{fs.currency.errors}}                   	
+			                	</div>
+			                	{% else %}
+			                		{{fs.currency}}
+			                	{% endif %}				                    	
+		                    </td>
+	                    </tr>
+	                    <tr>
+							<td>		                        
+		                        {% if  fs.quantity.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.quantity.label}}: *</div>{%else%}{{fs.quantity.label}}:{% endif %}
+		                    </td>
+		                    <td>
+		                    	{% if fs.quantity.errors %}
+			                	<div class="field field_error">
+			                    	{{fs.quantity}} {{fs.quantity.errors}}                   	
+			                	</div>
+			                	{% else %}
+			                		{{fs.quantity}}
+			                	{% endif %}				                    	
+		                    </td>
+	                    </tr>
+	                    <tr>
+	                    	<td>
+	                    		{% if  fs.status.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.status.label}}: *</div>{%else%}{{fs.status.label}}:{% endif %}                        
+		                    </td>
+	                    	<td>                        
+		                        {% if fs.status.errors %}
+			                	<div class="field field_error">
+			                    	{{fs.status}} {{fs.status.errors}}                   	
+			                	</div>
+			                	{% else %}
+			                		{{fs.status}}					                		
+			                	{% endif %}                        
+		                    </td>
+	                    </tr>
+	                    <tr>
+	                    	<td>
+	                    		{{fs.DELETE.label}}:
+	                    	</td>
+	                    	<td>
+	                    		{{fs.DELETE}}
+	                    	</td>				                    	
+                    	</tr>	
+	                    <tr>
+	                    	<td>                        
+		                        
+		                    </td>
+	                    	<td>                        
+		                        {{fs.deal_template}}
+		                    </td>
+	                    </tr>
+					</table> 
+        		{% endfor %}
+        	</td>
+        </tr>    
+        <tr>
+        	{{ attached_deals_formset.management_form }}
+			{% if attached_deals_formset %}
+				<td colspan="4">
+					<ul class="nav nav-tabs" id="attached_deals_tab">
+					{% for fs in attached_deals_formset %}
+						{{ fs.id }}						
+						<li class="{% if fs.is_last_active_tab.value%}active{% endif %}{% if fs.errors %} field field_error{%endif%}">							
+							<a href="#{% if fs.attached_open_deal_id.value or fs.instance.pk %}{{fs.deal_instance_name.value|slugify}}{% else %}{{fs.deal_template_name.value|slugify}}{%endif%}" data-toggle="tab">{% if fs.attached_open_deal_id.value or fs.instance.pk %}{{fs.deal_instance_name.value}}{% else %}{{fs.deal_template_name.value}}{%endif%}</a>
+						</li>					
+					{% endfor %}
+					</ul>	
+					<div class="tab-content" id='tab-content'>
+						{% for fs in attached_deals_formset %}
+						{{ fs.id }}							
+							<div class="tab-pane {% if fs.is_last_active_tab.value%}active{% endif %}" id="{% if fs.attached_open_deal_id.value or fs.instance.pk %}{{fs.deal_instance_name.value|slugify}}{% else %}{{fs.deal_template_name.value|slugify}}{%endif%}">								
+								<table>
+									<tr class="hidden">										
+										<td>											
+											{{fs.attached_open_deal_id}}		
+											{{fs.is_last_active_tab}}																	
+										</td>
+									</tr>
+									<tr>
+										<td>
+											{% if  fs.deal_template_name.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.deal_template_name.label}}: *</div>{%else%}{{fs.deal_template_name.label}}:{% endif %}                        
+					                    </td>
+					                    <td>
+					                    	{% if fs.deal_template_name.errors %}
+						                	<div class="field field_error">
+						                    	{{fs.deal_template_name}} {{fs.deal_template_name.errors}}                   	
+						                	</div>
+						                	{% else %}
+						                		{{fs.deal_template_name}}
+						                	{% endif %}				                    	
+					                    </td>
+				                    </tr>
+				                    <tr>
+										<td> 
+											{% if  fs.deal_instance_name.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.deal_instance_name.label}}: *</div>{%else%}{{fs.deal_instance_name.label}}:{% endif %}                       
+					                    </td>
+					                    <td>
+					                    	{% if fs.deal_instance_name.errors %}
+						                	<div class="field field_error">
+						                    	{{fs.deal_instance_name}} {{fs.deal_instance_name.errors}}                   	
+						                	</div>
+						                	{% else %}
+						                		{{fs.deal_instance_name}}
+						                	{% endif %}				                    	
+					                    </td>
+				                    </tr>
+				                    <tr>
+										<td>          
+											{% if  fs.deal_description.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.deal_description.label}}: *</div>{%else%}{{fs.deal_description.label}}:{% endif %}              
+					                    </td>
+					                    <td>
+					                    	{% if fs.deal_description.errors %}
+						                	<div class="field field_error">
+						                    	{{fs.deal_description}} {{fs.deal_description.errors}}                   	
+						                	</div>
+						                	{% else %}
+						                		{{fs.deal_description}}
+						                	{% endif %}				                    	
+					                    </td>
+				                    </tr>
+				                    <tr>
+										<td>   
+											{% if  fs.sales_item.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.sales_item.label}}: *</div>{%else%}{{fs.sales_item.label}}:{% endif %}                     
+					                    </td>
+					                    <td>
+					                    	{% if fs.sales_item.errors %}
+						                	<div class="field field_error">
+						                    	{{fs.sales_item}} {{fs.sales_item.errors}}                   	
+						                	</div>
+						                	{% else %}
+						                		{{fs.sales_item}}
+						                	{% endif %}				                    	
+					                    </td>
+				                    </tr>
+				                    <tr>
+										<td>
+											{% if  fs.sales_term.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.sales_term.label}}: *</div>{%else%}{{fs.sales_term.label}}:{% endif %}                       
+					                    </td>
+					                    <td>
+					                    	{% if fs.sales_term.errors %}
+						                	<div class="field field_error">
+						                    	{{fs.sales_term}} {{fs.sales_term.errors}}                   	
+						                	</div>
+						                	{% else %}
+						                		{{fs.sales_term}}
+						                	{% endif %}				                    	
+					                    </td>
+				                    </tr>
+				                    <tr>
+										<td>    
+											{% if  fs.price.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.price.label}}: *</div>{%else%}{{fs.price.label}}:{% endif %}                    
+					                    </td>
+					                    <td>
+					                    	{% if fs.price.errors %}
+						                	<div class="field field_error">
+						                    	{{fs.price}} {{fs.price.errors}}                   	
+						                	</div>
+						                	{% else %}
+						                		{{fs.price}}
+						                	{% endif %}				                    	
+					                    </td>
+				                    </tr>
+				                    <tr>
+										<td>
+					                        {% if  fs.currency.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.currency.label}}: *</div>{%else%}{{fs.currency.label}}:{% endif %}
+					                    </td>
+					                    <td>
+					                    	{% if fs.currency.errors %}
+						                	<div class="field field_error">
+						                    	{{fs.currency}} {{fs.currency.errors}}                   	
+						                	</div>
+						                	{% else %}
+						                		{{fs.currency}}
+						                	{% endif %}				                    	
+					                    </td>
+				                    </tr>
+				                    <tr>
+										<td>
+											{% if  fs.quantity.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.quantity.label}}: *</div>{%else%}{{fs.quantity.label}}:{% endif %}                        
+					                    </td>
+					                    <td>
+					                    	{% if fs.quantity.errors %}
+						                	<div class="field field_error">
+						                    	{{fs.quantity}} {{fs.quantity.errors}}                   	
+						                	</div>
+						                	{% else %}
+						                		{{fs.quantity}}
+						                	{% endif %}				                    	
+					                    </td>
+				                    </tr>
+				                    <tr>
+				                    	<td>     
+				                    		{% if  fs.status.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.status.label}}: *</div>{%else%}{{fs.status.label}}:{% endif %}                   
+					                    </td>
+				                    	<td>                        
+					                        {% if fs.status.errors %}
+						                	<div class="field field_error">
+						                    	{{fs.status}} {{fs.status.errors}}                   	
+						                	</div>
+						                	{% else %}
+						                		{{fs.status}}					                		
+						                	{% endif %}                        
+					                    </td>
+				                    </tr>
+				                    <tr>
+				                    	<td>
+				                    		{{fs.DELETE.label}}:
+				                    	</td>
+				                    	<td>
+				                    		{{fs.DELETE}}
+				                    	</td>				                    	
+			                    	</tr>				                    
+				                    <tr>
+				                    	<td>                        
+					                        
+					                    </td>
+				                    	<td>                        
+					                        {{fs.deal_template}}
+					                    </td>
+				                    </tr>
+								</table>  
+							</div>
+						{% endfor %}										
+					</div>							
+				</td>     
+				
+			{% endif %}
+        </tr>
+    	
+	</tbody>
+</table>
