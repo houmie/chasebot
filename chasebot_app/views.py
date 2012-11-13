@@ -103,7 +103,7 @@ def contacts_display(request):
     
     if 'ajax' in request.GET:
         ajax = True
-        if 'open_deals' in request.GET:
+        if 'show_only_open_deals' in request.GET:
             contacts_queryset = contacts_with_open_deals(request, profile.company)
         else:
             contacts_queryset = profile.company.contact_set.all().order_by('last_name')
@@ -175,8 +175,9 @@ def contact_delete(request, contact_id):
 def conversation_display(request, contact_id):    
     profile = request.user.get_profile()
     contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
-    
-    if 'open_deals' in request.GET:
+    show_only_open_deals = False
+    if 'show_only_open_deals' in request.GET:
+        show_only_open_deals = True
         calls_queryset = conversations_with_open_deals(request, contact)
     else:
         calls_queryset = contact.conversation_set.all().order_by('-conversation_datetime')
@@ -198,7 +199,7 @@ def conversation_display(request, contact_id):
     filter_form = FilterConversationForm(request.GET)
     calls, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, calls_queryset)    
     variables = {
-                 'calls': calls, 'contact': contact, 'filter_form' : filter_form, 
+                 'calls': calls, 'contact': contact, 'filter_form' : filter_form, 'show_only_open_deals' : show_only_open_deals
                  }
     variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
     if ajax:    

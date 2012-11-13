@@ -505,7 +505,7 @@ function submit_new_conversation(event){
 
 function rebind_conversations(){
 	$('.conversation').attr('href', function(i, current){
-		return current + '?open_deals';
+		return current + '?show_only_open_deals';
 	})
 }
 
@@ -525,8 +525,8 @@ function new_conversation(event){
 
 function deals_in_progress_coversations(event){
 	event.preventDefault();
-	if($(this).hasClass('active')){
-		var url = '/?ajax';
+	if($(this).hasClass('active')){		
+		var url = window.location.pathname + '?ajax';
 		$('#search_result').load(url, function(result){					
 			rebind_edit_delete($('#search_result'));
 			rebind_paginator($('#search_result'));
@@ -536,7 +536,7 @@ function deals_in_progress_coversations(event){
 		});	
 	}
 	else{
-		var url = '/?ajax&open_deals';
+		var url = window.location.pathname + '?ajax&show_only_open_deals';
 		$('#search_result').load(url, function(result){					
 			rebind_edit_delete($('#search_result'));
 			rebind_paginator($('#search_result'));
@@ -558,28 +558,25 @@ function deals_in_progress(event){
 			rebind_paginator($('#search_result'));
 			rebind_add();	
 			rebind_ratings($('#search_result'));			
-			$('#contacts_title').text(gettext("Contacts"));
-			$.chasebot.IS_SHOW_DEALS_ONLY =  false;
+			$('#contacts_title').text(gettext("Contacts"));		
 		});	
 	}
 	else{		
-		var url = '/?ajax&open_deals';
+		var url = '/?ajax&show_only_open_deals';
 		$('#search_result').load(url, function(result){					
 			rebind_edit_delete($('#search_result'));
 			rebind_paginator($('#search_result'));
 			rebind_add();	
 			rebind_ratings($('#search_result'));
 			rebind_conversations();	
-			$('#contacts_title').text(gettext("Contacts with deals in progress"));
-			$.chasebot.IS_SHOW_DEALS_ONLY =  true;
+			$('#contacts_title').text(gettext("Contacts with deals in progress"));			
 		});			
 	}	
 }
 
 
 
-
-$(document).ready(function (){	 	
+$(document).ready(function (){	
 	rebind_add();
 	rebind_edit_delete($('#search_result'));
 	rebind_paginator($('#search_result'));
@@ -597,9 +594,10 @@ $(document).ready(function (){
 	$('#demo-button').click(demo);
 	$('#new_conversation_button').off('click').on('click',new_conversation);
 	$('#deals_in_progress').off('click').on('click', deals_in_progress);
+	if($('#show_only_open_deals').text() == 'True')
+		$('#deals_in_progress_calls').button('toggle');
 	$('#deals_in_progress_calls').off('click').on('click', deals_in_progress_coversations);	
-	bind_rating_form();
-
+	bind_rating_form();	
 });
 
 
