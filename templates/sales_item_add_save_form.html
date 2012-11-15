@@ -1,7 +1,7 @@
 {% load i18n %}
 <td></td>
 <td colspan="2">
-	<form id="save-add-form" class="span6" method="post" action="/sales_item/add/">
+	<form id="save_add_form" class="span6" method="post" action="/sales_item/add/">
 	    {% csrf_token %}    
 	        <table class="table edit_table table-condensed">	        	
 	            <tbody>
@@ -24,7 +24,7 @@
 	                </tr>
 	            </tbody>
 	        </table>                
-	        <div class="validation_error_ajax hidden">{{validation_error_ajax}}</div>    
+	        <div id="validation_error_ajax" class="hidden">{{validation_error_ajax}}</div>    
 	</form>
 </td>
 <td></td>

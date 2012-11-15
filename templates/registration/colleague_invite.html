@@ -11,21 +11,21 @@
 	<caption><strong>{% trans 'Your company is currently using the following license:' %}</strong></caption>
 	<thead>
 		<tr>
-			<td>
+			<th>
 				{% trans 'License Type' %}
-			</td>
-			<td>
+			</th>
+			<th>
 				{% trans 'License Description' %}				
-			</td>		
-			<td>
+			</th>		
+			<th>
 				{% trans 'Maximum Users' %}				
-			</td>
-			<td>
+			</th>
+			<th>
 				{% trans 'Currency' %}
-			</td>
-			<td>
+			</th>
+			<th>
 				{% trans 'Price' %}
-			</td>
+			</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -53,11 +53,11 @@
 	<caption><strong>{% trans 'The following users in your company are currently registered with Chasebot:' %}</strong></caption>
 	<thead>
 		<tr>
-			<td>{% trans 'First Name' %}</td>
-			<td>{% trans 'Last Name' %}</td>
-			<td>{% trans 'Username' %}</td>
-			<td>{% trans 'Email' %}</td>
-			<td>{% trans 'Superuser' %}</td>
+			<th>{% trans 'First Name' %}</th>
+			<th>{% trans 'Last Name' %}</th>
+			<th>{% trans 'Username' %}</th>
+			<th>{% trans 'Email' %}</th>
+			<th>{% trans 'Superuser' %}</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -85,7 +85,7 @@
 
 <form id="form_invite" method="post" action=".">
 	{% csrf_token %}
-	<table class="table edit_table">
+	<table class="table edit_table table-condensed">
 		<tr>
 			<td>
 				{{ form.name.label }}:    			

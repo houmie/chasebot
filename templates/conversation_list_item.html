@@ -1,0 +1,19 @@
+{% load i18n %}
+{% load l10n %}
+{% for call in calls %}
+	<tr>
+	    <td>	    	                        	
+	        <a class="btn-link btn-link-left row_edit_ajax" href="/contact/{{ contact.pk }}/call/edit/{{ call.pk }}" title="{% trans 'Edit' %}"> <i class="icon-pencil icon-large"> </i></a>
+	        <a class="btn-link row_delete_ajax" href="/contact/{{ contact.pk }}/call/delete/{{ call.pk }}" title="{% trans 'Delete' %}"><i class="icon-trash icon-large"> </i></a>	        
+	    </td>
+	    <td>{{ call.conversation_datetime|date:"DATE_FORMAT" }}</td>
+	    <td>{{ call.conversation_datetime|time:"TIME_FORMAT" }}</td>	                        
+	    <td>{{ call.subject }}</td>
+	    <td>{{ call.notes }}</td>                        
+	    <td>
+		{% for deal in call.deal_set.all %}
+	    	{{ deal }},
+	    {% endfor %}
+	    </td>
+	</tr>
+{% endfor %}

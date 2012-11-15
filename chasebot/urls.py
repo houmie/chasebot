@@ -4,11 +4,11 @@ from django.contrib import admin
 from django.views.generic.simple import direct_to_template
 from chasebot_app.views import logout_page, contact_delete, conversation_display, \
      conversation_delete, sales_item_add_edit, sales_item_display, sales_item_delete, deal_template_display, deal_template_add_edit, deal_template_delete,\
-     charts_display, conversation_add_edit, sales_item_cancel, set_timezone,\
+     charts_display, conversation_add_edit, single_sales_item_display, set_timezone,\
      contacts_display, register_page, contact_add_edit,\
     sales_item_autocomplete, contacts_autocomplete, conversations_autocomplete,\
     deal_autocomplete, get_deal_template, get_opendeal, colleague_invite,\
-    colleague_accept
+    colleague_accept, single_conversation_display
 from chasebot_app.demo_view import demo
 
 admin.autodiscover()
@@ -44,6 +44,7 @@ urlpatterns = patterns('',
     (r'^contact/(?P<contact_id>\d+)/call/delete/(?P<call_id>\w+)/$', conversation_delete),
     (r'^contact/(?P<contact_id>\d+)/call/add/$', conversation_add_edit),    
     (r'^contact/(?P<contact_id>\d+)/calls/$', conversation_display),
+    (r'^contact/(?P<contact_id>\d+)/call/(?P<call_id>\w+)/$', single_conversation_display),
     
     #Ajax
     (r'^deal_template/(?P<deal_template_id>\d+)/$', get_deal_template),
@@ -51,7 +52,7 @@ urlpatterns = patterns('',
         
     (r'^sales_item/add/$', sales_item_add_edit),    
     (r'^sales_item/edit/(?P<sales_item_id>\d+)/$', sales_item_add_edit),
-    (r'^sales_item/edit/cancel/(?P<sales_item_id>\d+)/$', sales_item_cancel),    
+    (r'^sales_item/(?P<sales_item_id>\d+)/$', single_sales_item_display),    
     (r'^sales_items/$', sales_item_display),
     (r'^sales_item/delete/(?P<sales_item_id>\d+)/$', sales_item_delete),
     

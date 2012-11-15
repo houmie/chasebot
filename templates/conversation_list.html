@@ -1,23 +1,6 @@
 {% load i18n %}
-{% load l10n %}
 {% if calls %}
-	{% for call in calls %}
-	                    <tr>
-	                        <td>                        	
-	                            <a class="btn-link btn-link-left row_edit_ajax" href="/contact/{{ contact.id }}/call/edit/{{ call.id }}/?full" title="{% trans 'Edit' %}"> <i class="icon-pencil icon-large"> </i></a>
-	                            <a class="btn-link row_delete_ajax" href="/contact/{{ contact.id }}/call/delete/{{ call.id }}" title="{% trans 'Delete' %}"><i class="icon-trash icon-large"> </i></a>
-	                        </td>
-	                        <td>{{ call.conversation_datetime|date:"DATE_FORMAT" }}</td>
-	                        <td>{{ call.conversation_datetime|time:"TIME_FORMAT" }}</td>	                        
-	                        <td>{{ call.subject }}</td>
-	                        <td>{{ call.notes }}</td>                        
-	                        <td>
-                        	{% for deal in call.deal_set.all %}
-	                        	{{ deal }},
-	                        {% endfor %}
-	                        </td>
-	                    </tr>
-	{% endfor %}
+	{% include 'conversation_list_item.html' %}	
 	{% include '_paginator.html' %}
 {% else %}
 	<tr>

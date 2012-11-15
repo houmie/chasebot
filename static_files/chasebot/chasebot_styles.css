@@ -139,7 +139,7 @@ a.btn-link-left{
 }
 
 .first_th_minwidth{
-	min-width: 45px;	
+	min-width: 3.5em;	
 }
 
 .input-append .double_date_filter{
@@ -234,6 +234,55 @@ td.minwidth{
 	margin-bottom: 5px;
 }
 
-input.cb_edit_save{
+/*input.cb_edit_save{
 	width: 55px;
+}*/
+
+.cb_date_width{
+	min-width: 7em;
 }
+
+.cb_time_width{
+	min-width: 5em;
+}
+
+.cb_subject_width{
+	min-width: 10em;
+}
+
+.cb_notes_minwidth{
+	min-width: 8em;
+}
+
+.cb_deals_minwidth{
+	min-width: 5em;
+}
+
+.cb_date_maxwidth{
+	width: 5.5em;
+}
+
+.cb_time_maxwidth{
+	width: 5em;
+}
+
+.cb_subject_maxwidth{
+	width: 10em;
+}
+
+.cb_notes_maxwidth{
+	width: 18em;
+}
+
+.cb_deals_maxwidth{
+	width: 6em;
+}
+
+th.test, td.test{
+	min-width: 8em;
+}
+
+#save_edit_button, #cancel_edit_button{
+	width: 1.5em;
+}
+

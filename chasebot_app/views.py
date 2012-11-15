@@ -207,6 +207,18 @@ def conversation_display(request, contact_id):
     else:
         return render(request, 'conversations.html', variables)
     
+
+@login_required
+def single_conversation_display(request, contact_id, call_id):    
+    profile = request.user.get_profile()
+    contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
+    call = contact.conversation_set.get(pk=call_id)            
+    variables = {
+                 'calls': [call], 'contact': contact, 
+                 }    
+    return render(request, 'conversation_list_item.html', variables)    
+
+    
 @login_required
 def get_deal_template(request, deal_template_id):        
     profile = request.user.get_profile()        
@@ -319,8 +331,8 @@ def conversation_add_edit(request, contact_id, call_id=None):
                         deal.save()
                         fm.save_m2m()
                         #If the attached or even new deal are closed, we need to remove all later entries of this instance on later conversations.
-                        remove_redundant_future_deals(contact, deal)
-            return HttpResponseRedirect('/contact/' + contact_id + '/calls/')    
+                        remove_redundant_future_deals(contact, deal)            
+            return render(request, 'conversation_list_item.html', {'calls':[call], 'contact':contact})
         else:
             validation_error_ajax = True    
             
@@ -334,10 +346,8 @@ def conversation_add_edit(request, contact_id, call_id=None):
     
     #The extra deal formset will always be independent of POST/GET since its hidden and remains empty as a starting point for cloning
     extra_deal_formset = extra_deal_formset_factory(prefix='extra_deal')
-    variables = {'form':form, 'template_title':template_title, 'deals_add_form':deals_add_form, 'opendeals_add_form':opendeals_add_form, 'attached_deals_formset':attached_deals_formset, 'contact':contact, 'extra_deal_formset':extra_deal_formset, 'validation_error_ajax':validation_error_ajax }
+    variables = {'form':form, 'template_title':template_title, 'deals_add_form':deals_add_form, 'opendeals_add_form':opendeals_add_form, 'attached_deals_formset':attached_deals_formset, 'contact_id':contact.pk, 'call_id':call_id, 'extra_deal_formset':extra_deal_formset, 'validation_error_ajax':validation_error_ajax }
     variables = merge_with_localized_variables(request, variables)  
-#    if 'full' in request.GET:
-#        return render(request, 'conversation.html', variables)
     if call_id:
         return render(request, '_conversation_edit.html', variables)      
     return render(request, '_conversation.html', variables)
@@ -359,7 +369,7 @@ def conversation_delete(request, contact_id, call_id):
         call.delete()
         call_queryset = contact.conversation_set.order_by('conversation_datetime')   
         calls, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, call_queryset)          
-        variables = { 'calls': calls, 'contact':contact }
+        variables = { 'calls': calls, 'contact_id':contact.pk }
         variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
     return render(request, 'conversation_list.html', variables)
 
@@ -397,7 +407,7 @@ def sales_item_display(request):
             return render(request, 'sales_items.html', variables)  
 
 @login_required
-def sales_item_cancel(request, sales_item_id):
+def single_sales_item_display(request, sales_item_id):
     profile = request.user.get_profile()    
     sales_item = get_object_or_404(profile.company.salesitem_set.all(), pk=sales_item_id)
     variables = {'sales_items' : [sales_item]}

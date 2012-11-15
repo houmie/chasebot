@@ -1,18 +1,26 @@
 {% load i18n %}
 {% load tz %}
-<td>
-	<form id="edit_conversation_form" method="post" action="/contact/{{contact.id}}/call/edit/">
+<td colspan="6">
+	<form id="save_edit_form" class="save_edit_form" method="post" action="/contact/{{contact_id}}/call/edit/{{call_id}}/">
 	    {% csrf_token %}
-	        <table class="table edit_table">
+	        <table class="table edit_table table-condensed">
+	        	<thead>
+	        		<tr>
+	        			<th class="test"></th>                        	
+                        <th class="cb_date_width">{% trans 'Date' %}</th>  
+                        <th class="cb_time_width">{% trans 'Time' %}</th>                       
+                        <th class="cb_subject_width">{% trans 'Subject' %}</th>
+                        <th class="cb_notes_minwidth">{% trans 'Notes' %}</th>
+                        <th class="cb_deals_minwidth">{% trans 'Deals' %}</th>    
+	        		</tr>
+	        	</thead>
 	            <tbody>
 	            	<tr>
-	            		<td>
-	            			<input id="edit_conversation_submit_button" type="submit" value="{% trans 'Save' %}" class="btn btn-primary cb_edit_save cb_margin_bottom" />
-		    				<input id="edit_conversation_cancel_button" type="button" value="{% trans 'Cancel' %}" class="btn cb_edit_save" />
+	            		<td class="test">	            					    				
+	            			<a id="save_edit_button" value="{% trans 'Save' %}" class="btn btn-primary"><i class="icon-ok icon-large"></i></a>
+	            			<a id="cancel_edit_button" href="/contact/{{contact_id}}/call/{{call_id}}" value="{% trans 'Cancel' %}" class="btn"><i class="icon-remove icon-large"></i></a>	            			
 	            		</td>
-	            	</tr>
-	                <tr>
-	                    <td>                        
+	            		<td>                        
 	                        {% if form.conversation_date.errors %}
 		                	<div class="field field_error">
 		                    	{{form.conversation_date}} {{form.conversation_date.errors}}                   	
@@ -21,9 +29,7 @@
 		                		{{form.conversation_date}}
 		                	{% endif %}   					                	           
 	                    </td>
-	                </tr>    
-	                <tr>
-	                    <td>                        
+	                    <td>
 	                        {% if form.conversation_time.errors %}
 		                	<div class="field field_error">
 		                    	{{form.conversation_time}} {{form.conversation_time.errors}}                   	
@@ -31,10 +37,8 @@
 		                	{% else %}
 		                		{{form.conversation_time}}
 		                	{% endif %}    
-		                	{% get_current_timezone as TIME_ZONE %}{{TIME_ZONE}}                              
+		                	<!-- {% get_current_timezone as TIME_ZONE %}{{TIME_ZONE}} -->                              
 	                    </td>
-	                </tr>            
-	                <tr>
 	                    <td>                        
 	                        {% if form.subject.errors %}
 		                	<div class="field field_error">
@@ -44,14 +48,12 @@
 		                		{{form.subject}}
 		                	{% endif %}                        
 	                    </td>
-	                </tr>            
-	                <tr>
 	                    <td>
 	                    	<div class="accordion" id="accordion1">
 								<div class="accordion-group">
 									<div class="accordion-heading">
 										<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#collapse1">
-											{% trans 'Click here to see and edit the notes' %}
+											{% trans 'Click here to edit the notes' %}
 										</a>
 									</div>
 									<div id="collapse1" class="accordion-body collapse">
@@ -68,14 +70,12 @@
 								</div>
 							</div>                                                
 	                    </td>
-	                </tr>
-	                <tr>
-	                	<td>
+	                    <td>
 	                		<div class="accordion" id="accordion2">
 								<div class="accordion-group">
 									<div class="accordion-heading">
 										<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse2">
-											{% trans 'Click here to see and edit the deals' %}
+											{% trans 'Click here to edit the deals' %}
 										</a>
 									</div>
 									<div id="collapse2" class="accordion-body collapse">
@@ -86,10 +86,10 @@
 	    						</div>
 							</div>	
 	                	</td>
-	                </tr>					                					                
-	            	<tr>
+	            	</tr>	            	                					                					                
+	            	<tr class="hidden">
 	            		<td>
-	            			<div id="new_validation_error_ajax" class="hidden">{{validation_error_ajax}}</div>
+	            			<div id="validation_error_ajax">{{validation_error_ajax}}</div>
 	            		</td>
 	            	</tr>
 	            </tbody>

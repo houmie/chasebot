@@ -1,7 +1,7 @@
 {% load i18n %}
 <td></td>
 <td>
-	<form class="span7 save-edit-form" method="post" action="/sales_item/edit/{{ salesitem_id }}">
+	<form id="save_edit_form" class="span7" method="post" action="/sales_item/edit/{{ salesitem_id }}">
 	    {% csrf_token %}    
 	        <table class="table edit_table table-condensed">
 	            <tbody>
@@ -14,21 +14,19 @@
 		                	<div class="field field_error">
 		                    	{{form.item_name}}
 		                    	<input name="submit-button" type="submit" value="{% trans 'Save' %}" class="btn" />
-	        					<input name="cancel" type="button" class="btn cancel_edit_button" value="{% trans 'Cancel' %}" class="btn" />	                    	
-		                    	{{form.item_name.errors}}
-		                    	<div class="salesitem_id hidden">{{salesitem_id}}</div>                     	
+	        					<input id="cancel_edit_button" name="cancel" type="button" class="btn" value="{% trans 'Cancel' %}" href="/sales_item/{{ salesitem_id }}"/>	                    	
+		                    	{{form.item_name.errors}}		                    	                     	
 		                	</div>
 		                	{% else %}
 		                		{{form.item_name}}
-		                		<input name="submit-button" type="submit" value="{% trans 'Save' %}" class="btn" />
-	        					<input name="cancel" type="button" class="btn cancel_edit_button" value="{% trans 'Cancel' %}" />		 
-		                	{% endif %}
-		                	<div class="salesitem_id hidden">{{salesitem_id}}</div>                        
+		                    	<input name="submit-button" type="submit" value="{% trans 'Save' %}" class="btn" />
+	        					<input id="cancel_edit_button" name="cancel" type="button" class="btn" value="{% trans 'Cancel' %}" href="/sales_item/{{ salesitem_id }}"/>	                    	
+		                	{% endif %}		                	                        
 	                    </td>
 	                </tr>
 	            </tbody>
 	        </table>        
-	        <div class="hidden validation_error_ajax">{{validation_error_ajax}}</div>    
+	        <div id="validation_error_ajax" class="hidden">{{validation_error_ajax}}</div>    
 	</form>
 </td>
 <td></td>

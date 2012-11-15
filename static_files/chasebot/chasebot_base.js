@@ -152,11 +152,9 @@ function paginator_navigate(event) {
 
 function row_edit_cancel_ajax(event){
 	event.preventDefault();
-	// This is a hidden field that contains the current sales_item_id hold for cancel edit mode
-	var salesitem_id = $(this).parent().children('div.salesitem_id').text();
-	var url = '/sales_item/edit/cancel/' + salesitem_id + '/';
-	var row = $(this).closest('form').closest('tr'); //real row containing also the submit-edit-form
-	
+	// This is a hidden field that contains the current sales_item_id hold for cancel edit mode	
+	var url = $(this).attr("href") + "/";
+	var row = $(this).closest('form').closest('tr'); //real row containing also the submit-edit-form	
 	row.load(
 		// get only the children (td) of the tr and attach them to the existing empty row.
     	url + ' td',    	
@@ -166,6 +164,16 @@ function row_edit_cancel_ajax(event){
   	);
 };
 
+function reload_edit_save_cancel_buttons(row, url){
+	$(row).find("#save_edit_form").submit(url, row_edit_save_ajax);
+	$(row).find("#save_edit_button").click(function(){
+		$(row).find("#save_edit_form").submit();
+	});
+	$(row).find("#cancel_edit_button").click(row_edit_cancel_ajax);
+	rebind_add_deals();
+	datepicker_reload($(row));
+}
+
 
 function row_edit_ajax(event) {
 	event.preventDefault();
@@ -173,15 +181,12 @@ function row_edit_ajax(event) {
 	var url = $(this).attr("href") + "/";
   
   	//e.g. get whole row to be replaced with editing fields
-  	var row = $(this).closest('tr');
-  	row.empty();
+  	var row = $(this).closest('tr');  	
 	row.load(
     	url,    	
     	function (result) {
     		//Once loaded make sure the submit-form will be redirected to 'row_edit_save_ajax' once submitted. Url is parameter 
-      		$(row).find(".save-edit-form").submit(url, row_edit_save_ajax);
-      		$(row).find(".cancel_edit_button").click(row_edit_cancel_ajax);
-      		rebind_add_deals();
+      		reload_edit_save_cancel_buttons($(row), url);
     	}
   	);  	
 };
@@ -189,18 +194,16 @@ function row_edit_ajax(event) {
 function row_add_save_ajax(event){
 	event.preventDefault();
 	// selector starts from Add Button (this)	
-	var url = "/sales_item/add/";		
+	var url = $('#save_add_form').attr('action');		
 	var row = $(this).closest('tr'); //real row containing also the form	
-	var data = {
-  			item_name: $(this).find("#id_item_name").val()    
-  	};
+	var data = $("#save_add_form").serialize();
   	
   	$.post(url, data, function (result) {
   		//If there are validation errors upon adding the field
-  		if ($('.validation_error_ajax', result).text() == 'True') {  			 
+  		if ($('#validation_error_ajax', result).text() == 'True') {  			 
     		 row.empty();    		 
       		 row.append(result);      		       		 
-      		 target.find("#save-add-form").submit(url, row_add_save_ajax);      		       		
+      		 row.find("#save_add_form").submit(url, row_add_save_ajax);      		       		
     	}
     	else {
     		//if there is no error then insert the added row before the current add-button row. (last row)    		
@@ -208,7 +211,7 @@ function row_add_save_ajax(event){
     		$('#search_result').append(result);    		      		
       		rebind_edit_delete($('#search_result'));
       		rebind_paginator($('#search_result'));
-      		$("#save-add-form").submit(url, row_add_save_ajax);      		
+      		$("#save_add_form").submit(url, row_add_save_ajax);      		
       		$(".item_name").val('');      		
     	}
   	});  	
@@ -219,20 +222,17 @@ function row_edit_save_ajax(event) {
 	event.preventDefault();
 	// selector starts from Edit Button (this)	
 	var url = event.data;
-  	var row = $(this).closest('tr');
-  	var data = {
-  			item_name: row.find(".item_name").val()    
-  	};
+  	var row = $(this).closest('tr');  	
+  	var data = $(this).closest('#save_edit_form').serialize();
   	
   	$.post(url, data, function (result) {
   		//If there are validation errors upon editing the field
-    	if ($('.validation_error_ajax', result).text() == 'True') {
+    	if ($('#validation_error_ajax', result).text() == 'True') {
     		//if so, then we empty the current row and load the invalid-indicating-forms in the row 
     		//and attach events to the still existing save and cancel buttons
     		row.empty();    		    		
-      		row.append(result);      		
-      		$(row).find(".save-edit-form").submit(url, row_edit_save_ajax); 	
-      		$(row).find(".cancel_edit_button").click(row_edit_cancel_ajax);	      		
+      		row.append(result);      			
+      		reload_edit_save_cancel_buttons($(row), url);     		
     	}
     	else {
     		//if no error, then simply add the full 'tr' html row (with delete and edit icons) behind this row and remove this row. 
@@ -379,9 +379,14 @@ function bind_rating_form(){
 
 
 function rebind_add(){
-	$('#save-add-form').submit(row_add_save_ajax);	
+	$('#save_add_form').submit(row_add_save_ajax);	
 			
 };
+
+function datepicker_reload(parent){
+	$(parent).find('.date_picker').datepicker({ format: $('#locale').text(),	autoclose: 'True' });			
+};
+
 
 
 function clear_filter(event){
@@ -476,11 +481,12 @@ function submit_new_conversation(event){
 	var url = $(this).closest('#new_conversation_form').attr('action');
 	var data = $(this).closest('#new_conversation_form').serialize();
 	$.post(url, data, function (result) {
-		if ($(result).find('#new_validation_error_ajax').text() == 'True') {						 
+		if ($(result).find('#validation_error_ajax').text() == 'True') {						 
 		 	$('#new_conversation_div').empty();
 		 	$('#new_conversation_div').append(result);      		       		 
 	 		rebind_new_conversation('#new_conversation_div'); 
-	 		rebind_add_deals(); 		       		
+	 		rebind_add_deals();
+	 		datepicker_reload('#new_conversation_div'); 		       		
 		}
 		else{
 			$('#new_conversation_div').empty();
@@ -488,7 +494,7 @@ function submit_new_conversation(event){
 			$('#search_result').load(url, function(){		
 				rebind_edit_delete($('#search_result'));
 				rebind_paginator($('#search_result'));
-				rebind_add();
+				rebind_add();				
 			});	
 		}
 	});
@@ -520,7 +526,8 @@ function new_conversation(event){
 	var url = $(this).attr("href") + "/";	
 	$('#new_conversation_div').load(url, function(result){					
 		rebind_new_conversation('#new_conversation_div');
-		rebind_add_deals();		
+		rebind_add_deals();	
+		datepicker_reload('#new_conversation_div');	
 	});
 }
 
@@ -590,7 +597,7 @@ $(document).ready(function (){
 	$('#salesitems_modal').on('shown', modal_opening);
 	$('#timezone_dropdown').change(timezone_dropdown);	
 	$('.timezone_help').click(show_timezone_help);
-	$('.date_picker').datepicker({ format: $('#locale').text(),	autoclose: 'True' });
+	datepicker_reload('#search_result');
 	$('#invite-button').click(invite_colleague);
 	$('#demo-button').click(demo);
 	$('#new_conversation_button').off('click').on('click',new_conversation);
