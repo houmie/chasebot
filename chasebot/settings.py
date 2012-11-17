@@ -1,9 +1,10 @@
 # Django settings for Chasebot project.
 import os
 from datetime import timedelta
-#import djcelery 
-#djcelery.setup_loader()
+import djcelery
 
+djcelery.setup_loader()
+ 
 LOGIN_URL = '/login/'
 
 SITE_HOST = '127.0.0.1:8000'
@@ -43,6 +44,14 @@ DATABASES = {
         'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
+}
+
+CELERYBEAT_SCHEDULE = {
+    'runs-every-30-seconds': {
+        'task': 'tasks.add',
+        'schedule': timedelta(seconds=30),
+        'args': (16, 16)
+    },
 }
 
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
@@ -198,7 +207,7 @@ INSTALLED_APPS = (
     'chasebot_app',  
     'south',  
     'modeltranslation',
-    #'djcelery',
+    'djcelery',
 )
 
 BROKER_URL = 'amqp://guest:guest@localhost:5672/'
