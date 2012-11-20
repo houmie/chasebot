@@ -7,7 +7,7 @@
     <div class="row-fluid">
 	    <div class="span12">
 	        <table class="table edit_table table-condensed">
-	            <tbody>
+	            <tbody class="well">
 		            <tr>
 	                    <td>
 	                    	{% if form.title.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.title.label}}: *</div>{%else%}{{form.title.label}}:{% endif %}                       
@@ -22,21 +22,7 @@
 		                	{% endif %}				                	                     
 	                    </td>
 	                </tr>
-		            <tr>
-	                    <td>
-	                    	{% if form.type.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.type.label}}: *</div>{%else%}{{form.type.label}}:{% endif %}                       
-	                    </td>
-	                    <td>                        
-	                        {% if form.type.errors %}
-		                	<div class="field field_error">
-		                    	{{form.type}} {{form.type.errors}}                   	
-		                	</div>
-		                	{% else %}
-		                		{{form.type}}
-		                	{% endif %}				                	                     
-	                    </td>
-	                </tr>
-		            <tr>
+	                <tr>
 	                    <td>
 	                    	{% if form.due_date_time.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.due_date_time.label}}: *</div>{%else%}{{form.due_date_time.label}}:{% endif %}                       
 	                    </td>
@@ -50,6 +36,22 @@
 		                	{% endif %}				                	                     
 	                    </td>
 	                </tr>
+                </tbody>
+            	<tbody>
+		            <tr>
+	                    <td>
+	                    	{% if form.type.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.type.label}}: *</div>{%else%}{{form.type.label}}:{% endif %}                       
+	                    </td>
+	                    <td>                        
+	                        {% if form.type.errors %}
+		                	<div class="field field_error">
+		                    	{{form.type}} {{form.type.errors}}                   	
+		                	</div>
+		                	{% else %}
+		                		{{form.type}}
+		                	{% endif %}				                	                     
+	                    </td>
+	                </tr>		            
 		            <tr>
 	                    <td>
 	                    	{% if form.reminder.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.reminder.label}}: *</div>{%else%}{{form.reminder.label}}:{% endif %}                       

@@ -320,4 +320,8 @@ class TaskForm(ModelForm):
     class Meta:
         model = Task
         exclude = {'reminder_date_time', }
+        widgets={                    
+                    'title' : forms.TextInput(attrs={'placeholder': _(u'What is this task about?'), 'class':'placeholder_fix_css', 'autocomplete':'off'}),
+                    'due_date_time': forms.DateInput(attrs={'placeholder': _(u'When is this task due?'), 'class':'placeholder_fix_css date_picker'}),
+                }
   

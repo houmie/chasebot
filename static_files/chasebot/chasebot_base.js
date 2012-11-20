@@ -535,7 +535,8 @@ function new_task(event){
 	event.preventDefault();
 	var url = $(this).attr("href");	
 	$('#task_modal').load(url, function(result){
-		$(this).modal('show');					
+		$(this).modal('show');	
+		datepicker_reload('#task_modal');			
 		// rebind_new_conversation('#new_conversation_div');
 		// rebind_add_deals();	
 		// datepicker_reload('#new_conversation_div');	
