@@ -8,7 +8,7 @@ import re
 from django.contrib.auth.models import User
 from django.forms import ModelForm
 from chasebot_app.models import Contact, ContactType, Country, MaritalStatus, Conversation, SalesItem, DealTemplate, SalesTerm, Deal,\
-    Invitation
+    Invitation, Task
 from django.forms.models import BaseModelFormSet
 from django.utils.translation import ugettext_lazy as _
 
@@ -183,9 +183,18 @@ class OpenDealsAddForm(Form):
         self.fields['open_deal_template'].queryset = opendeals_query.exclude(deal_id__in=exclude_attached_opendeals)
         self.fields['open_deal_template'].required = False
  
-    open_deal_template = forms.ModelChoiceField(queryset='', label=_(u'Continue with a Deal in Progress'))
+    open_deal_template = forms.ModelChoiceField(queryset='', label=_(u'Continue with a deal in progress'))
 
-    
+
+class OpenDealTaskForm(Form):
+    def __init__(self, company, contact, *args, **kwargs):
+        super(OpenDealTaskForm, self).__init__(*args, **kwargs)        
+        if contact:
+            self.fields['open_deal_task'].queryset = contact.get_open_deals_query()
+        self.fields['open_deal_task'].required = False        
+        
+ 
+    open_deal_task = forms.ModelChoiceField(queryset='', label=_(u'Choose a deal for the task'))    
     
 
 
@@ -306,5 +315,9 @@ class ColleagueInviteForm(ModelForm):
         fields = {'name', 'email'}
             
         
-   
+class TaskForm(ModelForm):
+            
+    class Meta:
+        model = Task
+        exclude = {'reminder_date_time', }
   

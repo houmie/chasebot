@@ -531,6 +531,17 @@ function new_conversation(event){
 	});
 }
 
+function new_task(event){	
+	event.preventDefault();
+	var url = $(this).attr("href");	
+	$('#task_modal').load(url, function(result){
+		$(this).modal('show');					
+		// rebind_new_conversation('#new_conversation_div');
+		// rebind_add_deals();	
+		// datepicker_reload('#new_conversation_div');	
+	});
+}
+
 function deals_in_progress_coversations(event){
 	event.preventDefault();
 	if($(this).hasClass('active')){		
@@ -601,6 +612,7 @@ $(document).ready(function (){
 	$('#invite-button').click(invite_colleague);
 	$('#demo-button').click(demo);
 	$('#new_conversation_button').off('click').on('click',new_conversation);
+	$('#new_task_button').off('click').on('click', new_task);
 	$('#deals_in_progress').off('click').on('click', deals_in_progress);
 	if($('#show_only_open_deals').text() == 'True')
 		$('#deals_in_progress_calls').button('toggle');

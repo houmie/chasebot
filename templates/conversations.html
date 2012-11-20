@@ -34,7 +34,8 @@
 					{{filter_form.subject}}<div class="close filter-close">&times;</div><button type="submit" class="btn"><i class='icon-filter'> </i></button>
 				</div>	   					    								
         	</form>		             
-        	<div id='contact_id' class="hidden">{{contact.pk}}</div> 
+        	<div id='contact_id' class="hidden">{{contact.pk}}</div>
+        	{% include 'tasks.html' %}
 		</div>
 		<div class="span10">
 			<!--Body content-->			

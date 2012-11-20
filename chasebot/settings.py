@@ -1,7 +1,7 @@
 # Django settings for Chasebot project.
 import os
 from datetime import timedelta
-import djcelery
+import djcelery 
 
 djcelery.setup_loader()
  
@@ -46,13 +46,13 @@ DATABASES = {
     }
 }
 
-CELERYBEAT_SCHEDULE = {
-    'runs-every-30-seconds': {
-        'task': 'tasks.add',
-        'schedule': timedelta(seconds=30),
-        'args': (16, 16)
-    },
-}
+#CELERYBEAT_SCHEDULE = {
+#    'runs-every-30-seconds': {
+#        'task': 'tasks.add',
+#        'schedule': timedelta(seconds=30),
+#        'args': (16, 16)
+#    },
+#}
 
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
@@ -239,13 +239,4 @@ LOGGING = {
             'propagate': True,
         },
     }
-}
-
-
-CELERYBEAT_SCHEDULE = {
-    'runs-every-30-seconds': {
-        'task': 'tasks.add',
-        'schedule': timedelta(seconds=30),
-        'args': (16, 16)
-    },
 }

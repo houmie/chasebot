@@ -1,0 +1,11 @@
+{% load i18n %}
+{% if tasks %}		
+	{% include '_task_list_item.html' %}
+	{% include '_paginator.html' %}
+{% else %}
+	<tr>
+		<td colspan="8">
+			{% trans 'No tasks found.' %}			
+		</td>
+	</tr>	
+{% endif %}

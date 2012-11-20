@@ -8,10 +8,11 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from chasebot_app.forms import RegistrationForm, ContactsForm, ConversationForm, SalesItemForm, DealTemplateForm,\
      DealForm, FilterContactsForm, FilterConversationForm, FilterDealsForm, FilterSalesItemForm,\
-    DealsAddForm, OpenDealsAddForm, ColleagueInviteForm
+    DealsAddForm, OpenDealsAddForm, ColleagueInviteForm, OpenDealTaskForm,\
+    TaskForm
 from chasebot_app.models import Company, Contact, Conversation, SalesItem, DealTemplate, DealStatus, Deal, SalesTerm,\
     Invitation, LicenseTemplate, ContactType, Country, MaritalStatus, Gender,\
-    Currency
+    Currency, Task
 from chasebot_app.models import UserProfile
 from django.utils.translation import ugettext as _, ungettext
 from django.utils import timezone, simplejson
@@ -375,7 +376,64 @@ def conversation_delete(request, contact_id, call_id):
 
 
 @login_required
-def sales_item_display(request):    
+def task_display(request):
+    profile = request.user.get_profile()
+    task_queryset = profile.company.task_Set.order_by('-due_date_time')
+    tasks, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, task_queryset)    
+    variables = {
+                 'tasks': tasks, 
+                }   
+    variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
+    return render(request, 'task_list.html', variables)
+
+
+@login_required
+def task_add_edit(request, task_id=None):
+    profile = request.user.get_profile()
+        
+    if task_id is None:
+        task = Task() 
+        template_title = _(u'Add New Task')
+    else:
+        task = get_object_or_404(profile.company.task_set.all(), pk=task_id)
+        template_title = _(u'Edit Task')
+    validation_error_ajax = False
+    
+    contact = None
+    if request.GET['contact']:
+        contact = get_object_or_404(profile.company.contact_set.all(), pk=request.GET['contact'])
+    
+    if request.method == 'POST':
+        form = TaskForm(request.POST, instance=task, prefix='form')
+        if form.is_valid():
+            selected_open_deal = None
+            if contact:
+                opendeals_task_form = OpenDealTaskForm(profile.company, contact, request.POST, prefix='opendeals_task_form')
+                selected_open_deal = opendeals_task_form.cleaned_data['open_deal_task']
+            # Always localize the entered date by user into his timezone before saving it to database
+            task = form.save(commit=False)   
+            if selected_open_deal is not None:
+                task.deal_id = selected_open_deal.deal_id
+            current_tz = timezone.get_current_timezone()            
+            date = form.cleaned_data['due_date_time']                        
+            date_time = current_tz.localize(datetime.datetime(date.year, date.month, date.day, time.hour, time.minute))                        
+            task.due_date_time = date_time
+            task.save()
+            return render(request, '_task_list_item.html', {'tasks':[task], })
+        else:
+            validation_error_ajax = True
+    else:        
+        #opendeass_add_form contains only one dropdown to add open deals to task        
+        opendeals_task_form = OpenDealTaskForm(profile.company, contact, prefix='opendeals_task_form')
+        form = TaskForm(instance=task, prefix='form', initial = {'contact' : contact.pk})
+        
+    variables = {'form':form, 'template_title':template_title, 'opendeals_task_form':opendeals_task_form, 'validation_error_ajax':validation_error_ajax }
+    variables = merge_with_localized_variables(request, variables)    
+    return render(request, 'task.html', variables)
+
+
+@login_required
+def sales_item_display(request):
     profile = request.user.get_profile()
     sales_items_queryset = profile.company.salesitem_set.order_by('item_name')    
     ajax = False

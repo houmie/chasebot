@@ -1,0 +1,8 @@
+{% load i18n %}
+{% load l10n %}
+{% for task in tasks %}
+	<tr>
+		<td>{{task.type}}</td>
+		<td>{{task.due_date_time|time:"TIME_FORMAT"}}</td>
+	</tr>
+{% endfor %}

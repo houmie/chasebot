@@ -1,0 +1,21 @@
+{% load i18n %}	
+			<div class="modal hide fade" id="task_modal" tabindex="-1" role="dialog" aria-labelledby="task_label" aria-hidden="true">
+				{% include 'task.html' %}
+			</div>
+			<h4>{%trans 'Upcoming Tasks'%}</h4>
+			<a id="new_task_button" class="btn right-margin" title="{% trans 'New Task' %}" href="/task/add/?contact={{contact.pk}}"><i class="icon-tasks"></i> {% trans 'New Task' %}</a>		    
+			<table class="table">
+                <thead>
+                    <tr>                                                
+                        <th>{% trans 'Type' %}</th>                       
+                        <th>{% trans 'Due By' %}</th>                                                             
+                    </tr>
+                </thead>
+                <tbody id="search_result">
+                    {% include 'task_list.html' %}
+                </tbody>
+            </table>                  
+	<div id="new_task_div"></div>	
+
+   
+
