@@ -286,3 +286,27 @@ th.test, td.test{
 	width: 1.5em;
 }
 
+.well
+{
+	width: 100%;
+}
+
+input[type="checkbox"]{
+	margin: 0px;
+}
+
+.parent{
+	display: table;
+}
+
+.row
+{
+    display: table-row;
+}
+
+.block_inline
+{
+    display: table-cell;
+    width: 50%;
+    display:inline-block;
+}

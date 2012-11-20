@@ -1,4 +1,5 @@
 {% load i18n %}
+
 <div class="modal-header">
 	<button type="button" class="close close_link" data-dismiss="modal" aria-hidden="true">&times;</button>	
 	<h3><div class="cb_inline_block" style="font-size: 24px;"><i class="icon-tasks"></i></div> {{template_title}}</h3>
@@ -6,129 +7,23 @@
 <div class="modal-body">	
     <div class="row-fluid">
 	    <div class="span12">
-	        <table class="table edit_table table-condensed">
-	            <tbody class="well">
-		            <tr>
-	                    <td>
-	                    	{% if form.title.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.title.label}}: *</div>{%else%}{{form.title.label}}:{% endif %}                       
-	                    </td>
-	                    <td>                        
-	                        {% if form.title.errors %}
-		                	<div class="field field_error">
-		                    	{{form.title}} {{form.title.errors}}                   	
-		                	</div>
-		                	{% else %}
-		                		{{form.title}}
-		                	{% endif %}				                	                     
-	                    </td>
-	                </tr>
-	                <tr>
-	                    <td>
-	                    	{% if form.due_date_time.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.due_date_time.label}}: *</div>{%else%}{{form.due_date_time.label}}:{% endif %}                       
-	                    </td>
-	                    <td>                        
-	                        {% if form.due_date_time.errors %}
-		                	<div class="field field_error">
-		                    	{{form.due_date_time}} {{form.due_date_time.errors}}                   	
-		                	</div>
-		                	{% else %}
-		                		{{form.due_date_time}}
-		                	{% endif %}				                	                     
-	                    </td>
-	                </tr>
-                </tbody>
-            	<tbody>
-		            <tr>
-	                    <td>
-	                    	{% if form.type.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.type.label}}: *</div>{%else%}{{form.type.label}}:{% endif %}                       
-	                    </td>
-	                    <td>                        
-	                        {% if form.type.errors %}
-		                	<div class="field field_error">
-		                    	{{form.type}} {{form.type.errors}}                   	
-		                	</div>
-		                	{% else %}
-		                		{{form.type}}
-		                	{% endif %}				                	                     
-	                    </td>
-	                </tr>		            
-		            <tr>
-	                    <td>
-	                    	{% if form.reminder.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.reminder.label}}: *</div>{%else%}{{form.reminder.label}}:{% endif %}                       
-	                    </td>
-	                    <td>                        
-	                        {% if form.reminder.errors %}
-		                	<div class="field field_error">
-		                    	{{form.reminder}} {{form.reminder.errors}}                   	
-		                	</div>
-		                	{% else %}
-		                		{{form.reminder}}
-		                	{% endif %}				                	                     
-	                    </td>
-	                </tr>				            
-		            <tr>
-	                    <td>
-	                    	{% if form.priority.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.priority.label}}: *</div>{%else%}{{form.priority.label}}:{% endif %}                       
-	                    </td>
-	                    <td>                        
-	                        {% if form.priority.errors %}
-		                	<div class="field field_error">
-		                    	{{form.priority}} {{form.priority.errors}}                   	
-		                	</div>
-		                	{% else %}
-		                		{{form.priority}}
-		                	{% endif %}				                	                     
-	                    </td>
-	                </tr>
-		            <tr>
-	                    <td>
-	                    	{% if form.is_public.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.is_public.label}}: *</div>{%else%}{{form.is_public.label}}:{% endif %}                       
-	                    </td>
-	                    <td>                        
-	                        {% if form.is_public.errors %}
-		                	<div class="field field_error">
-		                    	{{form.is_public}} {{form.is_public.errors}}                   	
-		                	</div>
-		                	{% else %}
-		                		{{form.is_public}}
-		                	{% endif %}				                	                     
-	                    </td>
-	                </tr>
-		            <tr>
-		                <td>
-		                    <br/>
-		                </td>
-		            </tr>
-		            <tr>
-	                    <td>
-	                    	{% if form.contact.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.contact.label}}: *</div>{%else%}{{form.contact.label}}:{% endif %}                       
-	                    </td>
-	                    <td>                        
-	                        {% if form.contact.errors %}
-		                	<div class="field field_error">
-		                    	{{form.contact}} {{form.contact.errors}}                   	
-		                	</div>
-		                	{% else %}
-		                		{{form.contact}}
-		                	{% endif %}				                	                     
-	                    </td>
-	                </tr>
-		            <tr>
-	                    <td>
-	                    	{% if opendeals_task_form.open_deal_task.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{opendeals_task_form.open_deal_task.label}}: *</div>{%else%}{{opendeals_task_form.open_deal_task.label}}:{% endif %}                       
-	                    </td>
-	                    <td>                        
-	                        {% if opendeals_task_form.open_deal_task.errors %}
-		                	<div class="field field_error">
-		                    	{{opendeals_task_form.open_deal_task}} {{opendeals_task_form.open_deal_task.errors}}                   	
-		                	</div>
-		                	{% else %}
-		                		{{opendeals_task_form.open_deal_task}}
-		                	{% endif %}				                	                     
-	                    </td>
-	                </tr>				            
-	            </tbody>
-	        </table>
+	    	<div class="parent">	    	
+		    	<div class="well">
+		    		{% show_row_div form.title %}
+		    		{% show_row_div form.due_date_time %}
+		    	</div>
+		    	<div>
+		    		{% show_row_div form.type %}
+		    		{% show_row_div form.reminder %}	
+		    		{% show_row_div form.priority %}	
+		    		{% show_row_div form.is_public %}
+		    		
+		    		{% show_row_div form.contact %}
+		    		{% show_row_div opendeals_task_form.open_deal_task %}
+		    	</div>
+		    	<input type="submit" value="{% trans 'Add Task' %}" class="btn btn-primary" />
+        		<input name="cancel" type="button" value="{% trans 'Cancel' %}" class="btn" onclick="history.go(-1)"/>
+	    	</div>	        
 	    </div>
 	</div>
 </div>

@@ -34,6 +34,7 @@ from random import choice
 from string import ascii_lowercase, digits
 import random
 from django.contrib.auth import authenticate, login
+from django.template.loader_tags import register
 
 ITEMS_PER_PAGE = 5
 
@@ -883,9 +884,16 @@ def merge_with_pagination_variables(paginator, page, page_number, variables):
     variables = dict(variables.items() + get_paginator_variables(paginator, page, page_number).items())
     return variables
 
+@register.inclusion_tag('tag_form_label_td.html')
+def show_row_td(form_field):
+    return {'form_field': form_field}
 
+@register.inclusion_tag('tag_form_label_div.html')
+def show_row_div(form_field):
+    return {'form_field': form_field}
 
 #@login_required
+
 #def _deal_status_view(request, call_id=None):        
 #    conversation_deal = Conversation_Deal.objects.filter(conversation_id__in=call_id)    
 #    deal_statuses = DealStatus.objects.all()        
