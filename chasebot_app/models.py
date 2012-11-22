@@ -348,7 +348,7 @@ class Task(models.Model):
     
     def save(self, *args, **kwargs):
         self.reminder_date_time = self.calc_reminder(self.reminder)        
-        super(Deal, self).save(*args, **kwargs) # Call the "real" save() method.
+        super(Task, self).save(*args, **kwargs) # Call the "real" save() method.
     
     class Meta:
         verbose_name = _(u'Task')

@@ -62,14 +62,15 @@ if (!String.prototype.trim) {
 
 function row_delete_ajax(event) {
     event.preventDefault();
+    var target = $(event.data.target);
     if (confirm(gettext('Are you sure you want to delete this row?'))) {
     	var url = $(this).attr("href") + "/";
     	  		
         $.post(url, function(result){
-        	$('#search_result').empty();
-        	$('#search_result').append(result);
-        	rebind_edit_delete($('#search_result'));
-        	rebind_paginator($('#search_result'));
+        	$(target).empty();
+        	$(target).append(result);
+        	rebind_edit_delete($(target));
+        	rebind_paginator($(target));
         	rebind_add();        	
         });                
     }    	
@@ -324,8 +325,13 @@ function rebind_paginator(parent){
 
 
 function rebind_edit_delete(parent){	
-	$(parent).find(".row_delete_ajax").click(row_delete_ajax);	
+	$(parent).find(".row_delete_ajax").click({target: parent}, row_delete_ajax);	
 	$(parent).find(".row_edit_ajax").click(row_edit_ajax);	
+}
+
+function rebind_task_edit_delete(parent){	
+	$(parent).find(".row_delete_ajax").click({target: parent}, row_delete_ajax);	
+	$(parent).find(".row_edit_task").click(edit_new_task);	
 }
 
 // This rebinds all rating classes within the templates (not forms)
@@ -531,17 +537,46 @@ function new_conversation(event){
 	});
 }
 
-function new_task(event){	
+function edit_new_task(event){	
 	event.preventDefault();
 	var url = $(this).attr("href");	
 	$('#task_modal').load(url, function(result){
 		$(this).modal('show');	
-		datepicker_reload('#task_modal');			
-		// rebind_new_conversation('#new_conversation_div');
-		// rebind_add_deals();	
-		// datepicker_reload('#new_conversation_div');	
+		$("#task_form").get(0).setAttribute("action", url);
+		datepicker_reload('#task_modal');
+		$('#task_form').submit({modal:'#task_modal', results:'#tasks_result', form:'#task_form'}, task_modal_add_save);		
 	});
 }
+
+function task_modal_add_save(event){
+	event.preventDefault();	
+	var modal = $(event.data.modal);
+	var results = $(event.data.results);
+	var form = $(event.data.form);
+	// selector starts from Add Button (this)	
+	var url = $(form).attr('action');		
+	//var row = $(this).closest('tr'); //real row containing also the form	
+	var data = $(form).serialize();
+  	
+  	$.post(url, data, function (result) {
+  		//If there are validation errors upon adding the field
+  		if ($('#validation_error_ajax', result).text() == 'True') {  			 
+    		 modal.empty();    		 
+      		 modal.append(result);      		       		 
+      		 modal.find(form).submit(url, task_modal_add_save);      		       		
+    	}
+    	else {
+    		//if there is no error then insert the added row before the current add-button row. (last row)
+    		$(modal).modal('hide');    		
+    		$(modal).empty();
+    		$(results).empty();
+    		$(results).append(result);
+      		rebind_task_edit_delete($(results));
+      		rebind_paginator($(results));      		      		      		
+    	}
+  	});  	
+};
+
 
 function deals_in_progress_coversations(event){
 	event.preventDefault();
@@ -599,6 +634,7 @@ function deals_in_progress(event){
 $(document).ready(function (){	
 	rebind_add();
 	rebind_edit_delete($('#search_result'));
+	rebind_task_edit_delete($('#tasks_result'));
 	rebind_paginator($('#search_result'));
 	rebind_filters($('body'));
 	rebind_ratings($('#search_result'));
@@ -613,7 +649,7 @@ $(document).ready(function (){
 	$('#invite-button').click(invite_colleague);
 	$('#demo-button').click(demo);
 	$('#new_conversation_button').off('click').on('click',new_conversation);
-	$('#new_task_button').off('click').on('click', new_task);
+	$('#new_task_button').off('click').on('click', edit_new_task);
 	$('#deals_in_progress').off('click').on('click', deals_in_progress);
 	if($('#show_only_open_deals').text() == 'True')
 		$('#deals_in_progress_calls').button('toggle');

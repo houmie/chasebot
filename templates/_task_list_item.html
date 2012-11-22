@@ -2,6 +2,10 @@
 {% load l10n %}
 {% for task in tasks %}
 	<tr>
+		<td>	    	                        	
+	        <a class="btn-link btn-link-left row_edit_task" href="/task/edit/{{ task.pk }}/?contact={{contact.pk}}" title="{% trans 'Edit Task' %}"> <i class="icon-pencil icon-large"> </i></a>
+	        <a class="btn-link row_delete_ajax" href="/task/delete/{{ task.pk }}" title="{% trans 'Delete Task' %}"><i class="icon-trash icon-large"> </i></a>	        
+	    </td>
 		<td>{{task.type}}</td>
 		<td>{{task.due_date_time|time:"TIME_FORMAT"}}</td>
 	</tr>

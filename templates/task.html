@@ -7,23 +7,29 @@
 <div class="modal-body">	
     <div class="row-fluid">
 	    <div class="span12">
-	    	<div class="parent">	    	
-		    	<div class="well">
-		    		{% show_row_div form.title %}
-		    		{% show_row_div form.due_date_time %}
+	    	<form id="task_form" method="post" action=".">
+	    		{% csrf_token %}
+		    	<div class="parent">	    	
+			    	<div class="well">
+			    		{% show_row_div form.title %}
+			    		{% show_row_div form.due_date_time %}
+			    	</div>
+			    	<div>
+			    		{% show_row_div form.type %}
+			    		{% show_row_div form.reminder %}	
+			    		{% show_row_div form.priority %}	
+			    		{% show_row_div form.is_public %}
+			    		
+			    		{% show_row_div form.contact %}
+			    		{% show_row_div opendeals_task_form.open_deal_task %}
+			    		
+			    		
+		    			
+			    	</div>
+			    	<input type="submit" value="{% trans 'Add Task' %}" class="btn btn-primary" />
+	        		<input name="cancel" type="button" value="{% trans 'Cancel' %}" class="btn"/>
 		    	</div>
-		    	<div>
-		    		{% show_row_div form.type %}
-		    		{% show_row_div form.reminder %}	
-		    		{% show_row_div form.priority %}	
-		    		{% show_row_div form.is_public %}
-		    		
-		    		{% show_row_div form.contact %}
-		    		{% show_row_div opendeals_task_form.open_deal_task %}
-		    	</div>
-		    	<input type="submit" value="{% trans 'Add Task' %}" class="btn btn-primary" />
-        		<input name="cancel" type="button" value="{% trans 'Cancel' %}" class="btn" onclick="history.go(-1)"/>
-	    	</div>	        
+	    	</form>	        
 	    </div>
 	</div>
 </div>

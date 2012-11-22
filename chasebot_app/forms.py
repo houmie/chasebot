@@ -70,11 +70,7 @@ class FilterContactsForm(Form):
     company       = forms.CharField(widget= forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_contacts_company', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=30)
     email         = forms.EmailField(widget= forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_contacts_email', 'autocomplete': 'off', 'data-provide': 'typeahead'}))
 
-class ContactsForm(ModelForm):
-    def __init__(self, company, *args, **kwargs):
-        super(ContactsForm, self).__init__(*args, **kwargs)
-        # limit selection list to just items for this account
-        #self.fields['contact_type'].queryset = ContactType.objects.filter(company=company)
+class ContactsForm(ModelForm):        
     
     class Meta:
         model = Contact
@@ -187,11 +183,13 @@ class OpenDealsAddForm(Form):
 
 
 class OpenDealTaskForm(Form):
-    def __init__(self, company, contact, *args, **kwargs):
+    def __init__(self, contact, *args, **kwargs):
         super(OpenDealTaskForm, self).__init__(*args, **kwargs)        
         if contact:
             self.fields['open_deal_task'].queryset = contact.get_open_deals_query()
-        self.fields['open_deal_task'].required = False        
+        else:
+            self.fields['open_deal_task'].widget.attrs['disabled'] = True
+        self.fields['open_deal_task'].required = False
         
  
     open_deal_task = forms.ModelChoiceField(queryset='', label=_(u'Choose a deal for the task'))    
@@ -316,10 +314,10 @@ class ColleagueInviteForm(ModelForm):
             
         
 class TaskForm(ModelForm):
-            
+        
     class Meta:
         model = Task
-        exclude = {'reminder_date_time', }
+        exclude = {'reminder_date_time', 'company'}
         widgets={                    
                     'title' : forms.TextInput(attrs={'placeholder': _(u'What is this task about?'), 'class':'placeholder_fix_css', 'autocomplete':'off'}),
                     'due_date_time': forms.DateInput(attrs={'placeholder': _(u'When is this task due?'), 'class':'placeholder_fix_css date_picker'}),

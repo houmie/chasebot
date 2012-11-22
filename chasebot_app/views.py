@@ -148,12 +148,12 @@ def contact_add_edit(request, contact_id=None):
         contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
         template_title = _(u'Edit Contact')
     if request.method == 'POST':
-        form = ContactsForm(profile.company, request.POST, instance=contact)
+        form = ContactsForm(request.POST, instance=contact)
         if form.is_valid():
             contact = form.save()
             return HttpResponseRedirect('/')
     else:
-        form = ContactsForm(instance=contact, company=profile.company)    
+        form = ContactsForm(instance=contact)    
     variables = {'form':form, 'template_title': template_title, 'contact_id' : contact_id, }
     variables = merge_with_localized_variables(request, variables)
     return render(request, 'contact.html', variables)
@@ -199,11 +199,15 @@ def conversation_display(request, contact_id):
             calls_queryset = calls_queryset.filter(subject__icontains=subject).order_by('subject')          
     
     filter_form = FilterConversationForm(request.GET)
-    calls, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, calls_queryset)    
+    calls, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, calls_queryset)
+    
+    task_queryset = profile.company.task_set.order_by('-due_date_time')
+    tasks, paginator_t, page_t, page_number_t = makePaginator(request, 3, task_queryset)        
     variables = {
-                 'calls': calls, 'contact': contact, 'filter_form' : filter_form, 'show_only_open_deals' : show_only_open_deals
+                 'calls': calls, 'contact': contact, 'filter_form' : filter_form, 'show_only_open_deals' : show_only_open_deals, 'tasks': tasks,
                  }
     variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
+    variables = merge_with_pagination_variables(paginator_t, page_t, page_number_t, variables)
     if ajax:    
         return render(request, 'conversation_list.html', variables)
     else:
@@ -393,7 +397,7 @@ def task_add_edit(request, task_id=None):
     profile = request.user.get_profile()
         
     if task_id is None:
-        task = Task() 
+        task = Task(company=profile.company) 
         template_title = _(u'Add New Task')
     else:
         task = get_object_or_404(profile.company.task_set.all(), pk=task_id)
@@ -401,15 +405,16 @@ def task_add_edit(request, task_id=None):
     validation_error_ajax = False
     
     contact = None
-    if request.GET['contact']:
+    if request.GET.get('contact', None):
         contact = get_object_or_404(profile.company.contact_set.all(), pk=request.GET['contact'])
     
     if request.method == 'POST':
         form = TaskForm(request.POST, instance=task, prefix='form')
         if form.is_valid():
             selected_open_deal = None
-            if contact:
-                opendeals_task_form = OpenDealTaskForm(profile.company, contact, request.POST, prefix='opendeals_task_form')
+            #if contact:
+            opendeals_task_form = OpenDealTaskForm(contact, request.POST, prefix='opendeals_task_form')
+            if opendeals_task_form.is_valid():
                 selected_open_deal = opendeals_task_form.cleaned_data['open_deal_task']
             # Always localize the entered date by user into his timezone before saving it to database
             task = form.save(commit=False)   
@@ -417,7 +422,7 @@ def task_add_edit(request, task_id=None):
                 task.deal_id = selected_open_deal.deal_id
             current_tz = timezone.get_current_timezone()            
             date = form.cleaned_data['due_date_time']                        
-            date_time = current_tz.localize(datetime.datetime(date.year, date.month, date.day, time.hour, time.minute))                        
+            date_time = current_tz.localize(datetime.datetime(date.year, date.month, date.day, date.hour, date.minute))                        
             task.due_date_time = date_time
             task.save()
             return render(request, '_task_list_item.html', {'tasks':[task], })
@@ -425,12 +430,30 @@ def task_add_edit(request, task_id=None):
             validation_error_ajax = True
     else:        
         #opendeass_add_form contains only one dropdown to add open deals to task        
-        opendeals_task_form = OpenDealTaskForm(profile.company, contact, prefix='opendeals_task_form')
-        form = TaskForm(instance=task, prefix='form', initial = {'contact' : contact.pk})
+        opendeals_task_form = OpenDealTaskForm(contact, prefix='opendeals_task_form')
+        if contact:
+            form = TaskForm(instance=task, prefix='form', initial = {'contact' : contact.pk})
+        else:
+            form = TaskForm(instance=task, prefix='form')
         
     variables = {'form':form, 'template_title':template_title, 'opendeals_task_form':opendeals_task_form, 'validation_error_ajax':validation_error_ajax }
     variables = merge_with_localized_variables(request, variables)    
     return render(request, 'task.html', variables)
+
+
+@login_required
+def task_delete(request, task_id):
+    if task_id is None:
+        raise Http404(_(u'Task not found'))    
+    else:
+        profile = request.user.get_profile()
+        task = get_object_or_404(profile.company.task_set.all(), pk=task_id)        
+        task.delete()
+        task_queryset = profile.company.task_set.order_by('-due_date_time')   
+        tasks, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, task_queryset)          
+        variables = { 'tasks': tasks }
+        variables = merge_with_pagination_variables(paginator, page, page_number, variables)
+    return render(request, 'task_list.html', variables)
 
 
 @login_required
