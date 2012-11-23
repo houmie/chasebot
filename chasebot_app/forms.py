@@ -192,7 +192,7 @@ class OpenDealTaskForm(Form):
         self.fields['open_deal_task'].required = False
         
  
-    open_deal_task = forms.ModelChoiceField(queryset='', label=_(u'Choose a deal for the task'))    
+    open_deal_task = forms.ModelChoiceField(queryset='', label=_(u'Task about an existing deal?'))    
     
 
 

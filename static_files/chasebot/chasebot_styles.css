@@ -315,5 +315,9 @@ input[type="checkbox"]{
 }
 
 .modal-body {
-	max-height: 440px;
+	max-height: 450px;
+}
+
+.body_padding{
+	padding-bottom: 10px;	
 }

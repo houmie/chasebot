@@ -912,9 +912,13 @@ def merge_with_pagination_variables(paginator, page, page_number, variables):
     variables = dict(variables.items() + get_paginator_variables(paginator, page, page_number).items())
     return variables
 
-@register.inclusion_tag('tag_form_label_td.html')
-def show_row_td(form_field):
-    return {'form_field': form_field}
+@register.inclusion_tag('tag_form_label_tr.html')
+def show_row_tr(form_field, *args, **kwargs):
+    ignore_error_text = False
+    if 'ignore_error_text' in kwargs:
+        ignore_error_text = True
+    return {'form_field': form_field, 'ignore_error_text':ignore_error_text}
+
 
 @register.inclusion_tag('tag_form_label_div.html')
 def show_row_div(form_field, *args, **kwargs):

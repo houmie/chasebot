@@ -1,0 +1,18 @@
+<tr>
+	<td>
+		{% if form_field.field.required %}<label for="{{ form_field.auto_id }}" class="cb_inline_block" rel="tooltip" title="Required Field">{{form_field.label}}: *</label>{%else%}<label for="{{ form_field.auto_id }}">{{form_field.label}}:</label>{% endif %}                       
+	</td>
+	<td>                        
+		{% if form_field.errors and not ignore_error_text %}
+			<div class="field field_error">
+				{{form_field}} {{form_field.errors}}                   	
+			</div>
+		{% elif form_field.errors and ignore_error_text %}
+			<div class="field field_error">
+				{{form_field}}                    	
+			</div>
+		{% else %}
+			{{form_field}}
+		{% endif %}				  
+	</td>
+</tr>

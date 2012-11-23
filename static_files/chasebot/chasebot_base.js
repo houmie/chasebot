@@ -564,7 +564,8 @@ function task_modal_add_save(event){
   		if ($('#validation_error_ajax', result).text() == 'True') {  			 
     		 modal.empty();    		 
       		 modal.append(result);      		       		 
-      		 modal.find(form).submit(url, task_modal_add_save);      		       		
+      		 modal.find(form).submit(url, task_modal_add_save);
+       		 datepicker_reload($(modal));      		
     	}
     	else {
     		//if there is no error then insert the added row before the current add-button row. (last row)
