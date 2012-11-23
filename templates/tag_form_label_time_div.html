@@ -1,0 +1,18 @@
+<div class="row">	
+	<div class="block_inline">
+		{% if form_field.field.required %}<label for="{{ form_field.auto_id }}" class="cb_inline_block" rel="tooltip" title="Required Field">{{form_field.label}}: *</label>{%else%}<label for="{{ form_field.auto_id }}">{{form_field.label}}:</label>{% endif %}                       
+	</div>
+	{{form.due_time }}
+	<div class="block_inline">
+		{% if form_field.errors %}
+		<div class="field field_error">
+			{{form_field}}
+			<i class="icon-time" style="margin: 5px 0 0 -20px; pointer-events: none; position: relative;"></i>
+			{{form_field.errors}}                   	
+		</div>
+		{% else %}
+			{{form_field}}
+			<i class="icon-time" style="margin: 5px 0 0 -20px; pointer-events: none; position: relative;"></i>
+		{% endif %}
+	</div>	
+</div>

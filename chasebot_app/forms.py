@@ -314,12 +314,18 @@ class ColleagueInviteForm(ModelForm):
             
         
 class TaskForm(ModelForm):
+    due_time  = forms.CharField(max_length=15) 
+    
+    def __init__(self, *args, **kwargs):
+        super(TaskForm, self).__init__(*args, **kwargs)
+        self.fields['due_time'].widget.attrs['class'] = 'timepicker-default input-small' 
+        self.fields['due_time'].widget.attrs['placeholder'] = _(u'What time?') 
         
     class Meta:
         model = Task
         exclude = {'reminder_date_time', 'company'}
         widgets={                    
                     'title' : forms.TextInput(attrs={'placeholder': _(u'What is this task about?'), 'class':'placeholder_fix_css', 'autocomplete':'off'}),
-                    'due_date_time': forms.DateInput(attrs={'placeholder': _(u'When is this task due?'), 'class':'placeholder_fix_css date_picker'}),
+                    'due_date_time': forms.DateInput(attrs={'placeholder': _(u'When is this task due?'), 'class':'placeholder_fix_css date_picker'}),                    
                 }
   

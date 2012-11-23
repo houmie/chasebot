@@ -13,6 +13,7 @@
 			    	<div class="well">
 			    		{% show_row_div form.title %}
 			    		{% show_row_div form.due_date_time %}
+			    		{% show_row_time_div form.due_time %}
 			    	</div>
 			    	<div>
 			    		{% show_row_div form.type %}
@@ -21,20 +22,16 @@
 			    		{% show_row_div form.is_public %}
 			    		
 			    		{% show_row_div form.contact %}
-			    		{% show_row_div opendeals_task_form.open_deal_task %}
-			    		
-			    		
-		    			
-			    	</div>
-			    	<input type="submit" value="{% trans 'Add Task' %}" class="btn btn-primary" />
-	        		<input name="cancel" type="button" value="{% trans 'Cancel' %}" class="btn"/>
+			    		{% show_row_div opendeals_task_form.open_deal_task %}		    			
+			    	</div>			    	
 		    	</div>
+		    	<div class="pull-right">
+			    	<input type="submit" value="{% trans 'Save Task' %}" class="btn btn-primary right-margin" />
+	        		<input name="cancel" type="button" value="{% trans 'Cancel' %}" class="btn close_link" data-dismiss="modal"/>	        			
+        		</div>
 	    	</form>	        
 	    </div>
 	</div>
 </div>
 
 <div class="hidden" id="modal_type">tasks</div>
-<div class="modal-footer">
-	<a href="#" class="btn close_link" data-dismiss="modal">{% trans 'Close' %}</a>	
-</div>

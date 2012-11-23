@@ -390,7 +390,8 @@ function rebind_add(){
 };
 
 function datepicker_reload(parent){
-	$(parent).find('.date_picker').datepicker({ format: $('#locale').text(),	autoclose: 'True' });			
+	$(parent).find('.date_picker').datepicker({ format: $('#locale').text(),	autoclose: 'True' });
+	$(parent).find('.timepicker-default').timepicker();			
 };
 
 

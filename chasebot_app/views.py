@@ -204,7 +204,7 @@ def conversation_display(request, contact_id):
     task_queryset = profile.company.task_set.order_by('-due_date_time')
     tasks, paginator_t, page_t, page_number_t = makePaginator(request, 3, task_queryset)        
     variables = {
-                 'calls': calls, 'contact': contact, 'filter_form' : filter_form, 'show_only_open_deals' : show_only_open_deals, 'tasks': tasks,
+                 'calls': calls, 'contact': contact, 'contact_id':contact.pk, 'filter_form' : filter_form, 'show_only_open_deals' : show_only_open_deals, 'tasks': tasks,
                  }
     variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
     variables = merge_with_pagination_variables(paginator_t, page_t, page_number_t, variables)
@@ -425,7 +425,11 @@ def task_add_edit(request, task_id=None):
             date_time = current_tz.localize(datetime.datetime(date.year, date.month, date.day, date.hour, date.minute))                        
             task.due_date_time = date_time
             task.save()
-            return render(request, '_task_list_item.html', {'tasks':[task], })
+            task_queryset = profile.company.task_set.order_by('-due_date_time')
+            tasks, paginator_t, page_t, page_number_t = makePaginator(request, 3, task_queryset) 
+            variables = {'tasks':tasks, 'contact_id':contact.pk}
+            variables = merge_with_pagination_variables(paginator_t, page_t, page_number_t, variables)
+            return render(request, 'task_list.html', variables)
         else:
             validation_error_ajax = True
     else:        
@@ -913,6 +917,10 @@ def show_row_td(form_field):
 
 @register.inclusion_tag('tag_form_label_div.html')
 def show_row_div(form_field):
+    return {'form_field': form_field}
+
+@register.inclusion_tag('tag_form_label_time_div.html')
+def show_row_time_div(form_field):
     return {'form_field': form_field}
 
 #@login_required
