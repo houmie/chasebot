@@ -1,37 +1,40 @@
 {% load i18n %}
-
-<div class="modal-header">
-	<button type="button" class="close close_link" data-dismiss="modal" aria-hidden="true">&times;</button>	
-	<h3><div class="cb_inline_block" style="font-size: 24px;"><i class="icon-tasks"></i></div> {{template_title}}</h3>
-</div>
-<div class="modal-body">	
-    <div class="row-fluid">
-	    <div class="span12">
-	    	<form id="task_form" method="post" action=".">
-	    		{% csrf_token %}
-		    	<div class="parent">	    	
-			    	<div class="well">
-			    		{% show_row_div form.title %}
-			    		{% show_row_div form.due_date_time %}
-			    		{% show_row_time_div form.due_time %}
-			    	</div>
-			    	<div>
-			    		{% show_row_div form.type %}
-			    		{% show_row_div form.reminder %}	
-			    		{% show_row_div form.priority %}	
-			    		{% show_row_div form.is_public %}
-			    		
-			    		{% show_row_div form.contact %}
-			    		{% show_row_div opendeals_task_form.open_deal_task %}		    			
-			    	</div>			    	
-		    	</div>
-		    	<div class="pull-right">
-			    	<input type="submit" value="{% trans 'Save Task' %}" class="btn btn-primary right-margin" />
-	        		<input name="cancel" type="button" value="{% trans 'Cancel' %}" class="btn close_link" data-dismiss="modal"/>	        			
-        		</div>
-	    	</form>	        
-	    </div>
+<div>
+	<div class="modal-header">
+		<button type="button" class="close close_link" data-dismiss="modal" aria-hidden="true">&times;</button>	
+		<h3><div class="cb_inline_block" style="font-size: 24px;"><i class="icon-tasks"></i></div> {{template_title}}</h3>
 	</div>
+	<div class="modal-body">	
+	    <div class="row-fluid">
+		    <div class="span12">
+		    	<form id="task_form" method="post" action=".">
+		    		{% csrf_token %}
+			    	<div class="parent">	    	
+				    	<div class="well well-small">
+				    		{% show_row_div form.title ignore_error_text=True %}
+				    		{% show_row_div form.due_date_time ignore_error_text=True %}
+				    		{% show_row_time_div form.due_time ignore_error_text=True %}
+				    	</div>
+				    	<div>
+				    		{% show_row_div form.contact_text %}
+				    		{% show_row_div opendeals_task_form.open_deal_task %}				    		
+				    	</div>
+				    	<div>
+				    		{% show_row_div form.type %}
+				    		{% show_row_div form.reminder %}	
+				    		{% show_row_div form.priority %}	
+				    		{% show_row_div form.is_public %}				    		
+				    						    		
+				    	</div>			    	
+			    	</div>
+			    	<div class="pull-right">
+				    	<input type="submit" value="{% trans 'Save Task' %}" class="btn btn-primary right-margin" />
+		        		<input name="cancel" type="button" value="{% trans 'Cancel' %}" class="btn close_link" data-dismiss="modal"/>	        			
+	        		</div>
+		    	</form>	        
+		    </div>
+		</div>
+	</div>
+	<div class="hidden" id="validation_error_ajax">{{validation_error_ajax}}</div>
+	<div class="hidden" id="modal_type">tasks</div>
 </div>
-
-<div class="hidden" id="modal_type">tasks</div>

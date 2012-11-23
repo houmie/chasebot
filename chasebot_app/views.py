@@ -406,14 +406,15 @@ def task_add_edit(request, task_id=None):
     
     contact = None
     if request.GET.get('contact', None):
-        contact = get_object_or_404(profile.company.contact_set.all(), pk=request.GET['contact'])
+        contact = get_object_or_404(profile.company.contact_set.all(), pk=request.GET['contact'])    
+        task.contact = contact
     
     if request.method == 'POST':
+        opendeals_task_form = OpenDealTaskForm(contact, request.POST, prefix='opendeals_task_form')
         form = TaskForm(request.POST, instance=task, prefix='form')
         if form.is_valid():
             selected_open_deal = None
-            #if contact:
-            opendeals_task_form = OpenDealTaskForm(contact, request.POST, prefix='opendeals_task_form')
+            
             if opendeals_task_form.is_valid():
                 selected_open_deal = opendeals_task_form.cleaned_data['open_deal_task']
             # Always localize the entered date by user into his timezone before saving it to database
@@ -916,12 +917,18 @@ def show_row_td(form_field):
     return {'form_field': form_field}
 
 @register.inclusion_tag('tag_form_label_div.html')
-def show_row_div(form_field):
-    return {'form_field': form_field}
+def show_row_div(form_field, *args, **kwargs):
+    ignore_error_text = False
+    if 'ignore_error_text' in kwargs:
+        ignore_error_text = True
+    return {'form_field': form_field, 'ignore_error_text':ignore_error_text}
 
 @register.inclusion_tag('tag_form_label_time_div.html')
-def show_row_time_div(form_field):
-    return {'form_field': form_field}
+def show_row_time_div(form_field, *args, **kwargs):
+    ignore_error_text = False
+    if 'ignore_error_text' in kwargs:
+        ignore_error_text = True
+    return {'form_field': form_field, 'ignore_error_text':ignore_error_text}
 
 #@login_required
 

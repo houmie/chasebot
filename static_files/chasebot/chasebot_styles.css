@@ -304,9 +304,16 @@ input[type="checkbox"]{
     display: table-row;
 }
 
-.block_inline
-{
+.block_inline{
     display: table-cell;
     width: 50%;
     display:inline-block;
+}
+
+.icon-time{
+	float: none; position: relative; right: 18px; top: -3px;
+}
+
+.modal-body {
+	max-height: 440px;
 }
