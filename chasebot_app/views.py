@@ -408,10 +408,11 @@ def task_add_edit(request, task_id=None):
     if request.GET.get('contact', None):
         contact = get_object_or_404(profile.company.contact_set.all(), pk=request.GET['contact'])    
         task.contact = contact
+        
     
     if request.method == 'POST':
-        opendeals_task_form = OpenDealTaskForm(contact, request.POST, prefix='opendeals_task_form')
-        form = TaskForm(request.POST, instance=task, prefix='form')
+        opendeals_task_form = OpenDealTaskForm(contact, task.deal_id, request.POST, prefix='opendeals_task_form')
+        form = TaskForm(request.POST, instance=task, prefix='form', initial = {'contact' : contact.pk})
         if form.is_valid():
             selected_open_deal = None
             
@@ -421,10 +422,6 @@ def task_add_edit(request, task_id=None):
             task = form.save(commit=False)   
             if selected_open_deal is not None:
                 task.deal_id = selected_open_deal.deal_id
-            current_tz = timezone.get_current_timezone()            
-            date = form.cleaned_data['due_date_time']                        
-            date_time = current_tz.localize(datetime.datetime(date.year, date.month, date.day, date.hour, date.minute))                        
-            task.due_date_time = date_time
             task.save()
             task_queryset = profile.company.task_set.order_by('-due_date_time')
             tasks, paginator_t, page_t, page_number_t = makePaginator(request, 3, task_queryset) 
@@ -435,12 +432,12 @@ def task_add_edit(request, task_id=None):
             validation_error_ajax = True
     else:        
         #opendeass_add_form contains only one dropdown to add open deals to task        
-        opendeals_task_form = OpenDealTaskForm(contact, prefix='opendeals_task_form')
+        opendeals_task_form = OpenDealTaskForm(contact, task.deal_id, prefix='opendeals_task_form')
         if contact:
             form = TaskForm(instance=task, prefix='form', initial = {'contact' : contact.pk})
         else:
             form = TaskForm(instance=task, prefix='form')
-        
+
     variables = {'form':form, 'template_title':template_title, 'opendeals_task_form':opendeals_task_form, 'validation_error_ajax':validation_error_ajax }
     variables = merge_with_localized_variables(request, variables)    
     return render(request, 'task.html', variables)

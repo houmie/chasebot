@@ -1,4 +1,5 @@
 __author__ = 'houman'
+
 from django.forms.forms import Form
 from chasebot_app.widgets import cb_DateInput
 from django.utils import timezone
@@ -11,7 +12,8 @@ from chasebot_app.models import Contact, ContactType, Country, MaritalStatus, Co
     Invitation, Task
 from django.forms.models import BaseModelFormSet
 from django.utils.translation import ugettext_lazy as _
-
+import datetime
+from datetime import datetime as dt 
    
     
 class UserRegistrationForm(Form):
@@ -183,17 +185,21 @@ class OpenDealsAddForm(Form):
 
 
 class OpenDealTaskForm(Form):
-    def __init__(self, contact, *args, **kwargs):
+    def __init__(self, contact, dealid, *args, **kwargs):
         super(OpenDealTaskForm, self).__init__(*args, **kwargs)        
         if contact:
             self.fields['open_deal_task'].queryset = contact.get_open_deals_query()
+            if dealid:
+                try:
+                    self.fields['open_deal_task'].initial = self.fields['open_deal_task'].queryset.get(deal_id = dealid)
+                except Deal.DoesNotExist:
+                    pass
         else:
             self.fields['open_deal_task'].widget.attrs['disabled'] = True
-        self.fields['open_deal_task'].required = False
-        
+        self.fields['open_deal_task'].required = False        
  
     open_deal_task = forms.ModelChoiceField(queryset='', label=_(u'Task about an existing deal?'))    
-    
+
 
 
 class FilterDealsForm(Form):
@@ -312,19 +318,34 @@ class ColleagueInviteForm(ModelForm):
         model = Invitation
         fields = {'name', 'email'}
             
-        
+
+       
 class TaskForm(ModelForm):
-    due_time  = forms.CharField(max_length=15)
+    due_time  = forms.TimeField()
     contact_text  = forms.CharField(max_length=81, label = _(u'Contact person'), required= False) 
     
     def __init__(self, *args, **kwargs):
         super(TaskForm, self).__init__(*args, **kwargs)
         self.fields['due_time'].widget.attrs['class'] = 'timepicker-default input-small' 
         self.fields['due_time'].widget.attrs['placeholder'] = _(u'What time?')
+        self.fields['due_time'].initial = self.instance.due_date_time.time
         self.fields['contact_text'].initial = self.instance.contact.last_name
-        self.fields['contact_text'].widget.attrs['disabled'] = True
-         
+        self.fields['contact_text'].widget.attrs['readonly'] = True
         
+         
+    
+    def save(self, commit=True):
+        instance = super(TaskForm, self).save(commit=False)
+        if 'due_date_time' in self.cleaned_data and 'due_time' in self.cleaned_data:
+            due_date_time = self.cleaned_data['due_date_time']
+            due_time = self.cleaned_data['due_time']
+            current_tz = timezone.get_current_timezone()            
+            instance.due_date_time = current_tz.localize(datetime.datetime(due_date_time.year, due_date_time.month, due_date_time.day, due_time.hour, due_time.minute))
+        if commit:
+            instance.save()
+        return instance
+    
+    
     class Meta:
         model = Task
         exclude = {'reminder_date_time', 'company', 'contact'}

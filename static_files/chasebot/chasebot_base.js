@@ -391,7 +391,12 @@ function rebind_add(){
 
 function datepicker_reload(parent){
 	$(parent).find('.date_picker').datepicker({ format: $('#locale').text(),	autoclose: 'True' });
-	$(parent).find('.timepicker-default').timepicker();			
+	var is_showMeridian = false;
+	if ($('#locale').text() == 'mm/dd/yyyy'){
+		is_showMeridian = true;
+	}
+		
+	$(parent).find('.timepicker-default').timepicker({showMeridian:is_showMeridian, defaultTime : false});			
 };
 
 
@@ -545,14 +550,14 @@ function edit_new_task(event){
 		$(this).modal('show');	
 		$("#task_form").get(0).setAttribute("action", url);
 		datepicker_reload('#task_modal');
-		$('#task_form').submit({modal:'#task_modal', results:'#tasks_result', form:'#task_form'}, task_modal_add_save);		
+		$('#task_form').submit({modal:'#task_modal', tasks_pane:'#tasks_pane', form:'#task_form'}, task_modal_add_save);		
 	});
 }
 
 function task_modal_add_save(event){
 	event.preventDefault();	
 	var modal = $(event.data.modal);
-	var results = $(event.data.results);
+	var tasks_pane = $(event.data.tasks_pane);
 	var form = $(event.data.form);
 	// selector starts from Add Button (this)	
 	var url = $(form).attr('action');		
@@ -563,18 +568,21 @@ function task_modal_add_save(event){
   		//If there are validation errors upon adding the field
   		if ($('#validation_error_ajax', result).text() == 'True') {  			 
     		 modal.empty();    		 
-      		 modal.append(result);      		       		 
-      		 modal.find(form).submit(url, task_modal_add_save);
+      		 modal.append(result);
+      		 modal.find('#task_form').get(0).setAttribute("action", url);      		       		 
+      		 modal.find('#task_form').submit({modal:'#task_modal', tasks_pane:'#tasks_pane', form:'#task_form'}, task_modal_add_save);
        		 datepicker_reload($(modal));      		
+       		 rebind_task_edit_delete($(tasks_pane));
+      		 rebind_paginator($(tasks_pane));      		
     	}
     	else {
     		//if there is no error then insert the added row before the current add-button row. (last row)
     		$(modal).modal('hide');    		
     		$(modal).empty();
-    		$(results).empty();
-    		$(results).append(result);
-      		rebind_task_edit_delete($(results));
-      		rebind_paginator($(results));      		      		      		
+    		$(tasks_pane).empty();
+    		$(tasks_pane).append(result);
+      		rebind_task_edit_delete($(tasks_pane));
+      		rebind_paginator($(tasks_pane));      		      		      		
     	}
   	});  	
 };
@@ -636,7 +644,7 @@ function deals_in_progress(event){
 $(document).ready(function (){	
 	rebind_add();
 	rebind_edit_delete($('#search_result'));
-	rebind_task_edit_delete($('#tasks_result'));
+	rebind_task_edit_delete($('#tasks_pane'));
 	rebind_paginator($('#search_result'));
 	rebind_filters($('body'));
 	rebind_ratings($('#search_result'));
@@ -648,6 +656,7 @@ $(document).ready(function (){
 	$('#timezone_dropdown').change(timezone_dropdown);	
 	$('.timezone_help').click(show_timezone_help);
 	datepicker_reload('#search_result');
+	datepicker_reload('#task_modal');
 	$('#invite-button').click(invite_colleague);
 	$('#demo-button').click(demo);
 	$('#new_conversation_button').off('click').on('click',new_conversation);
