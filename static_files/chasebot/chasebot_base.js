@@ -545,12 +545,14 @@ function new_conversation(event){
 
 function edit_new_task(event){	
 	event.preventDefault();
-	var url = $(this).attr("href");	
+	var url = $(this).attr("href");
+	$('#task_modal').empty();	
 	$('#task_modal').load(url, function(result){
 		$(this).modal('show');	
 		$("#task_form").get(0).setAttribute("action", url);
 		datepicker_reload('#task_modal');
-		$('#task_form').submit({modal:'#task_modal', tasks_pane:'#tasks_pane', form:'#task_form'}, task_modal_add_save);		
+		$('#task_form').submit({modal:'#task_modal', tasks_pane:'#tasks_pane', form:'#task_form'}, task_modal_add_save);
+		reword_collapseable('#accordion_task');		
 	});
 }
 
@@ -639,9 +641,17 @@ function deals_in_progress(event){
 	}	
 }
 
-
+function reword_collapseable(parent){
+    $(parent).on('shown', function () {       
+        $('#collapse_task_head').text(gettext("Less Details"));
+    });
+    $(parent).on('hidden', function () {       
+        $('#collapse_task_head').text(gettext("More Details"));
+    });
+}
 
 $(document).ready(function (){	
+	reword_collapseable('#accordion_task');
 	rebind_add();
 	rebind_edit_delete($('#search_result'));
 	rebind_task_edit_delete($('#tasks_pane'));
@@ -664,7 +674,7 @@ $(document).ready(function (){
 	$('#deals_in_progress').off('click').on('click', deals_in_progress);
 	if($('#show_only_open_deals').text() == 'True')
 		$('#deals_in_progress_calls').button('toggle');
-	$('#deals_in_progress_calls').off('click').on('click', deals_in_progress_coversations);	
+	$('#deals_in_progress_calls').off('click').on('click', deals_in_progress_coversations);		    
 	bind_rating_form();	
 });
 

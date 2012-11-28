@@ -19,13 +19,22 @@
 				    		{% show_row_div form.contact_text %}
 				    		{% show_row_div opendeals_task_form.open_deal_task %}				    		
 				    	</div>
-				    	<div>
-				    		{% show_row_div form.type %}
-				    		{% show_row_div form.reminder %}	
-				    		{% show_row_div form.priority %}	
-				    		{% show_row_div form.is_public %}				    						    		
-				    	</div>			    	
-			    	</div>
+				    	<div class="accordion" id="accordion_task">
+							<div class="accordion-group">
+								<div class="accordion-heading">
+									<a id="collapse_task_head" class="accordion-toggle" data-toggle="collapse" data-parent="#accordion_task" href="#collapse_task_body">{% trans 'More Details' %}</a>
+								</div>
+								<div id="collapse_task_body" class="accordion-body collapse">
+									<div class="accordion-inner">								
+							    		{% show_row_div form.type %}
+							    		{% show_row_div form.reminder %}	
+							    		{% show_row_div form.priority %}	
+							    		{% show_row_div form.is_public %}				    						    		
+							    	</div>								
+								</div>
+							</div>
+			    		</div>
+		    		</div>
 			    	<div class="pull-right">
 				    	<input type="submit" value="{% trans 'Save Task' %}" class="btn btn-primary right-margin" />
 		        		<input name="cancel" type="button" value="{% trans 'Cancel' %}" class="btn close_link" data-dismiss="modal"/>	        			

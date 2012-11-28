@@ -430,7 +430,7 @@ def task_add_edit(request, task_id=None):
             return render(request, 'task_list.html', variables)
         else:
             validation_error_ajax = True
-    else:        
+    else:
         #opendeass_add_form contains only one dropdown to add open deals to task        
         opendeals_task_form = OpenDealTaskForm(contact, task.deal_id, prefix='opendeals_task_form')
         if contact:

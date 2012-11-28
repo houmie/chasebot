@@ -328,11 +328,36 @@ class TaskForm(ModelForm):
         super(TaskForm, self).__init__(*args, **kwargs)
         self.fields['due_time'].widget.attrs['class'] = 'timepicker-default input-small' 
         self.fields['due_time'].widget.attrs['placeholder'] = _(u'What time?')
-        self.fields['due_time'].initial = self.instance.due_date_time.time
+        self.fields['due_time'].widget.attrs['autocomplete'] = 'off'        
+        if self.instance.due_date_time:
+            self.fields['due_time'].initial = self.instance.due_date_time.time
+        else:
+            self.fields['due_time'].initial = timezone.now() + round(as.numeric(timezone.now().time)/900)*900
+            #timex = timezone.now().time()
+#            if timex.minute >= 1 and timex.minute <= 14:
+#                if timex.minute <= 7:
+#                    self.fields['due_time'].initial = datetime.time(timex.hour, 0)
+#                else:
+#                    self.fields['due_time'].initial = datetime.time(timex.hour, 15)
+#            if timex.minute >= 16 and timex.minute <= 29:
+#                if timex.minute <= 22:
+#                    self.fields['due_time'].initial = datetime.time(timex.hour, 15)
+#                else:
+#                    self.fields['due_time'].initial = datetime.time(timex.hour, 30)
+#            if timex.minute >= 31 and timex.minute <= 44:
+#                if timex.minute <= 37:
+#                    self.fields['due_time'].initial = datetime.time(timex.hour, 30)
+#                else:
+#                    self.fields['due_time'].initial = datetime.time(timex.hour, 45)
+#            if timex.minute >= 46 and timex.minute <= 59:
+#                if timex.minute <= 52:
+#                    self.fields['due_time'].initial = datetime.time(timex.hour, 45)
+#                else:
+#                    self.fields['due_time'].initial = datetime.time(timex.hour+1, 0)
+               
         self.fields['contact_text'].initial = self.instance.contact.last_name
         self.fields['contact_text'].widget.attrs['readonly'] = True
-        
-         
+
     
     def save(self, commit=True):
         instance = super(TaskForm, self).save(commit=False)
@@ -351,6 +376,6 @@ class TaskForm(ModelForm):
         exclude = {'reminder_date_time', 'company', 'contact'}
         widgets={                    
                     'title' : forms.TextInput(attrs={'placeholder': _(u'What is this task about?'), 'class':'placeholder_fix_css', 'autocomplete':'off'}),
-                    'due_date_time': forms.DateInput(attrs={'placeholder': _(u'When is this task due?'), 'class':'placeholder_fix_css date_picker'}),                    
+                    'due_date_time': forms.DateInput(attrs={'placeholder': _(u'When is this task due?'), 'class':'placeholder_fix_css date_picker', 'autocomplete':'off'}),                    
                 }
   

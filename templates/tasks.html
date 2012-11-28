@@ -6,9 +6,10 @@
 <a id="new_task_button" class="btn right-margin" title="{% trans 'New Task' %}" href="/task/add/?contact={{contact.pk}}"><i class="icon-tasks"></i> {% trans 'New Task' %}</a>		    
 <table class="table">
     <thead>
-        <tr>                                                
+        <tr>
+        	<th></th>                                                
             <th>{% trans 'Type' %}</th>                       
-            <th>{% trans 'Due By' %}</th>                                                             
+            <th>{% trans 'Due' %}</th>                                                             
         </tr>
     </thead>
     <tbody id="tasks_pane">
