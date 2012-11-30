@@ -132,7 +132,7 @@ function filter_rows(event){
 function paginator_navigate(event) {	
 	event.preventDefault();	
 	var url = '';
-	
+	var target_pane = $(event.data.target_pane);
 	//If the page containing the paginator is a modal, then we need to know its type, to modify the url accordingly 
 	//Otherwise the url would point to the page containing the modal. 
 	var modal = $('#modal_type').text();
@@ -143,11 +143,12 @@ function paginator_navigate(event) {
 		url = $(this).attr("href");
 	}
 		
-	$('#search_result').load(url, function(result){		
-		rebind_edit_delete($('#search_result'));
-		rebind_paginator($('#search_result'));
+	$(target_pane).load(url, function(result){		
+		rebind_edit_delete($(target_pane));
+		rebind_task_edit_delete($(target_pane));
+		rebind_paginator($(target_pane));		
 		rebind_add();	
-		rebind_ratings($('#search_result'));	
+		rebind_ratings($(target_pane));	
 	});		
 };
 
@@ -320,17 +321,17 @@ function typeahead_deals_quantity(query, process){
 
 
 function rebind_paginator(parent){
-	$(parent).find(".paginator_nav_links").click(paginator_navigate);
+	$(parent).find(".paginator_nav_links").click({target_pane: parent}, paginator_navigate);
 }
 
 
 function rebind_edit_delete(parent){	
-	$(parent).find(".row_delete_ajax").click({target: parent}, row_delete_ajax);	
+	$(parent).find(".row_delete_ajax").off('click').on('click', {target: parent}, row_delete_ajax);	
 	$(parent).find(".row_edit_ajax").click(row_edit_ajax);	
 }
 
 function rebind_task_edit_delete(parent){	
-	$(parent).find(".row_delete_ajax").click({target: parent}, row_delete_ajax);	
+	$(parent).find(".row_delete_ajax").off('click').on('click', {target: parent}, row_delete_ajax);	
 	$(parent).find(".row_edit_task").click(edit_new_task);	
 }
 
@@ -656,6 +657,7 @@ $(document).ready(function (){
 	rebind_edit_delete($('#search_result'));
 	rebind_task_edit_delete($('#tasks_pane'));
 	rebind_paginator($('#search_result'));
+	rebind_paginator($('#tasks_pane'));
 	rebind_filters($('body'));
 	rebind_ratings($('#search_result'));
 	rebind_ratings($('#business_card_modal'));
@@ -664,9 +666,8 @@ $(document).ready(function (){
 	$('#salesitems_modal').on('hidden', modal_closing);
 	$('#salesitems_modal').on('shown', modal_opening);
 	$('#timezone_dropdown').change(timezone_dropdown);	
-	$('.timezone_help').click(show_timezone_help);
-	datepicker_reload('#search_result');
-	datepicker_reload('#task_modal');
+	$('.timezone_help').click(show_timezone_help);	
+	datepicker_reload('body');
 	$('#invite-button').click(invite_colleague);
 	$('#demo-button').click(demo);
 	$('#new_conversation_button').off('click').on('click',new_conversation);

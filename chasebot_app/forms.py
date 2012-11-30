@@ -13,7 +13,7 @@ from chasebot_app.models import Contact, ContactType, Country, MaritalStatus, Co
 from django.forms.models import BaseModelFormSet
 from django.utils.translation import ugettext_lazy as _
 import datetime
-from datetime import datetime as dt 
+
    
     
 class UserRegistrationForm(Form):
@@ -319,48 +319,51 @@ class ColleagueInviteForm(ModelForm):
         fields = {'name', 'email'}
             
 
-       
 class TaskForm(ModelForm):
-    due_time  = forms.TimeField()
+    due_time  = forms.TimeField(localize=True)
     contact_text  = forms.CharField(max_length=81, label = _(u'Contact person'), required= False) 
     
+
+    def round_time_to_nearest_quarter(self):
+        #form is in Add mode., hence we just pick the currenct date_time as base.
+        time_close_to_quarter = timezone.now()
+        # Time difference to 15 min round 
+        time_discard = datetime.timedelta(minutes=time_close_to_quarter.time().minute % 15, seconds=time_close_to_quarter.second) 
+        # Deduct that difference from the current time to round it down to nearest quarter.
+        time_close_to_quarter -= time_discard
+        return time_close_to_quarter
+
     def __init__(self, *args, **kwargs):
         super(TaskForm, self).__init__(*args, **kwargs)
         self.fields['due_time'].widget.attrs['class'] = 'timepicker-default input-small' 
         self.fields['due_time'].widget.attrs['placeholder'] = _(u'What time?')
-        self.fields['due_time'].widget.attrs['autocomplete'] = 'off'        
+        self.fields['due_time'].widget.attrs['autocomplete'] = 'off'
+        #If the date_time is set, it means the form is in edit mode, and we edit the existing time value 
         if self.instance.due_date_time:
-            self.fields['due_time'].initial = self.instance.due_date_time.time
-        else:
-            self.fields['due_time'].initial = timezone.now() + round(as.numeric(timezone.now().time)/900)*900
-            #timex = timezone.now().time()
-#            if timex.minute >= 1 and timex.minute <= 14:
-#                if timex.minute <= 7:
-#                    self.fields['due_time'].initial = datetime.time(timex.hour, 0)
-#                else:
-#                    self.fields['due_time'].initial = datetime.time(timex.hour, 15)
-#            if timex.minute >= 16 and timex.minute <= 29:
-#                if timex.minute <= 22:
-#                    self.fields['due_time'].initial = datetime.time(timex.hour, 15)
-#                else:
-#                    self.fields['due_time'].initial = datetime.time(timex.hour, 30)
-#            if timex.minute >= 31 and timex.minute <= 44:
-#                if timex.minute <= 37:
-#                    self.fields['due_time'].initial = datetime.time(timex.hour, 30)
-#                else:
-#                    self.fields['due_time'].initial = datetime.time(timex.hour, 45)
-#            if timex.minute >= 46 and timex.minute <= 59:
-#                if timex.minute <= 52:
-#                    self.fields['due_time'].initial = datetime.time(timex.hour, 45)
-#                else:
-#                    self.fields['due_time'].initial = datetime.time(timex.hour+1, 0)
-               
-        self.fields['contact_text'].initial = self.instance.contact.last_name
-        self.fields['contact_text'].widget.attrs['readonly'] = True
+            local_tz = timezone.get_current_timezone()
+            #Convert the UTC date_time into currenct time zone
+            self.fields['due_time'].initial = self.instance.due_date_time.replace(tzinfo=pytz.utc).astimezone(local_tz).time()  
+        else:            
+            self.fields['due_time'].initial = (self.round_time_to_nearest_quarter() +  datetime.timedelta(minutes=30)).time() 
 
+        self.fields['contact_text'].initial = u'{0} {1}'.format(self.instance.contact.first_name, self.instance.contact.last_name)
+        self.fields['contact_text'].widget.attrs['readonly'] = True
+    
+    def clean_due_time(self):
+        due_time = self.cleaned_data['due_time']
+        due_date_time = timezone.now()
+        current_tz = timezone.get_current_timezone()  
+        selected_due_date_time = current_tz.localize(datetime.datetime(due_date_time.year, due_date_time.month, due_date_time.day, due_time.hour, due_time.minute))        
+        
+        # time_close_to_quarter is always rounded down by max 15 min. Hence if the selected due date time is less than equal full 15 min in future, then
+        # there won't be enough time for the system to remind the user, hence it will be rejected. 
+        if selected_due_date_time <= self.round_time_to_nearest_quarter() + datetime.timedelta(minutes=15):
+            raise forms.ValidationError(_(u"The selected_due_date_time time of a task has to be set at least 15 minutes in the future."))
+        return due_time
     
     def save(self, commit=True):
         instance = super(TaskForm, self).save(commit=False)
+        # Always localize the entered date by user into his timezone before saving it to database
         if 'due_date_time' in self.cleaned_data and 'due_time' in self.cleaned_data:
             due_date_time = self.cleaned_data['due_date_time']
             due_time = self.cleaned_data['due_time']

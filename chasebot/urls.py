@@ -72,8 +72,8 @@ urlpatterns = patterns('',
 
     (r'^task/add/$', task_add_edit),    
     (r'^task/edit/(?P<task_id>\d+)/$', task_add_edit),
-    (r'^task/(?P<task_id>\d+)/$', task_display),    
-    #(r'^tasks/$', task_display),
+#    (r'^task/(?P<task_id>\d+)/$', task_display),    
+    (r'^tasks/$', task_display),
     (r'^task/delete/(?P<task_id>\d+)/$', task_delete),
 
     #i18n

@@ -282,7 +282,7 @@ class Invitation(models.Model):
 
 
 class Task(models.Model):
-    
+    #The functions below help to deduct the date_time by the selected reminder to determine the real reminder date for the task
     def subtractMinutes(self, mnt):        
         return self.due_date_time - datetime.timedelta(minutes=mnt)
     

@@ -169,7 +169,7 @@ def contact_delete(request, contact_id):
         contacts_queryset = profile.company.contact_set.order_by('last_name')
         contacts, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, contacts_queryset)    
         variables = { 'contacts': contacts, }
-        variables = merge_with_pagination_variables(paginator, page, page_number, variables)
+        variables = merge_with_pagination_variables(paginator, page, page_number, variables, None)
     return render(request, 'contact_list.html', variables)     
 
 
@@ -201,13 +201,13 @@ def conversation_display(request, contact_id):
     filter_form = FilterConversationForm(request.GET)
     calls, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, calls_queryset)
     
-    task_queryset = profile.company.task_set.order_by('-due_date_time')
+    task_queryset = contact.task_set.order_by('-due_date_time')
     tasks, paginator_t, page_t, page_number_t = makePaginator(request, 3, task_queryset)        
     variables = {
                  'calls': calls, 'contact': contact, 'contact_id':contact.pk, 'filter_form' : filter_form, 'show_only_open_deals' : show_only_open_deals, 'tasks': tasks,
                  }
     variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
-    variables = merge_with_pagination_variables(paginator_t, page_t, page_number_t, variables)
+    variables = merge_with_pagination_variables(paginator_t, page_t, page_number_t, variables, 'task_')
     if ajax:    
         return render(request, 'conversation_list.html', variables)
     else:
@@ -381,14 +381,19 @@ def conversation_delete(request, contact_id, call_id):
 
 
 @login_required
-def task_display(request):
+def task_display(request):    
     profile = request.user.get_profile()
-    task_queryset = profile.company.task_Set.order_by('-due_date_time')
-    tasks, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, task_queryset)    
+    if request.GET.get('contact', None):
+        contact = get_object_or_404(profile.company.contact_set.all(), pk=request.GET['contact'])
+    if contact:
+        task_queryset = contact.task_set.order_by('-due_date_time')
+    else:
+        task_queryset = profile.company.task_set.order_by('-due_date_time')
+    tasks, paginator, page, page_number = makePaginator(request, 3, task_queryset)            
     variables = {
-                 'tasks': tasks, 
-                }   
-    variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
+                 'tasks': tasks, 'contact_id':contact.pk
+                }
+    variables = merge_with_pagination_variables(paginator, page, page_number, variables, 'task_')
     return render(request, 'task_list.html', variables)
 
 
@@ -409,7 +414,6 @@ def task_add_edit(request, task_id=None):
         contact = get_object_or_404(profile.company.contact_set.all(), pk=request.GET['contact'])    
         task.contact = contact
         
-    
     if request.method == 'POST':
         opendeals_task_form = OpenDealTaskForm(contact, task.deal_id, request.POST, prefix='opendeals_task_form')
         form = TaskForm(request.POST, instance=task, prefix='form', initial = {'contact' : contact.pk})
@@ -417,8 +421,7 @@ def task_add_edit(request, task_id=None):
             selected_open_deal = None
             
             if opendeals_task_form.is_valid():
-                selected_open_deal = opendeals_task_form.cleaned_data['open_deal_task']
-            # Always localize the entered date by user into his timezone before saving it to database
+                selected_open_deal = opendeals_task_form.cleaned_data['open_deal_task']            
             task = form.save(commit=False)   
             if selected_open_deal is not None:
                 task.deal_id = selected_open_deal.deal_id
@@ -426,7 +429,7 @@ def task_add_edit(request, task_id=None):
             task_queryset = profile.company.task_set.order_by('-due_date_time')
             tasks, paginator_t, page_t, page_number_t = makePaginator(request, 3, task_queryset) 
             variables = {'tasks':tasks, 'contact_id':contact.pk}
-            variables = merge_with_pagination_variables(paginator_t, page_t, page_number_t, variables)
+            variables = merge_with_pagination_variables(paginator_t, page_t, page_number_t, variables, 'task_')
             return render(request, 'task_list.html', variables)
         else:
             validation_error_ajax = True
@@ -454,7 +457,7 @@ def task_delete(request, task_id):
         task_queryset = profile.company.task_set.order_by('-due_date_time')   
         tasks, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, task_queryset)          
         variables = { 'tasks': tasks }
-        variables = merge_with_pagination_variables(paginator, page, page_number, variables)
+        variables = merge_with_pagination_variables(paginator, page, page_number, variables, 'task_')
     return render(request, 'task_list.html', variables)
 
 
@@ -891,22 +894,41 @@ def get_request_parameters(request):
     return get_request
 
 
-def get_paginator_variables(paginator, page, page_number):
-    return {'show_paginator': paginator.num_pages > 1, 'has_prev': page.has_previous(), 'has_next': page.has_next(), 'page': page_number, 'pages': paginator.num_pages, 'next_page': page_number + 1, 'prev_page': page_number - 1}
+def get_paginator_variables(paginator, page, page_number, custom_prefix):
+    if custom_prefix:
+        return {
+                custom_prefix + 'show_paginator': paginator.num_pages > 1, 
+                custom_prefix + 'has_prev': page.has_previous(), 
+                custom_prefix + 'has_next': page.has_next(), 
+                custom_prefix + 'page': page_number, 
+                custom_prefix + 'pages': paginator.num_pages, 
+                custom_prefix + 'next_page': page_number + 1, 
+                custom_prefix + 'prev_page': page_number - 1                
+                }
+    else:
+        return {
+                'show_paginator': paginator.num_pages > 1, 
+                'has_prev': page.has_previous(), 
+                'has_next': page.has_next(), 
+                'page': page_number, 
+                'pages': paginator.num_pages, 
+                'next_page': page_number + 1, 
+                'prev_page': page_number - 1                
+                }
 
 def get_localized_variables(request):
     return { 'locale' : get_datepicker_format(request), 'timezones': pytz.common_timezones}  
 
 def merge_with_additional_variables(request, paginator, page, page_number, variables):
-    variables = dict(variables.items() + get_paginator_variables(paginator, page, page_number).items() + get_localized_variables(request).items())
+    variables = dict(variables.items() + get_paginator_variables(paginator, page, page_number, None).items() + get_localized_variables(request).items())
     return variables
 
 def merge_with_localized_variables(request, variables):
     variables = dict(variables.items() + get_localized_variables(request).items())
     return variables
 
-def merge_with_pagination_variables(paginator, page, page_number, variables):
-    variables = dict(variables.items() + get_paginator_variables(paginator, page, page_number).items())
+def merge_with_pagination_variables(paginator, page, page_number, variables, custom_prefix):
+    variables = dict(variables.items() + get_paginator_variables(paginator, page, page_number, custom_prefix).items())
     return variables
 
 @register.inclusion_tag('tag_form_label_tr.html')
