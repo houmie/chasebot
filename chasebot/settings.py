@@ -211,6 +211,9 @@ INSTALLED_APPS = (
 )
 
 BROKER_URL = 'amqp://guest:guest@localhost:5672/'
+CELERY_RESULT_BACKEND = 'amqp://'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
