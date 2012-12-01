@@ -402,7 +402,7 @@ def task_add_edit(request, task_id=None):
     profile = request.user.get_profile()
         
     if task_id is None:
-        task = Task(company=profile.company) 
+        task = Task(company=profile.company, user=request.user) 
         template_title = _(u'Add New Task')
     else:
         task = get_object_or_404(profile.company.task_set.all(), pk=task_id)
@@ -422,7 +422,7 @@ def task_add_edit(request, task_id=None):
             
             if opendeals_task_form.is_valid():
                 selected_open_deal = opendeals_task_form.cleaned_data['open_deal_task']            
-            task = form.save(commit=False)   
+            task = form.save(commit=False)
             if selected_open_deal is not None:
                 task.deal_id = selected_open_deal.deal_id
             task.save()

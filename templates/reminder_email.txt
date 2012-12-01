@@ -1,0 +1,13 @@
+Task Reminder : {{title}}
+
+Hi {{ name }},
+
+
+This is a friendly reminder that you have to {{communication_type}} your client {{contact}} on {{due_date_time|date:"DATE_FORMAT"}} at {{due_date_time|time:"TIME_FORMAT"}}.
+  
+
+Here is a quick link to jump right to {{contact}}'s details:
+{{ link }}
+
+
+-- Chasebot.com

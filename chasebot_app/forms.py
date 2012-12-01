@@ -358,7 +358,7 @@ class TaskForm(ModelForm):
         # time_close_to_quarter is always rounded down by max 15 min. Hence if the selected due date time is less than equal full 15 min in future, then
         # there won't be enough time for the system to remind the user, hence it will be rejected. 
         if selected_due_date_time <= self.round_time_to_nearest_quarter() + datetime.timedelta(minutes=15):
-            raise forms.ValidationError(_(u"The selected_due_date_time time of a task has to be set at least 15 minutes in the future."))
+            raise forms.ValidationError(_(u"The due time of a task has to be set at least 15 minutes in the future."))
         return due_time
     
     def save(self, commit=True):
@@ -376,7 +376,7 @@ class TaskForm(ModelForm):
     
     class Meta:
         model = Task
-        exclude = {'reminder_date_time', 'company', 'contact'}
+        exclude = {'reminder_date_time', 'company', 'contact', 'user'}
         widgets={                    
                     'title' : forms.TextInput(attrs={'placeholder': _(u'What is this task about?'), 'class':'placeholder_fix_css', 'autocomplete':'off'}),
                     'due_date_time': forms.DateInput(attrs={'placeholder': _(u'When is this task due?'), 'class':'placeholder_fix_css date_picker', 'autocomplete':'off'}),                    

@@ -229,7 +229,7 @@ class Conversation(models.Model):
 class Deal(models.Model):    
     def __init__(self, *args, **kwargs):
         super(Deal, self).__init__(*args, **kwargs)
-        
+
     deal_id             = UUIDField()
     status              = models.ForeignKey(DealStatus, null=True, blank=True)    
     contact             = models.ForeignKey(Contact)
@@ -342,13 +342,28 @@ class Task(models.Model):
     contact = models.ForeignKey(Contact, null=True, blank=True)
     deal_id = UUIDField(null=True, blank=True)
     company = models.ForeignKey(Company)
+    user = models.ForeignKey(User)
     
-    def __unicode__(self):                    
+    def __unicode__(self):
         return self.title
     
     def save(self, *args, **kwargs):
         self.reminder_date_time = self.calc_reminder(self.reminder)        
         super(Task, self).save(*args, **kwargs) # Call the "real" save() method.
+    
+    def sendMail(self):
+        subject = u'Task Reminder (Priority: {0})'.format(self.get_priority_display())
+        link = contact_name = deal_name = None        
+        if self.contact:
+            link = 'http://%s/contact/%s/calls' % (settings.SITE_HOST, self.contact.pk)
+            contact_name = u'{0} {1}'.format(self.contact.first_name, self.contact.last_name)
+            if self.deal_id:
+                deal_name = self.contact.get_open_deals_query().get(deal_id = self.deal_id).deal_instance_name
+
+        template = get_template('reminder_email.txt')
+        context = Context({'name': self.user.first_name, 'link': link, 'contact': contact_name, 'deal':deal_name, 'title':self.title, 'communication_type':self.type, 'due_date_time':self.due_date_time})
+        message = template.render(context)
+        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [self.user.email])    
     
     class Meta:
         verbose_name = _(u'Task')

@@ -13,8 +13,9 @@ def check_for_tasks():
     tasks = mdls.Task.objects.all()
     now = datetime.datetime.utcnow().replace(tzinfo=utc,second=00, microsecond=00)
     for task in tasks:
-        if task.reminder_date_time == now:
+        if task.reminder_date_time.replace(tzinfo=utc,second=00, microsecond=00) == now:
             print "match"
+            task.sendMail()
 
 #@task()
 #def add(x, y):
