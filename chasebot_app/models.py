@@ -234,7 +234,7 @@ class Deal(models.Model):
     status              = models.ForeignKey(DealStatus, null=True, blank=True)    
     contact             = models.ForeignKey(Contact)
     deal_template       = models.ForeignKey(DealTemplate)
-    deal_template_name  = models.CharField(_(u'Deal Template Name'), max_length=100, blank=True)
+    deal_template_name  = models.CharField(_(u'Deal Package Name'), max_length=100, blank=True)
     deal_datetime       = models.DateTimeField()
     conversation        = models.ForeignKey(Conversation)
     set                 = models.PositiveIntegerField(_(u'Set Number'))
