@@ -2,19 +2,23 @@
 <tr>
 	<td colspan="11">
 		{% if show_paginator %}
-		    <div class="paginator pager">
-		      {% if has_prev and get_request %}
-		        <a class="paginator_nav_links" href="{{ get_request }}&page={{ prev_page }}">&laquo; {% trans 'Previous' %}</a>
-		      {% elif has_prev%}
-		        <a class="paginator_nav_links" href="?ajax&page={{ prev_page }}">&laquo; {% trans 'Previous' %}</a>
-		      {% endif %}
-		      {% if has_next and get_request %}
-		        <a class="paginator_nav_links" href="{{ get_request }}&page={{ next_page }}">{% trans 'Next' %} &raquo;</a>
-	          {% elif has_next %}
-	          	<a class="paginator_nav_links" href="?ajax&page={{ next_page }}">{% trans 'Next' %} &raquo;</a>
-		      {% endif %}
-		      {% blocktrans with p=page ps=pages%}Page {{ p }} of {{ ps }}{% endblocktrans %}		      
-		    </div>
+			<div class="pager cb_pager">
+			    <ul>		      
+			      	{% if has_prev%}
+			      	<li>
+			        	<a class="paginator_nav_links" href="?ajax&page={{ prev_page }}">&laquo; {% trans 'Previous' %}</a>
+			        </li>
+			      	{% endif %}		      
+		          	{% if has_next %}
+		          	<li>
+		          		<a class="paginator_nav_links" href="?ajax&page={{ next_page }}">{% trans 'Next' %} &raquo;</a>
+		          	</li>
+			      	{% endif %}		      		      
+			    </ul>
+			    <div>
+		    		{% blocktrans with p=page ps=pages%}Page {{ p }} of {{ ps }}{% endblocktrans %}
+		    	</div>
+		   	</div>		    
 	  	{% endif %}
   	</td>
 </tr>

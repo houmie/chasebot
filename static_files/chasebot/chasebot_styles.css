@@ -321,3 +321,11 @@ input[type="checkbox"]{
 .body_padding{
 	padding-bottom: 10px;	
 }
+
+.cb_pager ul, .cb_pager ol{
+	margin: 0px;
+}
+
+.cb_pager {
+	margin: 0px;
+}

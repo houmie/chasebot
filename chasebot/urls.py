@@ -63,7 +63,7 @@ urlpatterns = patterns('',
     (r'^deal/delete/(?P<deal_id>\d+)/$', deal_template_delete),
     #(r'^opendeals/$', open_deals),
     
-    (r'^charts/contact/(?P<contact_id>\d+)$', charts_display),
+    (r'^charts/contact/(?P<contact_id>\d+)/$', charts_display),
 
     (r'^autocomplete/sales_items/$', sales_item_autocomplete),
     (r'^autocomplete/contacts/$', contacts_autocomplete),

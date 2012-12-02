@@ -64,13 +64,14 @@ function row_delete_ajax(event) {
     event.preventDefault();
     var target = $(event.data.target);
     if (confirm(gettext('Are you sure you want to delete this row?'))) {
-    	var url = $(this).attr("href") + "/";
+    	var url = $(this).attr("href");
     	  		
         $.post(url, function(result){
         	$(target).empty();
         	$(target).append(result);
         	rebind_edit_delete($(target));
         	rebind_paginator($(target));
+        	rebind_task_edit_delete($(target));
         	rebind_add();        	
         });                
     }    	

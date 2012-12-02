@@ -455,8 +455,11 @@ def task_delete(request, task_id):
         task = get_object_or_404(profile.company.task_set.all(), pk=task_id)        
         task.delete()
         task_queryset = profile.company.task_set.order_by('-due_date_time')   
-        tasks, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, task_queryset)          
-        variables = { 'tasks': tasks }
+        tasks, paginator, page, page_number = makePaginator(request, 3, task_queryset)
+        contact_id = None
+        if 'contact' in request.GET:
+            contact_id = request.GET['contact']          
+        variables = { 'tasks': tasks , 'contact_id':contact_id}
         variables = merge_with_pagination_variables(paginator, page, page_number, variables, 'task_')
     return render(request, 'task_list.html', variables)
 

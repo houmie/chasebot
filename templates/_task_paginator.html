@@ -2,18 +2,22 @@
 <tr>
 	<td colspan="11">
 		{% if task_show_paginator %}
-		    <div class="paginator pager">
-		      {% if task_has_prev and get_request %}
-		        <a class="paginator_nav_links" href="{{ get_request }}&page={{ task_prev_page }}&contact={{contact_id}}">&laquo; {% trans 'Previous' %}</a>
-		      {% elif task_has_prev%}
-		        <a class="paginator_nav_links" href="/tasks/?ajax&page={{ task_prev_page }}&contact={{contact_id}}">&laquo; {% trans 'Previous' %}</a>
-		      {% endif %}
-		      {% if task_has_next and get_request %}
-		        <a class="paginator_nav_links" href="{{ get_request }}&page={{ task_next_page }}&contact={{contact_id}}">{% trans 'Next' %} &raquo;</a>
-	          {% elif task_has_next %}
-	          	<a class="paginator_nav_links" href="/tasks/?ajax&page={{ task_next_page }}&contact={{contact_id}}">{% trans 'Next' %} &raquo;</a>
-		      {% endif %}
-		      {% blocktrans with p=task_page ps=task_pages%}Page {{ p }} of {{ ps }}{% endblocktrans %}		      
+		    <div class="pager cb_pager">
+	    		<ul>
+		      		{% if task_has_prev%}
+		      		<li>		      
+		        		<a class="paginator_nav_links" href="/tasks/?ajax&page={{ task_prev_page }}&contact={{contact_id}}">&larr;</a>
+		        	</li>	          
+		      		{% endif %}		      
+	          		{% if task_has_next %}
+	          		<li>	          	
+	          			<a class="paginator_nav_links" href="/tasks/?ajax&page={{ task_next_page }}&contact={{contact_id}}">&rarr;</a>
+	          		</li>
+		      		{% endif %}
+		      	</ul>		     
+			    <div>
+			    	{% blocktrans with p=task_page ps=task_pages%}Page {{ p }} of {{ ps }}{% endblocktrans %}
+			    </div>		      
 		    </div>
 	  	{% endif %}
   	</td>
