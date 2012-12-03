@@ -150,6 +150,7 @@ function paginator_navigate(event) {
 		rebind_paginator($(target_pane));		
 		rebind_add();	
 		rebind_ratings($(target_pane));	
+		rebind_business_card_modal_link();
 	});		
 };
 
@@ -477,21 +478,18 @@ var clickedAway = false;
 
 function invite_colleague(event){
 	event.preventDefault();
-	$(this).button('loading');
-	//$(this).button('reset')
+	$(this).button(gettext('Loading'));	
 	$('#form_invite').submit();	
 }
 
 
 function demo(event){
 	event.preventDefault();
-	$(this).button('loading');
-	//$(this).button('reset')
+	$(this).button(gettext('Loading'));	
 	$('#form_demo').submit();	
 }
 
 function cancel_new_conversation(event){	
-	//debugger;
 	event.preventDefault();
 	$('#new_conversation_div').empty();
 }
@@ -519,16 +517,6 @@ function submit_new_conversation(event){
 		}
 	});
 }
-
-// function open_deal_conversations(event){
-	// event.preventDefault();
-	// var url = $(this).attr("href");	
-	// $('#new_conversation_div').load(url, function(result){					
-		// rebind_new_conversation('#new_conversation_div');
-		// rebind_add_deals();		
-	// });
-// }
-
 
 function rebind_conversations(){
 	$('.conversation').attr('href', function(i, current){
@@ -682,6 +670,20 @@ function add_more_tag_to_all_notefields(){
 	});
 }
 
+function load_business_card(event){	
+	event.preventDefault();
+	var url = $(this).attr("href");
+	$('#business_card_modal').load(url, function(result){					
+			rebind_ratings($('#business_card_modal'));
+			$(this).modal('show');
+	});		
+}
+
+function rebind_business_card_modal_link(){
+	$('.business_card_modal_link').off('click').on('click', load_business_card);	
+}
+
+
 $(document).ready(function (){	
 	reword_collapseable('#accordion_task');
 	rebind_add();
@@ -692,6 +694,7 @@ $(document).ready(function (){
 	rebind_filters($('body'));
 	rebind_ratings($('#search_result'));
 	rebind_ratings($('#business_card_modal'));
+	rebind_business_card_modal_link();
 	$(".modal_link_sales_item").click(open_modal_sales_item);
 	//$(".modal_link_business_card").click(open_modal_business_card);
 	$('#salesitems_modal').on('hidden', modal_closing);
@@ -706,8 +709,7 @@ $(document).ready(function (){
 	$('#deals_in_progress').off('click').on('click', deals_in_progress);
 	if($('#show_only_open_deals').text() == 'True')
 		$('#deals_in_progress_calls').button('toggle');
-	$('#deals_in_progress_calls').off('click').on('click', deals_in_progress_coversations);
-	add_more_tag_to_all_notefields();	
+	$('#deals_in_progress_calls').off('click').on('click', deals_in_progress_coversations);	
 	bind_rating_form();	
 });
 

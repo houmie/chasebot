@@ -97,12 +97,16 @@ def conversations_with_open_deals(request, contact):
    
 
 @login_required
-def contacts_display(request):      
+def contacts_display(request, contact_id=None):      
     profile = request.user.get_profile()
     company_name = profile.company.company_name
-        
-    ajax = False
     
+    if contact_id:
+        contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
+        variables = { 'contact' : contact }
+        return render(request, 'business_card.html', variables)
+        
+    ajax = False    
     if 'ajax' in request.GET:
         ajax = True
         if 'show_only_open_deals' in request.GET:

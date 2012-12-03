@@ -1,20 +1,20 @@
 {% load i18n %}
 {% if contacts %}
-	{% for item in contacts %}
-            <tr>
+	{% for contact in contacts %}
+            <tr class="contacts_tr">
                 <td>
                     <span>
-                	<a class="btn btn-link-left" href="/contact/edit/{{ item.id }}" title="{% trans 'Edit Contact' %}"><i class="icon-pencil icon-large"> </i></a>
-                    <a class="btn row_delete_ajax" href="/contact/delete/{{ item.id }}/" title="{% trans 'Delete Contact' %}"><i class="icon-trash icon-large"> </i></a>
+                	<a class="btn btn-link-left" href="/contact/edit/{{ contact.pk }}" title="{% trans 'Edit Contact' %}"><i class="icon-pencil icon-large"> </i></a>
+                    <a class="btn row_delete_ajax" href="/contact/delete/{{ contact.pk }}/" title="{% trans 'Delete Contact' %}"><i class="icon-trash icon-large"> </i></a>
                    </span>
                 </td>
-                <td><a class="btn conversation" href="/contact/{{ item.id }}/calls" title="{% trans 'Conversations' %}"><i class="icon-comments-alt icon-large"> </i></a></td>                   
-                <td>{{ item.last_name }}</td>
-                <td>{{ item.first_name }}</td>
-                <td>{{ item.company_name }}</td>                
+                <td><a class="btn conversation" href="/contact/{{ contact.pk }}/calls" title="{% trans 'Conversations' %}"><i class="icon-comments-alt icon-large"> </i></a></td>                   
+                <td><a class="business_card_modal_link" href="/contact/{{contact.pk}}/">{{ contact.last_name }}</a>&nbsp;<i class="icon-search icon-large"></i></td>
+                <td>{{ contact.first_name }}</td>
+                <td>{{ contact.company_name }}</td>                
                 <td class="rating center_cb">
                 	<div class="hidden">
-                		{{ item.important_client}}
+                		{{ contact.important_client}}
             		</div>
                 	<div class="star_small"></div>
             	</td>

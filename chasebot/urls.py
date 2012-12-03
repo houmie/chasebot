@@ -37,6 +37,7 @@ urlpatterns = patterns('',
 
     #Browsing
     (r'^$', contacts_display),
+    (r'^contact/(?P<contact_id>\d+)/$', contacts_display),
     (r'^contact/delete/(?P<contact_id>\d+)/$', contact_delete),
     (r'^contact/edit/(?P<contact_id>\d+)/$', contact_add_edit),
     (r'^contact/add/', contact_add_edit),

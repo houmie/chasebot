@@ -347,7 +347,23 @@ input[type="checkbox"]{
 	margin-top: 1em; 
 }
 
-.cb_table-hover tbody tr:hover td,
+.cb_table-hover tbody tr:hover td ,
 .cb_table-hover tbody tr:hover th {
-  background-color: #cfe2e8;
+  background-color: #cfe2e8;  
 }
+
+
+.cb_table-hover tbody tr .icon-search{
+    display: none;
+}
+
+
+.cb_table-hover tbody tr:hover .icon-search{
+    display: inline-block;
+}
+
+#business_card_modal_btn{
+	width: 4em;	
+	height: 1.2em;
+}
+
