@@ -658,7 +658,29 @@ function reword_collapseable(parent){
     });
 }
 
-
+function add_more_tag_to_all_notefields(){
+	$('.cb_notes').filter(function(){
+    	return $(this).innerHeight() / $(this).css('line-height').slice(0,-2) > 3; //more than 3 lines
+	}).each(function(){
+		var arr = [];				
+	    while($(this).innerHeight() / $(this).css('line-height').slice(0,-2) > 3){	    		    		
+	        arr.push($(this).text().slice(-10));
+	        $(this).text($(this).text().slice(0,-10));				
+	    }
+	    arr.reverse();
+	    var morecontent = arr.join("");
+	    var extracontentspan = $("<span/>").text(morecontent).hide();
+	    var extracontentbutton = $("<a/>",{href:"#", class:"badge badge-info"}).text(gettext("More...")).click(function(){
+	        var span = $(this).prev().toggle();
+	        if(span.is(':hidden'))
+	        	$(this).text(gettext("More..."));
+        	else
+        		$(this).text(gettext("Less..."));
+	    });
+	    $(this).append(extracontentspan);
+	    $(this).append(extracontentbutton);
+	});
+}
 
 $(document).ready(function (){	
 	reword_collapseable('#accordion_task');
@@ -685,7 +707,7 @@ $(document).ready(function (){
 	if($('#show_only_open_deals').text() == 'True')
 		$('#deals_in_progress_calls').button('toggle');
 	$('#deals_in_progress_calls').off('click').on('click', deals_in_progress_coversations);
-	
+	add_more_tag_to_all_notefields();	
 	bind_rating_form();	
 });
 

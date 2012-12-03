@@ -74,7 +74,7 @@
 			<a class="btn right-margin" href="/" title="{% trans 'Back to Contacts' %}"><i class="icon-arrow-left"> </i></a>
 			<a id="new_conversation_button" class="btn right-margin" title="{% trans 'New Conversation' %}" href="/contact/{{ contact.pk }}/call/add"><i class="icon-comment-alt"></i> {% trans 'New Conversation' %}</a>
 		    <a id="deals_in_progress_calls" class="btn" data-toggle="button" href="/?ajax&show_only_open_deals" title="{% trans 'Show Only Deals In Progress' %}"><i class="icon-legal"></i> {% trans 'Show Only Deals In Progress' %}</a>
-			<table id="call_contact_table" class="table table-condensed table-striped">
+			<table id="call_contact_table" class="table table-condensed table-striped cb_table-hover">
                 <thead>
                     <tr>
                         <th class="first_th_minwidth">{% trans 'Edit / Delete Conversation' %}</th>                        	
