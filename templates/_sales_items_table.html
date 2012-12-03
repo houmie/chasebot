@@ -5,12 +5,12 @@
             <th class="first_th_minwidth">
 <!--             	<a class="btn" href="/deals" title="{% trans 'Back to Deals' %}"><i class="icon-arrow-left"> </i></a>                	                	 -->
             </th>
-            <th>
+            <th id="sales_item_filter">
             	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
     				<div class="input-append filter-container">
     				{{filter_form.item_name}}<div class="close filter-close">&times;</div><button type="submit" class="btn"><i class='icon-filter'> </i></button>
     				</div>	   <br> 
-    				{% trans 'Sales Item' %}
+    				<p class="sales_item_tite">{% trans 'Sales Item' %}</p>
             	</form>                	
         	</th>                    
         </tr>

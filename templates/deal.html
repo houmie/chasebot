@@ -69,10 +69,14 @@
 			                    <td>                        
 			                        {% if form.sales_item.errors %}
 				                	<div class="field field_error">
+				                		<a class="btn modal_link_sales_item cb_btn" href="/sales_items" title="{% trans 'Add New Sales Item' %}"><i class="icon-barcode"></i> {% trans 'New' %}</a>
 				                    	{{form.sales_item}} {{form.sales_item.errors}}                   	
 				                	</div>
 				                	{% else %}
-				                		{{form.sales_item}}
+				                	<div class="input-append">
+				                		{{form.sales_item}}		
+				                		<a class="btn modal_link_sales_item cb_btn" href="/sales_items" title="{% trans 'Add New Sales Item' %}"><i class="icon-barcode"></i> {% trans 'New' %}</a>
+				                	</div>		                		
 				                	{% endif %}			                	       
 			                    </td>
 			                </tr>		                
@@ -142,4 +146,6 @@
      	</div>
 	</div>    
 </form>
+<div class="modal hide" id="salesitems_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">				
+</div>		
 {% endblock %}

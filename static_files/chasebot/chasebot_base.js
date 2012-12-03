@@ -388,6 +388,9 @@ function bind_rating_form(){
 
 function rebind_add(){
 	$('#save_add_form').submit(row_add_save_ajax);	
+	// $('.sales_item_submit_btn').off('click').on('click', function(){
+		// $('#save_add_form').submit();
+	// });	
 			
 };
 
@@ -448,9 +451,12 @@ function open_modal_sales_item(event){
 	$("#salesitems_modal").load(url, data, function() {		 
             $(this).modal('show'); // display the modal on url load            
             rebind_add();
-            rebind_edit_delete($(this));
-            rebind_paginator($(this));
-            rebind_filters($(this));            
+            rebind_edit_delete($('#search_result'));
+            rebind_paginator($('#search_result'));
+            // rebind_filters($(''));
+            $('#sales_item_filter').find(".form-filter-ajax").submit(filter_rows);			
+			$('#sales_item_filter').find(".typeahead_sales_items").typeahead({ source: typeahead_sales_items });
+			$('#sales_item_filter').find(".filter-close").click(clear_filter);            
          });            
 }
 
@@ -652,6 +658,8 @@ function reword_collapseable(parent){
     });
 }
 
+
+
 $(document).ready(function (){	
 	reword_collapseable('#accordion_task');
 	rebind_add();
@@ -676,7 +684,8 @@ $(document).ready(function (){
 	$('#deals_in_progress').off('click').on('click', deals_in_progress);
 	if($('#show_only_open_deals').text() == 'True')
 		$('#deals_in_progress_calls').button('toggle');
-	$('#deals_in_progress_calls').off('click').on('click', deals_in_progress_coversations);		    
+	$('#deals_in_progress_calls').off('click').on('click', deals_in_progress_coversations);
+	
 	bind_rating_form();	
 });
 

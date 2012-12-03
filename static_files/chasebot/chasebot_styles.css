@@ -146,9 +146,6 @@ a.btn-link-left{
 	vertical-align: middle;	
 }
 
-.add_sales_item_mindwidth{
-	min-width: 155px;
-}
 
 .typeahead{
 	z-index: 1051;
@@ -329,3 +326,13 @@ input[type="checkbox"]{
 .cb_pager {
 	margin: 0px;
 }
+
+.cb_btn{
+	line-height: 19px;
+}
+
+.cb_btn_firefox_fix{
+	height: 30px
+}
+
+
