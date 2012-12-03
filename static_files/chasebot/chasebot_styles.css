@@ -335,4 +335,14 @@ input[type="checkbox"]{
 	height: 30px
 }
 
+#tasks_placement{
+	margin: 2.5em 5px 0 0;
+}
 
+.cb_well-small{
+	padding: 0px 5px 9px 9px;	
+}
+
+#call_contact_table{
+	margin-top: 1em; 
+}

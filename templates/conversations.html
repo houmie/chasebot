@@ -15,9 +15,10 @@
 	<div class="row-fluid">
 		<div class="span2">
 			<!--Sidebar content-->
+			<div class="well cb_well-small">
 			<h4>{% trans 'Filter' %}</h4>
 			<p>{% trans 'Choose the filters below to find a specific conversation.' %}</p>
-			{% trans 'Date' %}
+			<h5>{% trans 'Date' %}</h5>
 			<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
 				<div class="input-append filter-container">
 					{{filter_form.from_date}}<div class="close filter-close">&times;</div><button type="submit" class="btn double_date_filter"><i class='icon-filter'> </i></button>
@@ -28,14 +29,17 @@
 					{{filter_form.to_date}}<div class="close filter-close">&times;</div><button type="submit" class="btn double_date_filter"><i class='icon-filter'> </i></button>
 				</div>	   					    								
         	</form>
-        	{% trans 'Subject' %}
+        	<h5>{% trans 'Subject' %}</h5>
         	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
 				<div class="input-append filter-container">
 					{{filter_form.subject}}<div class="close filter-close">&times;</div><button type="submit" class="btn"><i class='icon-filter'> </i></button>
 				</div>	   					    								
         	</form>		             
         	<div id='contact_id' class="hidden">{{contact.pk}}</div>
+        	</div>
+        	<div id='tasks_placement'>
         	{% include 'tasks.html' %}
+        	</div>
 		</div>
 		<div class="span10">
 			<!--Body content-->			
@@ -67,9 +71,10 @@
 				{% include 'business_card.html' %}
 			</div>
 			<h4>{%trans 'Conversation History'%}</h4>
+			<a class="btn right-margin" href="/" title="{% trans 'Back to Contacts' %}"><i class="icon-arrow-left"> </i></a>
 			<a id="new_conversation_button" class="btn right-margin" title="{% trans 'New Conversation' %}" href="/contact/{{ contact.pk }}/call/add"><i class="icon-comment-alt"></i> {% trans 'New Conversation' %}</a>
 		    <a id="deals_in_progress_calls" class="btn" data-toggle="button" href="/?ajax&show_only_open_deals" title="{% trans 'Show Only Deals In Progress' %}"><i class="icon-legal"></i> {% trans 'Show Only Deals In Progress' %}</a>
-			<table class="table table-condensed table-striped">
+			<table id="call_contact_table" class="table table-condensed table-striped">
                 <thead>
                     <tr>
                         <th class="first_th_minwidth">{% trans 'Edit / Delete Conversation' %}</th>                        	

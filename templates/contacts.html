@@ -14,33 +14,34 @@
 	<div class="row-fluid">
 		<div class="span2">
 			<!--Sidebar content-->
+			<div class="well cb_well-small">
 				<h4>{% trans 'Filter' %}</h4>
 				<p>{% trans 'Choose the filters below to find a specific contact.' %}</p>
-				{% trans 'Last Name' %} 
+				<h5>{% trans 'Last Name' %}</h5> 
 				<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">											    				
     				<div class="input-append filter-container">
     				{{filter_form.last_name}}<div class="close filter-close">&times;</div><button type="submit" class="btn filter-button"><i class='icon-filter'> </i></button>
     				</div>
             	</form>
-            	{% trans 'First Name' %} 
+            	<h5>{% trans 'First Name' %}</h5> 
             	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">            			    				
     				<div class="input-append filter-container">
     				{{filter_form.first_name}}<div class="close filter-close">&times;</div><button type="submit" class="btn"><i class='icon-filter'> </i></button>
     				</div>    					    								
             	</form>
-            	{% trans 'Company' %}   
+            	<h5>{% trans 'Company' %}</h5>   
             	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">            			
 					<div class="input-append filter-container">
 					{{filter_form.company}}<div class="close filter-close">&times;</div><button type="submit" class="btn"><i class='icon-filter'> </i></button>
 					</div>					  								
 		    	</form> 
-		    	{% trans 'Email' %} 
+		    	<h5>{% trans 'Email' %}</h5> 
 		    	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">		    			
     				<div class="input-append filter-container">
     				{{filter_form.email}}<div class="close filter-close">&times;</div><button type="submit" class="btn"><i class='icon-filter'> </i></button>
     				</div>    					    								
             	</form>
-			
+            </div>			
 		</div>
 		<div class="span10">
 		<!--Body content-->	    
@@ -52,7 +53,7 @@
 			<a class="btn right-margin" href="/contact/add" title="{% trans 'New Contact' %}"><i class="icon-plus"></i>&nbsp;<i class="icon-user"></i></a>
 			<a id="deals_in_progress" class="btn right-margin" data-toggle="button" href="/?ajax&show_only_open_deals" title="{% trans 'Show Only Deals In Progress' %}"><i class="icon-legal"></i> {% trans 'Show Only Deals In Progress' %}</a>			
 		</div>	
-	    <table class="table table-condensed table-striped">
+	    <table id='call_contact_table' class="table table-condensed table-striped">
 	        <thead>
 	            <tr>
 	            	<th class="first_th_minwidth">{% trans 'Edit / Delete Contact' %}</th>
