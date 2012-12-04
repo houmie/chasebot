@@ -492,6 +492,7 @@ function demo(event){
 function cancel_new_conversation(event){	
 	event.preventDefault();
 	$('#new_conversation_div').empty();
+	$('#new_conversation_button').button('toggle');	
 }
 
 function submit_new_conversation(event){
@@ -512,7 +513,8 @@ function submit_new_conversation(event){
 			$('#search_result').load(url, function(){		
 				rebind_edit_delete($('#search_result'));
 				rebind_paginator($('#search_result'));
-				rebind_add();				
+				rebind_add();
+				$('#new_conversation_button').button('toggle');					
 			});	
 		}
 	});
@@ -531,12 +533,17 @@ function rebind_new_conversation(parent){
 
 function new_conversation(event){	
 	event.preventDefault();
+	if($(this).hasClass('active')){
+		$('#new_conversation_div').empty();		
+		return;
+	}
 	var url = $(this).attr("href") + "/";	
 	$('#new_conversation_div').load(url, function(result){					
 		rebind_new_conversation('#new_conversation_div');
 		rebind_add_deals();	
-		datepicker_reload('#new_conversation_div');	
+		datepicker_reload('#new_conversation_div');			
 	});
+	
 }
 
 function edit_new_task(event){	

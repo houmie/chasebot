@@ -354,12 +354,12 @@ input[type="checkbox"]{
 
 
 .cb_table-hover tbody tr .icon-search{
-    display: none;
+    visibility: hidden;
 }
 
 
 .cb_table-hover tbody tr:hover .icon-search{
-    display: inline-block;
+    visibility: visible;
 }
 
 #business_card_modal_btn{
@@ -367,3 +367,22 @@ input[type="checkbox"]{
 	height: 1.2em;
 }
 
+#magnifier_glass_contacts{
+	position:relative;
+	left: -10px;	
+}
+
+
+#magnifier_glass_contacts,
+	#magnifier_glass_contacts a:link,   
+    #magnifier_glass_contacts a:visited,
+    #magnifier_glass_contacts a:focus,
+    #magnifier_glass_contacts a:hover,
+    #magnifier_glass_contacts a:active
+{
+	text-decoration:none;	 
+}
+
+.left_bottom_table{
+	margin-top: 2em;
+}

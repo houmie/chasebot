@@ -1,7 +1,7 @@
 {% load i18n %}
 <div class="modal-header">
 	<button type="button" class="close close_link" data-dismiss="modal" aria-hidden="true">&times;</button>	
-	<h3><div class="cb_inline_block" style="font-size: 24px;"><i class="icon-eye-open"></i></div> {% trans 'Business Card' %}</h3>
+	<h3><div class="cb_inline_block" style="font-size: 24px;"><i class="icon-search"></i></div> {% trans 'Business Card' %}</h3>
 </div>
 <div class="modal-body">
 	<div class="tabbable"> <!-- Only required for left/right tabs -->
@@ -23,7 +23,7 @@
                 		<div class="row-fluid">
 						    <div class="span6">
 						        <table class="table edit_table table-condensed">
-						            <tbody>
+						            <tbody class="well well-small">
 							            <tr>
 							            	<td>
 							            		{% trans 'First Name' %}:
@@ -56,11 +56,10 @@
 							                	{{contact.company_name}}
 						                	</td>				                
 							            </tr>
-							            <tr>
-							                <td>
-							                    <br/>
-							                </td>
-							            </tr>
+							           </tbody>
+							          </table>
+							          <table class="table edit_table table-condensed">
+							           <tbody class="well well-small left_bottom_table">
 							            <tr>
 							            	<td>
 							            		{% trans 'Work Phone' %}:
@@ -71,7 +70,7 @@
 							            </tr>
 							            <tr>
 							                <td>
-							                	{% trans 'Cell Phone' %}				                	                    
+							                	{% trans 'Cell Phone' %}:				                	                    
 							                </td>
 							                <td>
 							                	{{contact.mobile_phone}}
@@ -79,7 +78,7 @@
 							            </tr>
 							            <tr>
 							                <td>
-							                	{% trans 'Home Phone' %}				                	                    
+							                	{% trans 'Home Phone' %}:				                	                    
 							                </td>
 							                <td>
 							                	{{contact.home_phone}}
@@ -87,7 +86,7 @@
 							            </tr>
 							            <tr>
 							                <td>
-							                	{% trans 'Fax Number' %}				                	                    
+							                	{% trans 'Fax Number' %}:				                	                    
 							                </td>
 							                <td>
 							                	{{contact.fax_number}}
@@ -95,7 +94,7 @@
 							            </tr>
 							            <tr>
 							                <td>
-							                	{% trans 'Important Client' %}				                	                    
+							                	{% trans 'Important Client' %}:				                	                    
 							                </td>
 							                <td class="rating center_cb">
 							                	<div class="hidden">
@@ -108,11 +107,11 @@
 						        </table>
 						    </div>
 						    <div class="span6">
-						        <table class="table edit_table table-condensed">
+						        <table class="table edit_table table-condensed well well-small">
 						            <tbody>
 						            	<tr>
 							                <td>
-							                	{% trans 'Email' %}				                	                    
+							                	{% trans 'Email' %}:				                	                    
 							                </td>
 							                <td>
 							                	{{contact.email}}
@@ -120,7 +119,7 @@
 							            </tr>
 						            	<tr>
 							                <td>
-							                	{% trans 'Contact Type' %}				                	                    
+							                	{% trans 'Contact Type' %}:				                	                    
 							                </td>
 							                <td>
 							                	{{contact.contact_type}}
@@ -128,7 +127,7 @@
 							            </tr>
 						            	<tr>
 							                <td>
-							                	{% trans 'Position' %}				                	                    
+							                	{% trans 'Position' %}:				                	                    
 							                </td>
 							                <td>
 							                	{{contact.position}}
@@ -136,20 +135,19 @@
 							            </tr>
 						            	<tr>
 							                <td>
-							                	{% trans 'Sex' %}				                	                    
+							                	{% trans 'Sex' %}:				                	                    
 							                </td>
 							                <td>
 							                	{{contact.gender}}
 							                </td>
 							            </tr>
-							            <tr>
-							            	<td>
-							            		<br/>
-							            	</td>
-							            </tr>
+						           </tbody>
+					           </table>
+					           <table class="table edit_table table-condensed well well-small">
+					           		<tbody>
 						            	<tr>
 							                <td>
-							                	{% trans 'Address' %}				                	                    
+							                	{% trans 'Address' %}:				                	                    
 							                </td>
 							                <td>
 							                	{{contact.address}}
@@ -157,7 +155,7 @@
 							            </tr>
 						            	<tr>
 							                <td>
-							                	{% trans 'State' %}				                	                    
+							                	{% trans 'State' %}:				                	                    
 							                </td>
 							                <td>
 							                	{{contact.state}}
@@ -165,7 +163,7 @@
 							            </tr>
 						            	<tr>
 							                <td>
-							                	{% trans 'City' %}				                	                    
+							                	{% trans 'City' %}:				                	                    
 							                </td>
 							                <td>
 							                	{{contact.city}}
@@ -173,7 +171,7 @@
 							            </tr>
 						            	<tr>
 							                <td>
-							                	{% trans 'Zip Code' %}				                	                    
+							                	{% trans 'Zip Code' %}:				                	                    
 							                </td>
 							                <td>
 							                	{{contact.postcode}}
@@ -181,7 +179,7 @@
 							            </tr>
 						            	<tr>
 							                <td>
-							                	{% trans 'Country' %}				                	                    
+							                	{% trans 'Country' %}:				                	                    
 							                </td>
 							                <td>
 							                	{{contact.country}}
@@ -199,7 +197,7 @@
                 	<div class="span12">
                 		<div class="row-fluid">
 				    		<div class="span6">
-						        <table class="table edit_table table-condensed">
+						        <table class="table edit_table table-condensed well well-small">
 						            <tbody>
 						                <tr>
 						                    <td>  
@@ -237,7 +235,7 @@
 						        </table>
 						    </div>
 						    <div class="span6">
-						        <table class="table edit_table table-condensed">
+						        <table class="table edit_table table-condensed well well-small">
 						            <tbody>
 						                <tr>
 						                    <td>  
@@ -288,7 +286,7 @@
             </div>
         	<div class="tab-pane" id="tab3">
         		<div class="row-fluid">
-                	<div class="span12">        		
+                	<div class="span12 well well-small">        		
 		        		<div>
 		        			{% if contact.contact_notes %}
 		        				{{contact.contact_notes}}
