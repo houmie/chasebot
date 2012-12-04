@@ -72,7 +72,7 @@ function row_delete_ajax(event) {
         	rebind_edit_delete($(target));
         	rebind_paginator($(target));
         	rebind_task_edit_delete($(target));
-        	rebind_add();        	
+        	rebind_add();
         });                
     }    	
 };
