@@ -1,6 +1,6 @@
 {% load i18n %}
 <td colspan="2">
-	<form id="save_edit_form" class="span7" method="post" action="/sales_item/edit/{{ salesitem_id }}">
+	<form id="save_edit_form" method="post" action="/sales_item/edit/{{ salesitem_id }}">
 	    {% csrf_token %}    
 	        <table class="table edit_table table-condensed">
 	            <tbody>
@@ -12,17 +12,18 @@
 	                    <!-- <td>
 	                    	{% if  form.item_name.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.item_name.label}}: *</div>{%else%}{{form.item_name.label}}:{% endif %}                       
 	                    </td> -->
-	                    <td class="input-append">                        
-	                        {% if form.item_name.errors %}
+                        {% if form.item_name.errors %}
+                        <td class="input-append">
 		                	<div class="field field_error">
 		                    	{{form.item_name}}		                    		                    	
 		                    	{{form.item_name.errors}}		                    	                     	
-		                	</div>
-		                	{% else %}	            	    	
-		                			                    	
-		                		{{form.item_name}}		                    	
-		                	{% endif %}		                	                        
-	                    </td>
+	                		</div>
+                		</td>
+	                	{% else %}	
+	                	<td>	                			                    	
+	                		{{form.item_name}}
+                		</td>		                    	
+	                	{% endif %}	                    
 	                </tr>
 	            </tbody>
 	        </table>        

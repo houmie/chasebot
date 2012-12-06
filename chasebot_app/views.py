@@ -615,10 +615,10 @@ def deal_template_add_edit(request, deal_id=None):
     
     if deal_id is None:
         deal = DealTemplate(company=profile.company)        
-        template_title = _(u'Add New Deal Package')
+        template_title = _(u'Add New Deal Template')
     else:
         deal = get_object_or_404(profile.company.dealtemplate_set.all(), pk=deal_id)
-        template_title = _(u'Edit Deal Package')
+        template_title = _(u'Edit Deal Template')
     if request.method == 'POST':
         form = DealTemplateForm(request.POST, instance=deal)
         if form.is_valid():

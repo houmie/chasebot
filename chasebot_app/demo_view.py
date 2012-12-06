@@ -129,13 +129,13 @@ def demo_continue(request, username, password, email):
     holiday.sales_item.add(car)
     holiday.save()
     
-    lunch = profile.company.dealtemplate_set.create(deal_name = _(u'Lunch Deal'), deal_description = _(u'This is a lunch deal package for interested food chains. We aim to sell 10 deal packages per customer.'), currency = Currency.objects.get(pk=1), price = 3.99, sales_term = SalesTerm.objects.get(pk=1), quantity = 10)
+    lunch = profile.company.dealtemplate_set.create(deal_name = _(u'Lunch Deal'), deal_description = _(u'This is a lunch deal template for interested food chains. We aim to sell 10 deal packages per customer.'), currency = Currency.objects.get(pk=1), price = 3.99, sales_term = SalesTerm.objects.get(pk=1), quantity = 10)
     lunch.sales_item.add(sandwitch)
     lunch.sales_item.add(juice)
     lunch.sales_item.add(cake)
     lunch.save()
     
-    shirt = profile.company.dealtemplate_set.create(deal_name = _(u'Shirt Deal'), deal_description = _(u'A shirt/tie deal for the fall collection. We aim to sell two deal packages per customer.'), currency = Currency.objects.get(pk=1), price = 39.99, sales_term = SalesTerm.objects.get(pk=1), quantity = 2)
+    shirt = profile.company.dealtemplate_set.create(deal_name = _(u'Shirt Deal'), deal_description = _(u'A shirt/tie deal for the fall collection. We aim to sell two deal template per customer.'), currency = Currency.objects.get(pk=1), price = 39.99, sales_term = SalesTerm.objects.get(pk=1), quantity = 2)
     shirt.sales_item.add(shirts)
     shirt.sales_item.add(ties)    
     shirt.save()
