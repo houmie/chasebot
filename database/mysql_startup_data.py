@@ -6,7 +6,7 @@ import MySQLdb
 conn = MySQLdb.connect('localhost', 'django_user', 'houmie123', 'Ch4seb0tDB', charset='utf8')
 cur = conn.cursor()
 
-f = open('/home/hooman/venuscloud/chasebot-env/site/chasebot/database/country_code_drupal_nov_2011.txt')
+f = open('/home/hooman/venuscloud/chasebot-env/site/database/country_code_drupal_nov_2011.txt')
 
 cur.execute("INSERT INTO chasebot_app_company (company_name, company_email) VALUES ('Venus Cloud Ltd', 'info@venuscloud.com');")
 cur.execute("INSERT INTO chasebot_app_currency (currency) VALUES ('USD - $'),('EUR - €'), ('GBP - £'), ('CAD - $'), ('AUD - $'), ('BRL - R$');")
