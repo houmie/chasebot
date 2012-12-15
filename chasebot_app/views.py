@@ -97,6 +97,13 @@ def conversations_with_open_deals(request, contact):
    
 
 @login_required
+def index_display(request):
+    profile = request.user.get_profile()
+    company_name = profile.company.company_name
+    variables = {'company_name': company_name}
+    return render(request, 'index.html', variables)        
+
+@login_required
 def contacts_display(request, contact_id=None):      
     profile = request.user.get_profile()
     company_name = profile.company.company_name
@@ -130,9 +137,10 @@ def contacts_display(request, contact_id=None):
         contacts_queryset = profile.company.contact_set.all().order_by('last_name')        
     
     filter_form = FilterContactsForm(request.GET)
-    contacts, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, contacts_queryset)    
+    contacts, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, contacts_queryset)  
+    source = '/contacts'  
     variables = {
-                 'company_name': company_name, 'contacts' : contacts, 'filter_form' : filter_form, 
+                 'company_name': company_name, 'contacts' : contacts, 'filter_form' : filter_form, 'source' : source
                  }
     variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
     if ajax:    
@@ -206,9 +214,11 @@ def conversation_display(request, contact_id):
     calls, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, calls_queryset)
     
     task_queryset = contact.task_set.order_by('-due_date_time')
+    #Todo:  Continue here
     tasks, paginator_t, page_t, page_number_t = makePaginator(request, 3, task_queryset)        
+    source = u'{0}/{1}/{2}'.format('contact', contact.pk, 'calls')
     variables = {
-                 'calls': calls, 'contact': contact, 'contact_id':contact.pk, 'filter_form' : filter_form, 'show_only_open_deals' : show_only_open_deals, 'tasks': tasks,
+                 'calls': calls, 'contact': contact, 'contact_id':contact.pk, 'filter_form' : filter_form, 'show_only_open_deals' : show_only_open_deals, 'tasks': tasks, 'source' : source
                  }
     variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
     variables = merge_with_pagination_variables(paginator_t, page_t, page_number_t, variables, 'task_')

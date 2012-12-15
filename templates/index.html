@@ -2,4 +2,45 @@
 {% load i18n %}
 {% block title %}{% trans 'Home' %}{% endblock %}
 {% block head %}{{ company_name }}{% endblock %}
-{% block external %}
+{% block external %}{% endblock %}
+{% block content %}
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span2">
+			<!--Sidebar content-->	 
+		</div>
+		<div class="span10">
+			<!--Body content-->	 			
+			<ul id="main_tabs" class="nav nav-tabs">
+	            <li class="active">
+	                <a href="#tab_todo" data-toggle="tab">{% trans 'Todo' %}</a>
+	            </li>
+	            <li>
+	                <a href="#tab_contacts" data-toggle="tab">{% trans 'Contacts' %}</a>
+	            </li>
+	            <li>
+	                <a href="#tab_open_deals" data-toggle="tab">{% trans 'Open Deals' %}</a>
+	            </li>
+	            <li>
+	                <a href="#tab_predefined" data-toggle="tab">{% trans 'Pre-defined Deals' %}</a>
+	            </li>	            
+	        </ul>  
+	        <div class="tab-content well well-small">
+                <div class="tab-pane active" id="tab_todo">
+                    
+                </div>
+                <div class="tab-pane" id="tab_contacts">                	
+
+                </div>
+                <div class="tab-pane" id="tab_open_deals">                	
+
+                </div>
+                <div class="tab-pane" id="tab_predefined">                	
+
+                </div>
+            </div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

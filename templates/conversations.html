@@ -1,94 +1,58 @@
-{% extends "base.html" %}
 {% load i18n %}
 {% load tz %}
-{% block title %}{% trans 'Conversation History' %}{% endblock %}
-{% block head %}<i class="icon-comments-alt"></i> {{contact.first_name}} {{ contact.last_name }} - {{ contact.company_name}}{% endblock %}
-{% block external %}
-	<script type="text/javascript" src="{{ STATIC_URL }}chasebot/chasebot_add_deals.js"></script>
-{% endblock %}
-{% block content %}
-<ul class="breadcrumb">
-	<li><a href="/">{% trans 'Home' %}</a> <span class="divider">></span></li>
-	<li class="active">{% trans 'Conversations'%}</li>	    	
-</ul>	
-<div class="container-fluid">
-	<div class="row-fluid">
-		<div class="span2">
-			<!--Sidebar content-->
-			<div class="well cb_well-small">
-			<h4>{% trans 'Filter' %}</h4>
-			<p>{% trans 'Choose the filters below to find a specific conversation.' %}</p>
-			<h5>{% trans 'Date' %}</h5>
-			<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
-				<div class="input-append filter-container">
-					{{filter_form.from_date}}<div class="close filter-close">&times;</div><button type="submit" class="btn double_date_filter"><i class='icon-filter'> </i></button>
-				</div> 			    					    								
-        	</form>
-        	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
-				<div class="input-append filter-container">
-					{{filter_form.to_date}}<div class="close filter-close">&times;</div><button type="submit" class="btn double_date_filter"><i class='icon-filter'> </i></button>
-				</div>	   					    								
-        	</form>
-        	<h5>{% trans 'Subject' %}</h5>
-        	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
-				<div class="input-append filter-container">
-					{{filter_form.subject}}<div class="close filter-close">&times;</div><button type="submit" class="btn"><i class='icon-filter'> </i></button>
-				</div>	   					    								
-        	</form>		             
-        	<div id='contact_id' class="hidden">{{contact.pk}}</div>
-        	</div>
-        	<div id='tasks_placement'>
-        	{% include 'tasks.html' %}
-        	</div>
-		</div>
-		<div class="span10">
-			<!--Body content-->			
-			<table class="table table-condensed table-striped">
-				<thead>
-					<tr>
-						<th>{% trans 'Business Card' %}</th>
-						<th>{% trans 'Preferred Name' %}</th>
-						<th>{% trans 'Email' %}</th>
-						<th>{% trans 'Work Phone' %}</th>
-						<th>{% trans 'Cell Phone' %}</th>
-					</tr>								
-				</thead>
-				<tbody>
-					<tr>
-						<td><a id="business_card_modal_btn" class="btn" data-toggle="modal" href="#business_card_modal"><i class="icon-search icon-large"></i></a></td>
-						<td>{{contact.dear_name}}</td>
-						<td><a href="mailto:{{contact.email}}">{{contact.email}}</a></td>
-						<td>{{contact.work_phone}}</td>
-						<td>{{contact.mobile_phone}}</td>
-					</tr>
-				</tbody>
-			</table>
-			<div class="modal hide fade" id="business_card_modal" tabindex="-1" role="dialog" aria-labelledby="businesscard_label" aria-hidden="true">
-				{% include 'business_card.html' %}
-			</div>
-			<h4>{%trans 'Conversation History'%}</h4>
-			<a class="btn right-margin" href="/" title="{% trans 'Back to Contacts' %}"><i class="icon-arrow-left"> </i></a>
-			<a id="new_conversation_button" data-toggle="button" class="btn right-margin" title="{% trans 'New Conversation' %}" href="/contact/{{ contact.pk }}/call/add"><i class="icon-comment-alt"></i> {% trans 'New Conversation' %}</a>
-		    <a id="deals_in_progress_calls" class="btn" data-toggle="button" href="/?ajax&show_only_open_deals" title="{% trans 'Show Only Deals In Progress' %}"><i class="icon-legal"></i> {% trans 'Show Only Deals In Progress' %}</a>
-			<table id="call_contact_table" class="table table-condensed table-striped cb_table-hover">
-                <thead>
-                    <tr>
-                        <th class="first_th_minwidth">{% trans 'Edit / Delete Conversation' %}</th>                        	
-                        <th class="cb_date_width">{% trans 'Date' %}</th>  
-                        <th class="cb_time_width">{% trans 'Time' %}</th>                       
-                        <th class="cb_subject_width">{% trans 'Subject' %}</th>
-                        <th class="cb_notes_minwidth">{% trans 'Notes' %}</th>
-                        <th class="cb_deals_minwidth">{% trans 'Deals' %}</th>                        
-                    </tr>
-                </thead>
-                <tbody id="search_result">
-                    {% include 'conversation_list.html' %}
-                </tbody>
-            </table>                  
-		</div>
+<div>	
+	<!--Body content-->		
+	<ul class="breadcrumb">
+		<li><a href="/contacts">{% trans 'Contacts' %}</a> <span class="divider">></span></li>
+		<li class="active">{% trans 'Conversations'%}</li>	    	
+	</ul>
+	<div class="cb_inline_block">	
+		<div class="cb_inline_block"><a class="btn right-margin" href="/" title="{% trans 'Back to Contacts' %}"><i class="icon-arrow-left"> </i> {%trans 'Back'%}</a></div>
+		<h3 class="cb_inline_block">{{contact.first_name}} {{ contact.last_name }} - {{ contact.company_name}}</h3>
 	</div>	
+	<table class="table table-condensed table-striped">
+		<thead>
+			<tr>
+				<th>{% trans 'Business Card' %}</th>
+				<th>{% trans 'Preferred Name' %}</th>
+				<th>{% trans 'Email' %}</th>
+				<th>{% trans 'Work Phone' %}</th>
+				<th>{% trans 'Cell Phone' %}</th>
+			</tr>								
+		</thead>
+		<tbody>
+			<tr>
+				<td><a id="business_card_modal_btn" class="btn" data-toggle="modal" href="#business_card_modal"><i class="icon-search icon-large"></i></a></td>
+				<td>{{contact.dear_name}}</td>
+				<td><a href="mailto:{{contact.email}}">{{contact.email}}</a></td>
+				<td>{{contact.work_phone}}</td>
+				<td>{{contact.mobile_phone}}</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="modal hide fade" id="business_card_modal" tabindex="-1" role="dialog" aria-labelledby="businesscard_label" aria-hidden="true">
+		{% include 'business_card.html' %}
+	</div>
+	<h4>{%trans 'Upcoming Events'%}</h4>
+	<a id="new_conversation_button" data-toggle="button" class="btn right-margin" title="{% trans 'New Conversation' %}" href="/contact/{{ contact.pk }}/call/add"><i class="icon-comment-alt"></i> {% trans 'New Conversation' %}</a>
+    <a id="deals_in_progress_calls" class="btn" data-toggle="button" href="/?ajax&show_only_open_deals" title="{% trans 'Show Only Deals In Progress' %}"><i class="icon-legal"></i> {% trans 'Show Only Deals In Progress' %}</a>
+	<h4>{%trans 'Conversation History'%}</h4>
+	<table id="call_contact_table" class="table table-condensed table-striped cb_table-hover">
+        <thead>
+            <tr>
+                <th class="first_th_minwidth">{% trans 'Edit / Delete Conversation' %}</th>                        	
+                <th class="cb_date_width">{% trans 'Date' %}</th>  
+                <th class="cb_time_width">{% trans 'Time' %}</th>                       
+                <th class="cb_subject_width">{% trans 'Subject' %}</th>
+                <th class="cb_notes_minwidth">{% trans 'Notes' %}</th>
+                <th class="cb_deals_minwidth">{% trans 'Deals' %}</th>                        
+            </tr>
+        </thead>
+        <tbody id="search_result">
+            {% include 'conversation_list.html' %}
+        </tbody>
+    </table>                  
 	<div id="new_conversation_div"></div>  
 	<div id="show_only_open_deals" class="hidden">{{show_only_open_deals}}</div>
 </div>
    
-{% endblock %}

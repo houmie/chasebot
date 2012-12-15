@@ -143,7 +143,7 @@ function paginator_navigate(event) {
 	else{
 		url = $(this).attr("href");
 	}
-		
+
 	$(target_pane).load(url, function(result){		
 		rebind_edit_delete($(target_pane));
 		rebind_task_edit_delete($(target_pane));
@@ -690,18 +690,51 @@ function rebind_business_card_modal_link(){
 	$('.business_card_modal_link').off('click').on('click', load_business_card);	
 }
 
+function tab_predefined_clicked(){	
+	$('#tab_predefined').load('/deals', function(result){
+		rebind_paginator($('#search_result'));
+		rebind_edit_delete($('#search_result'));
+		rebind_filters($('body'));
+	});	
+	$('#main_tabs a[href="#tab_predefined"]').off('click');	
+}
 
-$(document).ready(function (){	
+function tab_contacts_clicked(){
+	$('#tab_contacts').load('/contacts', function(result){
+		rebind_ratings($('#search_result'));
+		rebind_paginator($('#search_result'));
+		rebind_business_card_modal_link();
+		rebind_edit_delete($('#search_result'));
+		rebind_filters($('body'));
+		$('.conversation').off('click').on('click', conversation_clicked);
+	});
+	$('#main_tabs a[href="#tab_contacts"]').off('click');	
+}
+
+function conversation_clicked(event){
+	event.preventDefault();
+	var url = $(this).attr('href');
+	$('#tab_contacts').load(url, function(result){
+		rebind_ratings($('#business_card_modal'));	
+		rebind_paginator($('#search_result'));
+		rebind_edit_delete($('#search_result'));
+		rebind_filters($('body'));
+	});
+}
+
+function bind_main_tabs(){	
+	
+	$('#main_tabs a[href="#tab_contacts"]').off('click').on('click', tab_contacts_clicked);
+	$('#main_tabs a[href="#tab_predefined"]').off('click').on('click', tab_predefined_clicked);	
+}
+
+$(document).ready(function (){
+	bind_main_tabs();
 	reword_collapseable('#accordion_task');
 	rebind_add();
-	rebind_edit_delete($('#search_result'));
+	
 	rebind_task_edit_delete($('#tasks_pane'));
-	rebind_paginator($('#search_result'));
 	rebind_paginator($('#tasks_pane'));
-	rebind_filters($('body'));
-	rebind_ratings($('#search_result'));
-	rebind_ratings($('#business_card_modal'));
-	rebind_business_card_modal_link();
 	$(".modal_link_sales_item").click(open_modal_sales_item);
 	//$(".modal_link_business_card").click(open_modal_business_card);
 	$('#salesitems_modal').on('hidden', modal_closing);
@@ -717,7 +750,8 @@ $(document).ready(function (){
 	if($('#show_only_open_deals').text() == 'True')
 		$('#deals_in_progress_calls').button('toggle');
 	$('#deals_in_progress_calls').off('click').on('click', deals_in_progress_coversations);	
-	bind_rating_form();	
+	bind_rating_form();
+		
 });
 
 

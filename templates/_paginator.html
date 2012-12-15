@@ -6,12 +6,12 @@
 			    <ul>		      
 			      	{% if has_prev%}
 			      	<li>
-			        	<a class="paginator_nav_links" href="?ajax&page={{ prev_page }}">&laquo; {% trans 'Previous' %}</a>
+			        	<a class="paginator_nav_links" href="{{source}}?ajax&page={{ prev_page }}">&laquo; {% trans 'Previous' %}</a>
 			        </li>
 			      	{% endif %}		      
 		          	{% if has_next %}
 		          	<li>
-		          		<a class="paginator_nav_links" href="?ajax&page={{ next_page }}">{% trans 'Next' %} &raquo;</a>
+		          		<a class="paginator_nav_links" href="{{source}}?ajax&page={{ next_page }}">{% trans 'Next' %} &raquo;</a>
 		          	</li>
 			      	{% endif %}		      		      
 			    </ul>

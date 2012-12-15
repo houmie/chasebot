@@ -1,7 +1,7 @@
 # Django settings for Chasebot project.
 import os
 from datetime import timedelta
-import djcelery 
+import djcelery
 
 djcelery.setup_loader()
  
@@ -73,6 +73,12 @@ PIPELINE_JS = {
           'chasebot/chasebot_base.js',          
         ),
         'output_filename': 'chasebot/chasebot_base.min.js',
+    },
+    'chasebot_add_deals_js': {
+        'source_filenames': (
+          'chasebot/chasebot_add_deals_js',          
+        ),
+        'output_filename': 'chasebot/chasebot_add_deals.min.js',
     }
 }
 
