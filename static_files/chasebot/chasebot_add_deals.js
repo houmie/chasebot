@@ -101,65 +101,67 @@ function get_deal_or_dealtemplate(selected_id, type, newElement, path, contact_i
 		    else{
 		    	newname = template_name;
 		    }		    	
-		    
-		    //The newname either template_name or instance_name will be stripped from spaces and dots and replaced with _. So that its compatible for URL id's
-		    var slug =  newname.replace(/ /g,"_").replace(/\./g,"_");
-		    a.setAttribute('href', '#' + slug);
-		    a.innerHTML = newname;
-			
-			var li=document.createElement('li');
-			li.appendChild(a);
-			
-			//Subscribing an event to this tab when it would go active in order to determine teh active tab.
-			$(a).on('shown', show_tab);
-		    
-		    //Attaching the tab header
-		    $('#attached_deals_tab').append(li);
-		    
-		    //creating the tab content
-		    var div=document.createElement('div');
-		    div.setAttribute('class', 'tab-pane');
-		    
-		    //Setting the id of tab content to the same url href of tab header, so that it can be found when user clicks on the tab header
-		    div.setAttribute('id', slug);
-		    
-		    //attaching the cloned element with json values to the tab content 
-		    $(div).append(newElement);
-		    $('#tab-content').append(div);
-
-			if(contact_id){
-				//In case of open deal we need to remove the selected open deal from the dropdown, so it can't be added again to the same call.
-				$("#id_opendeals_add_form-open_deal_template option[value='" + selected_id + "']").remove();
-			}
-			else{
-				//In case of adding a new deal we need to remove the selected deal Template from the dropdown, so it can't be added again to the same call.
-				$("#id_deals_add_form-deal_template option[value='" + selected_id + "']").remove();				
-			}
-
-			//Now that everything is in place, show the tab actively								  				
-			$(a).tab('show');
-			
-			//Now that its shown, change the m2m multi-selection field to a chosen type field. 
-			$('#id_deals-' + total + '-sales_item').chosen({no_results_text: 'No results match'});
-			
-			//Finally set the total form value within the formset to the number of added tabs, so that it can be saved in request.POST 
-			total = $('#attached_deals_tab li').length;
-    		$('#id_' + type + '-TOTAL_FORMS').attr('value', total);
+		    //$('#deal_modal_body').empty();
+		    $('#deal_modal_body').append(newElement);
 		  }		  
 		});	
 }
 
+function add_deal_to_formset(){
+	//The newname either template_name or instance_name will be stripped from spaces and dots and replaced with _. So that its compatible for URL id's
+    var slug =  newname.replace(/ /g,"_").replace(/\./g,"_");
+    a.setAttribute('href', '#' + slug);
+    a.innerHTML = newname;
+	
+	var li=document.createElement('li');
+	li.appendChild(a);
+	
+	//Subscribing an event to this tab when it would go active in order to determine teh active tab.
+	$(a).on('shown', show_tab);
+    
+    //Attaching the tab header
+    $('#attached_deals_tab').append(li);
+    
+    //creating the tab content
+    var div=document.createElement('div');
+    div.setAttribute('class', 'tab-pane');
+    
+    //Setting the id of tab content to the same url href of tab header, so that it can be found when user clicks on the tab header
+    div.setAttribute('id', slug);
+    
+    //attaching the cloned element with json values to the tab content 
+    $(div).append(newElement);
+    $('#tab-content').append(div);
 
+	if(contact_id){
+		//In case of open deal we need to remove the selected open deal from the dropdown, so it can't be added again to the same call.
+		$("#id_opendeals_add_form-open_deal_template option[value='" + selected_id + "']").remove();
+	}
+	else{
+		//In case of adding a new deal we need to remove the selected deal Template from the dropdown, so it can't be added again to the same call.
+		$("#id_deals_add_form-deal_template option[value='" + selected_id + "']").remove();				
+	}
+
+	//Now that everything is in place, show the tab actively								  				
+	$(a).tab('show');
+	
+	//Now that its shown, change the m2m multi-selection field to a chosen type field. 
+	$('#id_deals-' + total + '-sales_item').chosen({no_results_text: 'No results match'});
+	
+	//Finally set the total form value within the formset to the number of added tabs, so that it can be saved in request.POST 
+	total = $('#attached_deals_tab li').length;
+	$('#id_' + type + '-TOTAL_FORMS').attr('value', total);
+}
 
 function add_deals(event){
 	//Adding new deals
 	event.preventDefault();
 	var type = 'deals';
-	var newElement = cloneMore('#X table', type);
+	var newElement = cloneMore('#X div:first', type);
 	
 	//Getting the deal Template id from the selected dropdown
-	var selected_id = $('#id_deals_add_form-deal_template option:selected').val()
-	if (selected_id){		
+	var selected_id = $('#deal_modal_body').find('.pre_defined_deal_dropdown option:selected').val()
+	if (selected_id){
 		get_deal_or_dealtemplate(selected_id, type, newElement,  '/deal_template/');		
 	}
 }
@@ -168,7 +170,7 @@ function add_opendeals(event){
 	//Adding an open deal
 	event.preventDefault();
 	var type = 'deals';
-	var newElement = cloneMore('#X table', type);
+	var newElement = cloneMore('#X div:first', type);
 	
 	//Getting the open deal instance id from the selected dropdown
 	var selected_id = $('#id_opendeals_add_form-open_deal_template option:selected').val()

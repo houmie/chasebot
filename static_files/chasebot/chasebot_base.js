@@ -176,7 +176,7 @@ function reload_edit_save_cancel_buttons(row, url){
 		$(row).find("#save_edit_form").submit();
 	});
 	$(row).find("#cancel_edit_button").click(row_edit_cancel_ajax);
-	rebind_add_deals();
+	//rebind_add_deals();	
 	datepicker_reload($(row));
 }
 
@@ -194,14 +194,46 @@ function row_edit_ajax(event) {
     		//Once loaded make sure the submit-form will be redirected to 'row_edit_save_ajax' once submitted. Url is parameter 
       		reload_edit_save_cancel_buttons($(row), url);
       		$('#attached_deals_tab li a').each(function() {      			
-      			var btn = $('<div/>', {class: 'btn'});
+      			var btn = $('<a/>', {class: 'btn', href: $(this).attr('href')});
       			var icon = $('<i/>', {class: 'icon-paper-clip icon-large'}).appendTo(btn);
       			var span = $('<span/>', { class: 'badge badge-info', text: $(this).text()}).appendTo(btn);
       			$('.clipped_deals').append(btn);
+      			
+      			btn.click(function(event){
+      				event.preventDefault();
+      				var cloned_div = $(btn.attr('href')).children().clone();
+      				$('#deal_modal_body').empty();
+      				$('#deal_modal_body').append(cloned_div);
+      				show_modal('#deal_modal');
+      			});
+      			
+      			$('#add_pre_deal').click(function(event){
+      				event.preventDefault();
+      				 var dropdown = $('#add_deals_dropdown div:first').clone();
+      				 $('#deal_modal_body').empty();
+      				 $('#deal_modal_body').append(dropdown);
+      				 $('#deal_modal_body').find('.add_deals_button').click(add_deals);
+      				 show_modal('#deal_modal');
+      			});
       		});
     	}
   	);  	
 };
+
+
+function show_modal(target){
+	$(target).modal({
+        backdrop: true,
+        keyboard: true
+    }).css({
+        width: 'auto',
+        'margin-left': function () {
+            return -($(this).width() / 2);
+        }
+    });
+	$(target).modal('show');
+}
+
 
 function row_add_save_ajax(event){
 	event.preventDefault();

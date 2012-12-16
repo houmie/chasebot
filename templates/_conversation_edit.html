@@ -73,21 +73,35 @@
 	            	</tr>	 
 	            	<tr>	            		
 	            		<td colspan="6">
-	            			<div class='clipped_deals'></div>	            				            			
-	            			<div class="accordion" id="accordion2">
-								<div class="accordion-group">
-									<div class="accordion-heading">
-										<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse2">
-											{% trans 'Click here to edit the deals' %}
-										</a>
-									</div>
-									<div id="collapse2" class="accordion-body collapse">
-										<div class="accordion-inner">
-	                						{% include '_deal_edit.html' %}
-	            						</div>
-	        						</div>
-	    						</div>
-							</div>
+	            			<div class='clipped_deals'></div>	
+            			    <div class="dropdown">
+						    	<a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="/page.html">{% trans 'Attach a Deal'%}<b class="caret"></b></a>
+								    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+								    	<li><a href="#">{% trans 'Continue existing deal' %}</a></li>
+								    	<li><a id="add_pre_deal" href="#">{% trans 'Add pre-defined deal' %}</a></li>
+								    	<li><a href="#">{% trans 'Create your deal' %}</a></li>
+								    </ul>
+						    </div>
+						    <div class="hide2" id="add_deals_dropdown">
+						    	<div class="cb_inline_block">
+							    	<div class="cb_inline_block">                        
+						                {{deals_add_form.deal_template.label}}: 
+						            </div>        	
+						            <div class="cb_inline_block">   
+						            	<div class="input-append">             
+							        		{{deals_add_form.deal_template}}
+							        		<button type="button" class="btn btn-success add_deals_button"><icon class="icon-white">{% trans 'Add' %}</icon></button>
+						        		</div>            	                        
+						            </div>
+					            </div>  
+						    </div>						    
+	            			<div class="modal hide fade" id="deal_modal" tabindex="-1" role="dialog" aria-labelledby="deal_label" aria-hidden="true">
+								{% include 'deal_modal.html' %}
+							</div>            				            			
+	            			
+	            			<div class="hide">
+    							{% include '_deal_edit.html' %}
+    						</div>
 	            		</td>
 	            	</tr>           	                					                					                
 	            	<tr class="hidden">

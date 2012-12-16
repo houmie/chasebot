@@ -2,15 +2,7 @@
 <table class="table edit_table table-condensed cb_deals_maxwidth" id="deals">	
     <tbody>    	
     	<tr>
-    		<td>                        
-                {{deals_add_form.deal_template.label}}: 
-            </td>        	
-            <td>   
-            	<div class="input-append">             
-	        		{{deals_add_form.deal_template}}
-	        		<button type="button" id="add_deals_button" class="btn btn-success"><icon class="icon-white">{% trans 'Add' %}</icon></button>
-        		</div>            	                        
-            </td>        	          	
+      	          	
         </tr>
         <tr>
         	<td>                        
@@ -28,8 +20,9 @@
         	<td id="X" class="hidden">
         		{{extra_deal_formset.management_form}}
         		{% for fs in extra_deal_formset%}
-        			{{fs.id}}        			
-					<table>									
+        			{{fs.id}} 
+        			<div>       			
+					<table>
 						<tbody>
 							<tr>
 								<td>
@@ -184,6 +177,7 @@
 		                    </tr>
 						</tbody>								
 					</table>  
+        			</div>
         		{% endfor %}
         	</td>
         </tr>    
@@ -199,11 +193,12 @@
 						</li>					
 					{% endfor %}
 					</ul>	
-					<div class="deal_tab-content" id='tab-content'>
+					<div class="deal_tab-content tab-content" id='tab-content'>
 						{% for fs in attached_deals_formset %}
 						{{ fs.id }}							
 							<div class="tab-pane {% if fs.is_last_active_tab.value%}active{% endif %}" id="{% if fs.attached_open_deal_id.value or fs.instance.pk %}{{fs.deal_instance_name.value|slugify}}{% else %}{{fs.deal_template_name.value|slugify}}{%endif%}">								
-								<table>									
+								<div>
+								<table>
 									<tbody>
 										<tr>
 											<td>
@@ -358,11 +353,11 @@
 					                    </tr>
 									</tbody>								
 								</table>  
+								</div>
 							</div>
 						{% endfor %}										
 					</div>							
-				</td>     
-				
+				</td>				
 			{% endif %}
         </tr>
     	
