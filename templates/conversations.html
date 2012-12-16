@@ -3,11 +3,11 @@
 <div>	
 	<!--Body content-->		
 	<ul class="breadcrumb">
-		<li><a href="/contacts">{% trans 'Contacts' %}</a> <span class="divider">></span></li>
+		<li><a class="back2contacts" href="/contacts">{% trans 'Contacts' %}</a> <span class="divider">></span></li>
 		<li class="active">{% trans 'Conversations'%}</li>	    	
 	</ul>
 	<div class="cb_inline_block">	
-		<div class="cb_inline_block"><a class="btn right-margin" href="/" title="{% trans 'Back to Contacts' %}"><i class="icon-arrow-left"> </i> {%trans 'Back'%}</a></div>
+		<div class="cb_inline_block"><a class="btn right-margin back2contacts" href="/contacts" title="{% trans 'Back to Contacts' %}"><i class="icon-arrow-left"> </i> {%trans 'Back'%}</a></div>
 		<h3 class="cb_inline_block">{{contact.first_name}} {{ contact.last_name }} - {{ contact.company_name}}</h3>
 	</div>	
 	<table class="table table-condensed table-striped">
@@ -54,5 +54,6 @@
     </table>                  
 	<div id="new_conversation_div"></div>  
 	<div id="show_only_open_deals" class="hidden">{{show_only_open_deals}}</div>
+	<div id="contact_id" class="hidden">{{contact.pk}}</div>
 </div>
    

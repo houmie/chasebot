@@ -151,6 +151,8 @@ function paginator_navigate(event) {
 		rebind_add();	
 		rebind_ratings($(target_pane));	
 		rebind_business_card_modal_link();
+		$('.conversation').off('click').on('click', conversation_clicked);
+		$('#new_conversation_button').off('click').on('click',new_conversation);
 	});		
 };
 
@@ -191,6 +193,12 @@ function row_edit_ajax(event) {
     	function (result) {
     		//Once loaded make sure the submit-form will be redirected to 'row_edit_save_ajax' once submitted. Url is parameter 
       		reload_edit_save_cancel_buttons($(row), url);
+      		$('#attached_deals_tab li a').each(function() {      			
+      			var btn = $('<div/>', {class: 'btn'});
+      			var icon = $('<i/>', {class: 'icon-paper-clip icon-large'}).appendTo(btn);
+      			var span = $('<span/>', { class: 'badge badge-info', text: $(this).text()}).appendTo(btn);
+      			$('.clipped_deals').append(btn);
+      		});
     	}
   	);  	
 };
@@ -531,7 +539,24 @@ function rebind_new_conversation(parent){
 	$(parent).find('#new_conversation_form').off('submit').on('submit', submit_new_conversation);
 }
 
-function new_conversation(event){	
+function new_conversation(event){
+	event.preventDefault();
+	if($(this).hasClass('active')){
+		$('#new_conversation_div').empty();		
+		return;
+	}
+	var contact_id = $('#contact_id').text();
+	var url = '/contact/' + contact_id + '/call/add/';
+	var tr = $('<tr/>');
+	tr.load(url, function(result){
+		$('#search_result').prepend(tr);
+		rebind_add_deals();		
+		datepicker_reload('#new_conversation_div');			
+	});	
+		
+}
+
+function new_conversation_old(event){	
 	event.preventDefault();
 	if($(this).hasClass('active')){
 		$('#new_conversation_div').empty();		
@@ -699,17 +724,21 @@ function tab_predefined_clicked(){
 	$('#main_tabs a[href="#tab_predefined"]').off('click');	
 }
 
+
+
 function tab_contacts_clicked(){
 	$('#tab_contacts').load('/contacts', function(result){
 		rebind_ratings($('#search_result'));
 		rebind_paginator($('#search_result'));
 		rebind_business_card_modal_link();
 		rebind_edit_delete($('#search_result'));
-		rebind_filters($('body'));
+		rebind_filters($('body'));		
 		$('.conversation').off('click').on('click', conversation_clicked);
 	});
 	$('#main_tabs a[href="#tab_contacts"]').off('click');	
 }
+
+
 
 function conversation_clicked(event){
 	event.preventDefault();
@@ -718,9 +747,16 @@ function conversation_clicked(event){
 		rebind_ratings($('#business_card_modal'));	
 		rebind_paginator($('#search_result'));
 		rebind_edit_delete($('#search_result'));
+		$('.back2contacts').off('click').on('click', function(event){
+			event.preventDefault();
+			tab_contacts_clicked();
+		});
 		rebind_filters($('body'));
+		$('#new_conversation_button').off('click').on('click',new_conversation);
 	});
 }
+
+
 
 function bind_main_tabs(){	
 	
@@ -744,7 +780,7 @@ $(document).ready(function (){
 	datepicker_reload('body');
 	$('#invite-button').click(invite_colleague);
 	$('#demo-button').click(demo);
-	$('#new_conversation_button').off('click').on('click',new_conversation);
+	
 	$('#new_task_button').off('click').on('click', edit_new_task);
 	$('#deals_in_progress').off('click').on('click', deals_in_progress);
 	if($('#show_only_open_deals').text() == 'True')

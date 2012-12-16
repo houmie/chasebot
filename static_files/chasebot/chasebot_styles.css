@@ -386,3 +386,12 @@ input[type="checkbox"]{
 .left_bottom_table{
 	margin-top: 2em;
 }
+
+.cb_deal_description{
+	width: 20em;
+	height: 7em;
+}
+
+.deal_tab-content{
+	overflow: none;	
+}

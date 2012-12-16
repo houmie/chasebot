@@ -1,7 +1,7 @@
 {% load i18n %}
-<tr>
-	<td colspan="11">
-		{% if show_paginator %}
+{% if show_paginator %}
+	<tr id="paginator_tr">
+		<td colspan="11">
 			<div class="pager cb_pager">
 			    <ul>		      
 			      	{% if has_prev%}
@@ -18,7 +18,7 @@
 			    <div>
 		    		{% blocktrans with p=page ps=pages%}Page {{ p }} of {{ ps }}{% endblocktrans %}
 		    	</div>
-		   	</div>		    
-	  	{% endif %}
-  	</td>
-</tr>
+		   	</div>
+   	  	</td>
+	</tr>		    
+{% endif %}

@@ -204,7 +204,7 @@
 						</li>					
 					{% endfor %}
 					</ul>	
-					<div class="tab-content" id='tab-content'>
+					<div class="deal_tab-content" id='tab-content'>
 						{% for fs in attached_deals_formset %}
 						{{ fs.id }}							
 							<div class="tab-pane {% if fs.is_last_active_tab.value%}active{% endif %}" id="{% if fs.attached_open_deal_id.value or fs.instance.pk %}{{fs.deal_instance_name.value|slugify}}{% else %}{{fs.deal_template_name.value|slugify}}{%endif%}">								

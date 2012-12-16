@@ -214,14 +214,16 @@ def conversation_display(request, contact_id):
     calls, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, calls_queryset)
     
     task_queryset = contact.task_set.order_by('-due_date_time')
-    #Todo:  Continue here
-    tasks, paginator_t, page_t, page_number_t = makePaginator(request, 3, task_queryset)        
+    tasks = []
+    if task_queryset:
+        tasks, paginator_t, page_t, page_number_t = makePaginator(request, 3, task_queryset)        
     source = u'{0}/{1}/{2}'.format('contact', contact.pk, 'calls')
     variables = {
                  'calls': calls, 'contact': contact, 'contact_id':contact.pk, 'filter_form' : filter_form, 'show_only_open_deals' : show_only_open_deals, 'tasks': tasks, 'source' : source
                  }
     variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
-    variables = merge_with_pagination_variables(paginator_t, page_t, page_number_t, variables, 'task_')
+    if task_queryset:
+        variables = merge_with_pagination_variables(paginator_t, page_t, page_number_t, variables, 'task_')
     if ajax:    
         return render(request, 'conversation_list.html', variables)
     else:
@@ -368,9 +370,9 @@ def conversation_add_edit(request, contact_id, call_id=None):
     extra_deal_formset = extra_deal_formset_factory(prefix='extra_deal')
     variables = {'form':form, 'template_title':template_title, 'deals_add_form':deals_add_form, 'opendeals_add_form':opendeals_add_form, 'attached_deals_formset':attached_deals_formset, 'contact_id':contact.pk, 'call_id':call_id, 'extra_deal_formset':extra_deal_formset, 'validation_error_ajax':validation_error_ajax }
     variables = merge_with_localized_variables(request, variables)  
-    if call_id:
-        return render(request, '_conversation_edit.html', variables)      
-    return render(request, '_conversation.html', variables)
+    #if call_id:
+    return render(request, '_conversation_edit.html', variables)      
+    #return render(request, '_conversation.html', variables)
 
 
 

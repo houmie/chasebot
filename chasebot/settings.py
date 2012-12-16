@@ -76,7 +76,7 @@ PIPELINE_JS = {
     },
     'chasebot_add_deals_js': {
         'source_filenames': (
-          'chasebot/chasebot_add_deals_js',          
+          'chasebot/chasebot_add_deals.js',          
         ),
         'output_filename': 'chasebot/chasebot_add_deals.min.js',
     }

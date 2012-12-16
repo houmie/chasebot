@@ -11,7 +11,7 @@
                         <th class="cb_time_width">{% trans 'Time' %}</th>                       
                         <th class="cb_subject_width">{% trans 'Subject' %}</th>
                         <th class="cb_notes_minwidth">{% trans 'Notes' %}</th>
-                        <th class="cb_deals_minwidth">{% trans 'Deals' %}</th>    
+                        <!-- <th class="cb_deals_minwidth">{% trans 'Deals' %}</th>     -->
 	        		</tr>
 	        	</thead>
 	            <tbody>
@@ -70,8 +70,11 @@
 								</div>
 							</div>                                                
 	                    </td>
-	                    <td>
-	                		<div class="accordion" id="accordion2">
+	            	</tr>	 
+	            	<tr>	            		
+	            		<td colspan="6">
+	            			<div class='clipped_deals'></div>	            				            			
+	            			<div class="accordion" id="accordion2">
 								<div class="accordion-group">
 									<div class="accordion-heading">
 										<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse2">
@@ -84,9 +87,9 @@
 	            						</div>
 	        						</div>
 	    						</div>
-							</div>	
-	                	</td>
-	            	</tr>	            	                					                					                
+							</div>
+	            		</td>
+	            	</tr>           	                					                					                
 	            	<tr class="hidden">
 	            		<td>
 	            			<div id="validation_error_ajax">{{validation_error_ajax}}</div>
