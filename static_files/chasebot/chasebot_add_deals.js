@@ -103,6 +103,7 @@ function get_deal_or_dealtemplate(selected_id, type, newElement, path, contact_i
 		    }		    	
 		    //$('#deal_modal_body').empty();
 		    $('#deal_modal_body').append(newElement);
+	    	rebind_attach_deals('#deal_modal_body');
 		  }		  
 		});	
 }
@@ -190,14 +191,18 @@ function show_tab(e){
 	//now the last_actice_tab boolean is set to true of the current tab 
 }
 
-function rebind_add_deals(){
+function rebind_attach_deals(parent){
 	//Upon opening make sure that all deals from attached_deal_formset will get chosenified. 
 	// Attention: Do NOT chosenify the extra-deal form, or it would break.
 	var total = $('#id_deals-TOTAL_FORMS').val();
 	for(i=0;i<=total;i++){
-		$('#id_deals-' + i + '-sales_item').chosen({no_results_text: gettext('No results match')});
-	}  	
-  	 
+		$(parent).find('#id_deals-' + i + '-sales_item').chosen({no_results_text: gettext('No results match')});
+		$('#id_deals-' + i +  '-total_price').val($('#id_deals-' + i +  '-price').val() * $('#id_deals-' + i +  '-quantity').val());
+	}
+}
+
+function rebind_add_deals(){
+	//rebind_attach_deals();
 	$("#add_deals_button").click(add_deals);
 	$("#add_opendeals_button").click(add_opendeals);
 	

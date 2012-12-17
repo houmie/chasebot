@@ -204,6 +204,7 @@ function row_edit_ajax(event) {
       				var cloned_div = $(btn.attr('href')).children().clone();
       				$('#deal_modal_body').empty();
       				$('#deal_modal_body').append(cloned_div);
+      				rebind_attach_deals('#deal_modal_body');
       				show_modal('#deal_modal');
       			});
       			
@@ -213,6 +214,7 @@ function row_edit_ajax(event) {
       				 $('#deal_modal_body').empty();
       				 $('#deal_modal_body').append(dropdown);
       				 $('#deal_modal_body').find('.add_deals_button').click(add_deals);
+      				 
       				 show_modal('#deal_modal');
       			});
       		});
@@ -227,6 +229,7 @@ function show_modal(target){
         keyboard: true
     }).css({
         width: 'auto',
+        //overflowY: 'hidden',
         'margin-left': function () {
             return -($(this).width() / 2);
         }

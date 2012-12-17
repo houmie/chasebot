@@ -104,11 +104,13 @@ ugettext = lambda s: s
 
 LANGUAGES = (
     ('en', ugettext('American English')),
-    ('en-gb', ugettext('British English')),
-    ('es', ugettext('Spanish'))
+    ('en-gb', ugettext('British English'))
 )
 
-MODELTRANSLATION_TRANSLATION_REGISTRY = 'chasebot_app.translation'
+#MODELTRANSLATION_TRANSLATION_REGISTRY = 'chasebot_app.translation'
+MODELTRANSLATION_TRANSLATION_FILES = (
+  'chasebot_app.translation',
+)
 
 LOCALE_PATHS = (
   '/home/hooman/venuscloud/chasebot-env/site/locale',

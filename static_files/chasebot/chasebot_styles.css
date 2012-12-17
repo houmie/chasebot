@@ -33,7 +33,6 @@ div.field_error ul{
 }
 
 
-
 div.field_error li, div.field_error p{
 	color: red;
 }
@@ -51,8 +50,12 @@ div.field_error li, div.field_error p{
 	font-weight: bold;
 }
 
-.select_status{
-	width: 120px;
+.boxes_8em{
+	width: 8em;
+}
+
+.boxes_7em{
+	width: 7em;
 }
 
 .h3_padded{
@@ -347,8 +350,8 @@ input[type="checkbox"]{
 	margin-top: 1em; 
 }
 
-.cb_table-hover tbody tr:hover td ,
-.cb_table-hover tbody tr:hover th {
+.cb_table-hover tbody tr:hover td:not(#X) ,
+.cb_table-hover tbody tr:hover th:not(#X) {
   background-color: #cfe2e8;  
 }
 

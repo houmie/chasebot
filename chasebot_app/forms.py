@@ -212,7 +212,7 @@ class FilterDealsForm(Form):
     price               = forms.DecimalField(widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_deals_price', 'autocomplete': 'off', 'data-provide': 'typeahead'}))
     sales_term          = forms.ModelChoiceField(queryset=SalesTerm.objects.all(), widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_deals_sales_term', 'autocomplete': 'off', 'data-provide': 'typeahead'}))
     quantity            = forms.IntegerField(widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_deals_quantity', 'autocomplete': 'off', 'data-provide': 'typeahead'})) 
-
+    total_price         = forms.DecimalField(widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_deals_price', 'autocomplete': 'off', 'data-provide': 'typeahead'}))
 
 
 class DealTemplateForm(ModelForm):    
@@ -249,18 +249,25 @@ class DealForm(ModelForm):
     
     def __init__(self, *args, **kwargs):
         super(DealForm, self).__init__(*args, **kwargs)                       
-        self.fields['status'].widget.attrs['class'] = 'select select_status'        
+        self.fields['status'].widget.attrs['class'] = 'boxes_8em'
+        self.fields['price'].widget.attrs['class'] = 'boxes_7em price'
+        self.fields['quantity'].widget.attrs['class'] = 'boxes_7em quantity'
+        self.fields['sales_term'].widget.attrs['class'] = 'boxes_8em'
+        self.fields['currency'].widget.attrs['class'] = 'boxes_8em'
+
         self.fields['deal_instance_name'].widget.attrs['readonly'] = 'True'
         self.fields['deal_template_name'].widget.attrs.update({'readonly' : 'True'})
         self.fields['deal_template'].widget.attrs['class'] = 'hidden'
         self.fields['is_last_active_tab'].widget.attrs['class'] = 'last_active_tab'
         self.fields['deal_description'].widget.attrs['class'] = 'cb_deal_description'
+        self.fields['total_price'].widget.attrs['class'] = 'boxes_7em total_price'
+        
     
     class Meta:
         model = Deal
         fields = {'deal_template', 'deal_template_name', 'deal_instance_name', 'status', 
                   'deal_description', 'sales_item', 'price', 'currency', 'sales_term', 'quantity', 
-                  'is_last_active_tab'}
+                  'is_last_active_tab', 'total_price'}
         
 
     

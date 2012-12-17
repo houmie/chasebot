@@ -82,7 +82,7 @@
 								    	<li><a href="#">{% trans 'Create your deal' %}</a></li>
 								    </ul>
 						    </div>
-						    <div class="hide2" id="add_deals_dropdown">
+						    <div class="hide" id="add_deals_dropdown">
 						    	<div class="cb_inline_block">
 							    	<div class="cb_inline_block">                        
 						                {{deals_add_form.deal_template.label}}: 
@@ -94,12 +94,11 @@
 						        		</div>            	                        
 						            </div>
 					            </div>  
-						    </div>						    
+						    </div>
 	            			<div class="modal hide fade" id="deal_modal" tabindex="-1" role="dialog" aria-labelledby="deal_label" aria-hidden="true">
 								{% include 'deal_modal.html' %}
-							</div>            				            			
-	            			
-	            			<div class="hide">
+							</div>	            			
+	            			<div class="hide override_td">
     							{% include '_deal_edit.html' %}
     						</div>
 	            		</td>
