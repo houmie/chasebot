@@ -2,7 +2,7 @@ body {
     padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
 }
 
-.edit_table th, .edit_table td {
+.no_border_table th, .no_border_table td {
     border-top: 0;
 }
 
@@ -271,7 +271,8 @@ td.minwidth{
 }
 
 .cb_notes_maxwidth{
-	width: 18em;
+	width: 16em;
+	height: 7em;
 }
 
 .cb_deals_maxwidth{
@@ -350,10 +351,12 @@ input[type="checkbox"]{
 	margin-top: 1em; 
 }
 
-.cb_table-hover tbody tr:hover td:not(#X) ,
-.cb_table-hover tbody tr:hover th:not(#X) {
-  background-color: #cfe2e8;  
+
+table.cb_table-hover tbody tr:hover td,
+table.cb_table-hover tbody tr:hover th{
+  	background-color: #cfe2e8;  
 }
+
 
 
 .cb_table-hover tbody tr .icon-search{

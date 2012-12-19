@@ -3,22 +3,27 @@
 <td colspan="6">
 	<form id="save_edit_form" class="save_edit_form" method="post" action="/contact/{{contact_id}}/call/edit/{{call_id}}/">
 	    {% csrf_token %}
-	        <table class="table edit_table table-condensed">
+	        <table class="no_border_table">
 	        	<thead>
 	        		<tr>
-	        			<th class="test"></th>                        	
-                        <th class="cb_date_width">{% trans 'Date' %}</th>  
+	        			<th class="test"></th>   
+	        			<th></th>
+	        			<th></th>
+	        			<th></th>
+	        			<th></th>
+	        			<th></th>                     	
+                        <!-- <th class="cb_date_width">{% trans 'Date' %}</th>  
                         <th class="cb_time_width">{% trans 'Time' %}</th>                       
                         <th class="cb_subject_width">{% trans 'Subject' %}</th>
                         <th class="cb_notes_minwidth">{% trans 'Notes' %}</th>
-                        <!-- <th class="cb_deals_minwidth">{% trans 'Deals' %}</th>     -->
+                        <th class="cb_deals_minwidth">{% trans 'Deals' %}</th> -->     
 	        		</tr>
 	        	</thead>
 	            <tbody>
 	            	<tr>
 	            		<td class="test">	            					    				
-	            			<a id="save_edit_button" value="{% trans 'Save' %}" class="btn btn-primary"><i class="icon-ok icon-large"></i></a>
-	            			<a id="cancel_edit_button" href="/contact/{{contact_id}}/call/{{call_id}}" value="{% trans 'Cancel' %}" class="btn"><i class="icon-remove icon-large"></i></a>	            			
+	            			<a id="save_edit_button" value="{% trans 'Save' %}" class="btn btn-primary"><i class="icon-ok"></i></a>
+	            			<a id="cancel_edit_button" href="/contact/{{contact_id}}/call/{{call_id}}" value="{% trans 'Cancel' %}" class="btn"><i class="icon-remove"></i></a>	            			
 	            		</td>
 	            		<td>                        
 	                        {% if form.conversation_date.errors %}
@@ -49,7 +54,7 @@
 		                	{% endif %}                        
 	                    </td>
 	                    <td>
-	                    	<div class="accordion" id="accordion1">
+	                    	<!-- <div class="accordion" id="accordion1">
 								<div class="accordion-group">
 									<div class="accordion-heading">
 										<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#collapse1">
@@ -57,7 +62,7 @@
 										</a>
 									</div>
 									<div id="collapse1" class="accordion-body collapse">
-										<div class="accordion-inner">
+										<div class="accordion-inner"> -->
 											{% if form.notes.errors %}
 						                	<div class="field field_error">
 						                    	{{form.notes}} {{form.notes.errors}}                   	
@@ -65,22 +70,20 @@
 						                	{% else %}
 						                		{{form.notes}}
 						                	{% endif %}
-										</div>
+										<!-- </div>
 									</div>
 								</div>
-							</div>                                                
+							</div>     -->                                            
 	                    </td>
-	            	</tr>	 
-	            	<tr>	            		
-	            		<td colspan="6">
-	            			<div class='clipped_deals'></div>	
+	                    <td>
+	            			<div class='clipped_deals'></div>            			    
             			    <div class="dropdown">
 						    	<a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="/page.html">{% trans 'Attach a Deal'%}<b class="caret"></b></a>
-								    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-								    	<li><a href="#">{% trans 'Continue existing deal' %}</a></li>
-								    	<li><a id="add_pre_deal" href="#">{% trans 'Add pre-defined deal' %}</a></li>
-								    	<li><a href="#">{% trans 'Create your deal' %}</a></li>
-								    </ul>
+							    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+							    	<li><a href="#">{% trans 'Continue existing deal' %}</a></li>
+							    	<li><a id="add_pre_deal" href="#">{% trans 'Add pre-defined deal' %}</a></li>
+							    	<li><a href="#">{% trans 'Create your deal' %}</a></li>
+							    </ul>
 						    </div>
 						    <div class="hide" id="add_deals_dropdown">
 						    	<div class="cb_inline_block">
@@ -94,14 +97,14 @@
 						        		</div>            	                        
 						            </div>
 					            </div>  
-						    </div>
-	            			<div class="modal hide fade" id="deal_modal" tabindex="-1" role="dialog" aria-labelledby="deal_label" aria-hidden="true">
-								{% include 'deal_modal.html' %}
-							</div>	            			
-	            			<div class="hide override_td">
-    							{% include '_deal_edit.html' %}
-    						</div>
+						    </div>		
+							<div class="hide">
+								{% include '_deal_edit.html' %}
+							</div>           			
 	            		</td>
+	            	</tr>	 
+	            	<tr>	            		
+	            			            		
 	            	</tr>           	                					                					                
 	            	<tr class="hidden">
 	            		<td>

@@ -193,17 +193,20 @@ function row_edit_ajax(event) {
     	function (result) {
     		//Once loaded make sure the submit-form will be redirected to 'row_edit_save_ajax' once submitted. Url is parameter 
       		reload_edit_save_cancel_buttons($(row), url);
-      		$('#attached_deals_tab li a').each(function() {      			
-      			var btn = $('<a/>', {class: 'btn', href: $(this).attr('href')});
+      		//For each tab on attached deals tab control we create one button 
+      		$(result).find('#attached_deals_tab li a').each(function() {      			
+      			var btn = $('<a/>', {class: 'btn btn-small', href: $(this).attr('href')});
       			var icon = $('<i/>', {class: 'icon-paper-clip icon-large'}).appendTo(btn);
       			var span = $('<span/>', { class: 'badge badge-info', text: $(this).text()}).appendTo(btn);
       			$('.clipped_deals').append(btn);
       			
       			btn.click(function(event){
       				event.preventDefault();
-      				var cloned_div = $(btn.attr('href')).children().clone();
+      				//The btn's href is the same as its tab pendant's href, which in turn points to the tab content.
+      				//Hence we clone the content of the tab
+      				var cloned_tab_div = $(btn.attr('href')).children().clone();
       				$('#deal_modal_body').empty();
-      				$('#deal_modal_body').append(cloned_div);
+      				$('#deal_modal_body').append(cloned_tab_div);
       				rebind_attach_deals('#deal_modal_body');
       				show_modal('#deal_modal');
       			});
@@ -228,8 +231,7 @@ function show_modal(target){
         backdrop: true,
         keyboard: true
     }).css({
-        width: 'auto',
-        //overflowY: 'hidden',
+        width: 'auto',        
         'margin-left': function () {
             return -($(this).width() / 2);
         }
@@ -528,7 +530,7 @@ function invite_colleague(event){
 
 function demo(event){
 	event.preventDefault();
-	$(this).button(gettext('Loading'));	
+	$(this).button('loading');	
 	$('#form_demo').submit();	
 }
 
