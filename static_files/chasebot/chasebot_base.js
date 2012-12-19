@@ -191,6 +191,8 @@ function row_edit_ajax(event) {
 	row.load(
     	url,    	
     	function (result) {
+    		var call_id = $(row).find('#call_id').text();
+    		$(row).attr('id', call_id);
     		//Once loaded make sure the submit-form will be redirected to 'row_edit_save_ajax' once submitted. Url is parameter 
       		reload_edit_save_cancel_buttons($(row), url);
       		//For each tab on attached deals tab control we create one button 
@@ -198,26 +200,30 @@ function row_edit_ajax(event) {
       			var btn = $('<a/>', {class: 'btn btn-small', href: $(this).attr('href')});
       			var icon = $('<i/>', {class: 'icon-paper-clip icon-large'}).appendTo(btn);
       			var span = $('<span/>', { class: 'badge badge-info', text: $(this).text()}).appendTo(btn);
-      			$('.clipped_deals').append(btn);
+      			$(row).find('#clipped_deals').append(btn);
       			
       			btn.click(function(event){
       				event.preventDefault();
       				//The btn's href is the same as its tab pendant's href, which in turn points to the tab content.
-      				//Hence we clone the content of the tab
-      				var cloned_tab_div = $(btn.attr('href')).children().clone();
+      				//Hence we clone the content of the tab within the loaded row only.
+      				var cloned_tab_div = $(row).find(btn.attr('href')).children().clone();
       				$('#deal_modal_body').empty();
       				$('#deal_modal_body').append(cloned_tab_div);
-      				rebind_attach_deals('#deal_modal_body');
+      				$('#deal_modal_confirm_btn').off('click').on('click', function(event){
+      					event.preventDefault();
+      					
+      				});
+      				rebind_attach_deals('#deal_modal_body', row); //TODO: Recheck later
       				show_modal('#deal_modal');
       			});
       			
-      			$('#add_pre_deal').click(function(event){
+      			$(row).find('#add_pre_deal').click(function(event){
       				event.preventDefault();
-      				 var dropdown = $('#add_deals_dropdown div:first').clone();
+      				 var dropdown = $(row).find('#add_deals_dropdown div:first').clone();
       				 $('#deal_modal_body').empty();
       				 $('#deal_modal_body').append(dropdown);
-      				 $('#deal_modal_body').find('.add_deals_button').click(add_deals);
-      				 
+      				 $('#deal_modal_body').find('#add_deals_button').off('click').on('click', {row: row}, add_deals);      				 
+      				 $('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row}, add_deal_to_formset);
       				 show_modal('#deal_modal');
       			});
       		});

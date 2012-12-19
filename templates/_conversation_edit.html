@@ -1,6 +1,6 @@
 {% load i18n %}
 {% load tz %}
-<td colspan="6">
+<td colspan="6">	
 	<form id="save_edit_form" class="save_edit_form" method="post" action="/contact/{{contact_id}}/call/edit/{{call_id}}/">
 	    {% csrf_token %}
 	        <table class="no_border_table">
@@ -54,29 +54,16 @@
 		                	{% endif %}                        
 	                    </td>
 	                    <td>
-	                    	<!-- <div class="accordion" id="accordion1">
-								<div class="accordion-group">
-									<div class="accordion-heading">
-										<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion1" href="#collapse1">
-											{% trans 'Click here to edit the notes' %}
-										</a>
-									</div>
-									<div id="collapse1" class="accordion-body collapse">
-										<div class="accordion-inner"> -->
-											{% if form.notes.errors %}
-						                	<div class="field field_error">
-						                    	{{form.notes}} {{form.notes.errors}}                   	
-						                	</div>
-						                	{% else %}
-						                		{{form.notes}}
-						                	{% endif %}
-										<!-- </div>
-									</div>
-								</div>
-							</div>     -->                                            
+							{% if form.notes.errors %}
+		                	<div class="field field_error">
+		                    	{{form.notes}} {{form.notes.errors}}                   	
+		                	</div>
+		                	{% else %}
+		                		{{form.notes}}
+		                	{% endif %}                                        
 	                    </td>
 	                    <td>
-	            			<div class='clipped_deals'></div>            			    
+	            			<div id="clipped_deals"></div>            			    
             			    <div class="dropdown">
 						    	<a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="/page.html">{% trans 'Attach a Deal'%}<b class="caret"></b></a>
 							    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
@@ -93,7 +80,7 @@
 						            <div class="cb_inline_block">   
 						            	<div class="input-append">             
 							        		{{deals_add_form.deal_template}}
-							        		<button type="button" class="btn btn-success add_deals_button"><icon class="icon-white">{% trans 'Add' %}</icon></button>
+							        		<button type="button" id="add_deals_button" class="btn btn-success"><icon class="icon-white">{% trans 'Add' %}</icon></button>
 						        		</div>            	                        
 						            </div>
 					            </div>  

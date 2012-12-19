@@ -179,7 +179,7 @@
         	{{ attached_deals_formset.management_form }}
 			{% if attached_deals_formset %}
 				<td colspan="6">
-					<ul class="nav nav-tabs" id="attached_deals_tab">
+					<ul id="attached_deals_tab" class="nav nav-tabs">
 					{% for fs in attached_deals_formset %}
 						{{ fs.id }}						
 						<li class="{% if fs.is_last_active_tab.value%}active{% endif %}{% if fs.errors %} field field_error{%endif%}">							
