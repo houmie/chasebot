@@ -63,8 +63,9 @@ function get_deal_or_dealtemplate(selected_id, type, empty_X, path, row, contact
 				
 			empty_X.find('#id_deals-' + total + '-deal_template_name').attr('value', template_name);
 			empty_X.find('#id_deals-' + total + '-deal_instance_name').attr('value', deal_instance_name);
-		  	
-		  	empty_X.find('#id_deals-' + total + '-deal_description').attr('value', data[0].fields['deal_description']);
+					  	
+		  	//empty_X.find('#id_deals-' + total + '-deal_description').attr('value', data[0].fields['deal_description']);
+		  	empty_X.find('#id_deals-' + total + '-deal_description').text(data[0].fields['deal_description']);
 		  	empty_X.find('#id_deals-' + total + '-sales_term').val(data[0].fields['sales_term']);		  			  	
 		  	empty_X.find('#id_deals-' + total + '-price').attr('value', data[0].fields['price']);
 		  	empty_X.find('#id_deals-' + total + '-currency').val(data[0].fields['currency']);
@@ -101,7 +102,7 @@ function get_deal_or_dealtemplate(selected_id, type, empty_X, path, row, contact
 		    $('#previous_dealinstance_name').text(newname);
 		    //$('#deal_modal_body').empty();
 		    $('#deal_modal_body').append(empty_X);
-	    	rebind_attach_deals('#deal_modal_body');
+	    	rebind_attach_deals('#deal_modal_body', row);	    	
 		  }		  
 		});	
 }
@@ -140,8 +141,19 @@ function add_deal_to_formset(event){
     //Setting the id of tab content to the same url href of tab header, so that it can be found when user clicks on the tab header
     div.setAttribute('id', slug);
     
+    var source = $('#deal_modal_body').children('div').eq(1); 
+    
     //attaching the cloned element with json values to the tab content 
-    $(div).append($('#deal_modal_body').children('div').eq(1).clone());
+    $(div).append($(source).clone());
+    var currency = source.find('#id_deals-' + total + '-currency').val();
+    $(div).find('#id_deals-' + total + '-currency').val(currency);
+    var salesterm = source.find('#id_deals-' + total + '-sales_term').val();
+    $(div).find('#id_deals-' + total + '-sales_term').val(salesterm);
+    var deal_template = source.find('#id_deals-' + total + '-deal_template').val();   
+	$(div).find('#id_deals-' + total + '-deal_template').val(deal_template);  	
+    var sales_items = source.find('#id_deals-' + total + '-sales_item').val();        
+  	$(div).find('#id_deals-' + total + '-sales_item').val(sales_items);
+        
     $(row).find('#tab-content').append(div);
 
 	//TODO: solve by chosen instead
@@ -168,8 +180,8 @@ function add_deal_to_formset(event){
 function add_deals(event){
 	//Adding new deals
 	event.preventDefault();
-	
-	var row = $(event.data.row);
+		
+	var row = $(event.data.row);	
 	var type = 'deals';
 	var empty_X = cloneMore('#X div:first', type);
 		
@@ -178,6 +190,7 @@ function add_deals(event){
 	if (selected_id){
 		get_deal_or_dealtemplate(selected_id, type, empty_X, '/deal_template/', row);		
 	}
+	
 }
 
 function add_opendeals(event){

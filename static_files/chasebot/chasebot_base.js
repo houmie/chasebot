@@ -223,7 +223,7 @@ function row_edit_ajax(event) {
       				 $('#deal_modal_body').empty();
       				 $('#deal_modal_body').append(dropdown);
       				 $('#deal_modal_body').find('#add_deals_button').off('click').on('click', {row: row}, add_deals);      				 
-      				 $('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row}, add_deal_to_formset);
+      				 $('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row}, add_deal_to_formset);      				 
       				 show_modal('#deal_modal');
       			});
       		});
