@@ -181,6 +181,49 @@ function reload_edit_save_cancel_buttons(row, url){
 }
 
 
+function create_btn_deals(row){
+	//For each tab on attached deals tab control we create one button 
+	$(row).find('#clipped_deals').empty();
+	$(row).find('#attached_deals_tab li a').each(function() {      			
+		var btn = $('<a/>', {class: 'btn btn-small', href: $(this).attr('href')});
+		var icon = $('<i/>', {class: 'icon-paper-clip icon-large'}).appendTo(btn);
+		var span = $('<span/>', { class: 'badge badge-info', text: $(this).text()}).appendTo(btn);
+		$(row).find('#clipped_deals').append(btn);
+		
+		btn.click(function(event){
+			event.preventDefault();
+			//The btn's href is the same as its tab pendant's href, which in turn points to the tab content.
+			//Hence we clone the content of the tab within the loaded row only.
+			var cloned_tab_div = $(row).find(btn.attr('href')).children().clone();
+			$('#deal_modal_body').empty();
+			$('#deal_modal_body').append(cloned_tab_div);
+			
+			// var total = $(row).find('#attached_deals_tab li').length;
+			// var source = $(row).find(btn.attr('href')).children();
+			// var currency = source.find('#id_deals-' + total + '-currency').val();
+    		// $('#deal_modal_body').find('#id_deals-' + total + '-currency').val(currency);
+    		
+			$('#deal_modal_confirm_btn').off('click').on('click', function(event){
+				event.preventDefault();
+				
+			});
+			rebind_attach_deals('#deal_modal_body', row); //TODO: Recheck later
+			show_modal('#deal_modal');
+		});
+		
+		$(row).find('#add_pre_deal').click(function(event){
+			event.preventDefault();
+			 var dropdown = $(row).find('#add_deals_dropdown div:first').clone();
+			 $('#deal_modal_body').empty();
+			 $('#deal_modal_body').append(dropdown);
+			 $('#deal_modal_body').find('#add_deals_button').off('click').on('click', {row: row}, add_deals);      				 
+			 $('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row}, add_deal_to_formset);      				 
+			 show_modal('#deal_modal');
+		});
+	});
+}
+
+
 function row_edit_ajax(event) {
 	event.preventDefault();
 	// e.g. url = '/sales_item/edit/8' 
@@ -195,38 +238,7 @@ function row_edit_ajax(event) {
     		$(row).attr('id', call_id);
     		//Once loaded make sure the submit-form will be redirected to 'row_edit_save_ajax' once submitted. Url is parameter 
       		reload_edit_save_cancel_buttons($(row), url);
-      		//For each tab on attached deals tab control we create one button 
-      		$(result).find('#attached_deals_tab li a').each(function() {      			
-      			var btn = $('<a/>', {class: 'btn btn-small', href: $(this).attr('href')});
-      			var icon = $('<i/>', {class: 'icon-paper-clip icon-large'}).appendTo(btn);
-      			var span = $('<span/>', { class: 'badge badge-info', text: $(this).text()}).appendTo(btn);
-      			$(row).find('#clipped_deals').append(btn);
-      			
-      			btn.click(function(event){
-      				event.preventDefault();
-      				//The btn's href is the same as its tab pendant's href, which in turn points to the tab content.
-      				//Hence we clone the content of the tab within the loaded row only.
-      				var cloned_tab_div = $(row).find(btn.attr('href')).children().clone();
-      				$('#deal_modal_body').empty();
-      				$('#deal_modal_body').append(cloned_tab_div);
-      				$('#deal_modal_confirm_btn').off('click').on('click', function(event){
-      					event.preventDefault();
-      					
-      				});
-      				rebind_attach_deals('#deal_modal_body', row); //TODO: Recheck later
-      				show_modal('#deal_modal');
-      			});
-      			
-      			$(row).find('#add_pre_deal').click(function(event){
-      				event.preventDefault();
-      				 var dropdown = $(row).find('#add_deals_dropdown div:first').clone();
-      				 $('#deal_modal_body').empty();
-      				 $('#deal_modal_body').append(dropdown);
-      				 $('#deal_modal_body').find('#add_deals_button').off('click').on('click', {row: row}, add_deals);      				 
-      				 $('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row}, add_deal_to_formset);      				 
-      				 show_modal('#deal_modal');
-      			});
-      		});
+      		create_btn_deals(row);
     	}
   	);  	
 };
@@ -242,6 +254,7 @@ function show_modal(target){
             return -($(this).width() / 2);
         }
     });
+    
 	$(target).modal('show');
 }
 

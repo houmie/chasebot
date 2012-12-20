@@ -144,15 +144,15 @@ function add_deal_to_formset(event){
     var source = $('#deal_modal_body').children('div').eq(1); 
     
     //attaching the cloned element with json values to the tab content 
-    $(div).append($(source).clone());
-    var currency = source.find('#id_deals-' + total + '-currency').val();
-    $(div).find('#id_deals-' + total + '-currency').val(currency);
-    var salesterm = source.find('#id_deals-' + total + '-sales_term').val();
-    $(div).find('#id_deals-' + total + '-sales_term').val(salesterm);
-    var deal_template = source.find('#id_deals-' + total + '-deal_template').val();   
-	$(div).find('#id_deals-' + total + '-deal_template').val(deal_template);  	
-    var sales_items = source.find('#id_deals-' + total + '-sales_item').val();        
-  	$(div).find('#id_deals-' + total + '-sales_item').val(sales_items);
+    $(div).append($(source));
+    // var currency = source.find('#id_deals-' + total + '-currency').val();
+    // $(div).find('#id_deals-' + total + '-currency').val(currency);
+    // var salesterm = source.find('#id_deals-' + total + '-sales_term').val();
+    // $(div).find('#id_deals-' + total + '-sales_term').val(salesterm);
+    // var deal_template = source.find('#id_deals-' + total + '-deal_template').val();   
+	// $(div).find('#id_deals-' + total + '-deal_template').val(deal_template);  	
+    // var sales_items = source.find('#id_deals-' + total + '-sales_item').val();        
+  	// $(div).find('#id_deals-' + total + '-sales_item').val(sales_items);
         
     $(row).find('#tab-content').append(div);
 
@@ -167,7 +167,7 @@ function add_deal_to_formset(event){
 	}
 
 	//Now that everything is in place, show the tab actively								  				
-	$(a).tab('show');
+	//$(a).tab('show');
 	
 	//Now that its shown, change the m2m multi-selection field to a chosen type field. 
 	//$(row).find('#id_deals-' + total + '-sales_item').chosen({no_results_text: 'No results match'});
@@ -175,6 +175,9 @@ function add_deal_to_formset(event){
 	//Finally set the total form value within the formset to the number of added tabs, so that it can be saved in request.POST 
 	total = $(row).find('#attached_deals_tab li').length;
 	$(row).find('#id_deals-TOTAL_FORMS').attr('value', total);
+	
+	$('#deal_modal').modal('hide');
+	create_btn_deals(row);
 }
 
 function add_deals(event){
