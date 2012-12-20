@@ -1,8 +1,8 @@
-function cloneMore(selector, type) {
+function cloneMore(selector, type, row) {
 	//Selector is in this case the node to clone from (empty extra form in a separate section in the DOM tree)
     var empty_X = $(selector).clone(true);    
     //Total is teh number of available tabs (deals)
-    var total = $('#attached_deals_tab li').length;
+    var total = $(row).find('#attached_deals_tab li').length;
         
     //Rename each extra_deal-0- occurance of the cloned element to deals-total-, whatever total is currently     
     empty_X.find(':input').each(function() {
@@ -186,7 +186,7 @@ function add_deals(event){
 		
 	var row = $(event.data.row);	
 	var type = 'deals';
-	var empty_X = cloneMore('#X div:first', type);
+	var empty_X = cloneMore('#X div:first', type, row);
 		
 	//Getting the deal Template id from the selected dropdown
 	var selected_id = $('#deal_modal_body').find('.pre_defined_deal_dropdown option:selected').val()
@@ -199,8 +199,9 @@ function add_deals(event){
 function add_opendeals(event){
 	//Adding an open deal
 	event.preventDefault();
+	var row = $(event.data.row);
 	var type = 'deals';
-	var empty_X = cloneMore('#X div:first', type);
+	var empty_X = cloneMore('#X div:first', type, row);
 	
 	//Getting the open deal instance id from the selected dropdown
 	var selected_id = $('#id_opendeals_add_form-open_deal_template option:selected').val()
@@ -232,8 +233,8 @@ function rebind_attach_deals(parent, row){
 
 function rebind_add_deals(){
 	//rebind_attach_deals();
-	$("#add_deals_button").click(add_deals);
-	$("#add_opendeals_button").click(add_opendeals);
+	//$("#add_deals_button").click(add_deals);
+	//$("#add_opendeals_button").click(add_opendeals);
 	
 	//subscribing to an event for when tabs are clicked on, they should be made the only active-tab.
 	$('a[data-toggle="tab"]').on('shown', show_tab);

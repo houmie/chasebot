@@ -203,9 +203,14 @@ function create_btn_deals(row){
 			// var currency = source.find('#id_deals-' + total + '-currency').val();
     		// $('#deal_modal_body').find('#id_deals-' + total + '-currency').val(currency);
     		
-			$('#deal_modal_confirm_btn').off('click').on('click', function(event){
+			$('#deal_modal_confirm_btn').off('click').on('click', {btn:btn}, function(event){
 				event.preventDefault();
-				
+				var source = $('#deal_modal_body').children('div').clone();
+    			var target = $(row).find('#tab-content').find($(btn).attr('href'));    			
+    			target.empty();
+    			target.append($(source));
+    			$('#deal_modal').modal('hide');    			
+    			create_btn_deals(row);
 			});
 			rebind_attach_deals('#deal_modal_body', row); //TODO: Recheck later
 			show_modal('#deal_modal');
@@ -234,8 +239,6 @@ function row_edit_ajax(event) {
 	row.load(
     	url,    	
     	function (result) {
-    		var call_id = $(row).find('#call_id').text();
-    		$(row).attr('id', call_id);
     		//Once loaded make sure the submit-form will be redirected to 'row_edit_save_ajax' once submitted. Url is parameter 
       		reload_edit_save_cancel_buttons($(row), url);
       		create_btn_deals(row);
