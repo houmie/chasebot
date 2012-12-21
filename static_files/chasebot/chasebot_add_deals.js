@@ -51,8 +51,7 @@ function get_deal_or_dealtemplate(selected_id, type, empty_X, path, row, contact
 			}
 			else{
 				//otherwise we are adding a new deal and the returned json object will be a deal_template object, and therefore we need to check against deal_template specific fields
-				template_name = data[0].fields['deal_name'];
-				deal_instance_name = gettext('To be set after saving...');
+				template_name = data[0].fields['deal_name'];				
 			}
 
 			// Set all the values from json into the cloned fields accordingly

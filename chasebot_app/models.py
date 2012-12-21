@@ -248,11 +248,14 @@ class Deal(models.Model):
     quantity            = models.PositiveIntegerField(_(u'Quantity'))
     total_price         = models.DecimalField(_(u'Total'), decimal_places=2, max_digits=12, validators=[MinValueValidator(0.01)], blank=True, null=True)
     
-    def __unicode__(self): 
-        deal_name = ''
-        if self.deal_template:
-            deal_name = self.deal_template.deal_name            
-        return u'{0}{1}{2}'.format(deal_name, _(u' - Set No.'), self.set)
+    def __unicode__(self):
+        if self.deal_instance_name:
+            return self.deal_instance_name 
+        else:
+            deal_name = ''
+            if self.deal_template:
+                deal_name = self.deal_template.deal_name            
+            return u'{0}{1}{2}'.format(deal_name, _(u' - Set No.'), self.set)
     
     def save(self, *args, **kwargs):
         self.deal_instance_name = self.__unicode__()

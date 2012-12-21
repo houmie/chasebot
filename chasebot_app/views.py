@@ -36,6 +36,7 @@ import random
 from django.contrib.auth import authenticate, login
 from django.template.loader_tags import register
 
+
 ITEMS_PER_PAGE = 5
 
 def set_timezone(request):
@@ -299,7 +300,7 @@ def conversation_add_edit(request, contact_id, call_id=None):
             call.conversation_datetime = date_time
             call.save()
             
-            for fm in attached_deals_formset:                            
+            for fm in attached_deals_formset:
                 to_delete = fm.cleaned_data['DELETE']
                 if to_delete:
                     deal_to_delete = fm.save(commit=False)                    
@@ -349,7 +350,15 @@ def conversation_add_edit(request, contact_id, call_id=None):
                             set_val = set_dic.get('set__max', 0)
                             if not set_val:
                                 set_val = 0
-                            deal.set=set_val+1                        
+                            deal.set=set_val+1
+                        else:
+                            #In case the instance name was changed we change also all other instance names of the same set.
+                            set_of_same_deal = contact.deal_set.filter(deal_id = deal.deal_id)                            
+                            for sdeal in set_of_same_deal:
+                                if sdeal.pk != deal.pk:
+                                    if sdeal.deal_instance_name != deal.deal_instance_name: 
+                                        sdeal.deal_instance_name = deal.deal_instance_name
+                                        sdeal.save()                        
                         deal.save()
                         fm.save_m2m()
                         #If the attached or even new deal are closed, we need to remove all later entries of this instance on later conversations.
@@ -373,9 +382,6 @@ def conversation_add_edit(request, contact_id, call_id=None):
     #if call_id:
     return render(request, '_conversation_edit.html', variables)      
     #return render(request, '_conversation.html', variables)
-
-
-
 
 
 @login_required
