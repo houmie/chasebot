@@ -65,9 +65,10 @@
 	                    <td>
 	            			<div id="clipped_deals"></div>            			    
             			    <div class="dropdown">
+            			    	<i class="icon-paper-clip icon-large"></i>
 						    	<a class="dropdown-toggle" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="/page.html">{% trans 'Attach a Deal'%}<b class="caret"></b></a>
 							    <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-							    	<li><a href="#">{% trans 'Continue existing deal' %}</a></li>
+							    	<li><a id="continue_deal" href="#">{% trans 'Continue existing deal' %}</a></li>
 							    	<li><a id="add_pre_deal" href="#">{% trans 'Add pre-defined deal' %}</a></li>
 							    	<li><a href="#">{% trans 'Create your deal' %}</a></li>
 							    </ul>
@@ -83,6 +84,20 @@
 							        		<button type="button" id="add_deals_button" class="btn btn-success"><icon class="icon-white">{% trans 'Add' %}</icon></button>
 						        		</div>            	                        
 						            </div>
+					            </div>  
+						    </div>
+						    <div class="hide" id="add_opendeals_dropdown">
+						    	<div class="cb_inline_block">
+							    	<div class="cb_inline_block">                        
+						                {{opendeals_add_form.open_deal_template.label}}: 
+						            </div>        	
+						            <div class="cb_inline_block">						            	
+						        		<div class="input-append">
+							        		{{opendeals_add_form.open_deal_template}}            	          
+							            	<button type="button" id="add_opendeals_button" class="btn btn-success"><icon class="icon-white">{% trans 'Add' %}</icon></button>
+						            	</div>      
+						            	<div id="contact_id" class="hidden">{{contact_id}}</div>      	                        
+						            </div>						            
 					            </div>  
 						    </div>		
 							<div class="hide">

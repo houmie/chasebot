@@ -186,7 +186,7 @@ function create_btn_deals(row){
 	$(row).find('#clipped_deals').empty();
 	$(row).find('#attached_deals_tab li a').each(function() {      			
 		var btn = $('<a/>', {class: 'btn btn-small', href: $(this).attr('href')});
-		var icon = $('<i/>', {class: 'icon-paper-clip icon-large'}).appendTo(btn);
+		//var icon = $('<i/>', {class: 'icon-paper-clip icon-large'}).appendTo(btn);
 		var span = $('<span/>', { class: 'badge badge-info', text: $(this).text()}).appendTo(btn);
 		$(row).find('#clipped_deals').append(btn);
 		
@@ -198,10 +198,7 @@ function create_btn_deals(row){
 			$('#deal_modal_body').empty();
 			$('#deal_modal_body').append(cloned_tab_div);
 			
-			// var total = $(row).find('#attached_deals_tab li').length;
-			// var source = $(row).find(btn.attr('href')).children();
-			// var currency = source.find('#id_deals-' + total + '-currency').val();
-    		// $('#deal_modal_body').find('#id_deals-' + total + '-currency').val(currency);
+			var total = $(row).find('#attached_deals_tab li').length;			
     		
 			$('#deal_modal_confirm_btn').off('click').on('click', {btn:btn}, function(event){
 				event.preventDefault();				
@@ -220,6 +217,7 @@ function create_btn_deals(row){
 				}				
 			});
 			rebind_attach_deals('#deal_modal_body', row); //TODO: Recheck later
+			calc_total_price(total-1);   
 			show_modal('#deal_modal');
 		});
 		
@@ -230,10 +228,36 @@ function create_btn_deals(row){
 			 $('#deal_modal_body').append(dropdown);
 			 $('#deal_modal_body').find('#add_deals_button').off('click').on('click', {row: row}, add_deals);      				 
 			 $('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row}, add_deal_to_formset);      				 
+			 
 			 show_modal('#deal_modal');
 		});
+		
+		$(row).find('#continue_deal').click(function(event){
+			event.preventDefault();
+			 var dropdown = $(row).find('#add_opendeals_dropdown div:first').clone();
+			 $('#deal_modal_body').empty();
+			 $('#deal_modal_body').append(dropdown);
+			 $('#deal_modal_body').find('#add_opendeals_button').off('click').on('click', {row: row}, add_opendeals);      				 
+			 $('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row}, add_deal_to_formset);     				 
+			 
+			 show_modal('#deal_modal');
+		});	
+		
 	});
 }
+
+function calc_total_price(total){
+	$('#deal_modal_body').find('.quantity').off('change').on('change',{total:total}, calc_totals);
+	$('#deal_modal_body').find('.price').off('change').on('change', {total:total}, calc_totals);
+}
+
+function calc_totals(event){	
+	var total = event.data.total;
+  	var total_price = $('#deal_modal_body').find('.quantity').val() * $('#deal_modal_body').find('.price').val();
+	total_price = (Math.round(total_price*100)/100);
+	$('#id_deals-' + total + '-total_price').val(total_price); 
+}
+
 
 function check_for_errors(selects){
 	var found_error = false;

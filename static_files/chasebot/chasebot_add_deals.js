@@ -86,10 +86,10 @@ function get_deal_or_dealtemplate(selected_id, type, empty_X, path, row, contact
 		  		vals.push(data[0].fields['sales_item'][i]);
 		  	empty_X.find('#id_deals-' + total + '-sales_item').val(vals);
 
-			var newname = '';
+			//var newname = '';
 		    if(contact_id){
 		    	//Open deal
-				newname = deal_instance_name;
+				//newname = deal_instance_name;
 				//We need to populate the open_deal_id that was selected from dropdown into a hidden field. This will be later used in request.POST on server
 				// to load the former open deal instance 
 				//TODO: Maybe we could pass UUID of the deal and the set by json, so that we don't have to load the open_deal again in request.POST'
@@ -98,15 +98,16 @@ function get_deal_or_dealtemplate(selected_id, type, empty_X, path, row, contact
 		    //else{
 		    	//newname = template_name;		    			    	
 		    //}		    	
-		    $('#previous_dealinstance_name').text(newname);
-		    //$('#deal_modal_body').empty();
+		    //$('#previous_dealinstance_name').text(newname);
+		    
 		    $('#deal_modal_body').append(empty_X);
-	    	rebind_attach_deals('#deal_modal_body', row);	    	
+	    	rebind_attach_deals('#deal_modal_body', row);	    	 
+	    	calc_total_price(total);    	
 		  }		  
 		});	
 }
 
-function add_deal_to_formset(event){
+function add_deal_to_formset(event){ 
 	event.preventDefault();
 	
 	var found_error = false;				
@@ -119,11 +120,11 @@ function add_deal_to_formset(event){
 	}
 	
 	var row = $(event.data.row);
-	var newname = $('#previous_dealinstance_name').text();
+	//var newname = $('#previous_dealinstance_name').text();
 	var total = $(row).find('#attached_deals_tab li').length;
-	if(!newname){
-		newname = $('#deal_modal_body').find('#id_deals-' + total + '-deal_instance_name').val();
-	}		
+	//if(!newname){
+	newname = $('#deal_modal_body').find('#id_deals-' + total + '-deal_instance_name').val();
+	//}		
 		
 	//The newname either template_name or instance_name will be stripped from spaces and dots and replaced with _. So that its compatible for URL id's
     var slug =  newname.replace(/ /g,"_").replace(/\./g,"_");
@@ -207,13 +208,14 @@ function add_deals(event){
 function add_opendeals(event){
 	//Adding an open deal
 	event.preventDefault();
+	
 	var row = $(event.data.row);
 	var type = 'deals';
 	var empty_X = cloneMore('#X div:first', type, row);
 	
 	//Getting the open deal instance id from the selected dropdown
-	var selected_id = $('#id_opendeals_add_form-open_deal_template option:selected').val()
-	var contact_id = $('#contact_id').text()
+	var selected_id = $('#deal_modal_body').find('#id_opendeals_add_form-open_deal_template option:selected').val()
+	var contact_id = $('#deal_modal_body').find('#contact_id').text()
 	if (selected_id){
 		get_deal_or_dealtemplate(selected_id, type, empty_X, '/open_deal/', row, contact_id);		
 	}

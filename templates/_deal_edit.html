@@ -1,21 +1,6 @@
 {% load i18n %}
 <table class="table edit" id="deals">	
-    <tbody>    	
-    	<tr>
-      	          	
-        </tr>
-        <tr>
-        	<td>                        
-                {{opendeals_add_form.open_deal_template.label}}:
-            </td>        	
-            <td>                
-            	<div class="input-append">
-	        		{{opendeals_add_form.open_deal_template}}            	          
-	            	<button type="button" id="add_opendeals_button" class="btn btn-success"><icon class="icon-white">{% trans 'Add' %}</icon></button>
-            	</div>
-            	<div id="contact_id" class="hidden">{{contact_id}}</div>
-            </td>        	            	
-        </tr>    
+    <tbody>    	    
         <tr class="hidden">
         	<td id="X" class="hidden">
         		{{extra_deal_formset.management_form}}
