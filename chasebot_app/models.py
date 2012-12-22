@@ -239,7 +239,7 @@ class Deal(models.Model):
     deal_datetime       = models.DateTimeField()
     conversation        = models.ForeignKey(Conversation)
     set                 = models.PositiveIntegerField(_(u'Set Number'))
-    deal_instance_name  = models.CharField(_(u'Deal Name'), max_length=100, blank=True)        
+    deal_instance_name  = models.CharField(_(u'Deal Name'), max_length=100)        
     deal_description    = models.TextField(_(u'Deal Description'),     blank=True)    
     price               = models.DecimalField(_(u'Price'), decimal_places=2, max_digits=12, validators=[MinValueValidator(0.01)])
     sales_item          = models.ManyToManyField(SalesItem)
@@ -249,16 +249,16 @@ class Deal(models.Model):
     total_price         = models.DecimalField(_(u'Total'), decimal_places=2, max_digits=12, validators=[MinValueValidator(0.01)], blank=True, null=True)
     
     def __unicode__(self):
-        if self.deal_instance_name:
-            return self.deal_instance_name 
-        else:
-            deal_name = ''
-            if self.deal_template:
-                deal_name = self.deal_template.deal_name            
-            return u'{0}{1}{2}'.format(deal_name, _(u' - Set No.'), self.set)
+        #if self.deal_instance_name:
+        return self.deal_instance_name 
+#        else:
+#            deal_name = ''
+#            if self.deal_template:
+#                deal_name = self.deal_template.deal_name            
+#            return u'{0}{1}{2}'.format(deal_name, _(u' - Set No.'), self.set)
     
     def save(self, *args, **kwargs):
-        self.deal_instance_name = self.__unicode__()
+        #self.deal_instance_name = self.__unicode__()
         self.deal_template_name = self.deal_template.deal_name
         self.total_price = self.quantity * self.price
         super(Deal, self).save(*args, **kwargs) # Call the "real" save() method.

@@ -33,7 +33,7 @@ div.field_error ul{
 }
 
 
-div.field_error li, div.field_error p{
+div.field_error li, div.field_error p, div.field_error{
 	color: red;
 }
 

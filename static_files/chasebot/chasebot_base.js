@@ -204,13 +204,20 @@ function create_btn_deals(row){
     		// $('#deal_modal_body').find('#id_deals-' + total + '-currency').val(currency);
     		
 			$('#deal_modal_confirm_btn').off('click').on('click', {btn:btn}, function(event){
-				event.preventDefault();
-				var source = $('#deal_modal_body').children('div').clone();
-    			var target = $(row).find('#tab-content').find($(btn).attr('href'));    			
-    			target.empty();
-    			target.append($(source));
-    			$('#deal_modal').modal('hide');    			
-    			create_btn_deals(row);
+				event.preventDefault();				
+				var found_error = false;				
+				var selects = $('#deal_modal_body').find('select.mandatory');
+				found_error += check_for_errors(selects, found_error);				
+				var selects = $('#deal_modal_body').find('input.mandatory');
+				found_error += check_for_errors(selects, found_error);			
+				if(!found_error){
+					var source = $('#deal_modal_body').children('div').clone();
+	    			var target = $(row).find('#tab-content').find($(btn).attr('href'));    			
+	    			target.empty();
+	    			target.append($(source));
+	    			$('#deal_modal').modal('hide');    			
+	    			create_btn_deals(row);					
+				}				
 			});
 			rebind_attach_deals('#deal_modal_body', row); //TODO: Recheck later
 			show_modal('#deal_modal');
@@ -226,6 +233,20 @@ function create_btn_deals(row){
 			 show_modal('#deal_modal');
 		});
 	});
+}
+
+function check_for_errors(selects){
+	var found_error = false;
+	for (var i=0; i < selects.length; i++){
+		if($(selects[i]).val() == ""){
+			$(selects[i]).siblings('.field_error').show();
+			found_error = true;
+		}	
+		else if($(selects[i]).siblings('.field_error').is(':visible')){
+			$(selects[i]).siblings('.field_error').hide();						
+		}
+	}
+	return found_error;
 }
 
 

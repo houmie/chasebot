@@ -249,18 +249,20 @@ class DealForm(ModelForm):
     
     def __init__(self, *args, **kwargs):
         super(DealForm, self).__init__(*args, **kwargs)                       
-        self.fields['status'].widget.attrs['class'] = 'boxes_8em'
-        self.fields['price'].widget.attrs['class'] = 'boxes_7em price'
-        self.fields['quantity'].widget.attrs['class'] = 'boxes_7em quantity'
-        self.fields['sales_term'].widget.attrs['class'] = 'boxes_8em'
-        self.fields['currency'].widget.attrs['class'] = 'boxes_8em'
+        self.fields['status'].widget.attrs['class'] = 'boxes_8em mandatory'
+        self.fields['price'].widget.attrs['class'] = 'boxes_7em price mandatory'
+        self.fields['quantity'].widget.attrs['class'] = 'boxes_7em quantity mandatory'
+        self.fields['sales_term'].widget.attrs['class'] = 'boxes_8em mandatory'
+        self.fields['currency'].widget.attrs['class'] = 'boxes_8em mandatory'
 
-        self.fields['deal_instance_name'].widget.attrs['placeholder'] = _(u'Define an optional name')
+        self.fields['deal_instance_name'].widget.attrs['placeholder'] = _(u'Define an deal name')
+        self.fields['deal_instance_name'].widget.attrs['class'] = 'mandatory'
         self.fields['deal_template_name'].widget.attrs.update({'readonly' : 'True'})
         self.fields['deal_template'].widget.attrs['class'] = 'hidden'
         self.fields['is_last_active_tab'].widget.attrs['class'] = 'last_active_tab'
         self.fields['deal_description'].widget.attrs['class'] = 'cb_deal_description'
         self.fields['total_price'].widget.attrs['class'] = 'boxes_7em total_price'
+        self.fields['total_price'].widget.attrs['readonly'] = 'True'
         
     
     class Meta:

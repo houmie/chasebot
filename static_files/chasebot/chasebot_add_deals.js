@@ -109,6 +109,15 @@ function get_deal_or_dealtemplate(selected_id, type, empty_X, path, row, contact
 function add_deal_to_formset(event){
 	event.preventDefault();
 	
+	var found_error = false;				
+	var selects = $('#deal_modal_body').find('select.mandatory');
+	found_error += check_for_errors(selects, found_error);				
+	var selects = $('#deal_modal_body').find('input.mandatory');
+	found_error += check_for_errors(selects, found_error);			
+	if(found_error){ 
+		return;
+	}
+	
 	var row = $(event.data.row);
 	var newname = $('#previous_dealinstance_name').text();
 	var total = $(row).find('#attached_deals_tab li').length;
@@ -128,7 +137,7 @@ function add_deal_to_formset(event){
 	li.appendChild(a);
 	
 	//Subscribing an event to this tab when it would go active in order to determine teh active tab.
-	$(a).on('shown', show_tab);
+	//$(a).on('shown', show_tab);
     
     //Attaching the tab header
     $(row).find('#attached_deals_tab').append(li);
