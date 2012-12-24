@@ -250,9 +250,10 @@ class DealForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(DealForm, self).__init__(*args, **kwargs)                       
         self.fields['status'].widget.attrs['class'] = 'boxes_8em mandatory'
-        self.fields['price'].widget.attrs['class'] = 'boxes_7em price mandatory'
+        self.fields['price'].widget.attrs['class'] = 'boxes_7em price mandatory digit'
         self.fields['quantity'].widget.attrs['class'] = 'boxes_7em quantity mandatory'
         self.fields['sales_term'].widget.attrs['class'] = 'boxes_8em mandatory'
+        self.fields['sales_item'].widget.attrs['class'] = 'multi_select_mandatory'
         self.fields['currency'].widget.attrs['class'] = 'boxes_8em mandatory'
 
         self.fields['deal_instance_name'].widget.attrs['placeholder'] = _(u'Define an deal name')

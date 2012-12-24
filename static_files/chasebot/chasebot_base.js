@@ -181,6 +181,64 @@ function reload_edit_save_cancel_buttons(row, url){
 }
 
 
+function validation_rules(){
+	// add the rule here
+	$.validator.addMethod("valueNotEquals", function(value, element, arg){
+		return arg != value;
+	}, gettext('Please select an item!'));
+	
+	var validator = $('#deal_modal_form').validate({
+	  	// options
+		errorPlacement: function(error, element){
+		  	var field_error = $('#deal_modal_form').find('#id_' + element.attr('name')).siblings('.field_error');
+			error.appendTo(field_error);
+			$(field_error).show();
+		},
+		ignore: ':hidden:not(.chzn-done)'						  
+	});
+	
+	$('#deal_modal_form').find('.quantity').each(function(){
+		$(this).rules('add', {
+			required: true,
+		      digits: true
+		});
+	});
+	
+	$('#deal_modal_form').find('.price').each(function(){
+		$(this).rules('add', {
+			required: true,
+		      number: true
+		});
+	});
+
+	
+	$('#deal_modal_form').find('select.mandatory').each(function(){
+		$(this).change(function(){
+			$(this).valid();
+		});
+		$(this).rules('add', {
+			valueNotEquals: ""
+		});				
+	});
+	
+	$('#deal_modal_form').find('input.mandatory').each(function(){		
+		$(this).rules('add', {
+			required: true,
+		});				
+	});
+	
+	$('#deal_modal_form').find('select.multi_select_mandatory').each(function(){
+		$(this).chosen().change(function(){
+			$(this).valid();
+		});
+		$(this).rules('add', {
+			required: true,
+		});
+	});
+	
+	return validator;
+}
+
 function create_btn_deals(row){
 	//For each tab on attached deals tab control we create one button 
 	$(row).find('#clipped_deals').empty();
@@ -196,26 +254,26 @@ function create_btn_deals(row){
 			//Hence we clone the content of the tab within the loaded row only.
 			var cloned_tab_div = $(row).find(btn.attr('href')).children().clone();
 			$('#deal_modal_body').empty();
-			$('#deal_modal_body').append(cloned_tab_div);
+			var form = $('<form/>', {id: 'deal_modal_form', action: '.', method: 'get'}).append(cloned_tab_div);		
+			$('#deal_modal_body').append(form);
 			
 			var total = $(row).find('#attached_deals_tab li').length;			
+
+    		var validator = validation_rules();						
     		
-			$('#deal_modal_confirm_btn').off('click').on('click', {btn:btn}, function(event){
+			$('#deal_modal_confirm_btn').off('click').on('click', {validator:validator, btn:btn}, function(event){
 				event.preventDefault();				
-				var found_error = false;				
-				var selects = $('#deal_modal_body').find('select.mandatory');
-				found_error += check_for_errors(selects, found_error);				
-				var selects = $('#deal_modal_body').find('input.mandatory');
-				found_error += check_for_errors(selects, found_error);			
-				if(!found_error){
-					var source = $('#deal_modal_body').children('div').clone();
+							
+				if(validator.invalidElements().length == 0){
+					var source = $('#deal_modal_body').children('form').children('div').clone();
 	    			var target = $(row).find('#tab-content').find($(btn).attr('href'));    			
 	    			target.empty();
 	    			target.append($(source));
 	    			$('#deal_modal').modal('hide');    			
 	    			create_btn_deals(row);					
 				}				
-			});
+			});		
+			
 			rebind_attach_deals('#deal_modal_body', row); //TODO: Recheck later
 			calc_total_price(total-1);   
 			show_modal('#deal_modal');
@@ -225,7 +283,8 @@ function create_btn_deals(row){
 			event.preventDefault();
 			 var dropdown = $(row).find('#add_deals_dropdown div:first').clone();
 			 $('#deal_modal_body').empty();
-			 $('#deal_modal_body').append(dropdown);
+			 var form = $('<form/>', {id: 'deal_modal_form', action: '.', method: 'get'}).append(dropdown);
+			 $('#deal_modal_body').append(form);			 
 			 $('#deal_modal_body').find('#add_deals_button').off('click').on('click', {row: row}, add_deals);      				 
 			 $('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row}, add_deal_to_formset);      				 
 			 
@@ -236,7 +295,8 @@ function create_btn_deals(row){
 			event.preventDefault();
 			 var dropdown = $(row).find('#add_opendeals_dropdown div:first').clone();
 			 $('#deal_modal_body').empty();
-			 $('#deal_modal_body').append(dropdown);
+			 var form = $('<form/>', {id: 'deal_modal_form', action: '.', method: 'get'}).append(dropdown);
+			 $('#deal_modal_body').append(form);
 			 $('#deal_modal_body').find('#add_opendeals_button').off('click').on('click', {row: row}, add_opendeals);      				 
 			 $('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row}, add_deal_to_formset);     				 
 			 
@@ -251,26 +311,11 @@ function calc_total_price(total){
 	$('#deal_modal_body').find('.price').off('change').on('change', {total:total}, calc_totals);
 }
 
-function calc_totals(event){	
+function calc_totals(event){		
 	var total = event.data.total;
   	var total_price = $('#deal_modal_body').find('.quantity').val() * $('#deal_modal_body').find('.price').val();
 	total_price = (Math.round(total_price*100)/100);
-	$('#id_deals-' + total + '-total_price').val(total_price); 
-}
-
-
-function check_for_errors(selects){
-	var found_error = false;
-	for (var i=0; i < selects.length; i++){
-		if($(selects[i]).val() == ""){
-			$(selects[i]).siblings('.field_error').show();
-			found_error = true;
-		}	
-		else if($(selects[i]).siblings('.field_error').is(':visible')){
-			$(selects[i]).siblings('.field_error').hide();						
-		}
-	}
-	return found_error;
+	$('#deal_modal_body').find('.total_price').val(total_price); 
 }
 
 

@@ -100,9 +100,10 @@ function get_deal_or_dealtemplate(selected_id, type, empty_X, path, row, contact
 		    //}		    	
 		    //$('#previous_dealinstance_name').text(newname);
 		    
-		    $('#deal_modal_body').append(empty_X);
+		    $('#deal_modal_body').children('form').append(empty_X);
 	    	rebind_attach_deals('#deal_modal_body', row);	    	 
-	    	calc_total_price(total);    	
+	    	calc_total_price(total);   
+	    	validator = validation_rules();	
 		  }		  
 		});	
 }
@@ -110,13 +111,9 @@ function get_deal_or_dealtemplate(selected_id, type, empty_X, path, row, contact
 function add_deal_to_formset(event){ 
 	event.preventDefault();
 	
-	var found_error = false;				
-	var selects = $('#deal_modal_body').find('select.mandatory');
-	found_error += check_for_errors(selects, found_error);				
-	var selects = $('#deal_modal_body').find('input.mandatory');
-	found_error += check_for_errors(selects, found_error);			
-	if(found_error){ 
-		return;
+	validator.form();
+	if(validator.invalidElements().length > 0){
+		return;	
 	}
 	
 	var row = $(event.data.row);
@@ -150,7 +147,7 @@ function add_deal_to_formset(event){
     //Setting the id of tab content to the same url href of tab header, so that it can be found when user clicks on the tab header
     div.setAttribute('id', slug);
     
-    var source = $('#deal_modal_body').children('div').eq(1); 
+    var source = $('#deal_modal_body').children('form').children('div').eq(1); 
     
     //attaching the cloned element with json values to the tab content 
     $(div).append($(source));
