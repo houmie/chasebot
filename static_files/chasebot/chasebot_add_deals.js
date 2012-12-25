@@ -18,7 +18,7 @@ function cloneMore(selector, type, row) {
 }
 
 
-function get_deal_or_dealtemplate(selected_id, type, empty_X, path, row, contact_id){	 	
+function fill_emptyX_with_predefined_or_existing_data(selected_id, type, empty_X, path, row, contact_id){	 	
 	var url = '';
 	
 	//If contact_id is provided it means that we are dealing with an open deal, since we need to open the existing open instance for further processing
@@ -197,9 +197,22 @@ function add_deals(event){
 	//Getting the deal Template id from the selected dropdown
 	var selected_id = $('#deal_modal_body').find('.pre_defined_deal_dropdown option:selected').val()
 	if (selected_id){
-		get_deal_or_dealtemplate(selected_id, type, empty_X, '/deal_template/', row);		
-	}
+		fill_emptyX_with_predefined_or_existing_data(selected_id, type, empty_X, '/deal_template/', row);		
+	}	
+}
+
+function new_deal(event){
+	//Adding new deals
+	event.preventDefault();
+		
+	var row = $(event.data.row);	
+	var type = 'deals';
+	var empty_X = cloneMore('#X div:first', type, row);
 	
+	$('#deal_modal_body').children('form').append(empty_X);
+	rebind_attach_deals('#deal_modal_body', row);	    	 
+	calc_total_price(total);   
+	validator = validation_rules();			
 }
 
 function add_opendeals(event){
@@ -214,7 +227,7 @@ function add_opendeals(event){
 	var selected_id = $('#deal_modal_body').find('#id_opendeals_add_form-open_deal_template option:selected').val()
 	var contact_id = $('#deal_modal_body').find('#contact_id').text()
 	if (selected_id){
-		get_deal_or_dealtemplate(selected_id, type, empty_X, '/open_deal/', row, contact_id);		
+		fill_emptyX_with_predefined_or_existing_data(selected_id, type, empty_X, '/open_deal/', row, contact_id);		
 	}
 }
 

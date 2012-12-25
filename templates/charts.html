@@ -32,10 +32,7 @@
 	</thead>
 	<tbody>		
 		{% for deal in deals %}
-		<tr class="{{forloop.counter0}}">
-			<td>
-				{{deal.deal_template}} - Set No. {{deal.set}}
-			</td>
+		<tr class="{{forloop.counter0}}">			
 			<td>
 				{{deal.status}}
 			</td>

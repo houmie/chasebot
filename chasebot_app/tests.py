@@ -42,8 +42,8 @@ def setup_DealTemplate(self):
 #Fixture for creating a deal item per company 
 def setup_deal(self):
         self.deal_status = DealStatus.objects.create(deal_status = 'deal_status')
-        self.deal1 = Deal.objects.create(deal_id = uuid.uuid1(), status = self.deal_status, contact = self.contact1a, deal_template = self.deal_template1, conversation = self.call1, set = 1)
-        self.deal2 = Deal.objects.create(deal_id = uuid.uuid1(), status = self.deal_status, contact = self.contact2, deal_template = self.deal_template2, conversation = self.call21, set = 1)
+        self.deal1 = Deal.objects.create(deal_id = uuid.uuid1(), status = self.deal_status, contact = self.contact1a, deal_template = self.deal_template1, conversation = self.call1, )
+        self.deal2 = Deal.objects.create(deal_id = uuid.uuid1(), status = self.deal_status, contact = self.contact2, deal_template = self.deal_template2, conversation = self.call21, )
 
 #Fixture for creating a deal_template item per company 
 def setup_sales_term(self):

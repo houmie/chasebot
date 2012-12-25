@@ -153,17 +153,15 @@ def demo_continue(request, username, password, email):
     web.save()
     
     call1 = c1.conversation_set.create(conversation_datetime=timezone.now(), subject='Initial Offer', notes=_(u'%(name)s doesn\'t seem too keen on the new offer. Maybe a discount would be helpful.') % {'name' : 'John'})
-    set_dic = c1.deal_set.filter(deal_template_id=holiday.id).aggregate(Max('set'))                            
-    set_val = set_dic.get('set__max', 0)
-    if not set_val:
-        set_val = 0    
+
     deal1 = c1.deal_set.create(
                         conversation = call1,
                         deal_datetime=call1.conversation_datetime, 
                         status=DealStatus.objects.get(pk=1),                         
                         deal_template=holiday,
                         deal_template_name=holiday.deal_name,
-                        set=set_val+1,
+                        deal_instance_name=holiday.deal_name + u'- Deal 2013',
+                        
                         deal_description = holiday.deal_description,
                         price = holiday.price,        
                         currency = holiday.currency,                
@@ -183,7 +181,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
-                        set=deal1.set,
+                        
                         deal_description = deal1.deal_description,
                         price = deal1.price - deal1.price * 0.05,
                         currency = deal1.currency,                
@@ -203,7 +201,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal2.deal_template,
                         deal_template_name=deal2.deal_template_name,
                         deal_instance_name=deal2.deal_instance_name,
-                        set=deal2.set,
+                        
                         deal_description = deal2.deal_description,
                         price = deal2.price,
                         currency = deal2.currency,                
@@ -215,17 +213,15 @@ def demo_continue(request, username, password, email):
     deal3.save()
 
     call1 = c2.conversation_set.create(conversation_datetime=timezone.now(), subject=_(u'Initial Offer'), notes=_(u'%(name)s looks for a cloud solution for her B2B business. I will try to see if our Website package might interest her.') % {'name' : 'Ashley' })
-    set_dic = c2.deal_set.filter(deal_template_id=holiday.id).aggregate(Max('set'))                            
-    set_val = set_dic.get('set__max', 0)
-    if not set_val:
-        set_val = 0    
+   
     deal1 = c2.deal_set.create(
                         conversation = call1,
                         deal_datetime=call1.conversation_datetime, 
                         status=DealStatus.objects.get(pk=1),                         
                         deal_template=web,
                         deal_template_name=web.deal_name,
-                        set=set_val+1,
+                        deal_instance_name=web.deal_name + u'- Special Offer',
+                        
                         deal_description = web.deal_description,
                         price = web.price,        
                         currency = web.currency,                
@@ -245,7 +241,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
-                        set=deal1.set,
+                        
                         deal_description = deal1.deal_description,
                         price = deal1.price,
                         currency = deal1.currency,                
@@ -265,7 +261,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal2.deal_template,
                         deal_template_name=deal2.deal_template_name,
                         deal_instance_name=deal2.deal_instance_name,
-                        set=deal2.set,
+                        
                         deal_description = deal2.deal_description,
                         price = deal2.price,
                         currency = deal2.currency,                
@@ -277,17 +273,15 @@ def demo_continue(request, username, password, email):
     deal3.save()
 
     call1 = c3.conversation_set.create(conversation_datetime=timezone.now(), subject=_(u'Initial Offer'), notes=_(u'%(name)s is interested in purchasing 25 lunch deals for her food store.') % {'name' : 'Silvia'})
-    set_dic = c3.deal_set.filter(deal_template_id=holiday.id).aggregate(Max('set'))                            
-    set_val = set_dic.get('set__max', 0)
-    if not set_val:
-        set_val = 0    
+   
     deal1 = c3.deal_set.create(
                         conversation = call1,
                         deal_datetime=call1.conversation_datetime, 
                         status=DealStatus.objects.get(pk=1),                         
                         deal_template=lunch,
                         deal_template_name=lunch.deal_name,
-                        set=set_val+1,
+                        deal_instance_name=lunch.deal_name + u'- Light',
+                        
                         deal_description = lunch.deal_description,
                         price = lunch.price,        
                         currency = lunch.currency,                
@@ -307,7 +301,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
-                        set=deal1.set,
+                        
                         deal_description = deal1.deal_description,
                         price = deal1.price,
                         currency = deal1.currency,                
@@ -319,17 +313,15 @@ def demo_continue(request, username, password, email):
     deal2.save()
     
     call1 = c4.conversation_set.create(conversation_datetime=timezone.now(), subject=_(u'Initial Offer'), notes=_(u'%(name)s has a new fashion shop and might be interested in our quality shirts and ties as a package.') % {'name' : 'Michael'})
-    set_dic = c4.deal_set.filter(deal_template_id=holiday.id).aggregate(Max('set'))                            
-    set_val = set_dic.get('set__max', 0)
-    if not set_val:
-        set_val = 0    
+  
     deal1 = c4.deal_set.create(
                         conversation = call1,
                         deal_datetime=call1.conversation_datetime, 
                         status=DealStatus.objects.get(pk=1),                         
                         deal_template=shirt,
                         deal_template_name=shirt.deal_name,
-                        set=set_val+1,
+                        deal_instance_name=shirt.deal_name + u'- Cashmere',
+                        
                         deal_description = shirt.deal_description,
                         price = shirt.price,        
                         currency = shirt.currency,                
@@ -349,7 +341,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
-                        set=deal1.set,
+                        
                         deal_description = deal1.deal_description,
                         price = deal1.price - deal1.price * 0.05,
                         currency = deal1.currency,                
@@ -369,7 +361,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal2.deal_template,
                         deal_template_name=deal2.deal_template_name,
                         deal_instance_name=deal2.deal_instance_name,
-                        set=deal2.set,
+                        
                         deal_description = deal2.deal_description,
                         price = deal2.price,
                         currency = deal2.currency,                
@@ -382,17 +374,15 @@ def demo_continue(request, username, password, email):
 
 
     call1 = c5.conversation_set.create(conversation_datetime=timezone.now(), subject=_(u'Initial Offer'), notes=_(u'%(name)s is investing into a cotton mill factory and might be a potential client.') % {'name' : 'Harry'})
-    set_dic = c5.deal_set.filter(deal_template_id=holiday.id).aggregate(Max('set'))                            
-    set_val = set_dic.get('set__max', 0)
-    if not set_val:
-        set_val = 0    
+   
     deal1 = c5.deal_set.create(
                         conversation = call1,
                         deal_datetime=call1.conversation_datetime, 
                         status=DealStatus.objects.get(pk=1),                         
                         deal_template=cotton,
                         deal_template_name=cotton.deal_name,
-                        set=set_val+1,
+                        deal_instance_name=cotton.deal_name + u'- New Client Only',
+                        
                         deal_description = cotton.deal_description,
                         price = cotton.price,        
                         currency = cotton.currency,                
@@ -412,7 +402,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
-                        set=deal1.set,
+                        
                         deal_description = deal1.deal_description,
                         price = deal1.price - deal1.price * 0.25,
                         currency = deal1.currency,                
@@ -432,7 +422,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal2.deal_template,
                         deal_template_name=deal2.deal_template_name,
                         deal_instance_name=deal2.deal_instance_name,
-                        set=deal2.set,
+                        
                         deal_description = deal2.deal_description,
                         price = deal2.price,
                         currency = deal2.currency,                
@@ -444,17 +434,15 @@ def demo_continue(request, username, password, email):
     deal3.save()
     
     call1 = c6.conversation_set.create(conversation_datetime=timezone.now(), subject=_(u'Initial Offer'), notes=_(u'%(name)s looks for a cloud solution for her B2B business. I will try to see if our Website package might interest her.') % {'name' : 'Rosa' })
-    set_dic = c6.deal_set.filter(deal_template_id=holiday.id).aggregate(Max('set'))                            
-    set_val = set_dic.get('set__max', 0)
-    if not set_val:
-        set_val = 0    
+    
     deal1 = c6.deal_set.create(
                         conversation = call1,
                         deal_datetime=call1.conversation_datetime, 
                         status=DealStatus.objects.get(pk=1),
                         deal_template=web,
                         deal_template_name=web.deal_name,
-                        set=set_val+1,
+                        deal_instance_name=web.deal_name + u'- PHP',
+                        
                         deal_description = web.deal_description,
                         price = web.price,
                         currency = web.currency,
@@ -474,7 +462,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
-                        set=deal1.set,
+                        
                         deal_description = deal1.deal_description,
                         price = deal1.price,
                         currency = deal1.currency,                
@@ -494,7 +482,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal2.deal_template,
                         deal_template_name=deal2.deal_template_name,
                         deal_instance_name=deal2.deal_instance_name,
-                        set=deal2.set,
+                        
                         deal_description = deal2.deal_description,
                         price = deal2.price,
                         currency = deal2.currency,                
@@ -506,17 +494,15 @@ def demo_continue(request, username, password, email):
     deal3.save()
 
     call1 = c7.conversation_set.create(conversation_datetime=timezone.now(), subject='Initial Offer', notes=_(u'%(name)s doesn\'t seem too keen on the new offer. Maybe a discount would be helpful.') % {'name' : 'Hugo'})
-    set_dic = c7.deal_set.filter(deal_template_id=holiday.id).aggregate(Max('set'))                            
-    set_val = set_dic.get('set__max', 0)
-    if not set_val:
-        set_val = 0    
+    
     deal1 = c7.deal_set.create(
                         conversation = call1,
                         deal_datetime=call1.conversation_datetime, 
                         status=DealStatus.objects.get(pk=1),                         
                         deal_template=holiday,
                         deal_template_name=holiday.deal_name,
-                        set=set_val+1,
+                        deal_instance_name=holiday.deal_name + u'- Last Minute',
+                        
                         deal_description = holiday.deal_description,
                         price = holiday.price,        
                         currency = holiday.currency,                
@@ -536,7 +522,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
-                        set=deal1.set,
+                        
                         deal_description = deal1.deal_description,
                         price = deal1.price - deal1.price * 0.05,
                         currency = deal1.currency,                
@@ -556,7 +542,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal2.deal_template,
                         deal_template_name=deal2.deal_template_name,
                         deal_instance_name=deal2.deal_instance_name,
-                        set=deal2.set,
+                        
                         deal_description = deal2.deal_description,
                         price = deal2.price,
                         currency = deal2.currency,                
@@ -568,17 +554,15 @@ def demo_continue(request, username, password, email):
     deal3.save()
 
     call1 = c8.conversation_set.create(conversation_datetime=timezone.now(), subject=_(u'Initial Offer'), notes=_(u'%(name)s is interested in purchasing 25 lunch deals for her food store.') % {'name' : 'Homer'})
-    set_dic = c8.deal_set.filter(deal_template_id=holiday.id).aggregate(Max('set'))                            
-    set_val = set_dic.get('set__max', 0)
-    if not set_val:
-        set_val = 0    
+   
     deal1 = c8.deal_set.create(
                         conversation = call1,
                         deal_datetime=call1.conversation_datetime, 
                         status=DealStatus.objects.get(pk=1),                         
                         deal_template=lunch,
                         deal_template_name=lunch.deal_name,
-                        set=set_val+1,
+                        deal_instance_name=lunch.deal_name + u'- High Calorin',
+                        
                         deal_description = lunch.deal_description,
                         price = lunch.price,        
                         currency = lunch.currency,                
@@ -598,7 +582,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
-                        set=deal1.set,
+                        
                         deal_description = deal1.deal_description,
                         price = deal1.price,
                         currency = deal1.currency,                
@@ -618,7 +602,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal2.deal_template,
                         deal_template_name=deal2.deal_template_name,
                         deal_instance_name=deal2.deal_instance_name,
-                        set=deal2.set,
+                        
                         deal_description = deal2.deal_description,
                         price = deal2.price,
                         currency = deal2.currency,                
@@ -630,17 +614,15 @@ def demo_continue(request, username, password, email):
     deal3.save()
     
     call1 = c9.conversation_set.create(conversation_datetime=timezone.now(), subject=_(u'Initial Offer'), notes=_(u'%(name)s is investing into a cotton mill factory and might be a potential client.') % {'name' : 'William'})
-    set_dic = c9.deal_set.filter(deal_template_id=holiday.id).aggregate(Max('set'))                            
-    set_val = set_dic.get('set__max', 0)
-    if not set_val:
-        set_val = 0    
+   
     deal1 = c9.deal_set.create(
                         conversation = call1,
                         deal_datetime=call1.conversation_datetime, 
                         status=DealStatus.objects.get(pk=1),                         
                         deal_template=cotton,
                         deal_template_name=cotton.deal_name,
-                        set=set_val+1,
+                        deal_instance_name=cotton.deal_name + u'- First Class',
+                        
                         deal_description = cotton.deal_description,
                         price = cotton.price,        
                         currency = cotton.currency,                
@@ -660,7 +642,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
-                        set=deal1.set,
+                        
                         deal_description = deal1.deal_description,
                         price = deal1.price - deal1.price * 0.25,
                         currency = deal1.currency,                
@@ -680,7 +662,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal2.deal_template,
                         deal_template_name=deal2.deal_template_name,
                         deal_instance_name=deal2.deal_instance_name,
-                        set=deal2.set,
+                        
                         deal_description = deal2.deal_description,
                         price = deal2.price,
                         currency = deal2.currency,                
@@ -692,17 +674,15 @@ def demo_continue(request, username, password, email):
     deal3.save()
     
     call1 = c10.conversation_set.create(conversation_datetime=timezone.now(), subject=_(u'Initial Offer'), notes=_(u'%(name)s looks for a cloud solution for her B2B business. I will try to see if our Website package might interest her.') % {'name' : 'Matthew' })
-    set_dic = c10.deal_set.filter(deal_template_id=holiday.id).aggregate(Max('set'))                            
-    set_val = set_dic.get('set__max', 0)
-    if not set_val:
-        set_val = 0    
+   
     deal1 = c10.deal_set.create(
                         conversation = call1,
                         deal_datetime=call1.conversation_datetime, 
                         status=DealStatus.objects.get(pk=1),                         
                         deal_template=web,
                         deal_template_name=web.deal_name,
-                        set=set_val+1,
+                        deal_instance_name=web.deal_name + u'- Python',
+                        
                         deal_description = web.deal_description,
                         price = web.price,        
                         currency = web.currency,                
@@ -722,7 +702,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
-                        set=deal1.set,
+                        
                         deal_description = deal1.deal_description,
                         price = deal1.price,
                         currency = deal1.currency,                
@@ -742,7 +722,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal2.deal_template,
                         deal_template_name=deal2.deal_template_name,
                         deal_instance_name=deal2.deal_instance_name,
-                        set=deal2.set,
+                        
                         deal_description = deal2.deal_description,
                         price = deal2.price,
                         currency = deal2.currency,                
@@ -754,17 +734,15 @@ def demo_continue(request, username, password, email):
     deal3.save()
     
     call1 = c11.conversation_set.create(conversation_datetime=timezone.now(), subject=_(u'Initial Offer'), notes=_(u'%(name)s has a new fashion shop and might be interested in our quality shirts and ties as a package.') % {'name' : 'Jonas'})
-    set_dic = c11.deal_set.filter(deal_template_id=holiday.id).aggregate(Max('set'))                            
-    set_val = set_dic.get('set__max', 0)
-    if not set_val:
-        set_val = 0    
+  
     deal1 = c11.deal_set.create(
                         conversation = call1,
                         deal_datetime=call1.conversation_datetime, 
                         status=DealStatus.objects.get(pk=1),                         
                         deal_template=shirt,
                         deal_template_name=shirt.deal_name,
-                        set=set_val+1,
+                        deal_instance_name=shirt.deal_name + u'- Slimfit',
+                        
                         deal_description = shirt.deal_description,
                         price = shirt.price,        
                         currency = shirt.currency,                
@@ -784,7 +762,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
-                        set=deal1.set,
+                        
                         deal_description = deal1.deal_description,
                         price = deal1.price - deal1.price * 0.05,
                         currency = deal1.currency,                
@@ -804,7 +782,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal2.deal_template,
                         deal_template_name=deal2.deal_template_name,
                         deal_instance_name=deal2.deal_instance_name,
-                        set=deal2.set,
+                        
                         deal_description = deal2.deal_description,
                         price = deal2.price,
                         currency = deal2.currency,                
@@ -816,17 +794,15 @@ def demo_continue(request, username, password, email):
     deal3.save()
     
     call1 = c12.conversation_set.create(conversation_datetime=timezone.now(), subject='Initial Offer', notes=_(u'%(name)s doesn\'t seem too keen on the new offer. Maybe a discount would be helpful.') % {'name' : 'Kaylee'})
-    set_dic = c12.deal_set.filter(deal_template_id=holiday.id).aggregate(Max('set'))                            
-    set_val = set_dic.get('set__max', 0)
-    if not set_val:
-        set_val = 0    
+  
     deal1 = c12.deal_set.create(
                         conversation = call1,
                         deal_datetime=call1.conversation_datetime, 
                         status=DealStatus.objects.get(pk=1),                         
                         deal_template=holiday,
                         deal_template_name=holiday.deal_name,
-                        set=set_val+1,
+                        deal_instance_name=holiday.deal_name + u'- Elaborate',
+                        
                         deal_description = holiday.deal_description,
                         price = holiday.price,        
                         currency = holiday.currency,                
@@ -846,7 +822,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
-                        set=deal1.set,
+                        
                         deal_description = deal1.deal_description,
                         price = deal1.price - deal1.price * 0.05,
                         currency = deal1.currency,                
@@ -866,7 +842,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal2.deal_template,
                         deal_template_name=deal2.deal_template_name,
                         deal_instance_name=deal2.deal_instance_name,
-                        set=deal2.set,
+                        
                         deal_description = deal2.deal_description,
                         price = deal2.price,
                         currency = deal2.currency,                
@@ -878,17 +854,15 @@ def demo_continue(request, username, password, email):
     deal3.save()
     
     call1 = c13.conversation_set.create(conversation_datetime=timezone.now(), subject=_(u'Initial Offer'), notes=_(u'%(name)s has a new fashion shop and might be interested in our quality shirts and ties as a package.') % {'name' : 'Tamara'})
-    set_dic = c13.deal_set.filter(deal_template_id=holiday.id).aggregate(Max('set'))                            
-    set_val = set_dic.get('set__max', 0)
-    if not set_val:
-        set_val = 0    
+   
     deal1 = c13.deal_set.create(
                         conversation = call1,
                         deal_datetime=call1.conversation_datetime, 
                         status=DealStatus.objects.get(pk=1),                         
                         deal_template=shirt,
                         deal_template_name=shirt.deal_name,
-                        set=set_val+1,
+                        deal_instance_name=shirt.deal_name + u'- Business',
+                        
                         deal_description = shirt.deal_description,
                         price = shirt.price,        
                         currency = shirt.currency,                
@@ -908,7 +882,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
-                        set=deal1.set,
+                        
                         deal_description = deal1.deal_description,
                         price = deal1.price - deal1.price * 0.05,
                         currency = deal1.currency,                
@@ -928,7 +902,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal2.deal_template,
                         deal_template_name=deal2.deal_template_name,
                         deal_instance_name=deal2.deal_instance_name,
-                        set=deal2.set,
+                        
                         deal_description = deal2.deal_description,
                         price = deal2.price,
                         currency = deal2.currency,                

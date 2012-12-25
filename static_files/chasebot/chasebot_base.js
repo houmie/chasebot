@@ -286,8 +286,7 @@ function create_btn_deals(row){
 			 var form = $('<form/>', {id: 'deal_modal_form', action: '.', method: 'get'}).append(dropdown);
 			 $('#deal_modal_body').append(form);			 
 			 $('#deal_modal_body').find('#add_deals_button').off('click').on('click', {row: row}, add_deals);      				 
-			 $('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row}, add_deal_to_formset);      				 
-			 
+			 $('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row}, add_deal_to_formset);   				 
 			 show_modal('#deal_modal');
 		});
 		
@@ -299,9 +298,18 @@ function create_btn_deals(row){
 			 $('#deal_modal_body').append(form);
 			 $('#deal_modal_body').find('#add_opendeals_button').off('click').on('click', {row: row}, add_opendeals);      				 
 			 $('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row}, add_deal_to_formset);     				 
-			 
 			 show_modal('#deal_modal');
 		});	
+		
+		$(row).find('#new_deal').click(function(event){
+			event.preventDefault();
+			$('#deal_modal_body').empty();
+			var form = $('<form/>', {id: 'deal_modal_form', action: '.', method: 'get'});
+			$('#deal_modal_body').append(form);
+			new_deal(row);      				 
+			$('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row}, add_deal_to_formset);     				 
+			show_modal('#deal_modal');			
+		});
 		
 	});
 }

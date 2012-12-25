@@ -13,7 +13,7 @@ from chasebot_app.forms import RegistrationForm, ContactsForm, ConversationForm,
 from chasebot_app.models import Company, Contact, Conversation, SalesItem, DealTemplate, DealStatus, Deal, SalesTerm,\
     Invitation, LicenseTemplate, ContactType, Country, MaritalStatus, Gender,\
     Currency, Task
-from chasebot_app.models import UserProfile
+from chasebot_app.models import UserProfile 
 from django.utils.translation import ugettext as _, ungettext
 from django.utils import timezone, simplejson
 from django.forms.models import modelformset_factory
@@ -320,8 +320,7 @@ def conversation_add_edit(request, contact_id, call_id=None):
                                             contact=call.contact, 
                                             deal_template=modified_deal.deal_template,
                                             deal_template_name=modified_deal.deal_template_name,  
-                                            conversation=call, 
-                                            set=actual_deal.set,
+                                            conversation=call,                                            
                                             deal_instance_name=modified_deal.deal_instance_name,
                                             deal_description = modified_deal.deal_description,
                                             price = modified_deal.price,        
@@ -345,12 +344,7 @@ def conversation_add_edit(request, contact_id, call_id=None):
                         if deal.pk is None:
                             #At this point it can only be a new deal added, 
                             #hence a new UUID will be automatically created and the max set nr will be increased by one and status is set to 0% pending
-                            deal.status = DealStatus.objects.get(pk=1)                             
-                            set_dic = contact.deal_set.filter(deal_template_id=deal.deal_template.id).aggregate(Max('set'))                            
-                            set_val = set_dic.get('set__max', 0)
-                            if not set_val:
-                                set_val = 0
-                            deal.set=set_val+1
+                            deal.status = DealStatus.objects.get(pk=1)
                         else:
                             #In case the instance name was changed we change also all other instance names of the same set.
                             set_of_same_deal = contact.deal_set.filter(deal_id = deal.deal_id)                            
