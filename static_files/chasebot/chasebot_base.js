@@ -277,41 +277,43 @@ function create_btn_deals(row){
 			rebind_attach_deals('#deal_modal_body', row); //TODO: Recheck later
 			calc_total_price(total-1);   
 			show_modal('#deal_modal');
-		});
-		
-		$(row).find('#add_pre_deal').click(function(event){
-			event.preventDefault();
-			 var dropdown = $(row).find('#add_deals_dropdown div:first').clone();
-			 $('#deal_modal_body').empty();
-			 var form = $('<form/>', {id: 'deal_modal_form', action: '.', method: 'get'}).append(dropdown);
-			 $('#deal_modal_body').append(form);			 
-			 $('#deal_modal_body').find('#add_deals_button').off('click').on('click', {row: row}, add_deals);      				 
-			 $('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row}, add_deal_to_formset);   				 
-			 show_modal('#deal_modal');
-		});
-		
-		$(row).find('#continue_deal').click(function(event){
-			event.preventDefault();
-			 var dropdown = $(row).find('#add_opendeals_dropdown div:first').clone();
-			 $('#deal_modal_body').empty();
-			 var form = $('<form/>', {id: 'deal_modal_form', action: '.', method: 'get'}).append(dropdown);
-			 $('#deal_modal_body').append(form);
-			 $('#deal_modal_body').find('#add_opendeals_button').off('click').on('click', {row: row}, add_opendeals);      				 
-			 $('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row}, add_deal_to_formset);     				 
-			 show_modal('#deal_modal');
 		});	
-		
-		$(row).find('#new_deal').click(function(event){
-			event.preventDefault();
-			$('#deal_modal_body').empty();
-			var form = $('<form/>', {id: 'deal_modal_form', action: '.', method: 'get'});
-			$('#deal_modal_body').append(form);
-			new_deal(row);      				 
-			$('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row}, add_deal_to_formset);     				 
-			show_modal('#deal_modal');			
-		});
-		
+			
+	});	
+}
+
+function attach_deal(row){
+	$(row).find('#add_pre_deal').click(function(event){
+		event.preventDefault();
+		 var dropdown = $(row).find('#add_deals_dropdown div:first').clone();
+		 $('#deal_modal_body').empty();
+		 var form = $('<form/>', {id: 'deal_modal_form', action: '.', method: 'get'}).append(dropdown);
+		 $('#deal_modal_body').append(form);			 
+		 $('#deal_modal_body').find('#add_deals_button').off('click').on('click', {row: row}, add_deals);      				 
+		 $('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row}, add_deal_to_formset);   				 
+		 show_modal('#deal_modal');
 	});
+	
+	$(row).find('#continue_deal').click(function(event){
+		event.preventDefault();
+		 var dropdown = $(row).find('#add_opendeals_dropdown div:first').clone();
+		 $('#deal_modal_body').empty();
+		 var form = $('<form/>', {id: 'deal_modal_form', action: '.', method: 'get'}).append(dropdown);
+		 $('#deal_modal_body').append(form);
+		 $('#deal_modal_body').find('#add_opendeals_button').off('click').on('click', {row: row}, add_opendeals);      				 
+		 $('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row}, add_deal_to_formset);     				 
+		 show_modal('#deal_modal');
+	});	
+	
+	$(row).find('#new_deal').click(function(event){ 
+		event.preventDefault();
+		$('#deal_modal_body').empty();
+		var form = $('<form/>', {id: 'deal_modal_form', action: '.', method: 'get'});
+		$('#deal_modal_body').append(form);
+		new_deal(row);      				 
+		$('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row}, add_deal_to_formset);     				 
+		show_modal('#deal_modal');
+	});	
 }
 
 function calc_total_price(total){
@@ -340,6 +342,7 @@ function row_edit_ajax(event) {
     		//Once loaded make sure the submit-form will be redirected to 'row_edit_save_ajax' once submitted. Url is parameter 
       		reload_edit_save_cancel_buttons($(row), url);
       		create_btn_deals(row);
+      		attach_deal(row);
     	}
   	);  	
 };
@@ -709,8 +712,7 @@ function new_conversation(event){
 		$('#search_result').prepend(tr);
 		rebind_add_deals();		
 		datepicker_reload('#new_conversation_div');			
-	});	
-		
+	});		
 }
 
 function new_conversation_old(event){	
@@ -731,7 +733,7 @@ function new_conversation_old(event){
 function edit_new_task(event){	
 	event.preventDefault();
 	var url = $(this).attr("href");
-	$('#task_modal').empty();	
+	$('#task_modal').empty();
 	$('#task_modal').load(url, function(result){
 		$(this).modal('show');	
 		$("#task_form").get(0).setAttribute("action", url);

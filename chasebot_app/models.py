@@ -252,7 +252,8 @@ class Deal(models.Model):
 
     
     def save(self, *args, **kwargs):
-        self.deal_template_name = self.deal_template.deal_name
+        if self.deal_template:
+            self.deal_template_name = self.deal_template.deal_name
         self.total_price = self.quantity * self.price
         super(Deal, self).save(*args, **kwargs) # Call the "real" save() method.
     

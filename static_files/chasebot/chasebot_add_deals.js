@@ -134,9 +134,6 @@ function add_deal_to_formset(event){
 	var li=document.createElement('li');
 	li.appendChild(a);
 	
-	//Subscribing an event to this tab when it would go active in order to determine teh active tab.
-	//$(a).on('shown', show_tab);
-    
     //Attaching the tab header
     $(row).find('#attached_deals_tab').append(li);
     
@@ -147,7 +144,11 @@ function add_deal_to_formset(event){
     //Setting the id of tab content to the same url href of tab header, so that it can be found when user clicks on the tab header
     div.setAttribute('id', slug);
     
-    var source = $('#deal_modal_body').children('form').children('div').eq(1); 
+    var source = null;
+    if($('#deal_modal_body').children('form').children('div').length == 1)
+    	source = $('#deal_modal_body').children('form').children('div');
+    else
+    	source = $('#deal_modal_body').children('form').children('div').eq(1); 
     
     //attaching the cloned element with json values to the tab content 
     $(div).append($(source));
@@ -201,16 +202,15 @@ function add_deals(event){
 	}	
 }
 
-function new_deal(event){
-	//Adding new deals
-	event.preventDefault();
-		
-	var row = $(event.data.row);	
+function new_deal(row){
+	//Adding new deals	
+	
 	var type = 'deals';
 	var empty_X = cloneMore('#X div:first', type, row);
 	
 	$('#deal_modal_body').children('form').append(empty_X);
-	rebind_attach_deals('#deal_modal_body', row);	    	 
+	rebind_attach_deals('#deal_modal_body', row);
+	var total = $(row).find('#id_deals-TOTAL_FORMS').val();	    	 
 	calc_total_price(total);   
 	validator = validation_rules();			
 }
@@ -243,7 +243,7 @@ function show_tab(e){
 
 function rebind_attach_deals(parent, row){
 	//Upon opening make sure that all deals from attached_deal_formset will get chosenified. 
-	// Attention: Do NOT chosenify the extra-deal form, or it would break.
+	// Attention: Do NOT chosenify the extra-deal form, or it would break.	
 	var total = $(row).find('#id_deals-TOTAL_FORMS').val();
 	for(i=0;i<=total;i++){
 		$(parent).find('#id_deals-' + i + '-sales_item').chosen({no_results_text: gettext('No results match')});
