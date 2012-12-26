@@ -169,12 +169,20 @@ function row_edit_cancel_ajax(event){
   	);
 };
 
-function reload_edit_save_cancel_buttons(row, url){
-	$(row).find("#save_edit_form").submit(url, row_edit_save_ajax);
+function reload_edit_save_cancel_buttons(row, url, isNewConversation){
+	$(row).find("#save_edit_form").submit({url:url, isNewConversation:isNewConversation}, row_edit_save_ajax);
 	$(row).find("#save_edit_button").click(function(){
 		$(row).find("#save_edit_form").submit();
 	});
-	$(row).find("#cancel_edit_button").click(row_edit_cancel_ajax);
+	if(isNewConversation){
+		$(row).find("#cancel_edit_button").click(function(event){
+			event.preventDefault();
+			$(row).remove();
+			$('#new_conversation_button').button('toggle');
+		});		
+	}		
+	else
+		$(row).find("#cancel_edit_button").click(row_edit_cancel_ajax);
 	//rebind_add_deals();	
 	datepicker_reload($(row));
 }
@@ -281,7 +289,7 @@ function create_btn_deals(row){
 	});	
 }
 
-function attach_deal(row){
+function bind_attach_deal(row){
 	$(row).find('#add_pre_deal').click(function(event){
 		event.preventDefault();
 		 var dropdown = $(row).find('#add_deals_dropdown div:first').clone();
@@ -344,7 +352,7 @@ function row_edit_ajax(event) {
     	url,    	
     	function (result) {
     		//Once loaded make sure the submit-form will be redirected to 'row_edit_save_ajax' once submitted. Url is parameter 
-      		reload_edit_save_cancel_buttons($(row), url);
+      		reload_edit_save_cancel_buttons($(row), url, false);
       		create_btn_deals(row);
       		attach_deal(row);
     	}
@@ -397,7 +405,9 @@ function row_add_save_ajax(event){
 function row_edit_save_ajax(event) {
 	event.preventDefault();
 	// selector starts from Edit Button (this)	
-	var url = event.data;
+	var url = event.data.url;
+	var isNewConversation = event.data.isNewConversation;
+	
   	var row = $(this).closest('tr');  	
   	var data = $(this).closest('#save_edit_form').serialize();
   	
@@ -408,13 +418,15 @@ function row_edit_save_ajax(event) {
     		//and attach events to the still existing save and cancel buttons
     		row.empty();    		    		
       		row.append(result);      			
-      		reload_edit_save_cancel_buttons($(row), url);     		
+      		reload_edit_save_cancel_buttons($(row), url, false);     		
     	}
     	else {
     		//if no error, then simply add the full 'tr' html row (with delete and edit icons) behind this row and remove this row. 
     		var row_before = $(result).insertBefore(row);  		
       		row.remove();      		  
       		rebind_edit_delete('#search_result');	
+      		if(isNewConversation)
+      			$('#new_conversation_button').button('toggle');
     	}
   	});	
 };
@@ -661,36 +673,31 @@ function demo(event){
 	$('#form_demo').submit();	
 }
 
-function cancel_new_conversation(event){	
-	event.preventDefault();
-	$('#new_conversation_div').empty();
-	$('#new_conversation_button').button('toggle');	
-}
 
-function submit_new_conversation(event){
-	event.preventDefault();
-	var url = $(this).closest('#new_conversation_form').attr('action');
-	var data = $(this).closest('#new_conversation_form').serialize();
-	$.post(url, data, function (result) {
-		if ($(result).find('#validation_error_ajax').text() == 'True') {						 
-		 	$('#new_conversation_div').empty();
-		 	$('#new_conversation_div').append(result);      		       		 
-	 		rebind_new_conversation('#new_conversation_div'); 
-	 		rebind_add_deals();
-	 		datepicker_reload('#new_conversation_div'); 		       		
-		}
-		else{
-			$('#new_conversation_div').empty();
-			url = window.location.pathname + '?ajax';
-			$('#search_result').load(url, function(){		
-				rebind_edit_delete($('#search_result'));
-				rebind_paginator($('#search_result'));
-				rebind_add();
-				$('#new_conversation_button').button('toggle');					
-			});	
-		}
-	});
-}
+// function submit_new_conversation(event){
+	// event.preventDefault();
+	// var url = $(this).closest('#new_conversation_form').attr('action');
+	// var data = $(this).closest('#new_conversation_form').serialize();
+	// $.post(url, data, function (result) {
+		// if ($(result).find('#validation_error_ajax').text() == 'True') {						 
+		 	// $('#new_conversation_div').empty();
+		 	// $('#new_conversation_div').append(result);      		       		 
+	 		// rebind_new_conversation('#new_conversation_div'); 
+	 		// rebind_add_deals();
+	 		// datepicker_reload('#new_conversation_div'); 		       		
+		// }
+		// else{
+			// $('#new_conversation_div').empty();
+			// url = window.location.pathname + '?ajax';
+			// $('#search_result').load(url, function(){		
+				// rebind_edit_delete($('#search_result'));
+				// rebind_paginator($('#search_result'));
+				// rebind_add();
+				// $('#new_conversation_button').button('toggle');					
+			// });	
+		// }
+	// });
+// }
 
 function rebind_conversations(){
 	$('.conversation').attr('href', function(i, current){
@@ -714,8 +721,8 @@ function new_conversation(event){
 	var row = $('<tr/>');
 	row.load(url, function(result){
 		$('#search_result').prepend(row);
-  		reload_edit_save_cancel_buttons($(row), url);  		
-  		attach_deal(row);
+  		reload_edit_save_cancel_buttons($(row), url, true);  		
+  		bind_attach_deal(row);
 		datepicker_reload('#new_conversation_div');			
 	});		
 }
