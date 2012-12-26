@@ -401,3 +401,7 @@ table.cb_table-hover tbody tr:hover th{
 .deal_tab-content{
 	overflow: none;	
 }
+
+#modal_h3{
+	padding: 0 0 0 5px;
+}

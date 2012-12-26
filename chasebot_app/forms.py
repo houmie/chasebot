@@ -247,7 +247,6 @@ class DealTemplateForm(ModelForm):
 
 class DealForm(ModelForm):
     attached_open_deal_id  = forms.IntegerField(required=False)    
-    is_last_active_tab = forms.BooleanField(required=False)    
     
     def __init__(self, *args, **kwargs):
         super(DealForm, self).__init__(*args, **kwargs)                       
@@ -261,8 +260,7 @@ class DealForm(ModelForm):
         self.fields['deal_instance_name'].widget.attrs['placeholder'] = _(u'Define an deal name')
         self.fields['deal_instance_name'].widget.attrs['class'] = 'mandatory'
         self.fields['deal_template_name'].widget.attrs.update({'readonly' : 'True'})
-        self.fields['deal_template'].widget.attrs['class'] = 'hidden'
-        self.fields['is_last_active_tab'].widget.attrs['class'] = 'last_active_tab'
+        self.fields['deal_template'].widget.attrs['class'] = 'hidden'        
         self.fields['deal_description'].widget.attrs['class'] = 'cb_deal_description'
         self.fields['total_price'].widget.attrs['class'] = 'boxes_7em total_price'
         self.fields['total_price'].widget.attrs['readonly'] = 'True'
@@ -271,8 +269,7 @@ class DealForm(ModelForm):
     class Meta:
         model = Deal
         fields = {'deal_template', 'deal_template_name', 'deal_instance_name', 'status', 
-                  'deal_description', 'sales_item', 'price', 'currency', 'sales_term', 'quantity', 
-                  'is_last_active_tab', 'total_price'}
+                  'deal_description', 'sales_item', 'price', 'currency', 'sales_term', 'quantity', 'total_price'}
         
 
     

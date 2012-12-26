@@ -11,7 +11,7 @@
 						<tbody>
 							<tr>
 								<td>
-									{{fs.DELETE.label}}:
+									{% trans 'Delete this deal?' %}:
 								</td>
 			                    <td>
 		                    		{{fs.DELETE}}
@@ -36,8 +36,7 @@
 						<tbody>
 							<tr class="hidden">										
 								<td>											
-									{{fs.attached_open_deal_id}}		
-									{{fs.is_last_active_tab}}																	
+									{{fs.attached_open_deal_id}}																								
 								</td>
 							</tr>									
 		                    <tr>		                    	
@@ -127,7 +126,7 @@
 					<ul id="attached_deals_tab" class="nav nav-tabs">
 					{% for fs in attached_deals_formset %}
 						{{ fs.id }}						
-						<li class="{% if fs.is_last_active_tab.value%}active{% endif %}{% if fs.errors %} field field_error{%endif%}">							
+						<li class="{% if fs.errors %} field field_error{%endif%}">							
 							<a href="#{% if fs.attached_open_deal_id.value or fs.instance.pk %}{{fs.deal_instance_name.value|slugify}}{% else %}{{fs.deal_template_name.value|slugify}}{%endif%}" data-toggle="tab">{% if fs.attached_open_deal_id.value or fs.instance.pk %}{{fs.deal_instance_name.value}}{% else %}{{fs.deal_template_name.value}}{%endif%}</a>
 						</li>					
 					{% endfor %}
@@ -135,7 +134,7 @@
 					<div class="deal_tab-content tab-content" id='tab-content'>
 						{% for fs in attached_deals_formset %}
 						{{ fs.id }}							
-							<div class="tab-pane {% if fs.is_last_active_tab.value%}active{% endif %}" id="{% if fs.attached_open_deal_id.value or fs.instance.pk %}{{fs.deal_instance_name.value|slugify}}{% else %}{{fs.deal_template_name.value|slugify}}{%endif%}">								
+							<div class="tab-pane" id="{% if fs.attached_open_deal_id.value or fs.instance.pk %}{{fs.deal_instance_name.value|slugify}}{% else %}{{fs.deal_template_name.value|slugify}}{%endif%}">								
 								<div>
 								<table>
 									<tbody>
@@ -166,8 +165,7 @@
 									<tbody>
 										<tr class="hidden">										
 											<td>											
-												{{fs.attached_open_deal_id}}		
-												{{fs.is_last_active_tab}}																	
+												{{fs.attached_open_deal_id}}																											
 											</td>
 										</tr>									
 					                    <tr>
