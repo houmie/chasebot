@@ -11,7 +11,7 @@
 						<tbody>
 							<tr>
 								<td>
-									{% trans 'Delete this deal?' %}:
+									{% trans 'Delete this deal?' %}
 								</td>
 			                    <td>
 		                    		{{fs.DELETE}}
@@ -127,20 +127,20 @@
 					{% for fs in attached_deals_formset %}
 						{{ fs.id }}						
 						<li class="{% if fs.errors %} field field_error{%endif%}">							
-							<a href="#{% if fs.attached_open_deal_id.value or fs.instance.pk %}{{fs.deal_instance_name.value|slugify}}{% else %}{{fs.deal_template_name.value|slugify}}{%endif%}" data-toggle="tab">{% if fs.attached_open_deal_id.value or fs.instance.pk %}{{fs.deal_instance_name.value}}{% else %}{{fs.deal_template_name.value}}{%endif%}</a>
+							<a href="#{{fs.deal_instance_name.value|slugify}}" data-toggle="tab">{{fs.deal_instance_name.value}}</a>
 						</li>					
 					{% endfor %}
 					</ul>	
 					<div class="deal_tab-content tab-content" id='tab-content'>
 						{% for fs in attached_deals_formset %}
 						{{ fs.id }}							
-							<div class="tab-pane" id="{% if fs.attached_open_deal_id.value or fs.instance.pk %}{{fs.deal_instance_name.value|slugify}}{% else %}{{fs.deal_template_name.value|slugify}}{%endif%}">								
+							<div class="tab-pane" id="{{fs.deal_instance_name.value|slugify}}">								
 								<div>
 								<table>
 									<tbody>
 										<tr>
 											<td>
-												{{fs.DELETE.label}}:
+												{% trans 'Delete this deal?' %}
 											</td>
 						                    <td>
 					                    		{{fs.DELETE}}

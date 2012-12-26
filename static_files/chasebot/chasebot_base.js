@@ -72,7 +72,6 @@ function row_delete_ajax(event) {
         	rebind_edit_delete($(target));
         	rebind_paginator($(target));
         	rebind_task_edit_delete($(target));
-        	rebind_add();
         });                
     }    	
 };
@@ -415,7 +414,7 @@ function row_edit_save_ajax(event) {
     		//if no error, then simply add the full 'tr' html row (with delete and edit icons) behind this row and remove this row. 
     		var row_before = $(result).insertBefore(row);  		
       		row.remove();      		  
-      		rebind_edit_delete($(row_before));	
+      		rebind_edit_delete('#search_result');	
     	}
   	});	
 };
@@ -712,10 +711,11 @@ function new_conversation(event){
 	}
 	var contact_id = $('#contact_id').text();
 	var url = '/contact/' + contact_id + '/call/add/';
-	var tr = $('<tr/>');
-	tr.load(url, function(result){
-		$('#search_result').prepend(tr);
-		rebind_add_deals();		
+	var row = $('<tr/>');
+	row.load(url, function(result){
+		$('#search_result').prepend(row);
+  		reload_edit_save_cancel_buttons($(row), url);  		
+  		attach_deal(row);
 		datepicker_reload('#new_conversation_div');			
 	});		
 }

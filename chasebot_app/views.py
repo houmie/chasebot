@@ -399,7 +399,7 @@ def conversation_delete(request, contact_id, call_id):
         call.delete()
         call_queryset = contact.conversation_set.order_by('conversation_datetime')   
         calls, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, call_queryset)          
-        variables = { 'calls': calls, 'contact_id':contact.pk }
+        variables = { 'calls': calls, 'contact':contact }
         variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
     return render(request, 'conversation_list.html', variables)
 

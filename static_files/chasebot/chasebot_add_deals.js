@@ -235,11 +235,11 @@ function add_opendeals(event){
 
 function show_tab(e){
 	//Uncheck all active tab checkboxes
-	$('.last_active_tab').attr('checked', false);
-	var current_tab_href = $(this).attr('href');
+	//$('.last_active_tab').attr('checked', false);
+	//var current_tab_href = $(this).attr('href');
 	
 	//current_tab_href is the #id that the tab-header is pointing to. Hence by searching for #id we are searching within the tab content.	
-	$(current_tab_href).find('.last_active_tab').attr('checked', true);	
+	//$(current_tab_href).find('.last_active_tab').attr('checked', true);	
 	//now the last_actice_tab boolean is set to true of the current tab 
 }
 
@@ -259,12 +259,12 @@ function rebind_add_deals(){
 	//$("#add_opendeals_button").click(add_opendeals);
 	
 	//subscribing to an event for when tabs are clicked on, they should be made the only active-tab.
-	$('a[data-toggle="tab"]').on('shown', show_tab);
+	//$('a[data-toggle="tab"]').on('shown', show_tab);
 	
 	//If no tab is already active, then the first one found shall be made active. Otherwise the last-active-tab will be made active. 
 	//Useful when there are validation errors on request.POST and we need to re-activate the previous active tab. 
-	if($('#attached_deals_tab > li.active').length == 0)
-		$('#attached_deals_tab a:first').tab('show');
+	// if($('#attached_deals_tab > li.active').length == 0)
+		// $('#attached_deals_tab a:first').tab('show');
 }
 
 $(document).ready(function () {	
