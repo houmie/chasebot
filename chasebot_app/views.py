@@ -264,7 +264,16 @@ def remove_redundant_future_deals(contact, deal):
         later_deals_to_be_removed = contact.deal_set.filter(deal_id = deal.deal_id).filter(deal_datetime__gt=deal.deal_datetime)
         for bad_deal in later_deals_to_be_removed:
             bad_deal.delete()    
-    
+
+
+def adjust_deal_names_of_same_dealset(contact, deal):
+    set_of_same_deal = contact.deal_set.filter(deal_id=deal.deal_id)
+    for sdeal in set_of_same_deal:
+        if sdeal.pk != deal.pk:
+            if sdeal.deal_instance_name != deal.deal_instance_name:
+                sdeal.deal_instance_name = deal.deal_instance_name
+                sdeal.save()
+
 
 @login_required
 def conversation_add_edit(request, contact_id, call_id=None):
@@ -332,6 +341,10 @@ def conversation_add_edit(request, contact_id, call_id=None):
                         for item in fm.cleaned_data['sales_item']:
                             deal.sales_item.add(item)
                         deal.save();
+                        
+                        #In case the instance name was changed we change also all other instance names of the same set.
+                        adjust_deal_names_of_same_dealset(contact, deal)
+                        
                         #If the open deal instance is closed, we need to remove all later entries of this instance on later conversations.
                         remove_redundant_future_deals(contact, deal)
                     else:
@@ -347,12 +360,7 @@ def conversation_add_edit(request, contact_id, call_id=None):
                             deal.status = DealStatus.objects.get(pk=1)
                         else:
                             #In case the instance name was changed we change also all other instance names of the same set.
-                            set_of_same_deal = contact.deal_set.filter(deal_id = deal.deal_id)                            
-                            for sdeal in set_of_same_deal:
-                                if sdeal.pk != deal.pk:
-                                    if sdeal.deal_instance_name != deal.deal_instance_name: 
-                                        sdeal.deal_instance_name = deal.deal_instance_name
-                                        sdeal.save()                        
+                            adjust_deal_names_of_same_dealset(contact, deal)                     
                         deal.save()
                         fm.save_m2m()
                         #If the attached or even new deal are closed, we need to remove all later entries of this instance on later conversations.

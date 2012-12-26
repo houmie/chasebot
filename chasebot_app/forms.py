@@ -251,7 +251,7 @@ class DealForm(ModelForm):
     
     def __init__(self, *args, **kwargs):
         super(DealForm, self).__init__(*args, **kwargs)                       
-        self.fields['status'].widget.attrs['class'] = 'boxes_8em mandatory'
+        self.fields['status'].widget.attrs['class'] = 'boxes_8em mandatory deal_status'
         self.fields['price'].widget.attrs['class'] = 'boxes_7em price mandatory digit'
         self.fields['quantity'].widget.attrs['class'] = 'boxes_7em quantity mandatory'
         self.fields['sales_term'].widget.attrs['class'] = 'boxes_8em mandatory'
