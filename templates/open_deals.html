@@ -1,0 +1,24 @@
+{% load i18n %}
+<div>
+	<ul class="breadcrumb">
+		<li class="active">{% trans 'Open Deals'%}</li>	    	
+	</ul>    
+	
+	<div>
+<!-- 		<a class="btn right-margin" href="/contact/add" title="{% trans 'New Contact' %}"><i class="icon-plus"></i>&nbsp;<i class="icon-user"></i></a>
+		<a id="deals_in_progress" class="btn right-margin" data-toggle="button" href="/?ajax&show_only_open_deals" title="{% trans 'Show Only Deals In Progress' %}"><i class="icon-legal"></i> {% trans 'Show Only Deals In Progress' %}</a> -->			
+	</div>	
+	<table id='call_contact_table' class="table table-condensed cb_table-striped cb_table-hover">
+	    <thead>
+	        <tr>
+	        	<th class="first_th_minwidth"></th>	            	
+	        	<th>{% trans 'Deal Name' %}</th>	                
+	            <th>{% trans 'Deal Value' %}</th>
+	            <th>{% trans 'Deal Created On' %}</th>	            
+	        </tr>
+	    </thead>
+	    <tbody id="search_result">
+	        {% include 'open_deals_list.html' %}
+	    </tbody>
+	</table>	
+</div>

@@ -352,11 +352,21 @@ input[type="checkbox"]{
 }
 
 
-table.cb_table-hover tbody tr:hover td,
-table.cb_table-hover tbody tr:hover th{
-  	background-color: #cfe2e8;  
+/*table.cb_sub_table-hover tbody tr:hover td,
+table.cb_sub_table-hover tbody tr:hover th{
+      background-color: #cfe2e8;  
+}*/
+
+table.cb_table-hover > tbody > tr:hover > td:not(.override),
+table.cb_table-hover > tbody > tr:hover > th:not(.override){
+      background-color: #cfe2e8;  
 }
 
+
+.cb_table-striped tbody > tr:nth-child(odd) > td:not(.override),
+.cb_table-striped tbody > tr:nth-child(odd) > th:not(.override) {
+  background-color: #f9f9f9;
+}
 
 
 .cb_table-hover tbody tr .icon-search{

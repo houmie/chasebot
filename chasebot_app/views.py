@@ -35,6 +35,8 @@ from string import ascii_lowercase, digits
 import random
 from django.contrib.auth import authenticate, login
 from django.template.loader_tags import register
+import json
+from django.core import serializers
 
 
 ITEMS_PER_PAGE = 5
@@ -81,6 +83,13 @@ def get_raw_all_open_deals():
             l1.deal_id     = l3.deal_id AND l1.deal_datetime = l3.deal_datetime AND l1.id   = l3.trans_max \
             WHERE l1.deal_id not in (select deal_id from chasebot_app_deal where status_id in (5, 6))' 
     return Deal.objects.raw(query)
+
+
+@login_required
+def all_open_deals(request, company):    
+    raw = get_raw_all_open_deals() 
+    deals_query = company.deal_set.filter(id__in=[item.id for item in raw])        
+    return deals_query
     
 
 @login_required
@@ -103,6 +112,28 @@ def index_display(request):
     company_name = profile.company.company_name
     variables = {'company_name': company_name}
     return render(request, 'index.html', variables)        
+
+
+@login_required
+def open_deals_display(request):
+    profile = request.user.get_profile()
+    deals_query = all_open_deals(request, profile.company)
+    deals, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deals_query)  
+    variables = {'deals': deals}
+    variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
+    return render(request, 'open_deals.html', variables)
+
+@login_required
+def open_deal_conversations_display(request, deal_id):
+    profile = request.user.get_profile()
+    deal = get_object_or_404(profile.company.deal_set.all(), pk=deal_id)
+    related_deals = Deal.objects.filter(deal_id = deal.deal_id).order_by('-deal_datetime')[:3]
+    calls = Conversation.objects.filter(pk__in = [deal.conversation.pk for deal in related_deals]).order_by('-conversation_datetime')    
+    variables = {'calls': calls}
+    return render(request, '_deal_conversations.html', variables)
+#    data = serializers.serialize('json', calls)
+#    return HttpResponse(data, mimetype="application/json")
+    
 
 @login_required
 def contacts_display(request, contact_id=None):      
@@ -335,7 +366,8 @@ def conversation_add_edit(request, contact_id, call_id=None):
                                             price = modified_deal.price,        
                                             currency = modified_deal.currency,                
                                             sales_term = modified_deal.sales_term,
-                                            quantity = modified_deal.quantity                                            
+                                            quantity = modified_deal.quantity,
+                                            company = profile.company                                            
                                             )
                         #Saving M2M 
                         for item in fm.cleaned_data['sales_item']:
@@ -352,13 +384,10 @@ def conversation_add_edit(request, contact_id, call_id=None):
                         #It is adding a new deal to this conversation
                         deal = fm.save(commit=False)                                                         
                         deal.contact = contact
-                        deal.conversation = call   
+                        deal.conversation = call
+                        deal.company = profile.company
                         deal.deal_datetime=call.conversation_datetime
-                        if deal.pk is None:
-                            #At this point it can only be a new deal added, 
-                            #hence a new UUID will be automatically created and the max set nr will be increased by one and status is set to 0% pending
-                            deal.status = DealStatus.objects.get(pk=1)
-                        else:
+                        if deal.pk:                        
                             #In case the instance name was changed we change also all other instance names of the same set.
                             adjust_deal_names_of_same_dealset(contact, deal)                     
                         deal.save()

@@ -1,0 +1,11 @@
+{% load i18n %}
+{% if deals %}
+	{% include 'open_deals_list_item.html' %}	
+	{% include '_paginator.html' %}
+{% else %}
+	<tr>
+		<td colspan="8">
+			{% trans 'No open deals found.' %}			
+		</td>
+	</tr>	
+{% endif %}

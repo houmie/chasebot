@@ -354,7 +354,7 @@ function row_edit_ajax(event) {
     		//Once loaded make sure the submit-form will be redirected to 'row_edit_save_ajax' once submitted. Url is parameter 
       		reload_edit_save_cancel_buttons($(row), url, false);
       		create_btn_deals(row);
-      		attach_deal(row);
+      		bind_attach_deal(row);
     	}
   	);  	
 };
@@ -892,7 +892,8 @@ function tab_predefined_clicked(){
 		rebind_edit_delete($('#search_result'));
 		rebind_filters($('body'));
 	});	
-	$('#main_tabs a[href="#tab_predefined"]').off('click');	
+	$('#main_tabs a[href="#tab_predefined"]').off('click');
+	bind_main_tabs('tab_predefined');	
 }
 
 
@@ -906,9 +907,34 @@ function tab_contacts_clicked(){
 		rebind_filters($('body'));		
 		$('.conversation').off('click').on('click', conversation_clicked);
 	});
-	$('#main_tabs a[href="#tab_contacts"]').off('click');	
+	$('#main_tabs a[href="#tab_contacts"]').off('click');
+	bind_main_tabs('tab_contacts');
 }
 
+function tab_open_deals_clicked(){
+	$('#tab_open_deals').load('/open_deals', function(result){
+		$('#tab_open_deals tbody tr').off('click').on('click', function(){
+			var tr = $(this);			
+			var url = $(this).find('#open_deal_url').text();
+			var row = $('<tr/>');
+			row.load(url, function(result){
+				row.insertAfter(tr);				
+			});
+			
+			
+			
+
+		});
+		// rebind_ratings($('#search_result'));
+		// rebind_paginator($('#search_result'));
+		// rebind_business_card_modal_link();
+		// rebind_edit_delete($('#search_result'));
+		// rebind_filters($('body'));		
+		//$('.conversation').off('click').on('click', conversation_clicked);
+	});
+	$('#main_tabs a[href="#tab_open_deals"]').off('click');
+	bind_main_tabs('tab_open_deals');	
+}
 
 
 function conversation_clicked(event){
@@ -929,10 +955,16 @@ function conversation_clicked(event){
 
 
 
-function bind_main_tabs(){	
-	
-	$('#main_tabs a[href="#tab_contacts"]').off('click').on('click', tab_contacts_clicked);
-	$('#main_tabs a[href="#tab_predefined"]').off('click').on('click', tab_predefined_clicked);	
+function bind_main_tabs(optionalArg){
+	//Exclude the passed in tab name from being subscribed to the click event. (So that repetetive clicking on active tab
+	// is ignored. However the other tabs get subscribed at the sam time.
+	optionalArg = (typeof optionalArg === "undefined") ? null : optionalArg;
+	if(optionalArg != 'tab_contacts')
+		$('#main_tabs a[href="#tab_contacts"]').off('click').on('click', tab_contacts_clicked);
+	if(optionalArg != 'tab_open_deals')
+		$('#main_tabs a[href="#tab_open_deals"]').off('click').on('click', tab_open_deals_clicked);
+	if(optionalArg != 'tab_predefined')	
+		$('#main_tabs a[href="#tab_predefined"]').off('click').on('click', tab_predefined_clicked);	
 }
 
 $(document).ready(function (){

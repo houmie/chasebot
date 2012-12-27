@@ -1,0 +1,13 @@
+{% load i18n %}
+{% load l10n %}
+{% for deal in deals %}
+	<tr>
+	    <td>	    	                        	
+	        <a class="btn btn-link-left row_edit_ajax" href="/open_deals/{{ deal.pk }}/calls" title="{% trans 'Edit' %}"> <i class="icon-pencil icon-large"> </i></a>
+	       	<div id="open_deal_url" class="hidden">/open_deals/{{ deal.pk }}/calls</div>
+	    </td>	    
+	    <td><span class="badge badge-info">{{ deal.deal_instance_name }}</span></td>	                        
+	    <td>{{ deal.total_price }}</td>
+	    <td>{{ deal.deal_datetime|date:"DATE_FORMAT" }}</td>	    
+	</tr>
+{% endfor %}

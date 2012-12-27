@@ -246,6 +246,7 @@ class Deal(models.Model):
     sales_term          = models.ForeignKey(SalesTerm)
     quantity            = models.PositiveIntegerField(_(u'Quantity'))
     total_price         = models.DecimalField(_(u'Total'), decimal_places=2, max_digits=12, validators=[MinValueValidator(0.01)], blank=True, null=True)
+    company             = models.ForeignKey(Company)
     
     def __unicode__(self):
         return self.deal_instance_name 

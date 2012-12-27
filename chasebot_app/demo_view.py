@@ -161,7 +161,7 @@ def demo_continue(request, username, password, email):
                         deal_template=holiday,
                         deal_template_name=holiday.deal_name,
                         deal_instance_name=holiday.deal_name + u'- Deal 2013',
-                        
+                        company = profile.company,
                         deal_description = holiday.deal_description,
                         price = holiday.price,        
                         currency = holiday.currency,                
@@ -181,7 +181,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
-                        
+                        company = profile.company,
                         deal_description = deal1.deal_description,
                         price = deal1.price - deal1.price * 0.05,
                         currency = deal1.currency,                
@@ -201,7 +201,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal2.deal_template,
                         deal_template_name=deal2.deal_template_name,
                         deal_instance_name=deal2.deal_instance_name,
-                        
+                        company = profile.company,
                         deal_description = deal2.deal_description,
                         price = deal2.price,
                         currency = deal2.currency,                
@@ -221,7 +221,7 @@ def demo_continue(request, username, password, email):
                         deal_template=web,
                         deal_template_name=web.deal_name,
                         deal_instance_name=web.deal_name + u'- Special Offer',
-                        
+                        company = profile.company,
                         deal_description = web.deal_description,
                         price = web.price,        
                         currency = web.currency,                
@@ -241,7 +241,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
-                        
+                        company = profile.company,
                         deal_description = deal1.deal_description,
                         price = deal1.price,
                         currency = deal1.currency,                
@@ -261,7 +261,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal2.deal_template,
                         deal_template_name=deal2.deal_template_name,
                         deal_instance_name=deal2.deal_instance_name,
-                        
+                        company = profile.company,
                         deal_description = deal2.deal_description,
                         price = deal2.price,
                         currency = deal2.currency,                
@@ -281,7 +281,7 @@ def demo_continue(request, username, password, email):
                         deal_template=lunch,
                         deal_template_name=lunch.deal_name,
                         deal_instance_name=lunch.deal_name + u'- Light',
-                        
+                        company = profile.company,
                         deal_description = lunch.deal_description,
                         price = lunch.price,        
                         currency = lunch.currency,                
@@ -301,7 +301,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
-                        
+                        company = profile.company,
                         deal_description = deal1.deal_description,
                         price = deal1.price,
                         currency = deal1.currency,                
@@ -321,7 +321,7 @@ def demo_continue(request, username, password, email):
                         deal_template=shirt,
                         deal_template_name=shirt.deal_name,
                         deal_instance_name=shirt.deal_name + u'- Cashmere',
-                        
+                        company = profile.company,
                         deal_description = shirt.deal_description,
                         price = shirt.price,        
                         currency = shirt.currency,                
@@ -341,7 +341,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
-                        
+                        company = profile.company,
                         deal_description = deal1.deal_description,
                         price = deal1.price - deal1.price * 0.05,
                         currency = deal1.currency,                
@@ -361,7 +361,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal2.deal_template,
                         deal_template_name=deal2.deal_template_name,
                         deal_instance_name=deal2.deal_instance_name,
-                        
+                        company = profile.company,
                         deal_description = deal2.deal_description,
                         price = deal2.price,
                         currency = deal2.currency,                
@@ -382,7 +382,7 @@ def demo_continue(request, username, password, email):
                         deal_template=cotton,
                         deal_template_name=cotton.deal_name,
                         deal_instance_name=cotton.deal_name + u'- New Client Only',
-                        
+                        company = profile.company,
                         deal_description = cotton.deal_description,
                         price = cotton.price,        
                         currency = cotton.currency,                
@@ -402,7 +402,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
-                        
+                        company = profile.company,
                         deal_description = deal1.deal_description,
                         price = deal1.price - deal1.price * 0.25,
                         currency = deal1.currency,                
@@ -422,7 +422,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal2.deal_template,
                         deal_template_name=deal2.deal_template_name,
                         deal_instance_name=deal2.deal_instance_name,
-                        
+                        company = profile.company,
                         deal_description = deal2.deal_description,
                         price = deal2.price,
                         currency = deal2.currency,                
@@ -442,7 +442,7 @@ def demo_continue(request, username, password, email):
                         deal_template=web,
                         deal_template_name=web.deal_name,
                         deal_instance_name=web.deal_name + u'- PHP',
-                        
+                        company = profile.company,
                         deal_description = web.deal_description,
                         price = web.price,
                         currency = web.currency,
@@ -462,7 +462,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
-                        
+                        company = profile.company,
                         deal_description = deal1.deal_description,
                         price = deal1.price,
                         currency = deal1.currency,                
@@ -482,7 +482,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal2.deal_template,
                         deal_template_name=deal2.deal_template_name,
                         deal_instance_name=deal2.deal_instance_name,
-                        
+                        company = profile.company,
                         deal_description = deal2.deal_description,
                         price = deal2.price,
                         currency = deal2.currency,                
@@ -502,7 +502,7 @@ def demo_continue(request, username, password, email):
                         deal_template=holiday,
                         deal_template_name=holiday.deal_name,
                         deal_instance_name=holiday.deal_name + u'- Last Minute',
-                        
+                        company = profile.company,
                         deal_description = holiday.deal_description,
                         price = holiday.price,        
                         currency = holiday.currency,                
@@ -522,7 +522,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
-                        
+                        company = profile.company,
                         deal_description = deal1.deal_description,
                         price = deal1.price - deal1.price * 0.05,
                         currency = deal1.currency,                
@@ -542,7 +542,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal2.deal_template,
                         deal_template_name=deal2.deal_template_name,
                         deal_instance_name=deal2.deal_instance_name,
-                        
+                        company = profile.company,
                         deal_description = deal2.deal_description,
                         price = deal2.price,
                         currency = deal2.currency,                
@@ -562,7 +562,7 @@ def demo_continue(request, username, password, email):
                         deal_template=lunch,
                         deal_template_name=lunch.deal_name,
                         deal_instance_name=lunch.deal_name + u'- High Calorin',
-                        
+                        company = profile.company,
                         deal_description = lunch.deal_description,
                         price = lunch.price,        
                         currency = lunch.currency,                
@@ -582,7 +582,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
-                        
+                        company = profile.company,
                         deal_description = deal1.deal_description,
                         price = deal1.price,
                         currency = deal1.currency,                
@@ -602,7 +602,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal2.deal_template,
                         deal_template_name=deal2.deal_template_name,
                         deal_instance_name=deal2.deal_instance_name,
-                        
+                        company = profile.company,
                         deal_description = deal2.deal_description,
                         price = deal2.price,
                         currency = deal2.currency,                
@@ -622,7 +622,7 @@ def demo_continue(request, username, password, email):
                         deal_template=cotton,
                         deal_template_name=cotton.deal_name,
                         deal_instance_name=cotton.deal_name + u'- First Class',
-                        
+                        company = profile.company,
                         deal_description = cotton.deal_description,
                         price = cotton.price,        
                         currency = cotton.currency,                
@@ -642,7 +642,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
-                        
+                        company = profile.company,
                         deal_description = deal1.deal_description,
                         price = deal1.price - deal1.price * 0.25,
                         currency = deal1.currency,                
@@ -662,7 +662,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal2.deal_template,
                         deal_template_name=deal2.deal_template_name,
                         deal_instance_name=deal2.deal_instance_name,
-                        
+                        company = profile.company,
                         deal_description = deal2.deal_description,
                         price = deal2.price,
                         currency = deal2.currency,                
@@ -682,7 +682,7 @@ def demo_continue(request, username, password, email):
                         deal_template=web,
                         deal_template_name=web.deal_name,
                         deal_instance_name=web.deal_name + u'- Python',
-                        
+                        company = profile.company,
                         deal_description = web.deal_description,
                         price = web.price,        
                         currency = web.currency,                
@@ -702,7 +702,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
-                        
+                        company = profile.company,
                         deal_description = deal1.deal_description,
                         price = deal1.price,
                         currency = deal1.currency,                
@@ -722,7 +722,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal2.deal_template,
                         deal_template_name=deal2.deal_template_name,
                         deal_instance_name=deal2.deal_instance_name,
-                        
+                        company = profile.company,
                         deal_description = deal2.deal_description,
                         price = deal2.price,
                         currency = deal2.currency,                
@@ -742,7 +742,7 @@ def demo_continue(request, username, password, email):
                         deal_template=shirt,
                         deal_template_name=shirt.deal_name,
                         deal_instance_name=shirt.deal_name + u'- Slimfit',
-                        
+                        company = profile.company,
                         deal_description = shirt.deal_description,
                         price = shirt.price,        
                         currency = shirt.currency,                
@@ -762,7 +762,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
-                        
+                        company = profile.company,
                         deal_description = deal1.deal_description,
                         price = deal1.price - deal1.price * 0.05,
                         currency = deal1.currency,                
@@ -782,7 +782,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal2.deal_template,
                         deal_template_name=deal2.deal_template_name,
                         deal_instance_name=deal2.deal_instance_name,
-                        
+                        company = profile.company,
                         deal_description = deal2.deal_description,
                         price = deal2.price,
                         currency = deal2.currency,                
@@ -802,7 +802,7 @@ def demo_continue(request, username, password, email):
                         deal_template=holiday,
                         deal_template_name=holiday.deal_name,
                         deal_instance_name=holiday.deal_name + u'- Elaborate',
-                        
+                        company = profile.company,
                         deal_description = holiday.deal_description,
                         price = holiday.price,        
                         currency = holiday.currency,                
@@ -822,7 +822,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
-                        
+                        company = profile.company,
                         deal_description = deal1.deal_description,
                         price = deal1.price - deal1.price * 0.05,
                         currency = deal1.currency,                
@@ -842,7 +842,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal2.deal_template,
                         deal_template_name=deal2.deal_template_name,
                         deal_instance_name=deal2.deal_instance_name,
-                        
+                        company = profile.company,
                         deal_description = deal2.deal_description,
                         price = deal2.price,
                         currency = deal2.currency,                
@@ -862,7 +862,7 @@ def demo_continue(request, username, password, email):
                         deal_template=shirt,
                         deal_template_name=shirt.deal_name,
                         deal_instance_name=shirt.deal_name + u'- Business',
-                        
+                        company = profile.company,
                         deal_description = shirt.deal_description,
                         price = shirt.price,        
                         currency = shirt.currency,                
@@ -882,7 +882,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
-                        
+                        company = profile.company,
                         deal_description = deal1.deal_description,
                         price = deal1.price - deal1.price * 0.05,
                         currency = deal1.currency,                
@@ -902,7 +902,7 @@ def demo_continue(request, username, password, email):
                         deal_template=deal2.deal_template,
                         deal_template_name=deal2.deal_template_name,
                         deal_instance_name=deal2.deal_instance_name,
-                        
+                        company = profile.company,
                         deal_description = deal2.deal_description,
                         price = deal2.price,
                         currency = deal2.currency,                
