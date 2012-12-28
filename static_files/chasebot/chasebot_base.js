@@ -914,16 +914,16 @@ function tab_contacts_clicked(){
 function tab_open_deals_clicked(){
 	$('#tab_open_deals').load('/open_deals', function(result){
 		$('#tab_open_deals tbody tr').off('click').on('click', function(){
+			$(".collapse").collapse('toggle');
+			$('#calls_id').remove();
 			var tr = $(this);			
 			var url = $(this).find('#open_deal_url').text();
-			var row = $('<tr/>');
+			var row = $('<tr/>', {id:'calls_id'});	
+			
 			row.load(url, function(result){
-				row.insertAfter(tr);				
+				row.insertAfter(tr);
+				$(".collapse").collapse('toggle');
 			});
-			
-			
-			
-
 		});
 		// rebind_ratings($('#search_result'));
 		// rebind_paginator($('#search_result'));
