@@ -9,10 +9,10 @@ from django.shortcuts import get_object_or_404
 from chasebot_app.forms import RegistrationForm, ContactsForm, ConversationForm, SalesItemForm, DealTemplateForm,\
      DealForm, FilterContactsForm, FilterConversationForm, FilterDealsForm, FilterSalesItemForm,\
     DealsAddForm, OpenDealsAddForm, ColleagueInviteForm, OpenDealTaskForm,\
-    TaskForm
+    TaskForm, EventForm
 from chasebot_app.models import Company, Contact, Conversation, SalesItem, DealTemplate, DealStatus, Deal, SalesTerm,\
     Invitation, LicenseTemplate, ContactType, Country, MaritalStatus, Gender,\
-    Currency, Task
+    Currency, Task, Event
 from chasebot_app.models import UserProfile 
 from django.utils.translation import ugettext as _, ungettext
 from django.utils import timezone, simplejson
@@ -497,6 +497,42 @@ def task_add_edit(request, task_id=None):
     variables = {'form':form, 'template_title':template_title, 'opendeals_task_form':opendeals_task_form, 'validation_error_ajax':validation_error_ajax }
     variables = merge_with_localized_variables(request, variables)    
     return render(request, 'task.html', variables)
+
+
+
+@login_required
+def event_add_edit(request, open_deal_id, event_id=None):
+    profile = request.user.get_profile()
+        
+    if event_id is None:
+        event = Event(company=profile.company, user=request.user) 
+        template_title = _(u'Add New Event')
+    else:
+        event = get_object_or_404(profile.company.taskevent_set.all(), pk=event_id)
+        template_title = _(u'Edit Event')
+    
+    deal = get_object_or_404(profile.company.deal_set.all(), pk=open_deal_id)
+    validation_error_ajax = False
+       
+    if request.method == 'POST':        
+        form = EventForm(request.POST, instance=event, prefix='form')
+        if form.is_valid():                        
+            event = form.save(commit=False)            
+            event.deal_id = deal.deal_id
+            event.save()
+            events = profile.company.taskevent_set.order_by('-due_date_time')[:3]
+            #tasks, paginator_t, page_t, page_number_t = makePaginator(request, 3, event_queryset) 
+            variables = {'events':events}
+            #variables = merge_with_pagination_variables(paginator_t, page_t, page_number_t, variables, 'task_')
+            return render(request, 'event_list.html', variables)
+        else:
+            validation_error_ajax = True
+    else:        
+        form = EventForm(instance=event, prefix='form')
+
+    variables = {'form':form, 'template_title':template_title, 'validation_error_ajax':validation_error_ajax }
+    #variables = merge_with_localized_variables(request, variables)    
+    return render(request, 'event.html', variables)
 
 
 @login_required
