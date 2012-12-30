@@ -128,8 +128,9 @@ def open_deal_conversations_display(request, deal_id):
     profile = request.user.get_profile()
     deal = get_object_or_404(profile.company.deal_set.all(), pk=deal_id)
     related_deals = Deal.objects.filter(deal_id = deal.deal_id).order_by('-deal_datetime')[:3]
-    calls = Conversation.objects.filter(pk__in = [deal.conversation.pk for deal in related_deals]).order_by('-conversation_datetime')    
-    variables = {'calls': calls}
+    calls = Conversation.objects.filter(pk__in = [deal.conversation.pk for deal in related_deals]).order_by('-conversation_datetime')
+    events = profile.company.event_set.order_by('-due_date_time')
+    variables = {'calls': calls, 'events' : events}
     return render(request, '_deal_conversations.html', variables)
 #    data = serializers.serialize('json', calls)
 #    return HttpResponse(data, mimetype="application/json")
@@ -499,28 +500,40 @@ def task_add_edit(request, task_id=None):
     return render(request, 'task.html', variables)
 
 
+@login_required
+def event_display(request):
+    profile = request.user.get_profile()        
+    events = profile.company.event_set.order_by('-due_date_time')
+    
+    #tasks, paginator, page, page_number = makePaginator(request, 3, task_queryset)
+    variables = {
+                 'events': events,
+                }
+    #variables = merge_with_pagination_variables(paginator, page, page_number, variables, 'task_')
+    return render(request, 'event_list.html', variables)
+
 
 @login_required
 def event_add_edit(request, open_deal_id, event_id=None):
     profile = request.user.get_profile()
-        
+
     if event_id is None:
         event = Event(company=profile.company, user=request.user) 
         template_title = _(u'Add New Event')
     else:
-        event = get_object_or_404(profile.company.taskevent_set.all(), pk=event_id)
+        event = get_object_or_404(profile.company.event_set.all(), pk=event_id)
         template_title = _(u'Edit Event')
-    
+
     deal = get_object_or_404(profile.company.deal_set.all(), pk=open_deal_id)
     validation_error_ajax = False
-       
+
     if request.method == 'POST':        
         form = EventForm(request.POST, instance=event, prefix='form')
         if form.is_valid():                        
             event = form.save(commit=False)            
             event.deal_id = deal.deal_id
             event.save()
-            events = profile.company.taskevent_set.order_by('-due_date_time')[:3]
+            events = profile.company.event_set.order_by('-due_date_time')[:3]
             #tasks, paginator_t, page_t, page_number_t = makePaginator(request, 3, event_queryset) 
             variables = {'events':events}
             #variables = merge_with_pagination_variables(paginator_t, page_t, page_number_t, variables, 'task_')

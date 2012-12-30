@@ -431,7 +431,7 @@ class Event(models.Model):
     deal_id = UUIDField()
     company = models.ForeignKey(Company)
     user = models.ForeignKey(User)
-    notes               = models.TextField(_(u'Notes'),        blank=True)
+    notes = models.TextField(_(u'Notes'),        blank=True)
     
     
     def __unicode__(self):
@@ -439,7 +439,7 @@ class Event(models.Model):
     
     def save(self, *args, **kwargs):
         self.reminder_date_time = self.calc_reminder(self.reminder)        
-        super(Task, self).save(*args, **kwargs) # Call the "real" save() method.
+        super(Event, self).save(*args, **kwargs) # Call the "real" save() method.
     
     def sendMail(self):
         subject = 'Event Reminder'
