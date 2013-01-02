@@ -121,6 +121,7 @@ def open_deals_display(request):
     deals, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deals_query)  
     variables = {'deals': deals}
     variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
+    variables = merge_with_localized_variables(request, variables) 
     return render(request, 'open_deals.html', variables)
 
 @login_required
@@ -501,55 +502,6 @@ def task_add_edit(request, task_id=None):
 
 
 @login_required
-def event_display(request):
-    profile = request.user.get_profile()        
-    events = profile.company.event_set.order_by('-due_date_time')
-    
-    #tasks, paginator, page, page_number = makePaginator(request, 3, task_queryset)
-    variables = {
-                 'events': events,
-                }
-    #variables = merge_with_pagination_variables(paginator, page, page_number, variables, 'task_')
-    return render(request, 'event_list.html', variables)
-
-
-@login_required
-def event_add_edit(request, open_deal_id, event_id=None):
-    profile = request.user.get_profile()
-    deal = get_object_or_404(profile.company.deal_set.all(), pk=open_deal_id)
-    
-    if event_id is None:
-        event = Event(company=profile.company, user=request.user, deal_id=deal.deal_id) 
-        template_title = _(u'Add New Event')
-    else:
-        event = get_object_or_404(profile.company.event_set.all(), pk=event_id)
-        template_title = _(u'Edit Event')
-
-    
-    validation_error_ajax = False
-
-    if request.method == 'POST':        
-        form = EventForm(request.POST, instance=event, prefix='form')
-        if form.is_valid():                        
-            event = form.save(commit=False)            
-            event.deal_id = deal.deal_id
-            event.save()
-            events = profile.company.event_set.order_by('-due_date_time')[:3]
-            #tasks, paginator_t, page_t, page_number_t = makePaginator(request, 3, event_queryset) 
-            variables = {'events':events}
-            #variables = merge_with_pagination_variables(paginator_t, page_t, page_number_t, variables, 'task_')
-            return render(request, 'event_list.html', variables)
-        else:
-            validation_error_ajax = True
-    else:        
-        form = EventForm(instance=event, prefix='form')
-
-    variables = {'form':form, 'template_title':template_title, 'validation_error_ajax':validation_error_ajax }
-    #variables = merge_with_localized_variables(request, variables)    
-    return render(request, 'event.html', variables)
-
-
-@login_required
 def task_delete(request, task_id):
     if task_id is None:
         raise Http404(_(u'Task not found'))    
@@ -565,6 +517,66 @@ def task_delete(request, task_id):
         variables = { 'tasks': tasks , 'contact_id':contact_id}
         variables = merge_with_pagination_variables(paginator, page, page_number, variables, 'task_')
     return render(request, 'task_list.html', variables)
+
+
+@login_required
+def event_display(request):
+    profile = request.user.get_profile()        
+    events = profile.company.event_set.order_by('-due_date_time')
+    
+    #tasks, paginator, page, page_number = makePaginator(request, 3, task_queryset)
+    variables = {
+                 'events': events,
+                }
+    #variables = merge_with_pagination_variables(paginator, page, page_number, variables, 'task_')
+    return render(request, 'event_list.html', variables)
+
+
+@login_required
+def event_add_edit(request, open_deal_id=None, event_id=None):
+    profile = request.user.get_profile()
+        
+    if event_id is None and open_deal_id:
+        deal = get_object_or_404(profile.company.deal_set.all(), pk=open_deal_id)
+        event = Event(company=profile.company, user=request.user, deal_id=deal.deal_id) 
+        template_title = _(u'Add New Event')
+    elif event_id and open_deal_id is None:
+        event = get_object_or_404(profile.company.event_set.all(), pk=event_id)
+        template_title = _(u'Edit Event')
+    
+    validation_error_ajax = False
+
+    if request.method == 'POST':        
+        form = EventForm(request.POST, instance=event, prefix='form')
+        if form.is_valid():                        
+            form.save()
+            events = profile.company.event_set.order_by('-due_date_time')[:3]
+            #tasks, paginator_t, page_t, page_number_t = makePaginator(request, 3, event_queryset) 
+            variables = {'events':events}
+            #variables = merge_with_pagination_variables(paginator_t, page_t, page_number_t, variables, 'task_')
+            return render(request, 'event_list.html', variables)
+        else:
+            validation_error_ajax = True
+    else:        
+        form = EventForm(instance=event, prefix='form')
+
+    variables = {'form':form, 'template_title':template_title, 'validation_error_ajax':validation_error_ajax }
+    #variables = merge_with_localized_variables(request, variables)    
+    return render(request, 'event.html', variables)
+
+@login_required
+def event_delete(request, event_id):
+    if event_id is None:
+        raise Http404(_(u'Event not found'))    
+    else:
+        profile = request.user.get_profile()
+        event = get_object_or_404(profile.company.event_set.all(), pk=event_id)        
+        event.delete()
+        events = profile.company.event_set.order_by('-due_date_time')[:3]   
+        #tasks, paginator, page, page_number = makePaginator(request, 3, event_queryset)        
+        variables = { 'events': events}
+        #variables = merge_with_pagination_variables(paginator, page, page_number, variables, 'task_')
+    return render(request, 'event_list.html', variables)
 
 
 @login_required

@@ -352,10 +352,17 @@ input[type="checkbox"]{
 }
 
 
-/*table.cb_sub_table-hover tbody tr:hover td,
-table.cb_sub_table-hover tbody tr:hover th{
-      background-color: #cfe2e8;  
-}*/
+.event_textarea{
+	width: 15em;
+}
+
+.event_date{
+	width: 12em;
+}
+
+.event_reminder{
+	width: 13em;
+}
 
 table.cb_table-hover > tbody > tr:hover > td:not(.override),
 table.cb_table-hover > tbody > tr:hover > th:not(.override){

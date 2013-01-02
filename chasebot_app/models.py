@@ -420,8 +420,7 @@ class Event(models.Model):
         ('ship',     _(u'Ship')),
         ('demo',     _(u'Demo')),
     )
-    
-    title = models.CharField(max_length=30)
+
     type = models.CharField(max_length=7, choices=Type, default='call', blank=True, null=True)
     due_date_time = models.DateTimeField()
     reminder_date_time = models.DateTimeField()
@@ -432,10 +431,9 @@ class Event(models.Model):
     company = models.ForeignKey(Company)
     user = models.ForeignKey(User)
     notes = models.TextField(_(u'Notes'),        blank=True)
-    
-    
+
     def __unicode__(self):
-        return self.title
+        return self.deal_id
     
     def save(self, *args, **kwargs):
         self.reminder_date_time = self.calc_reminder(self.reminder)        
@@ -452,7 +450,7 @@ class Event(models.Model):
         contact_name = u'{0} {1}'.format(deal.contact.first_name, deal.contact.last_name)        
 
         template = get_template('reminder_email.txt')
-        context = Context({'name': self.user.first_name, 'link': link, 'contact': contact_name, 'deal':deal.deal_instance_name, 'title':self.title, 'communication_type':self.type, 'due_date_time':self.due_date_time, 'notes':self.notes})
+        context = Context({'name': self.user.first_name, 'link': link, 'contact': contact_name, 'deal':deal.deal_instance_name, 'communication_type':self.type, 'due_date_time':self.due_date_time, 'notes':self.notes})
         message = template.render(context)
         send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [self.user.email])    
     

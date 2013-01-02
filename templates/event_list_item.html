@@ -3,8 +3,8 @@
 {% for event in events %}
 	<tr>
 		<td>	    	                        	
-	        <a class="btn btn-small btn-link-left row_edit_task" href="/task/edit/{{ event.pk }}" title="{% trans 'Edit Event' %}"> <i class="icon-pencil"> </i></a>
-	        <a class="btn btn-small row_delete_ajax" href="/task/delete/{{ event.pk }}" title="{% trans 'Delete Event' %}"><i class="icon-trash"> </i></a>	        
+	        <a class="btn btn-small btn-link-left row_edit_event" href="event/edit/{{ event.pk }}/" title="{% trans 'Edit Event' %}"> <i class="icon-pencil"> </i></a>
+	        <a class="btn btn-small row_delete_ajax" href="event/delete/{{ event.pk }}/" title="{% trans 'Delete Event' %}"><i class="icon-trash"> </i></a>	        
 	    </td>	    
 	    <td>{{event.notes}}</td>
 		<td>{{event.type}}</td>		

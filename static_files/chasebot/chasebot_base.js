@@ -521,6 +521,11 @@ function rebind_task_edit_delete(parent){
 	$(parent).find(".row_edit_task").click(edit_new_task);	
 }
 
+function rebind_event_edit_delete(parent){	
+	$(parent).find(".row_delete_ajax").off('click').on('click', {target: parent}, row_delete_ajax);	
+	$(parent).find(".row_edit_event").click(edit_new_event);	
+}
+
 // This rebinds all rating classes within the templates (not forms)
 function rebind_ratings(parent){
 	$(parent).find('.rating').each(function(i, v){
@@ -796,9 +801,9 @@ function edit_new_event(event){
 	$('#event_modal').load(url, function(result){
 		$(this).modal('show');	
 		$("#event_form").get(0).setAttribute("action", url);
-		datepicker_reload('#task_modal');
-		$('#event_form').submit({modal:'#event_modal', tasks_pane:'#events_pane', form:'#event_form'}, event_modal_add_save);
-		reword_collapseable('#accordion_event');
+		datepicker_reload('#event_modal');
+		$('#event_form').submit({modal:'#event_modal', events_pane:'#events_pane', form:'#event_form'}, event_modal_add_save);
+		
 	});
 }
 
@@ -820,7 +825,7 @@ function event_modal_add_save(event){
       		 modal.find('#event_form').get(0).setAttribute("action", url);      		       		 
       		 modal.find('#event_form').submit({modal:'#event_modal', tasks_pane:'#events_pane', form:'#event_form'}, event_modal_add_save);
        		 datepicker_reload($(modal));      		
-       		 rebind_task_edit_delete($(events_pane));
+       		 rebind_event_edit_delete($(events_pane));
       		 rebind_paginator($(events_pane));      		
     	}
     	else {
@@ -829,7 +834,7 @@ function event_modal_add_save(event){
     		$(modal).empty();
     		$(events_pane).empty();
     		$(events_pane).append(result);
-      		rebind_task_edit_delete($(events_pane));
+      		rebind_event_edit_delete($(events_pane));
       		rebind_paginator($(events_pane));      		      		      		
     	}
   	});  	
@@ -970,6 +975,7 @@ function tab_open_deals_clicked(){
 			row.load(url, function(result){
 				row.insertAfter(tr);
 				row.find('#new_event_button').off('click').on('click', edit_new_event);
+				rebind_event_edit_delete($('#events_pane'));
 				$(".collapse").collapse('toggle');
 			});
 		});
@@ -1021,6 +1027,7 @@ $(document).ready(function (){
 	rebind_add();
 	
 	rebind_task_edit_delete($('#tasks_pane'));
+	
 	rebind_paginator($('#tasks_pane'));
 	$(".modal_link_sales_item").click(open_modal_sales_item);
 	//$(".modal_link_business_card").click(open_modal_business_card);

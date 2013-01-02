@@ -402,7 +402,7 @@ class EventForm(ModelForm):
         #form is in Add mode., hence we just pick the currenct date_time as base.
         time_close_to_quarter = timezone.now()
         # Time difference to 15 min round 
-        time_discard = datetime.timedelta(minutes=time_close_to_quarter.time().minute % 15, seconds=time_close_to_quarter.second) 
+        time_discard = datetime.timedelta(minutes=time_close_to_quarter.time().minute % 15, seconds=time_close_to_quarter.second, microseconds=time_close_to_quarter.microsecond) 
         # Deduct that difference from the current time to round it down to nearest quarter.
         time_close_to_quarter -= time_discard
         return time_close_to_quarter
@@ -418,7 +418,7 @@ class EventForm(ModelForm):
             #Convert the UTC date_time into currenct time zone
             self.fields['due_time'].initial = self.instance.due_date_time.replace(tzinfo=pytz.utc).astimezone(local_tz).time()  
         else:            
-            self.fields['due_time'].initial = (self.round_time_to_nearest_quarter() +  datetime.timedelta(minutes=30)).time() 
+            self.fields['due_time'].initial = (self.round_time_to_nearest_quarter() +  datetime.timedelta(minutes=135)).time() 
         #Todo: refactor
         deal = Deal.objects.filter(deal_id = self.instance.deal_id)[0]        
         self.fields['contact_text'].initial = u'{0} {1}'.format(deal.contact.first_name, deal.contact.last_name)
@@ -426,24 +426,24 @@ class EventForm(ModelForm):
     
     def clean_due_time(self):
         due_time = self.cleaned_data['due_time']
-        due_date_time = timezone.now()
+        due_date_time = self.cleaned_data['due_date_time']
         current_tz = timezone.get_current_timezone()  
-        selected_due_date_time = current_tz.localize(datetime.datetime(due_date_time.year, due_date_time.month, due_date_time.day, due_time.hour, due_time.minute))        
+        selected_due_date_time = current_tz.localize(datetime.datetime(due_date_time.year, due_date_time.month, due_date_time.day, due_time.hour, due_time.minute, 0, 0))        
         
         # time_close_to_quarter is always rounded down by max 15 min. Hence if the selected due date time is less than equal full 15 min in future, then
         # there won't be enough time for the system to remind the user, hence it will be rejected. 
-        if selected_due_date_time <= self.round_time_to_nearest_quarter() + datetime.timedelta(minutes=15):
-            raise forms.ValidationError(_(u"The due time of an event has to be set at least 15 minutes in the future."))
+        if selected_due_date_time < self.round_time_to_nearest_quarter() + datetime.timedelta(minutes=135):
+            raise forms.ValidationError(_(u"The due time of an event has to be set at least 2 hours in the future."))
         return due_time
     
     def save(self, commit=True):
-        instance = super(TaskForm, self).save(commit=False)
+        instance = super(EventForm, self).save(commit=False)
         # Always localize the entered date by user into his timezone before saving it to database
         if 'due_date_time' in self.cleaned_data and 'due_time' in self.cleaned_data:
             due_date_time = self.cleaned_data['due_date_time']
             due_time = self.cleaned_data['due_time']
             current_tz = timezone.get_current_timezone()            
-            instance.due_date_time = current_tz.localize(datetime.datetime(due_date_time.year, due_date_time.month, due_date_time.day, due_time.hour, due_time.minute))
+            instance.due_date_time = current_tz.localize(datetime.datetime(due_date_time.year, due_date_time.month, due_date_time.day, due_time.hour, due_time.minute, 0, 0))
         if commit:
             instance.save()
         return instance
@@ -453,7 +453,8 @@ class EventForm(ModelForm):
         model = Event
         exclude = {'reminder_date_time', 'company', 'user'}
         widgets={                    
-                    'title' : forms.TextInput(attrs={'placeholder': _(u'What is this event about?'), 'class':'placeholder_fix_css', 'autocomplete':'off'}),
-                    'due_date_time': forms.DateInput(attrs={'placeholder': _(u'When is this task due?'), 'class':'placeholder_fix_css date_picker', 'autocomplete':'off'}),                    
+                    'reminder' : forms.Select(attrs={'class':'placeholder_fix_css event_reminder'}),
+                    'due_date_time': forms.DateInput(attrs={'placeholder': _(u'When is this event due?'), 'class':'placeholder_fix_css date_picker event_date', 'autocomplete':'off'}),
+                    'notes': forms.Textarea(attrs={'placeholder': _(u'What do you have to do to win this deal?'), 'class':'placeholder_fix_css event_textarea', 'autocomplete':'off'}),                    
                 }
   
