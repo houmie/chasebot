@@ -789,6 +789,53 @@ function task_modal_add_save(event){
 };
 
 
+function edit_new_event(event){	
+	event.preventDefault();
+	var url = $(this).attr("href");
+	$('#event_modal').empty();
+	$('#event_modal').load(url, function(result){
+		$(this).modal('show');	
+		$("#event_form").get(0).setAttribute("action", url);
+		datepicker_reload('#task_modal');
+		$('#event_form').submit({modal:'#event_modal', tasks_pane:'#events_pane', form:'#event_form'}, event_modal_add_save);
+		reword_collapseable('#accordion_event');
+	});
+}
+
+function event_modal_add_save(event){
+	event.preventDefault();	
+	var modal = $(event.data.modal);
+	var events_pane = $(event.data.events_pane);
+	var form = $(event.data.form);
+	// selector starts from Add Button (this)	
+	var url = $(form).attr('action');		
+	//var row = $(this).closest('tr'); //real row containing also the form	
+	var data = $(form).serialize();
+  	
+  	$.post(url, data, function (result) {
+  		//If there are validation errors upon adding the field
+  		if ($('#validation_error_ajax', result).text() == 'True') {  			 
+    		 modal.empty();    		 
+      		 modal.append(result);
+      		 modal.find('#event_form').get(0).setAttribute("action", url);      		       		 
+      		 modal.find('#event_form').submit({modal:'#event_modal', tasks_pane:'#events_pane', form:'#event_form'}, event_modal_add_save);
+       		 datepicker_reload($(modal));      		
+       		 rebind_task_edit_delete($(events_pane));
+      		 rebind_paginator($(events_pane));      		
+    	}
+    	else {
+    		//if there is no error then insert the added row before the current add-button row. (last row)
+    		$(modal).modal('hide');    		
+    		$(modal).empty();
+    		$(events_pane).empty();
+    		$(events_pane).append(result);
+      		rebind_task_edit_delete($(events_pane));
+      		rebind_paginator($(events_pane));      		      		      		
+    	}
+  	});  	
+};
+
+
 function deals_in_progress_coversations(event){
 	event.preventDefault();
 	if($(this).hasClass('active')){		
@@ -842,10 +889,10 @@ function deals_in_progress(event){
 
 function reword_collapseable(parent){
     $(parent).on('shown', function () {       
-        $('#collapse_task_head').text(gettext("Less Details"));
+        $('#collapse_event_head').text(gettext("Less Details"));
     });
     $(parent).on('hidden', function () {       
-        $('#collapse_task_head').text(gettext("More Details"));
+        $('#collapse_event_head').text(gettext("More Details"));
     });
 }
 
@@ -922,6 +969,7 @@ function tab_open_deals_clicked(){
 			
 			row.load(url, function(result){
 				row.insertAfter(tr);
+				row.find('#new_event_button').off('click').on('click', edit_new_event);
 				$(".collapse").collapse('toggle');
 			});
 		});

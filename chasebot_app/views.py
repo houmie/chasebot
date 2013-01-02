@@ -130,7 +130,7 @@ def open_deal_conversations_display(request, deal_id):
     related_deals = Deal.objects.filter(deal_id = deal.deal_id).order_by('-deal_datetime')[:3]
     calls = Conversation.objects.filter(pk__in = [deal.conversation.pk for deal in related_deals]).order_by('-conversation_datetime')
     events = profile.company.event_set.order_by('-due_date_time')
-    variables = {'calls': calls, 'events' : events}
+    variables = {'calls': calls, 'events' : events, 'deal_id':deal_id}
     return render(request, '_deal_conversations.html', variables)
 #    data = serializers.serialize('json', calls)
 #    return HttpResponse(data, mimetype="application/json")
@@ -516,15 +516,16 @@ def event_display(request):
 @login_required
 def event_add_edit(request, open_deal_id, event_id=None):
     profile = request.user.get_profile()
-
+    deal = get_object_or_404(profile.company.deal_set.all(), pk=open_deal_id)
+    
     if event_id is None:
-        event = Event(company=profile.company, user=request.user) 
+        event = Event(company=profile.company, user=request.user, deal_id=deal.deal_id) 
         template_title = _(u'Add New Event')
     else:
         event = get_object_or_404(profile.company.event_set.all(), pk=event_id)
         template_title = _(u'Edit Event')
 
-    deal = get_object_or_404(profile.company.deal_set.all(), pk=open_deal_id)
+    
     validation_error_ajax = False
 
     if request.method == 'POST':        

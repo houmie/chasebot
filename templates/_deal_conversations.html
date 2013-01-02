@@ -6,61 +6,68 @@
 				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">{% trans 'Previous Conversations' %}</a>
 			</div> -->
 			<div id="collapseOne" class="accordion-body collapse">
-			<div class="accordion-inner">
-				<div class="tabbable"> <!-- Only required for left/right tabs -->
-		            <ul class="nav nav-tabs">
-		                <li class="active">
-		                    <a href="#tab1" data-toggle="tab">{% trans 'Upcoming Events' %}</a>
-		                </li>
-		                <li>
-		                    <a href="#tab2" data-toggle="tab">{% trans 'Previous Conversations' %}</a>
-		                </li>		                
-		            </ul>
-		            <div class="tab-content well well-small">
-		                <div class="tab-pane active" id="tab1">		                    
-							<a id="new_task_button" class="btn right-margin" title="{% trans 'New Event' %}" href="/task/add/?contact={{contact.pk}}"><i class="icon-tasks"></i> {% trans 'New Event' %}</a>		    
-							<table class="table table-condensed">
-							    <thead>
-							        <tr>
-							        	<th class="first_th_minwidth"></th>                                                  
-							            <th>{% trans 'Type' %}</th>                       
-							            <th>{% trans 'Due' %}</th>                                                             
-							        </tr>
-							    </thead>
-							    <tbody id="tasks_pane">
-							        {% include 'event_list.html' %}
-							    </tbody>
-							</table>     
-		                </div>
-		                <div class="tab-pane" id="tab2">
-		                    <table id='call_contact_table' class="table table-condensed cb_table-striped cb_sub_table-hover">
-							    <thead>
-							        <tr>
-						                <th class="first_th_minwidth"></th>                        	
-						                <th class="cb_date_width">{% trans 'Date' %}</th>  
-						                <th class="cb_time_width">{% trans 'Time' %}</th>                       
-						                <th class="cb_subject_width">{% trans 'Subject' %}</th>
-						                <th class="cb_notes_minwidth">{% trans 'Notes' %}</th>	            	  	            
-							        </tr>
-							    </thead>
-							    <tbody id="search_result">
-							    	{% for call in calls %}	        
-									<tr>
-									    <td>
-									        <a class="btn btn-link-left row_edit_ajax" href="/contact/{{ call.contact.pk }}/call/edit/{{ call.pk }}" title="{% trans 'Edit' %}"> <i class="icon-pencil"> </i></a>			        	        
-									    </td>
-									    <td>{{ call.conversation_datetime|date:"DATE_FORMAT" }}</td>
-									    <td>{{ call.conversation_datetime|time:"TIME_FORMAT" }}</td>	                        
-									    <td>{{ call.subject }}</td>
-									    <td><div class="cb_notes">{{ call.notes }}</div></td>				    
-									</tr>
-									{% endfor %}
-							    </tbody>
-							</table>
-		                </div>				
-									
-		 		</div>
+				<div class="accordion-inner">
+					<div class="tabbable"> <!-- Only required for left/right tabs -->
+			            <ul class="nav nav-tabs">
+			                <li class="active">
+			                    <a href="#tab1" data-toggle="tab">{% trans 'Upcoming Events' %}</a>
+			                </li>
+			                <li>
+			                    <a href="#tab2" data-toggle="tab">{% trans 'Previous Conversations' %}</a>
+			                </li>		                
+			            </ul>
+			            <div class="tab-content well well-small">
+			                <div class="tab-pane active" id="tab1">		                    
+								<a id="new_event_button" class="btn right-margin" title="{% trans 'New Event' %}" href="/event/add/{{deal_id}}/"><i class="icon-tasks"></i> {% trans 'New Event' %}</a>		    
+								<table class="table table-condensed">
+								    <thead>
+								        <tr>
+								        	<th class="first_th_minwidth"></th>                                                  
+								            <th>{% trans 'Notes' %}</th>                       
+								            <th>{% trans 'Type' %}</th>
+								            <th>{% trans 'Due Date' %}</th>
+								            <th>{% trans 'Due Time' %}</th>
+								            <th>{% trans 'Reminder' %}</th>                                                             
+								        </tr>
+								    </thead>
+								    <tbody id="events_pane">
+								        {% include 'event_list.html' %}
+								    </tbody>
+								</table>     
+			                </div>
+			                <div class="tab-pane" id="tab2">
+			                    <table id='call_contact_table' class="table table-condensed cb_table-striped cb_sub_table-hover">
+								    <thead>
+								        <tr>
+							                <th class="first_th_minwidth"></th>                        	
+							                <th class="cb_date_width">{% trans 'Date' %}</th>  
+							                <th class="cb_time_width">{% trans 'Time' %}</th>                       
+							                <th class="cb_subject_width">{% trans 'Subject' %}</th>
+							                <th class="cb_notes_minwidth">{% trans 'Notes' %}</th>	            	  	            
+								        </tr>
+								    </thead>
+								    <tbody id="search_result">
+								    	{% for call in calls %}	        
+										<tr>
+										    <td>
+										        <a class="btn btn-link-left row_edit_ajax" href="/contact/{{ call.contact.pk }}/call/edit/{{ call.pk }}" title="{% trans 'Edit' %}"> <i class="icon-pencil"> </i></a>			        	        
+										    </td>
+										    <td>{{ call.conversation_datetime|date:"DATE_FORMAT" }}</td>
+										    <td>{{ call.conversation_datetime|time:"TIME_FORMAT" }}</td>	                        
+										    <td>{{ call.subject }}</td>
+										    <td><div class="cb_notes">{{ call.notes }}</div></td>				    
+										</tr>
+										{% endfor %}
+								    </tbody>
+								</table>
+			                </div>									
+			 			</div>
+					</div>
+				</div>
 			</div>
 		</div>
+	</div>
+	<div class="modal hide fade" id="event_modal" tabindex="-1" role="dialog" aria-labelledby="event_label" aria-hidden="true">
+		{% include 'event.html' %}
 	</div>
 </td>

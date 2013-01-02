@@ -9,7 +9,7 @@ import re
 from django.contrib.auth.models import User
 from django.forms import ModelForm
 from chasebot_app.models import Contact, ContactType, Country, MaritalStatus, Conversation, SalesItem, DealTemplate, SalesTerm, Deal,\
-    Invitation, Task
+    Invitation, Task, Event
 from django.forms.models import BaseModelFormSet
 from django.utils.translation import ugettext_lazy as _
 import datetime
@@ -408,7 +408,7 @@ class EventForm(ModelForm):
         return time_close_to_quarter
 
     def __init__(self, *args, **kwargs):
-        super(TaskForm, self).__init__(*args, **kwargs)
+        super(EventForm, self).__init__(*args, **kwargs)
         self.fields['due_time'].widget.attrs['class'] = 'timepicker-default input-small' 
         self.fields['due_time'].widget.attrs['placeholder'] = _(u'What time?')
         self.fields['due_time'].widget.attrs['autocomplete'] = 'off'
@@ -419,8 +419,9 @@ class EventForm(ModelForm):
             self.fields['due_time'].initial = self.instance.due_date_time.replace(tzinfo=pytz.utc).astimezone(local_tz).time()  
         else:            
             self.fields['due_time'].initial = (self.round_time_to_nearest_quarter() +  datetime.timedelta(minutes=30)).time() 
-
-        self.fields['contact_text'].initial = u'{0} {1}'.format(self.instance.contact.first_name, self.instance.contact.last_name)
+        #Todo: refactor
+        deal = Deal.objects.filter(deal_id = self.instance.deal_id)[0]        
+        self.fields['contact_text'].initial = u'{0} {1}'.format(deal.contact.first_name, deal.contact.last_name)
         self.fields['contact_text'].widget.attrs['readonly'] = True
     
     def clean_due_time(self):
@@ -449,7 +450,7 @@ class EventForm(ModelForm):
     
     
     class Meta:
-        model = Task
+        model = Event
         exclude = {'reminder_date_time', 'company', 'user'}
         widgets={                    
                     'title' : forms.TextInput(attrs={'placeholder': _(u'What is this event about?'), 'class':'placeholder_fix_css', 'autocomplete':'off'}),
