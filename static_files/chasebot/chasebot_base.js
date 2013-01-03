@@ -794,6 +794,12 @@ function task_modal_add_save(event){
 };
 
 
+function negotiate_deal(event){	
+	event.preventDefault();
+	
+}
+
+
 function edit_new_event(event){	
 	event.preventDefault();
 	var url = $(this).attr("href");
@@ -802,8 +808,7 @@ function edit_new_event(event){
 		$(this).modal('show');	
 		$("#event_form").get(0).setAttribute("action", url);
 		datepicker_reload('#event_modal');
-		$('#event_form').submit({modal:'#event_modal', events_pane:'#events_pane', form:'#event_form'}, event_modal_add_save);
-		
+		$('#event_form').submit({modal:'#event_modal', events_pane:'#events_pane', form:'#event_form'}, event_modal_add_save);		
 	});
 }
 
@@ -986,6 +991,7 @@ function tab_open_deals_clicked(){
 				row.insertAfter(tr);
 				row.find('#new_event_button').off('click').on('click', edit_new_event);
 				rebind_event_edit_delete($('#events_pane'));
+				$('#search_result').find(".row_negotiate_deal").click(negotiate_deal);
 				$(".collapse").collapse('toggle');
 			});
 		});
