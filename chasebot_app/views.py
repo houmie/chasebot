@@ -130,7 +130,7 @@ def open_deal_conversations_display(request, deal_id):
     deal = get_object_or_404(profile.company.deal_set.all(), pk=deal_id)
     related_deals = Deal.objects.filter(deal_id = deal.deal_id).order_by('-deal_datetime')[:3]
     calls = Conversation.objects.filter(pk__in = [deal.conversation.pk for deal in related_deals]).order_by('-conversation_datetime')
-    events = profile.company.event_set.order_by('-due_date_time')
+    events = profile.company.event_set.filter(deal_id = deal.deal_id).order_by('-due_date_time')
     variables = {'calls': calls, 'events' : events, 'deal_id':deal_id}
     return render(request, '_deal_conversations.html', variables)
 #    data = serializers.serialize('json', calls)

@@ -424,9 +424,17 @@ class EventForm(ModelForm):
         self.fields['contact_text'].initial = u'{0} {1}'.format(deal.contact.first_name, deal.contact.last_name)
         self.fields['contact_text'].widget.attrs['readonly'] = True
     
-    def clean_due_time(self):
+    def clean_due_time(self):            
         due_time = self.cleaned_data['due_time']
-        due_date_time = self.cleaned_data['due_date_time']
+        
+        if self.instance.pk:
+            return due_time
+        
+        if 'due_date_time' in self.cleaned_data:
+            due_date_time = self.cleaned_data['due_date_time']
+        else:
+            return due_time
+        
         current_tz = timezone.get_current_timezone()  
         selected_due_date_time = current_tz.localize(datetime.datetime(due_date_time.year, due_date_time.month, due_date_time.day, due_time.hour, due_time.minute, 0, 0))        
         

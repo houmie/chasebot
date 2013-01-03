@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load l10n %}
 {% for deal in deals %}
-	<tr>
+	<tr class="open_deal_tr">
 	    <td>	    	                        	
 	        <a class="btn btn-link-left row_edit_ajax" href="/open_deals/{{ deal.pk }}/calls" title="{% trans 'Edit' %}"> <i class="icon-pencil icon-large"> </i></a>
 	       	<div id="open_deal_url" class="hidden">/open_deals/{{ deal.pk }}/calls</div>

@@ -351,6 +351,13 @@ input[type="checkbox"]{
 	margin-top: 1em; 
 }
 
+#open_deal_table{
+	margin-top: 1em;	
+}
+
+.open_deal_tr {
+	cursor: pointer;
+}
 
 .event_textarea{
 	width: 15em;

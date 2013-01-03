@@ -823,7 +823,7 @@ function event_modal_add_save(event){
     		 modal.empty();    		 
       		 modal.append(result);
       		 modal.find('#event_form').get(0).setAttribute("action", url);      		       		 
-      		 modal.find('#event_form').submit({modal:'#event_modal', tasks_pane:'#events_pane', form:'#event_form'}, event_modal_add_save);
+      		 modal.find('#event_form').submit({modal:'#event_modal', events_pane:'#events_pane', form:'#event_form'}, event_modal_add_save);
        		 datepicker_reload($(modal));      		
        		 rebind_event_edit_delete($(events_pane));
       		 rebind_paginator($(events_pane));      		
@@ -966,11 +966,21 @@ function tab_contacts_clicked(){
 function tab_open_deals_clicked(){
 	$('#tab_open_deals').load('/open_deals', function(result){
 		$('#tab_open_deals tbody tr').off('click').on('click', function(){
+			var clicked_on_same_row = false;
+			if($(this).next('#details').length == 1){
+				clicked_on_same_row = true;												
+			}			
 			$(".collapse").collapse('toggle');
-			$('#calls_id').remove();
+			$('.collapse').on('hidden', function () {
+				$(this).closest('#details').remove();						    	
+		    })			
+			
+			if(clicked_on_same_row)
+				return;
+			
 			var tr = $(this);			
 			var url = $(this).find('#open_deal_url').text();
-			var row = $('<tr/>', {id:'calls_id'});	
+			var row = $('<tr/>', {id:'details'});	
 			
 			row.load(url, function(result){
 				row.insertAfter(tr);
