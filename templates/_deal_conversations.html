@@ -41,8 +41,7 @@
 								        <tr>
 							                <!-- <th class="first_th_minwidth"></th>   -->                      	
 							                <th class="cb_date_width">{% trans 'Date' %}</th>  
-							                <th class="cb_time_width">{% trans 'Time' %}</th>                       
-							                <!-- <th class="cb_subject_width">{% trans 'Subject' %}</th> -->
+							                <th class="cb_time_width">{% trans 'Time' %}</th>							                
 							                <th class="cb_notes_minwidth">{% trans 'Notes' %}</th>	            	  	            
 								        </tr>
 								    </thead>
@@ -53,8 +52,7 @@
 										        <a class="btn btn-link-left row_edit_ajax" href="/contact/{{ call.contact.pk }}/call/edit/{{ call.pk }}" title="{% trans 'Edit' %}"> <i class="icon-pencil"> </i></a>			        	        
 										    </td> -->
 										    <td>{{ call.conversation_datetime|date:"DATE_FORMAT" }}</td>
-										    <td>{{ call.conversation_datetime|time:"TIME_FORMAT" }}</td>	                        
-										    <!-- <td>{{ call.subject }}</td> -->
+										    <td>{{ call.conversation_datetime|time:"TIME_FORMAT" }}</td>										    
 										    <td><div class="cb_notes">{{ call.notes }}</div></td>				    
 										</tr>
 										{% endfor %}

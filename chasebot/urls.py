@@ -10,7 +10,8 @@ from chasebot_app.views import logout_page, contact_delete, conversation_display
     deal_autocomplete, get_deal_template, get_opendeal, colleague_invite,\
     colleague_accept, single_conversation_display, \
     task_display, task_add_edit, task_delete, index_display, open_deals_display,\
-    open_deal_conversations_display, event_add_edit, event_delete
+    open_deal_conversations_display, event_add_edit, event_delete,\
+    negotiate_open_deal
 from chasebot_app.demo_view import demo
 
 admin.autodiscover()
@@ -51,7 +52,8 @@ urlpatterns = patterns('',
     (r'^contact/(?P<contact_id>\d+)/call/(?P<call_id>\w+)/$', single_conversation_display),
     
     (r'^open_deals/$', open_deals_display),
-    (r'^open_deals/(?P<deal_id>\d+)/calls/$', open_deal_conversations_display),    
+    (r'^open_deals/(?P<deal_id>\d+)/calls/$', open_deal_conversations_display),
+    (r'^open_deals/negotiate/(?P<deal_pk>\d+)/$', negotiate_open_deal),        
       
     
     #Ajax

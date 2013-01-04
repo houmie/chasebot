@@ -133,9 +133,55 @@ def open_deal_conversations_display(request, deal_id):
     events = profile.company.event_set.filter(deal_id = deal.deal_id).order_by('-due_date_time')
     variables = {'calls': calls, 'events' : events, 'deal_id':deal_id}
     return render(request, '_deal_conversations.html', variables)
-#    data = serializers.serialize('json', calls)
-#    return HttpResponse(data, mimetype="application/json")
     
+
+@login_required
+def negotiate_open_deal(request, deal_pk):
+    profile = request.user.get_profile()
+    actual_deal = get_object_or_404(profile.company.deal_set.all(), pk=deal_pk)
+    validation_error_ajax = False
+
+    if request.method == 'POST':        
+        form = DealForm(request.POST, instance=actual_deal)
+        
+        if form.is_valid():
+            # Always localize the entered date by user into his timezone before saving it to database
+            call = Conversation(contact=actual_deal.contact, conversation_datetime = timezone.now())            
+            call.save()
+            modified_deal = form.save(commit=False)            
+            deal = Deal.objects.create(
+                                deal_id =       actual_deal.deal_id,
+                                deal_datetime = call.conversation_datetime, 
+                                status =        modified_deal.status, 
+                                contact =       call.contact, 
+                                deal_template = modified_deal.deal_template,
+                                deal_template_name = modified_deal.deal_template_name,  
+                                conversation =  call,                                            
+                                deal_instance_name = modified_deal.deal_instance_name,
+                                deal_description = modified_deal.deal_description,
+                                price =         modified_deal.price,        
+                                currency =      modified_deal.currency,                
+                                sales_term =    modified_deal.sales_term,
+                                quantity =      modified_deal.quantity,
+                                company =       profile.company                                            
+                                )
+            #Saving M2M 
+            for item in form.cleaned_data['sales_item']:
+                deal.sales_item.add(item)
+            deal.save();
+                        
+            #In case the instance name was changed we change also all other instance names of the same set.
+            adjust_deal_names_of_same_dealset(deal.contact, deal)                                
+            return render(request, 'conversation_list_item.html', {'calls':[call], 'contact':deal.contact})
+        else:
+            validation_error_ajax = True    
+            
+    else:
+        form = DealForm(instance=actual_deal)
+        
+    variables = {'fs':form, 'validation_error_ajax':validation_error_ajax }
+    return render(request, '_deal_edit_item.html', variables)
+
 
 @login_required
 def contacts_display(request, contact_id=None):      
@@ -240,9 +286,7 @@ def conversation_display(request, contact_id):
             else:
                 to_date = timezone.now()        
             calls_queryset = calls_queryset.filter(conversation_datetime__range=(from_date, to_date))
-        if 'subject' in request.GET:
-            subject = request.GET['subject']
-            calls_queryset = calls_queryset.filter(subject__icontains=subject).order_by('subject')          
+                  
     
     filter_form = FilterConversationForm(request.GET)
     calls, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, calls_queryset)

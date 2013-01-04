@@ -216,15 +216,14 @@ class DealTemplate(models.Model):
 class Conversation(models.Model):
     contact             = models.ForeignKey(Contact)
     conversation_datetime = models.DateTimeField()    
-    subject             = models.CharField(_(u'Subject'),      max_length=50)
     notes               = models.TextField(_(u'Notes'),        blank=True)
     
     class Meta:
-        get_latest_by   = 'conversation_datetime'            
+        #get_latest_by   = 'conversation_datetime'            
         verbose_name = _(u'Conversation')
         verbose_name_plural = _(u'Conversations')    
     def __unicode__(self):
-        return self.subject
+        return self.conversation_datetime
 
 
 class Deal(models.Model):    

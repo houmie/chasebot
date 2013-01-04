@@ -11,12 +11,7 @@
 	        			<th></th>
 	        			<th></th>
 	        			<th></th>
-	        			<th></th>                     	
-                        <!-- <th class="cb_date_width">{% trans 'Date' %}</th>  
-                        <th class="cb_time_width">{% trans 'Time' %}</th>                       
-                        <th class="cb_subject_width">{% trans 'Subject' %}</th>
-                        <th class="cb_notes_minwidth">{% trans 'Notes' %}</th>
-                        <th class="cb_deals_minwidth">{% trans 'Deals' %}</th> -->     
+	        			<th></th>                             
 	        		</tr>
 	        	</thead>
 	            <tbody>
@@ -43,16 +38,7 @@
 		                		{{form.conversation_time}}
 		                	{% endif %}    
 		                	<!-- {% get_current_timezone as TIME_ZONE %}{{TIME_ZONE}} -->                              
-	                    </td>
-	                    <td>                        
-	                        {% if form.subject.errors %}
-		                	<div class="field field_error">
-		                    	{{form.subject}} {{form.subject.errors}}                   	
-		                	</div>
-		                	{% else %}
-		                		{{form.subject}}
-		                	{% endif %}                        
-	                    </td>
+	                    </td>	                    
 	                    <td>
 							{% if form.notes.errors %}
 		                	<div class="field field_error">

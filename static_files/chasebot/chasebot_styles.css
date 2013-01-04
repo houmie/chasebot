@@ -46,6 +46,10 @@ div.field_error li, div.field_error p, div.field_error{
 	visibility: hidden;
 }
 
+.hidden2{
+	display: none;
+}
+
 .bold_cb{
 	font-weight: bold;
 }
@@ -246,10 +250,6 @@ td.minwidth{
 	min-width: 5em;
 }
 
-.cb_subject_width{
-	min-width: 10em;
-}
-
 .cb_notes_minwidth{
 	min-width: 8em;
 }
@@ -264,10 +264,6 @@ td.minwidth{
 
 .cb_time_maxwidth{
 	width: 5em;
-}
-
-.cb_subject_maxwidth{
-	width: 10em;
 }
 
 .cb_notes_maxwidth{

@@ -3,7 +3,7 @@
 {% for deal in deals %}
 	<tr class="open_deal_tr">
 	    <td>	    	                        	
-	        <a class="btn btn-link-left row_negotiate_deal" href="/open_deals/{{ deal.pk }}/calls" title="{% trans 'Negotiate' %}"> <i class="icon-phone icon-large"> </i></a>
+	        <a class="btn btn-link-left negotiate_deal_btn hidden2" href="open_deals/negotiate/{{ deal.pk }}/" title="{% trans 'Negotiate' %}"> <i class="icon-phone icon-large"> </i></a>
 	       	<div id="open_deal_url" class="hidden">/open_deals/{{ deal.pk }}/calls</div>
 	    </td>	    
 	    <td><span class="badge badge-info">{{ deal.deal_instance_name }}</span></td>	                        

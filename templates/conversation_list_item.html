@@ -7,8 +7,7 @@
 	        <a class="btn row_delete_ajax" href="/contact/{{ contact.pk }}/call/delete/{{ call.pk }}/" title="{% trans 'Delete' %}"><i class="icon-trash icon-large"> </i></a>	        
 	    </td>
 	    <td>{{ call.conversation_datetime|date:"DATE_FORMAT" }}</td>
-	    <td>{{ call.conversation_datetime|time:"TIME_FORMAT" }}</td>	                        
-	    <td>{{ call.subject }}</td>
+	    <td>{{ call.conversation_datetime|time:"TIME_FORMAT" }}</td>	    
 	    <td><div class="cb_notes">{{ call.notes }}</div></td>
 	    <td>
 		{% for deal in call.deal_set.all %}

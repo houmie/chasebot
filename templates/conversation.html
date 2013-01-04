@@ -94,21 +94,7 @@
 				                		{{form.conversation_time}}
 				                	{% endif %}                        
 			                    </td>
-			                </tr>            
-			                <tr>
-			                    <td>
-			                    	{% if  form.subject.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.subject.label}}: *</div>{%else%}{{form.subject.label}}:{% endif %}                        
-			                    </td>
-			                    <td>                        
-			                        {% if form.subject.errors %}
-				                	<div class="field field_error">
-				                    	{{form.subject}} {{form.subject.errors}}                   	
-				                	</div>
-				                	{% else %}
-				                		{{form.subject}}
-				                	{% endif %}                        
-			                    </td>
-			                </tr>            
+			                </tr>			                            
 			                <tr>
 			                    <td>
 			                        {% if  form.notes.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.notes.label}}: *</div>{%else%}{{form.notes.label}}:{% endif %}
