@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404
 from chasebot_app.forms import RegistrationForm, ContactsForm, ConversationForm, SalesItemForm, DealTemplateForm,\
      DealForm, FilterContactsForm, FilterConversationForm, FilterDealsForm, FilterSalesItemForm,\
     DealsAddForm, OpenDealsAddForm, ColleagueInviteForm, OpenDealTaskForm,\
-    TaskForm, EventForm
+    TaskForm, EventForm, DealNegotiateForm
 from chasebot_app.models import Company, Contact, Conversation, SalesItem, DealTemplate, DealStatus, Deal, SalesTerm,\
     Invitation, LicenseTemplate, ContactType, Country, MaritalStatus, Gender,\
     Currency, Task, Event
@@ -117,12 +117,17 @@ def index_display(request):
 @login_required
 def open_deals_display(request):
     profile = request.user.get_profile()
+    variables = load_open_deals_variables(request, profile)
+    return render(request, 'open_deals.html', variables)
+
+@login_required
+def load_open_deals_variables(request, profile):
     deals_query = all_open_deals(request, profile.company)
     deals, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deals_query)  
     variables = {'deals': deals}
     variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
     variables = merge_with_localized_variables(request, variables) 
-    return render(request, 'open_deals.html', variables)
+    return variables
 
 @login_required
 def open_deal_conversations_display(request, deal_id):
@@ -142,11 +147,11 @@ def negotiate_open_deal(request, deal_pk):
     validation_error_ajax = False
 
     if request.method == 'POST':        
-        form = DealForm(request.POST, instance=actual_deal)
+        form = DealNegotiateForm(request.POST, instance=actual_deal)
         
         if form.is_valid():
             # Always localize the entered date by user into his timezone before saving it to database
-            call = Conversation(contact=actual_deal.contact, conversation_datetime = timezone.now())            
+            call = Conversation(contact=actual_deal.contact, conversation_datetime = timezone.now(), notes=form.cleaned_data['call_notes'])
             call.save()
             modified_deal = form.save(commit=False)            
             deal = Deal.objects.create(
@@ -172,12 +177,15 @@ def negotiate_open_deal(request, deal_pk):
                         
             #In case the instance name was changed we change also all other instance names of the same set.
             adjust_deal_names_of_same_dealset(deal.contact, deal)                                
-            return render(request, 'conversation_list_item.html', {'calls':[call], 'contact':deal.contact})
+            
+            variables = load_open_deals_variables(request, profile)
+            return render(request, 'open_deals.html', variables)
+            
         else:
             validation_error_ajax = True    
             
     else:
-        form = DealForm(instance=actual_deal)
+        form = DealNegotiateForm(instance=actual_deal)
         
     variables = {'fs':form, 'validation_error_ajax':validation_error_ajax }
     return render(request, '_deal_edit_item.html', variables)

@@ -1,5 +1,6 @@
 {% load i18n %}
 <div>       			
+	<div class="hidden" id="validation_error_ajax">{{validation_error_ajax}}</div>
 	<table>
 		<tbody>
 			<tr>
@@ -108,6 +109,21 @@
                     {{fs.deal_template}}
                 </td>
             </tr>
-		</tbody>								
+		</tbody>	
+		<thead>
+			<tr>
+				<th>
+                    {% if  fs.call_notes.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.call_notes.label}}: *</div>{%else%}{{fs.call_notes.label}}:{% endif %}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+			<tr>
+				<td>			                    	
+                	{{fs.call_notes}}
+                	<div class="hide field field_error"></div>				                    	
+                </td>
+            </tr>
+        </tbody>
 	</table>  
 </div>

@@ -228,7 +228,7 @@ function validation_rules(){
 		});				
 	});
 	
-	$('#deal_modal_form').find('input.mandatory').each(function(){		
+	$('#deal_modal_form').find('input.mandatory, textarea.mandatory').each(function(){		
 		$(this).rules('add', {
 			required: true,
 		});				
@@ -283,7 +283,7 @@ function create_btn_deals(row){
 			});		
 			
 			rebind_attach_deals('#deal_modal_body', row); //TODO: Recheck later
-			calc_total_price(total-1);
+			calc_total_price();
 			$('#deal_modal').find('#modal_h3').text(gettext('Edit Deal'));   
 			show_modal('#deal_modal');
 		});			
@@ -329,13 +329,12 @@ function bind_attach_deal(row){
 	});	
 }
 
-function calc_total_price(total){
-	$('#deal_modal_body').find('.quantity').off('change').on('change',{total:total}, calc_totals);
-	$('#deal_modal_body').find('.price').off('change').on('change', {total:total}, calc_totals);
+function calc_total_price(){
+	$('#deal_modal_body').find('.quantity').off('change').on('change', calc_totals);
+	$('#deal_modal_body').find('.price').off('change').on('change', calc_totals);
 }
 
-function calc_totals(event){		
-	var total = event.data.total;
+function calc_totals(event){	
   	var total_price = $('#deal_modal_body').find('.quantity').val() * $('#deal_modal_body').find('.price').val();
 	total_price = (Math.round(total_price*100)/100);
 	$('#deal_modal_body').find('.total_price').val(total_price); 
@@ -792,21 +791,64 @@ function task_modal_add_save(event){
 
 function negotiate_deal(event){	
 	event.preventDefault();
+	event.stopPropagation();
 	var url = $(this).attr("href");
 	$('#deal_modal_body').empty();
 	var form = $('<form/>', {id: 'deal_modal_form', action: '.', method: 'post'});		
 	$('#deal_modal_body').append(form);
-	form.load(url, function(result){
-		//$('#deal_modal').modal('show');	
+	form.load(url, function(result){		
 		show_modal('#deal_modal');
-		$("#deal_modal_body").get(0).setAttribute("action", url);
+		$(this).get(0).setAttribute("action", url);
 		datepicker_reload('#deal_modal_body');				
-		$('#deal_modal_body').find('#id_sales_item').chosen({no_results_text: gettext('No results match')});
-		
-		calc_total_price(total-1);
+		$('#deal_modal_body').find('#id_sales_item').chosen({no_results_text: gettext('No results match')});		
+		calc_total_price();
 		$('#deal_modal').find('#modal_h3').text(gettext('Negotiate Deal'));
-		//$('#deal_modal_body').submit({modal:'#event_modal', events_pane:'#events_pane', form:'#event_form'}, event_modal_add_save);		
+		$(this).submit({modal:'#deal_modal', form:$(this)}, negotiate_deal_submit);	
+		
+		var validator = validation_rules();			
+		
+		$('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {validator:validator}, function(){
+			validator.form();
+			if(validator.invalidElements().length == 0){ 
+				form.submit(); 
+			}
+		});	
 	});
+}
+
+function negotiate_deal_submit(event){
+	event.preventDefault();
+	var form = event.data.form;
+	var url = $(form).attr('action');
+	var data = $(form).serialize();
+	var modal = event.data.modal;	
+	
+	$.post(url, data, function (result) {
+  		//If there are validation errors upon adding the field
+  		if ($('#validation_error_ajax', result).text() == 'True') {  			 
+    		 form.empty();    		 
+      		 form.append(result);
+      		 //modal.find('#event_form').get(0).setAttribute("action", url);      		       		 
+      		 //modal.find('#event_form').submit({modal:'#event_modal', events_pane:'#events_pane', form:'#event_form'}, event_modal_add_save);
+      		 $('#deal_modal_body').find('#id_sales_item').chosen({no_results_text: gettext('No results match')});
+       		 datepicker_reload('#deal_modal_body');
+       		 calc_total_price();      		
+       		 //rebind_event_edit_delete($(events_pane));
+      		 //rebind_paginator($(events_pane));      		
+    	}
+    	else {
+    		//if there is no error then insert the added row before the current add-button row. (last row)
+    		$(modal).modal('hide');    		
+    		//$(modal).empty();
+    		$('#tab_open_deals').empty();
+    		$('#tab_open_deals').append(result);
+    		load_open_deals();
+    		//$(events_pane).empty();
+    		//$(events_pane).append(result);
+      		//rebind_event_edit_delete($(events_pane));
+      		//rebind_paginator($(events_pane));      		      		      		
+    	}
+  	});
 }
 
 
@@ -826,10 +868,8 @@ function event_modal_add_save(event){
 	event.preventDefault();	
 	var modal = $(event.data.modal);
 	var events_pane = $(event.data.events_pane);
-	var form = $(event.data.form);
-	// selector starts from Add Button (this)	
-	var url = $(form).attr('action');		
-	//var row = $(this).closest('tr'); //real row containing also the form	
+	var form = $(event.data.form);		
+	var url = $(form).attr('action');	
 	var data = $(form).serialize();
   	
   	$.post(url, data, function (result) {
@@ -979,9 +1019,16 @@ function tab_contacts_clicked(){
 }
 
 function tab_open_deals_clicked(){
-	$('#tab_open_deals').load('/open_deals', function(result){
-		//$('#tab_open_deals').find(".negotiate_deal_btn").hide();		
-		$('#tab_open_deals tbody tr').off('click').on('click', function(){
+	$('#tab_open_deals').load('/open_deals', function(result){				
+		load_open_deals();
+	});
+	$('#main_tabs a[href="#tab_open_deals"]').off('click');
+	bind_main_tabs('tab_open_deals');	
+}
+
+
+function load_open_deals(){
+	$('#tab_open_deals tbody tr').off('click').on('click', function(){
 			var clicked_on_same_row = false;
 			var deal_row = $(this);
 			if($(this).next('#details').length == 1){
@@ -989,7 +1036,7 @@ function tab_open_deals_clicked(){
 			}			
 			$(".collapse").collapse('toggle');
 			$('.collapse').on('hidden', function () {
-				$('#details').prev().find(".negotiate_deal_btn").hide();
+				$(this).closest('tr').prev().find(".negotiate_deal_btn").hide();
 				$(this).closest('#details').remove();										    	
 		    })			
 			
@@ -1011,10 +1058,6 @@ function tab_open_deals_clicked(){
 				$(".collapse").collapse('toggle');
 			});
 		});
-
-	});
-	$('#main_tabs a[href="#tab_open_deals"]').off('click');
-	bind_main_tabs('tab_open_deals');	
 }
 
 

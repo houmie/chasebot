@@ -270,8 +270,14 @@ class DealForm(ModelForm):
         fields = {'deal_template', 'deal_template_name', 'deal_instance_name', 'status', 
                   'deal_description', 'sales_item', 'price', 'currency', 'sales_term', 'quantity', 'total_price'}
         
-
+class DealNegotiateForm(DealForm):
+    call_notes = forms.CharField(widget = forms.Textarea(attrs={'placeholder': _(u'What did you discuss with the customer?'), 'class' : 'cb_notes_maxwidth mandatory'}))
     
+    def __init__(self, *args, **kwargs):
+        super(DealNegotiateForm, self).__init__(*args, **kwargs)                       
+        #self.fields['call_notes'].widget.attrs['class'] = 'cb_deal_description'
+    
+        
 
 class FilterSalesItemForm(Form):
     def __init__(self, *args, **kwargs):
