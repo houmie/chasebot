@@ -767,9 +767,9 @@ def deal_template_display(request):
                  }
     variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
     if ajax:    
-        return render(request, 'deal_list.html', variables)
+        return render(request, 'deal_template_list.html', variables)
     else:
-        return render(request, 'deals.html', variables)
+        return render(request, 'deal_templates.html', variables)
     
 
 @login_required
@@ -778,20 +778,27 @@ def deal_template_add_edit(request, deal_id=None):
     
     if deal_id is None:
         deal = DealTemplate(company=profile.company)        
-        template_title = _(u'Add New Deal Template')
+        template_title = _(u'Add New Pre-defined Deal')
     else:
         deal = get_object_or_404(profile.company.dealtemplate_set.all(), pk=deal_id)
-        template_title = _(u'Edit Deal Template')
+        template_title = _(u'Edit Pre-defined Deal')
     if request.method == 'POST':
         form = DealTemplateForm(request.POST, instance=deal)
         if form.is_valid():
             deal = form.save()
-            return HttpResponseRedirect('/deals')
+            
+            deals_queryset = profile.company.dealtemplate_set.order_by('deal_name')                        
+            deals, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deals_queryset)    
+            variables = {
+                         'deals': deals,
+                         }
+            variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
+            return render(request, 'deal_templates.html', variables)            
     else:
-        form = DealTemplateForm(instance=deal)    
-    variables = {'form':form, 'template_title': template_title}
-    variables = merge_with_localized_variables(request, variables)   
-    return render(request, 'deal.html', variables)
+        form = DealTemplateForm(instance=deal)
+    variables = {'form':form, 'template_title': template_title}       
+    return render(request, 'deal_template.html', variables)
+
 
 @login_required
 def deal_template_delete(request, deal_id=None):

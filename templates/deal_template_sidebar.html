@@ -1,0 +1,34 @@
+<div class="well cb_well-small">
+	<h4>{% trans 'Filter' %}</h4>
+	<p>{% trans 'Choose the filters below to find a specific deal.' %}</p>
+	<h5>{% trans 'Deal Name' %}</h5>	
+	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
+		<div class="input-append filter-container">
+		{{filter_form.deal_name}}<div class="close filter-close">&times;</div><button type="submit" class="btn"><i class='icon-filter'> </i></button>
+		</div>				
+	</form>
+	<h5>{% trans 'Sales Item' %}</h5>
+	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
+		<div class="input-append filter-container">
+		{{filter_form.sales_item}}<div class="close filter-close">&times;</div><button type="submit" class="btn"><i class='icon-filter'> </i></button>
+		</div>				
+	</form> 
+	<h5>{% trans 'Price' %}</h5>
+	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">
+		<div class="input-append filter-container">
+		{{filter_form.price}}<div class="close filter-close">&times;</div><button type="submit" class="btn"><i class='icon-filter'> </i></button>
+		</div>
+	</form>
+	<h5>{% trans 'Term' %}</h5>
+	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">
+		<div class="input-append filter-container">
+		{{filter_form.sales_term}}<div class="close filter-close">&times;</div><button type="submit" class="btn"><i class='icon-filter'> </i></button>
+		</div>				
+	</form>
+	<h5>{% trans 'Quantity' %}</h5>
+	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">
+		<div class="input-append filter-container">
+		{{filter_form.quantity}}<div class="close filter-close">&times;</div><button type="submit" class="btn"><i class='icon-filter'> </i></button>
+		</div>				
+	</form>  
+</div>

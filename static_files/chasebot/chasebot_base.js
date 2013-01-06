@@ -993,11 +993,22 @@ function rebind_business_card_modal_link(){
 	$('.business_card_modal_link').off('click').on('click', load_business_card);	
 }
 
+
+function add_new_deal_template(event){
+	event.preventDefault();
+	var url = $(this).attr('href');
+	$('#tab_predefined').load(url, function(result){
+		$(this).find('#id_sales_item').chosen({no_results_text: gettext('No results match')});		
+	});
+}
+
+
 function tab_predefined_clicked(){	
 	$('#tab_predefined').load('/deals', function(result){
 		rebind_paginator($('#search_result'));
 		rebind_edit_delete($('#search_result'));
 		rebind_filters($('body'));
+		$('#new_deal_template_btn').off('click').on('click', add_new_deal_template)
 	});	
 	$('#main_tabs a[href="#tab_predefined"]').off('click');
 	bind_main_tabs('tab_predefined');	
