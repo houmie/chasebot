@@ -636,15 +636,14 @@ def sales_item_display(request):
     profile = request.user.get_profile()
     sales_items_queryset = profile.company.salesitem_set.order_by('item_name')    
     ajax = False
-    is_modal = False 
+    
         
     if 'ajax' in request.GET:
         ajax = True        
         if 'item_name' in request.GET:    
             item_name = request.GET['item_name']
             sales_items_queryset = sales_items_queryset.filter(item_name__icontains=item_name).order_by('item_name')
-    if 'modal' in request.GET:
-        is_modal = True        
+
     
     filter_form = FilterSalesItemForm(request.GET)    
     sales_items, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, sales_items_queryset)    
@@ -657,11 +656,10 @@ def sales_item_display(request):
     variables = merge_with_additional_variables(request, paginator, page, page_number, variables) 
     if ajax:    
         return render(request, 'sales_item_list.html', variables)
-    else:
-        if is_modal:
-            return render(request, 'sales_items_modal.html', variables)
-        else:
-            return render(request, 'sales_items.html', variables)  
+    else:        
+        return render(request, '_sales_items_table.html', variables)
+#        else:
+#            return render(request, 'sales_items.html', variables)  
 
 @login_required
 def single_sales_item_display(request, sales_item_id):
@@ -736,34 +734,34 @@ def sales_item_delete(request, sales_item_id=None):
 @login_required
 def deal_template_display(request):    
     profile = request.user.get_profile()
-    deals_queryset = profile.company.dealtemplate_set.order_by('deal_name')
+    deal_templates_queryset = profile.company.dealtemplate_set.order_by('deal_name')
     ajax = False
     if 'ajax' in request.GET:
         ajax = True        
         if 'deal_name' in request.GET:    
             deal_name = request.GET['deal_name']
-            deals_queryset = deals_queryset.filter(deal_name__icontains=deal_name).order_by('deal_name')
+            deal_templates_queryset = deal_templates_queryset.filter(deal_name__icontains=deal_name).order_by('deal_name')
         if 'sales_item' in request.GET:            
             sales_item_keywords = request.GET.getlist('sales_item')
             # Q are queries that can be stacked with Or operators. If none of the Qs contains any value, `reduce` minimizes them to no queryset,             
             q_filters = reduce(operator.or_, (Q(item_name__icontains=item.strip()) for item in sales_item_keywords))
             sales_items = profile.company.salesitem_set.filter(q_filters)       
-            deals_queryset = deals_queryset.filter(sales_item__in=sales_items)
+            deal_templates_queryset = deal_templates_queryset.filter(sales_item__in=sales_items)
         if 'price' in request.GET:    
             price = request.GET['price']
-            deals_queryset = deals_queryset.filter(price__icontains=price).order_by('price')
+            deal_templates_queryset = deal_templates_queryset.filter(price__icontains=price).order_by('price')
         if 'sales_term' in request.GET:    
             sales_term = request.GET['sales_term']
             sales_terms = SalesTerm.objects.filter(sales_term__icontains=sales_term)
-            deals_queryset = deals_queryset.filter(sales_term__in=sales_terms)
+            deal_templates_queryset = deal_templates_queryset.filter(sales_term__in=sales_terms)
         if 'quantity' in request.GET:    
             quantity = request.GET['quantity']
-            deals_queryset = deals_queryset.filter(quantity__icontains=quantity).order_by('quantity')    
+            deal_templates_queryset = deal_templates_queryset.filter(quantity__icontains=quantity).order_by('quantity')    
 
     filter_form = FilterDealsForm(profile.company, request.GET)            
-    deals, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deals_queryset)    
+    deal_templates, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deal_templates_queryset)    
     variables = {
-                 'deals': deals, 'filter_form' : filter_form,
+                 'deal_templates': deal_templates, 'filter_form' : filter_form,
                  }
     variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
     if ajax:    
@@ -774,8 +772,7 @@ def deal_template_display(request):
 
 @login_required
 def deal_template_add_edit(request, deal_id=None):
-    profile = request.user.get_profile()
-    
+    profile = request.user.get_profile()    
     if deal_id is None:
         deal = DealTemplate(company=profile.company)        
         template_title = _(u'Add New Pre-defined Deal')
@@ -787,16 +784,16 @@ def deal_template_add_edit(request, deal_id=None):
         if form.is_valid():
             deal = form.save()
             
-            deals_queryset = profile.company.dealtemplate_set.order_by('deal_name')                        
-            deals, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deals_queryset)    
+            deal_templates_queryset = profile.company.dealtemplate_set.order_by('deal_name')                        
+            deal_templates, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deal_templates_queryset)    
             variables = {
-                         'deals': deals,
+                         'deal_templates': deal_templates,
                          }
             variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
-            return render(request, 'deal_templates.html', variables)            
+            return render(request, 'deal_templates.html', variables)
     else:
         form = DealTemplateForm(instance=deal)
-    variables = {'form':form, 'template_title': template_title}       
+    variables = {'form':form, 'template_title': template_title}
     return render(request, 'deal_template.html', variables)
 
 

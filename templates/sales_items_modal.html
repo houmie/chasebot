@@ -3,10 +3,9 @@
 	<button type="button" class="close close_link" data-dismiss="modal" aria-hidden="true">&times;</button>	
 	<h3><i class="icon-barcode"></i> {% trans 'Sales Items' %}</h3>
 </div>
-<div class="modal-body">
-	{% include '_sales_items_table.html' %}
+<div id="sales_items_modal_body" class="modal-body">
+
 </div>
-<div class="hidden" id="modal_type">sales_items</div>
 <div class="modal-footer">
 	<a href="#" class="btn close_link" data-dismiss="modal">{% trans 'Close' %}</a>	
 </div>

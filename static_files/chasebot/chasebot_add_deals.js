@@ -103,7 +103,7 @@ function fill_emptyX_with_predefined_or_existing_data(selected_id, type, empty_X
 		    $('#deal_modal_body').children('form').append(empty_X);
 	    	rebind_attach_deals('#deal_modal_body', row);	    	 
 	    	calc_total_price();   
-	    	validator = validation_rules();	
+	    	validator = validation_rules('#deal_modal_form');	
 	    	$('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row}, add_deal_to_formset);
 	    	$('#deal_modal').find('#deal_modal_confirm_btn').removeClass("disabled");
 		  }		  
@@ -214,7 +214,7 @@ function new_deal(row){
 	rebind_attach_deals('#deal_modal_body', row);
 	var total = $(row).find('#id_deals-TOTAL_FORMS').val();	    	 
 	calc_total_price();   
-	validator = validation_rules();			
+	validator = validation_rules('#deal_modal_form');			
 }
 
 function add_opendeals(event){

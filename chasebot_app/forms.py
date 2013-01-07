@@ -220,7 +220,9 @@ class DealTemplateForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(DealTemplateForm, self).__init__(*args, **kwargs)
         self.fields['sales_item'].queryset = SalesItem.objects.filter(company=self.instance.company)                
-        self.fields['sales_item'].widget.attrs['class'] = 'sales_item'
+        self.fields['sales_term'].widget.attrs['class'] = 'mandatory'
+        self.fields['sales_item'].widget.attrs['class'] = 'multi_select_mandatory'
+        self.fields['currency'].widget.attrs['class'] = 'mandatory'
     
     def clean_quantity(self):
         if 'quantity' in self.cleaned_data:
@@ -234,14 +236,11 @@ class DealTemplateForm(ModelForm):
         exclude = ('company', 'status')
         
         widgets = {
-                    'deal_name': forms.TextInput(attrs={'placeholder': _(u'Name the deal'), 'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
+                    'deal_name': forms.TextInput(attrs={'placeholder': _(u'Name the deal'), 'class': 'placeholder_fix_css mandatory', 'autocomplete': 'off'}),
                     'deal_description': forms.Textarea(attrs={'placeholder': _(u'Describe the deal')}),
-                    'sales_item': forms.SelectMultiple(attrs={'data-placeholder': _(u'What are you buying or selling?')}),
-                    #'sales_item': ChosenSelectMultiple(), #(attrs={'data-placeholder': _(u'What are you buying or selling?')}),
-                    'price': forms.TextInput(attrs={'placeholder': _(u'How much is proposed?'), 'class': 'placeholder_fix_css', 'autocomplete': 'off'}),                    
-#                    'sales_term': forms.TextInput(attrs={'placeholder': _(u'Is it fixed or recurring?'), 'class': 'placeholder_fix_css'}),
-                    'quantity': forms.TextInput(attrs={'placeholder': _(u'How many items?'), 'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
-                    #'status': forms.TextInput(attrs={'placeholder': _(u'How is the progress?'), 'class': 'placeholder_fix_css'}),                              
+                    'sales_item': forms.SelectMultiple(attrs={'data-placeholder': _(u'What are you selling?'), 'class': 'sales_item'}),                    
+                    'price': forms.TextInput(attrs={'placeholder': _(u'How much is proposed?'), 'class': 'placeholder_fix_css mandatory price', 'autocomplete': 'off'}),                   
+                    'quantity': forms.TextInput(attrs={'placeholder': _(u'How many items?'), 'class': 'placeholder_fix_css mandatory quantity', 'autocomplete': 'off'}),                                                  
                    }
 
 class DealForm(ModelForm):
@@ -250,7 +249,7 @@ class DealForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(DealForm, self).__init__(*args, **kwargs)                       
         self.fields['status'].widget.attrs['class'] = 'boxes_8em mandatory deal_status'
-        self.fields['price'].widget.attrs['class'] = 'boxes_7em price mandatory digit'
+        self.fields['price'].widget.attrs['class'] = 'boxes_7em price mandatory'
         self.fields['quantity'].widget.attrs['class'] = 'boxes_7em quantity mandatory'
         self.fields['sales_term'].widget.attrs['class'] = 'boxes_8em mandatory'
         self.fields['sales_item'].widget.attrs['class'] = 'multi_select_mandatory'

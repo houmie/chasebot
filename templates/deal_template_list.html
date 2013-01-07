@@ -1,6 +1,6 @@
 {% load i18n %}
-{% if deals %}
-	{% for item in deals %}
+{% if deal_templates %}
+	{% for item in deal_templates %}
 	    <tr>
 	        <td>	        	
 	            <a class="btn btn-link-left" href="/deal/edit/{{ item.id }}" title="{% trans 'Edit' %}"><i class="icon-pencil icon-large"></i></a>

@@ -1,10 +1,9 @@
 {% load i18n %}
-<ul class="breadcrumb">
-	<li><a href="/">{% trans 'Home' %}</a> <span class="divider">></span></li>
-	<li><a href="/deals/">{% trans 'Pre-defined Deals' %}</a> <span class="divider">></span></li>
-	<li class="active">{% trans 'New Deal Template'%}</li>	    	
+<ul class="breadcrumb">	
+	<li><a id="pre_deals_id" href="#">{% trans 'Pre-defined Deals' %}</a> <span class="divider">></span></li>
+	<li class="active">{{template_title}}</li>	    	
 </ul>
-<form method="post" action=".">
+<form id="pre_deal_form_id" method="post" action=".">
     {% csrf_token %}
     <div class="row-fluid">    	
     	<div class="well well-small">  
@@ -16,28 +15,18 @@
 			                    <td>
 			                    	{% if  form.deal_name.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.deal_name.label}}: *</div>{%else%}{{form.deal_name.label}}:{% endif %}                       
 			                    </td>
-			                    <td>                        
-			                        {% if form.deal_name.errors %}
-				                	<div class="field field_error">
-				                    	{{form.deal_name}} {{form.deal_name.errors}}                   	
-				                	</div>
-				                	{% else %}
-				                		{{form.deal_name}}
-				                	{% endif %}                        
+			                    <td>			                        
+				                	{{form.deal_name}}
+				                	<div class="hide field field_error"></div>                        
 			                    </td>
 			                </tr>                
 			                <tr>
 			                    <td>              
 			                    	{% if  form.deal_description.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.deal_description.label}}: *</div>{%else%}{{form.deal_description.label}}:{% endif %}          
 			                    </td>
-			                    <td>                        
-			                        {% if form.deal_description.errors %}
-				                	<div class="field field_error">
-				                    	{{form.deal_description}} {{form.deal_description.errors}}                   	
-				                	</div>
-				                	{% else %}
-				                		{{form.deal_description}}
-				                	{% endif %}                        
+			                    <td>			                        
+				                	{{form.deal_description}}
+		                	        <div class="hide field field_error"></div>                  
 			                    </td>
 			                </tr> 	                
 			            </tbody>
@@ -50,74 +39,48 @@
 			                    <td>          
 			                    	{% if  form.sales_item.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.sales_item.label}}: *</div>{%else%}{{form.sales_item.label}}:{% endif %}              
 			                    </td>
-			                    <td>                        
-			                        {% if form.sales_item.errors %}
-				                	<div class="field field_error">
-				                		<a class="btn modal_link_sales_item cb_btn" href="/sales_items" title="{% trans 'Add New Sales Item' %}"><i class="icon-barcode"></i> {% trans 'Edit' %}</a>
-				                    	{{form.sales_item}} {{form.sales_item.errors}}                   	
-				                	</div>
-				                	{% else %}
-				                	<div class="input-append">
-				                		{{form.sales_item}}		
-				                		<a class="btn modal_link_sales_item cb_btn" href="/sales_items" title="{% trans 'Add New Sales Item' %}"><i class="icon-barcode"></i> {% trans 'Edit' %}</a>
-				                	</div>		                		
-				                	{% endif %}			                	       
+			                    <td>
+			                    	<div class="input-append">			                        
+				                		{{form.sales_item}}			                		
+				                		<a id="modal_sales_items_btn" class="btn cb_btn" href="/sales_items" title="{% trans 'Add New Sales Item' %}"><i class="icon-barcode"></i> {% trans 'Edit' %}</a>
+			                		</div>
+			                		<div class="hide field field_error"></div>
 			                    </td>
 			                </tr>		                
 			                <tr>
 			                    <td>
 			                        {% if  form.price.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.price.label}}: *</div>{%else%}{{form.price.label}}:{% endif %}
 			                    </td>
-			                    <td>                        
-			                        {% if form.price.errors %}
-				                	<div class="field field_error">
-				                    	{{form.price}} {{form.price.errors}}                   	
-				                	</div>
-				                	{% else %}
-				                		{{form.price}}
-				                	{% endif %}                        
+			                    <td>			                        
+				                	{{form.price}}
+				                	<div class="hide field field_error"></div>				                	
 			                    </td>
 			                </tr>
 			                <tr>
 			                    <td>
 			                        {% if  form.currency.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.currency.label}}: *</div>{%else%}{{form.currency.label}}:{% endif %}
 			                    </td>
-			                    <td>                        
-			                        {% if form.currency.errors %}
-				                	<div class="field field_error">
-				                    	{{form.currency}} {{form.currency.errors}}                   	
-				                	</div>
-				                	{% else %}
-				                		{{form.currency}}
-				                	{% endif %}                        
+			                    <td>			                        
+				                	{{form.currency}}
+				                	<div class="hide field field_error"></div>				                	
 			                    </td>
 			                </tr>
 			                <tr>
 			                    <td>
 			                    	{% if  form.sales_term.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.sales_term.label}}: *</div>{%else%}{{form.sales_term.label}}:{% endif %}                        
 			                    </td>
-			                    <td>                        
-			                        {% if form.sales_term.errors %}
-				                	<div class="field field_error">
-				                    	{{form.sales_term}} {{form.sales_term.errors}}                   	
-				                	</div>
-				                	{% else %}
-				                		{{form.sales_term}}
-				                	{% endif %}                        
+			                    <td>			                        
+				                	{{form.sales_term}}
+				                	<div class="hide field field_error"></div>
 			                    </td>
 			                </tr>
 			                <tr>
 			                    <td>
 			                    	{% if  form.quantity.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.quantity.label}}: *</div>{%else%}{{form.quantity.label}}:{% endif %}			                        
 			                    </td>
-			                    <td>                        
-			                        {% if form.quantity.errors %}
-				                	<div class="field field_error">
-				                    	{{form.quantity}} {{form.quantity.errors}}                   	
-				                	</div>
-				                	{% else %}
-				                		{{form.quantity}}
-				                	{% endif %}                        
+			                    <td>			                        
+			                		{{form.quantity}}
+			                		<div class="hide field field_error"></div>				                	           
 			                    </td>
 			                </tr>                
 			            </tbody>
@@ -125,10 +88,12 @@
 			    </div>
 			</div>
 			<div class="cb_req_legend">{% trans '* Required fields' %}</div> 
-			<input type="button" value="{% trans 'Save' %}" class="btn btn-primary" />
-        	<input name="cancel" type="button" value="{% trans 'Cancel' %}" class="btn" onclick="history.go(-1)"/>
+			<input id="deal_template_save_btn" type="button" value="{% trans 'Save' %}" class="btn btn-primary" />
+        	<input id="deal_template_cancel_btn" name="cancel" type="button" value="{% trans 'Cancel' %}" class="btn" />        	
      	</div>
 	</div>    
 </form>
-<div class="modal hide" id="salesitems_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">				
+<div class="modal hide fade" id="salesitems_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">				
+	{% include 'sales_items_modal.html' %}
 </div>		
+
