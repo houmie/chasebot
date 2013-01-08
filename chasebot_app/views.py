@@ -649,9 +649,10 @@ def sales_item_display(request):
     sales_items, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, sales_items_queryset)    
     #New SalesItem form for adding a possible new one on UI
     sales_item = SalesItem(company=profile.company)
-    form = SalesItemForm(instance=sales_item)          
+    form = SalesItemForm(instance=sales_item)
+    source = 'sales_items/'          
     variables = {
-                 'sales_items': sales_items, 'form':form, 'filter_form' : filter_form, 'get_request':get_request_parameters(request)
+                 'sales_items': sales_items, 'form':form, 'filter_form' : filter_form, 'get_request':get_request_parameters(request), 'source':source
                 }   
     variables = merge_with_additional_variables(request, paginator, page, page_number, variables) 
     if ajax:    
@@ -673,6 +674,7 @@ def single_sales_item_display(request, sales_item_id):
 def sales_item_add_edit(request, sales_item_id=None):    
     profile = request.user.get_profile()    
     validation_error_ajax = False;
+    source = 'sales_items/'  
     if sales_item_id is None:
         sales_item = SalesItem(company=profile.company)        
     else:
@@ -698,7 +700,7 @@ def sales_item_add_edit(request, sales_item_id=None):
         sales_items_queryset = profile.company.salesitem_set.all().order_by('item_name')
         sales_items, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, sales_items_queryset)        
         variables = {
-                     'sales_items': sales_items, 'form':form,                     
+                     'sales_items': sales_items, 'form':form, 'source':source,
                      'salesitem_id' : sales_item_id, 'validation_error_ajax' : validation_error_ajax, 'get_request':get_request_parameters(request)
                      }
         variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
@@ -706,13 +708,14 @@ def sales_item_add_edit(request, sales_item_id=None):
     else:
         # Only first-time GET Edit or invalid POST Edit --> Edit Save row will be rendered
         variables = {
-                     'form':form, 'salesitem_id' : sales_item_id, 'validation_error_ajax' : validation_error_ajax, 
+                     'form':form, 'salesitem_id' : sales_item_id, 'validation_error_ajax' : validation_error_ajax, 'source':source 
                     }
         variables = merge_with_localized_variables(request, variables)   
         return render(request, 'sales_item_edit_save_form.html', variables)
 
 @login_required
 def sales_item_delete(request, sales_item_id=None):
+    source = 'sales_items/'  
     if sales_item_id is None:
         raise Http404(_(u'Sales item not found'))
     else:
@@ -724,7 +727,7 @@ def sales_item_delete(request, sales_item_id=None):
         #New SalesItem form for adding a possible new one on UI
         sales_item = SalesItem(company=profile.company)
         form = SalesItemForm(instance=sales_item)        
-        variables = { 'sales_items': sales_items, 'form':form, }
+        variables = { 'sales_items': sales_items, 'form':form, 'source':source}
         variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
     return render(request, 'sales_item_list.html', variables)
 
@@ -757,11 +760,12 @@ def deal_template_display(request):
         if 'quantity' in request.GET:    
             quantity = request.GET['quantity']
             deal_templates_queryset = deal_templates_queryset.filter(quantity__icontains=quantity).order_by('quantity')    
-
+    
+    source = 'deals/'
     filter_form = FilterDealsForm(profile.company, request.GET)            
     deal_templates, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deal_templates_queryset)    
     variables = {
-                 'deal_templates': deal_templates, 'filter_form' : filter_form,
+                 'deal_templates': deal_templates, 'filter_form' : filter_form, 'source':source
                  }
     variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
     if ajax:    
@@ -772,7 +776,8 @@ def deal_template_display(request):
 
 @login_required
 def deal_template_add_edit(request, deal_id=None):
-    profile = request.user.get_profile()    
+    profile = request.user.get_profile()
+    source = 'deals/'    
     if deal_id is None:
         deal = DealTemplate(company=profile.company)        
         template_title = _(u'Add New Pre-defined Deal')
@@ -787,12 +792,12 @@ def deal_template_add_edit(request, deal_id=None):
             deal_templates_queryset = profile.company.dealtemplate_set.order_by('deal_name')                        
             deal_templates, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deal_templates_queryset)    
             variables = {
-                         'deal_templates': deal_templates,
+                         'deal_templates': deal_templates, 'source':source
                          }
             variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
             return render(request, 'deal_templates.html', variables)
     else:
-        form = DealTemplateForm(instance=deal)
+        form = DealTemplateForm(instance=deal)    
     variables = {'form':form, 'template_title': template_title}
     return render(request, 'deal_template.html', variables)
 
@@ -803,13 +808,14 @@ def deal_template_delete(request, deal_id=None):
         raise Http404(_(u'Deal Type not found'))
     else:
         profile = request.user.get_profile()
-        deal = get_object_or_404(profile.company.dealtemplate_set.all(), pk=deal_id)
-        deal.delete()
-        deal_queryset = profile.company.dealtemplate_set.order_by('deal_name')   
-        deals, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deal_queryset)          
-        variables = { 'deals': deals, }
+        deal_template = get_object_or_404(profile.company.dealtemplate_set.all(), pk=deal_id)
+        deal_template.delete()
+        deal_templates_queryset = profile.company.dealtemplate_set.order_by('deal_name')   
+        deal_templates, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deal_templates_queryset)
+        source = 'deals/'          
+        variables = { 'deal_templates': deal_templates, 'source':source}
         variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
-    return render(request, 'deal_list.html', variables)
+    return render(request, 'deal_template_list.html', variables)
     
 
 @login_required
