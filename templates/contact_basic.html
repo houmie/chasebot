@@ -20,14 +20,9 @@
                 <td>
                     {% if  form.last_name.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.last_name.label}}: *</div>{%else%}{{form.last_name.label}}:{% endif %}
                 </td>
-                <td>                	
-                    {% if form.last_name.errors %}
-                	<div class="field field_error">
-                    	{{form.last_name}} {{form.last_name.errors}}                   	
-                	</div>
-                	{% else %}
-                		{{form.last_name}}
-                	{% endif %}                	
+                <td>                    
+                	{{form.last_name}}
+                	<div class="hide field field_error"></div>                	                	
                 </td>
             </tr>
             <tr>

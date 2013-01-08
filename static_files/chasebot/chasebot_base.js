@@ -860,7 +860,7 @@ function deal_template_add_edit(event){
 		
 		$(this).find('#id_sales_item').chosen({no_results_text: gettext('No results match')});
 		
-		$(this).find('#pre_deals_id').off('click').on('click', function(event){
+		$(this).find('#back2pre_deals').off('click').on('click', function(event){
 			event.preventDefault();
 			tab_predefined_clicked();
 		});		
@@ -902,10 +902,9 @@ function deal_template_add_edit(event){
 
 function rebind_conversations(){
 	var source = '#tab_contacts';
-	var target = '#search_result';
-	var rebind_func = rebind_conversations;
+	var target = '#search_result';	
 	rebind_ratings($('#business_card_modal'));	
-	rebind_delete_paginator(source, target, rebind_func);
+	rebind_delete_paginator(source, target, rebind_conversations);
 	$(source).find(".row_edit_ajax").off('click').on('click', row_edit_ajax);
 	$('.back2contacts').off('click').on('click', function(event){
 		event.preventDefault();
@@ -917,9 +916,8 @@ function rebind_conversations(){
 
 function rebind_sales_item(){
 	var source = '#tab_predefined';
-	var target = '#search_result'
-	var rebind_func = rebind_sales_item;		
-    rebind_delete_paginator(source, target, rebind_func);
+	var target = '#search_result'			
+    rebind_delete_paginator(source, target, rebind_sales_item);
 	$(source).find(".row_edit_ajax").off('click').on('click', row_edit_ajax);
 	//save_add_form currently only used for sales item
     $('#save_add_form').off('submit').on('submit', row_add_save_sales_item);        
@@ -930,23 +928,22 @@ function rebind_sales_item(){
 
 function rebind_contacts(){
 	var source = '#tab_contacts';
-	var target = '#search_result'
-	var rebind_func = rebind_contacts; 
+	var target = '#search_result'	 
 	rebind_ratings($('#search_result'));
-	rebind_delete_paginator(source, target, rebind_func);
+	rebind_delete_paginator(source, target, rebind_contacts);
 	$(source).find(".row_edit_ajax").off('click').on('click', row_edit_ajax);
 	rebind_business_card_modal_link();	
 	rebind_filters($('body'));		
-	$('.conversation').off('click').on('click', conversation_clicked);	
+	$('.conversation').off('click').on('click', conversation_clicked);
+	$('#add_new_contact_btn').off('click').on('click', add_new_contact)	
 }
 
 function rebind_deal_templates(){
 	var source = '#tab_predefined';
-	var target = '#search_result'
-	var rebind_func = rebind_deal_templates;
+	var target = '#search_result'	
 	$(source).find('.deal_template_edit_btn').off('click').on('click', deal_template_add_edit);
 	$('#new_deal_template_btn').off('click').on('click', deal_template_add_edit);	
-	rebind_delete_paginator(source, target, rebind_func);	
+	rebind_delete_paginator(source, target, rebind_deal_templates);	
 }
 
 function rebind_events(){
@@ -1034,6 +1031,34 @@ function conversation_clicked(event){
 }
 
 
+function add_new_contact(event){
+	event.preventDefault();
+	var url = $(this).attr('href');	
+	
+	$('#tab_contacts').load(url, function(result){		
+		$('#back2contacts').off('click').on('click', function(event){
+			event.preventDefault();
+			tab_contacts_clicked();
+		});
+		
+		$('#contact_form_id').submit({url:url}, function(event){
+			event.preventDefault();
+			var url = event.data.url;		
+			$.post(url, function(result){
+				
+			});
+		});		
+		
+		var validator = validation_rules('#contact_form_id');
+		$('#tab_contacts').find('#contact_save_btn').off('click').on('click', {validator:validator}, function(){
+			validator.form();
+			if(validator.invalidElements().length == 0){ 
+				$('#contact_form_id').submit();
+			}
+		});	
+	});
+}
+
 
 function bind_main_tabs(optionalArg){
 	//Exclude the passed in tab name from being subscribed to the click event. (So that repetetive clicking on active tab
@@ -1051,20 +1076,11 @@ $(document).ready(function (){
 	bind_main_tabs();
 	reword_collapseable('#accordion_task');	
 	//rebind_task_edit_delete($('#tasks_pane'));
-	//$(".modal_link_business_card").click(open_modal_business_card);	
 	$('#timezone_dropdown').change(timezone_dropdown);	
 	$('.timezone_help').click(show_timezone_help);	
-	//datepicker_reload('body');
 	$('#invite-button').click(invite_colleague);
 	$('#demo-button').click(demo);
-	
-	//$('#new_task_button').off('click').on('click', edit_new_task);
-	// $('#deals_in_progress').off('click').on('click', deals_in_progress);
-	// if($('#show_only_open_deals').text() == 'True')
-		// $('#deals_in_progress_calls').button('toggle');
-	// $('#deals_in_progress_calls').off('click').on('click', deals_in_progress_coversations);	
-	//bind_rating_form();
-		
+	//bind_rating_form();		
 });
 
 

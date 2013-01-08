@@ -251,7 +251,15 @@ def contact_add_edit(request, contact_id=None):
         form = ContactsForm(request.POST, instance=contact)
         if form.is_valid():
             contact = form.save()
-            return HttpResponseRedirect('/')
+            contacts_queryset = profile.company.contact_set.all().order_by('last_name')
+            contacts, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, contacts_queryset)  
+            source = '/contacts'
+            company_name = profile.company.company_name
+            variables = {
+                         'company_name': company_name, 'contacts' : contacts, 'source' : source
+                         }
+            variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
+            return render(request, 'contact_list.html', variables)            
     else:
         form = ContactsForm(instance=contact)    
     variables = {'form':form, 'template_title': template_title, 'contact_id' : contact_id, }

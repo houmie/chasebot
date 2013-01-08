@@ -1,23 +1,11 @@
-{% extends "base.html" %}
 {% load i18n %}
-{% block title %}{{ template_title }}{% endblock %}
-{% block head %}<i class="icon-user"></i> {{ template_title }}{% endblock %}
-{% block content %}
 <ul class="breadcrumb">
-	<li><a href="/">{% trans 'Home' %}</a> <span class="divider">></span></li>
-	<li class="active">{% trans 'New Contact'%}</li>	    	
+	<li><a id="back2contacts" href="/">{% trans 'Contacts' %}</a> <span class="divider">></span></li>
+	<li class="active">{{template_title}}</li>	    	
 </ul>
-<form method="post" action=".">
+<form id="contact_form_id" method="post" action=".">
     {% csrf_token %}
-    <div class="row-fluid">
-    	<div class="span2 well well-small">
-    		<p>
-    			{%blocktrans%}Enter your contact's data here so you can negotiate deals with later on.{%endblocktrans%}
-    		</p>
-    		<p>
-    			{%blocktrans%}Do not forget clicking on Personal tab and insert some personal information, which might help you later on in a negotiation to close a deal successfully.{%endblocktrans%}
-    		</p>
-    	</div>
+    <div class="row-fluid">    	
     	<div class="span10">    	
 	        <div class="tabbable"> <!-- Only required for left/right tabs -->
 	            <ul class="nav nav-tabs">
@@ -55,9 +43,8 @@
 	            </div>
 	        </div>  
 	        <div class="cb_req_legend">{% trans '* Required fields' %}</div>  
-	        <input type="submit" value="{% trans 'Save All' %}" class="btn btn-primary" />
-	        <input name="cancel" type="button" value="{% trans 'Cancel' %}" class="btn" onclick="history.go(-1)"/>    
+	        <input id="contact_save_btn" type="button" value="{% trans 'Save All' %}" class="btn btn-primary" />
+	        <input id="contact_cancel_btn" type="button" value="{% trans 'Cancel' %}" class="btn"/>    
     	</div>
     </div>    
 </form>
-{% endblock %}
