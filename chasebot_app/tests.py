@@ -7,7 +7,7 @@ Replace this with more appropriate tests for your application.
 
 from django.test import TestCase
 from django.contrib.auth.models import User
-from chasebot_app.models import Company, UserProfile, Contact, ContactType,\
+from chasebot_app.models import Company, UserProfile, Contact, \
     SalesItem, SalesTerm, Conversation, DealTemplate, Deal, DealStatus
 import datetime
 import uuid
@@ -24,10 +24,9 @@ def setup_contacts(self):
         self.user2 = User.objects.create_user(username='username2', password='password2', email='email2@email.com')
         self.company2 = Company.objects.create(company_name='company_name2', company_email='company_email2@email.com')
         UserProfile.objects.create(user=self.user2, company=self.company2)        
-        ctype = ContactType.objects.create(contact_type="test1")
-        self.contact1a = Contact.objects.create(last_name='last_name1a', contact_type=ctype, company=self.company1)
-        self.contact1b = Contact.objects.create(last_name='last_name1b', contact_type=ctype, company=self.company1)
-        self.contact2  = Contact.objects.create(last_name='last_name2', contact_type=ctype, company=self.company2)        
+        self.contact1a = Contact.objects.create(last_name='last_name1a', company=self.company1)
+        self.contact1b = Contact.objects.create(last_name='last_name1b', company=self.company1)
+        self.contact2  = Contact.objects.create(last_name='last_name2', company=self.company2)        
 
 #Fixture for creating a sales item per user 
 def setup_sales_items(self):
@@ -163,7 +162,7 @@ class TestContact(TestCase):
         self.client.login(username='username1', password='password1')
         response = self.client.post('/contact/add/', {}) # blank data dictionary
         self.assertFormError(response, 'form', 'last_name', 'This field is required.')
-        self.assertFormError(response, 'form', 'contact_type', 'This field is required.')
+        
     
     def test_contact_view_denies_anonymous(self):
         response = self.client.get('/contact/add/', follow=True)
@@ -174,8 +173,7 @@ class TestContact(TestCase):
        
     def test_contact_view_success(self):
         # same again, but with valid data, then
-        self.client.login(username='username1', password='password1')
-        contact_type = ContactType.objects.create(contact_type='contact_type')
-        response = self.client.post('/contact/add/', {u'last_name': [u'Johnson'], u'home_town': [u''], u'postcode': [u''], u'dear_name': [u''], u'contact_notes': [u''], u'city': [u''], u'first_name': [u''], u'work_phone': [u''], u'state': [u''], u'company_name': [u''], u'home_phone': [u''], u'email': [u''], u'children_names': [u''], u'mobile_phone': [u''], u'fax_number': [u''], u'spouses_interests': [u''], u'referred_by': [u''], u'address': [u''], u'prev_meeting_places': [u''], u'spouse_first_name': [u''], u'contact_type': [contact_type.pk], u'gender': [u''], u'marital_status': [u''], u'contacts_interests': [u''], u'country': [u''], u'birth_date': [u''], u'position': [u''], u'company':[u'1']})
+        self.client.login(username='username1', password='password1')        
+        response = self.client.post('/contact/add/', {u'last_name': [u'Johnson'], u'home_town': [u''], u'postcode': [u''], u'dear_name': [u''], u'contact_notes': [u''], u'city': [u''], u'first_name': [u''], u'phone': [u''], u'state': [u''], u'company_name': [u''], u'email': [u''], u'children_names': [u''], u'mobile_phone': [u''], u'fax_number': [u''], u'spouses_interests': [u''], u'referred_by': [u''], u'address': [u''], u'prev_meeting_places': [u''], u'spouse_first_name': [u''], u'marital_status': [u''], u'contacts_interests': [u''], u'country': [u''], u'birth_date': [u''], u'position': [u''], u'company':[u'1']})
         #print response.context['form'].errors 
         self.assertRedirects(response, '/')

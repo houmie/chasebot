@@ -18,8 +18,7 @@ cur.execute("INSERT INTO chasebot_app_licensetemplate (name, max_users, descript
 
 cur.execute("INSERT INTO chasebot_app_userprofile (user_id, company_id, is_cb_superuser, license_id) VALUES (1, 1, TRUE, 3);")
 
-cur.execute("INSERT INTO chasebot_app_contacttype (contact_type) VALUES ('Supplier'),('Customer');")
-cur.execute("INSERT INTO chasebot_app_gender (gender) VALUES ('Female'),('Male');")
+#cur.execute("INSERT INTO chasebot_app_gender (gender) VALUES ('Female'),('Male');")
 
 cur.execute("INSERT INTO chasebot_app_maritalstatus (martial_status_type) VALUES ('Single'),('Married'),('Domestic partnership'),('Civil Union'),('Divorced'),('Widowed');")
 
@@ -27,10 +26,10 @@ cur.execute("INSERT INTO chasebot_app_dealstatus (deal_status) VALUES ('Pending 
 
 cur.execute("INSERT INTO chasebot_app_salesterm (sales_term) VALUES ('Fixed bid'),('Per hour'),('Per month'), ('Per year');")
 
-for line in f:
-    cur.execute("INSERT INTO chasebot_app_country (country_code, country_name) VALUES (%s, %s)", (line[:2] , line[3:-1]))                
-        
-f.close()
+#for line in f:
+#    cur.execute("INSERT INTO chasebot_app_country (country_code, country_name) VALUES (%s, %s)", (line[:2] , line[3:-1]))                
+#        
+#f.close()
 
 # Make the changes to the database persistent
 conn.commit()

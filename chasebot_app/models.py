@@ -9,6 +9,8 @@ from django.template.context import Context
 from django.core.mail import send_mail
 from django.contrib.gis.db import models
 import datetime
+from django_countries.fields import CountryField
+from django_countries.countries import COUNTRIES
 
 
 class Company(models.Model):
@@ -60,15 +62,6 @@ class UserProfile(models.Model):
         verbose_name_plural = _(u'User Profiles')
 
 
-class ContactType(models.Model):
-    contact_type = models.CharField(_(u'Contact Type'), max_length=30)    
-    def __unicode__(self):
-        return self.contact_type
-    class Meta:
-        verbose_name = _(u'Contact Type')
-        verbose_name_plural = _(u'Contact Types')
-
-
 class MaritalStatus(models.Model):
     martial_status_type = models.CharField(_(u'Marital Status'), max_length=30)    
     def __unicode__(self):
@@ -78,25 +71,6 @@ class MaritalStatus(models.Model):
         verbose_name_plural = _(u'Marital Statuses')
 
 
-class Country(models.Model):
-    country_code = models.CharField(_(u'Country Code'), max_length=2)
-    country_name = models.CharField(_(u'Country'), max_length=50)    
-    def __unicode__(self):
-        return self.country_name
-    class Meta:
-        verbose_name = _(u'Country')
-        verbose_name_plural = _(u'Countries')
-
-
-class Gender(models.Model):
-    gender       = models.CharField(_(u'Sex'), max_length=25)    
-    def __unicode__(self):
-        return self.gender
-    class Meta:
-        verbose_name = _(u'Sex')
-        verbose_name_plural = _(u'Sexes')
-
-
 class Contact(models.Model):
     RATING_CHOICES = (               
                    (1, _(u'Less Important')),
@@ -104,35 +78,39 @@ class Contact(models.Model):
                    (3, _(u'Very Important')),
                )
     
+    GENDER = (
+                    (1, _(u'Female')),
+                    (2, _(u'Male')),
+              )
+    
     first_name          = models.CharField(_(u'First Name'),             max_length=30, blank=True)
-    last_name           = models.CharField(_(u'Last Name'),              max_length=50)
+    last_name           = models.CharField(_(u'Last Name'),              max_length=50, blank=True)
     dear_name           = models.CharField(_(u'Preferred Name'),         max_length=15, blank=True)
-    address             = models.TextField(_(u'Address'),                blank=True)
+    address             = models.TextField(_(u'Address'),                               blank=True)
     city                = models.CharField(_(u'City'),                   max_length=30, blank=True)
     state               = models.CharField(_(u'State'),                  max_length=30, blank=True)
     postcode            = models.CharField(_(u'Zip Code'),               max_length=30, blank=True)
-    country             = models.ForeignKey(Country,                     null=True, blank=True)
+    country             = CountryField(_(u'Country'), choices=COUNTRIES,                blank=True)
     company_name        = models.CharField(_(u'Company Name'),           max_length=30, blank=True)
     position            = models.CharField(_(u'Position'),               max_length=30, blank=True)
-    work_phone          = models.CharField(_(u'Work Phone'),             max_length=30, blank=True)
-    home_phone          = models.CharField(_(u'Home Phone'),             max_length=30, blank=True)
+    phone               = models.CharField(_(u'Phone'),                  max_length=30, blank=True)    
     mobile_phone        = models.CharField(_(u'Cell Phone'),             max_length=30, blank=True)
     fax_number          = models.CharField(_(u'Fax Number'),             max_length=30, blank=True)
-    email               = models.EmailField(_(u'Email'),                 blank=True)
-    birth_date          = models.DateField(_(u'Birthday'),               null=True, blank=True)
+    email               = models.EmailField(_(u'Email'),                                blank=True)
+    birth_date          = models.DateField(_(u'Birthday'),               null=True,     blank=True)
     prev_meeting_places = models.TextField(_(u'Previous meetings'),      max_length=50, blank=True)
-    contact_type        = models.ForeignKey(ContactType)
     referred_by         = models.CharField(_(u'Referred By'),            max_length=50, blank=True)
-    contact_notes       = models.TextField(_(u'Personality Notes'),      blank=True)
-    marital_status      = models.ForeignKey(MaritalStatus,               null=True, blank=True)
-    gender              = models.ForeignKey(Gender,                      null=True, blank=True)
-    contacts_interests  = models.TextField(_(u"Contact's Interests"),    blank=True)
+    contact_notes       = models.TextField(_(u'Personality Notes'),                     blank=True)
+    marital_status      = models.ForeignKey(MaritalStatus,               null=True,     blank=True)
+    gender              = models.CharField(_(u'Sex'),                    max_length=15, blank=True, choices=GENDER)
+    contacts_interests  = models.TextField(_(u"Contact's Interests"),                   blank=True)
+    pet_names           = models.CharField(_(u'Pet Names'),              max_length=50, blank=True)
     spouse_first_name   = models.CharField(_(u"Spouse's First Name"),    max_length=30, blank=True)
     spouse_last_name    = models.CharField(_(u"Spouse's Last Name"),     max_length=50, blank=True)
-    spouses_interests   = models.TextField(_(u"Spouse's Interests"),     blank=True)
+    spouses_interests   = models.TextField(_(u"Spouse's Interests"),                    blank=True)
     children_names      = models.CharField(_(u'Children Names'),         max_length=75, blank=True)
     home_town           = models.CharField(_(u'Home Town'),              max_length=30, blank=True)
-    company             = models.ForeignKey(Company)    
+    company             = models.ForeignKey(Company)
     important_client    = models.PositiveSmallIntegerField(_(u'Important Client'), blank=True, null=True, choices=RATING_CHOICES)
 
     def __unicode__(self):

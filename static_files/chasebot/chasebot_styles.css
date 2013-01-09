@@ -355,8 +355,13 @@ input[type="checkbox"]{
 	cursor: pointer;
 }
 
-.event_textarea{
+.textarea_15em{
 	width: 15em;
+}
+
+.textarea_15_5em{
+	width: 15em;
+	height: 5em;
 }
 
 .event_date{

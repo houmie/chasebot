@@ -11,7 +11,7 @@ from chasebot_app.forms import RegistrationForm, ContactsForm, ConversationForm,
     DealsAddForm, OpenDealsAddForm, ColleagueInviteForm, OpenDealTaskForm,\
     TaskForm, EventForm, DealNegotiateForm
 from chasebot_app.models import Company, Contact, Conversation, SalesItem, DealTemplate, DealStatus, Deal, SalesTerm,\
-    Invitation, LicenseTemplate, ContactType, Country, MaritalStatus, Gender,\
+    Invitation, LicenseTemplate, MaritalStatus, \
     Currency, Task, Event
 from chasebot_app.models import UserProfile 
 from django.utils.translation import ugettext as _, ungettext

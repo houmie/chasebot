@@ -8,7 +8,7 @@ from django import forms
 import re
 from django.contrib.auth.models import User
 from django.forms import ModelForm
-from chasebot_app.models import Contact, ContactType, Country, MaritalStatus, Conversation, SalesItem, DealTemplate, SalesTerm, Deal,\
+from chasebot_app.models import Contact, MaritalStatus, Conversation, SalesItem, DealTemplate, SalesTerm, Deal,\
     Invitation, Task, Event
 from django.forms.models import BaseModelFormSet
 from django.utils.translation import ugettext_lazy as _
@@ -72,22 +72,46 @@ class FilterContactsForm(Form):
     company       = forms.CharField(widget= forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_contacts_company', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=30)
     email         = forms.EmailField(widget= forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_contacts_email', 'autocomplete': 'off', 'data-provide': 'typeahead'}))
 
-class ContactsForm(ModelForm):    
+class ContactsForm(ModelForm):  
+    def clean_company_name(self):
+        company_name = ''
+        if 'company_name' in self.cleaned_data:                
+            company_name = self.cleaned_data['company_name']
+            if company_name:
+                return company_name
+        if 'last_name' in self.cleaned_data:  
+            last_name = self.cleaned_data['last_name']                               
+            if last_name:
+                return company_name
+        raise forms.ValidationError(_(u'Either the last name OR the company name are required.'))
+        
+    def clean_last_name(self):
+        last_name = ''
+        if 'last_name' in self.cleaned_data:                
+            last_name = self.cleaned_data['last_name']
+            if last_name:
+                return last_name
+        if 'company_name' in self.cleaned_data:                                  
+            company_name = self.cleaned_data['company_name']
+            if company_name:
+                return last_name
+        raise forms.ValidationError(_(u'Either the last name OR the company name are required.'))
+    
+      
     class Meta:
         model = Contact
         exclude = ('company')
         widgets = {
                 'first_name': forms.TextInput(  attrs={'placeholder': _(u'Enter first name here'),      'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
-                'last_name': forms.TextInput(   attrs={'placeholder': _(u'Enter last name here'),       'class': 'placeholder_fix_css mandatory', 'autocomplete': 'off'}),
+                'last_name': forms.TextInput(   attrs={'placeholder': _(u'Enter last name here'),       'class': 'placeholder_fix_css fillone', 'autocomplete': 'off'}),
                 'dear_name': forms.TextInput(   attrs={'placeholder': _(u'Enter preferred short name'), 'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                 'city': forms.TextInput(        attrs={'placeholder': _(u'Enter the city here'),        'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                 'state': forms.TextInput(       attrs={'placeholder': _(u'Enter the state here'),       'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                 'postcode': forms.TextInput(    attrs={'placeholder': _(u'Enter the zip code here'),    'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
-                'company_name': forms.TextInput(attrs={'placeholder': _(u'Add a company'),              'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
+                'company_name': forms.TextInput(attrs={'placeholder': _(u'Add a company'),              'class': 'placeholder_fix_css fillone', 'autocomplete': 'off'}),
                 'position': forms.TextInput(    attrs={'placeholder': _(u'Add a position'),             'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
-                'work_phone': forms.TextInput(  attrs={'placeholder': _(u'Add a work phone'),           'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
-                'home_phone': forms.TextInput(  attrs={'placeholder': _(u'Add a home phone'),           'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
-                'mobile_phone': forms.TextInput(attrs={'placeholder': _(u'Add a cell phone'),           'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
+                'phone': forms.TextInput(       attrs={'placeholder': _(u'Add a phone number'),         'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
+                'mobile_phone': forms.TextInput(attrs={'placeholder': _(u'Add a cell phone number'),    'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                 'fax_number': forms.TextInput(  attrs={'placeholder': _(u'Add a fax number'),           'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                 'email': forms.TextInput(       attrs={'placeholder': _(u'Add an email'),               'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                 'birth_date': forms.DateInput(  attrs={'placeholder': _(u'Add the birthday'),           'class': 'placeholder_fix_css date_picker'}),
@@ -95,13 +119,18 @@ class ContactsForm(ModelForm):
                 'spouse_first_name': forms.TextInput(attrs={'placeholder': _(u'What is the spouse\'s name?'), 'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                 'children_names': forms.TextInput(attrs={'placeholder': _(u'What are the children names?'), 'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                 'home_town': forms.TextInput(   attrs={'placeholder': _(u'Enter the home town'),            'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
-                'address': forms.Textarea(      attrs={'rows':4, 'placeholder': _(u'Add an address'),       'class': 'placeholder_fix_css'}),
+                'address': forms.Textarea(      attrs={'rows':4, 'placeholder': _(u'Add an address'),       'class': 'placeholder_fix_css textarea_15_5em'}),
                 'contact_notes': forms.Textarea(attrs={'rows': 4, 'cols': 50, 'placeholder': _(u'What is the personality like?')}),
-                'contacts_interests': forms.Textarea(attrs={'rows':4, 'placeholder': _(u'Any particular interests?')}),
-                'spouses_interests': forms.Textarea(attrs={'rows':4, 'placeholder': _(u'Does the spouse have any particular interest?')}),
-                'prev_meeting_places': forms.Textarea(attrs={'rows':4, 'placeholder': _(u'Where did you meet so far?')}), 
+                'contacts_interests': forms.Textarea(attrs={'rows':4, 'class':'textarea_15em', 'placeholder': _(u'Any particular interests?')}),
+                'pet_names': forms.TextInput( attrs={'placeholder': _(u'Has any pets?'),        'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
+                'spouses_interests': forms.Textarea(attrs={'rows':4, 'class':'textarea_15em', 'placeholder': _(u'Does the spouse have any particular interest?')}),
+                'prev_meeting_places': forms.Textarea(attrs={'rows':4, 'class':'textarea_15em', 'placeholder': _(u'Where did you meet so far?')}), 
                 'important_client': forms.RadioSelect()                      
             }
+        
+        
+
+        
 
 
 
@@ -294,11 +323,6 @@ class SalesItemForm(ModelForm):
     
 
 
-class CountryForm(ModelForm):
-    class Meta:
-        model = Country
-
-
 class MaritalStatusForm(ModelForm):
     class Meta:
         model = MaritalStatus
@@ -306,11 +330,6 @@ class MaritalStatusForm(ModelForm):
 class SalesTermForm(ModelForm):
     class Meta:
         model = SalesTerm
-
-class ContactTypeForm(ModelForm):
-    class Meta:
-        model = ContactType
-        #exclude = ('company')
 
 class BaseDealFormSet(BaseModelFormSet):    
     def clean(self):
@@ -466,6 +485,6 @@ class EventForm(ModelForm):
         widgets={                    
                     'reminder' : forms.Select(attrs={'class':'placeholder_fix_css event_reminder'}),
                     'due_date_time': forms.DateInput(attrs={'placeholder': _(u'When is this event due?'), 'class':'placeholder_fix_css date_picker event_date', 'autocomplete':'off'}),
-                    'notes': forms.Textarea(attrs={'placeholder': _(u'What do you have to do to win this deal?'), 'class':'placeholder_fix_css event_textarea', 'autocomplete':'off'}),                    
+                    'notes': forms.Textarea(attrs={'placeholder': _(u'What do you have to do to win this deal?'), 'class':'placeholder_fix_css textarea_15em', 'autocomplete':'off'}),                    
                 }
   

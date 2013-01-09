@@ -160,6 +160,12 @@ function validation_rules(form){
 		return arg != value;
 	}, gettext('Please select an item!'));
 	
+	// $.validator.addMethod("xrequire_from_group", $.validator.methods.required, gettext('Either the last name OR the company name are required.'));
+// 	
+	// $.validator.addClassRules("fillone", {
+		// require_from_group: [1,".fillone"]
+	// });
+	
 	var validator = $(form).validate({
 	  	// options
 		errorPlacement: function(error, element){
@@ -175,7 +181,7 @@ function validation_rules(form){
 		},
 		ignore: ':hidden:not(.chzn-done)'						  
 	});
-	
+			
 	$(form).find('.quantity').each(function(){
 		$(this).rules('add', {
 			required: true,
@@ -190,7 +196,6 @@ function validation_rules(form){
 		});
 	});
 
-	
 	$(form).find('select.mandatory').each(function(){
 		$(this).change(function(){
 			$(this).valid();
@@ -1041,10 +1046,18 @@ function add_new_contact(event){
 			tab_contacts_clicked();
 		});
 		
+		$('#contact_cancel_btn').off('click').on('click', function(event){
+			event.preventDefault();
+			tab_contacts_clicked();
+		});
+		
+		bind_rating_form();
+
 		$('#contact_form_id').submit({url:url}, function(event){
 			event.preventDefault();
-			var url = event.data.url;		
-			$.post(url, function(result){
+			var url = event.data.url;
+			var data = $(this).serialize();		
+			$.post(url, data, function(result){
 				
 			});
 		});		
