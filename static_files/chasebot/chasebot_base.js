@@ -161,10 +161,34 @@ function validation_rules(form){
 	}, gettext('Please select an item!'));
 	
 	// $.validator.addMethod("xrequire_from_group", $.validator.methods.required, gettext('Either the last name OR the company name are required.'));
-// 	
-	// $.validator.addClassRules("fillone", {
-		// require_from_group: [1,".fillone"]
-	// });
+ 	
+	$.validator.addClassRules("fillone", {
+		require_from_group: [1,".fillone"]
+	});
+	
+	$.validator.addClassRules("email", {
+		email: true
+	});
+	
+	$.validator.addClassRules("quantity", {
+		required: true,
+      	digits: true
+	});
+	
+	$.validator.addClassRules("price", {
+		required: true,
+      	number: true
+	});
+	
+	$.validator.addClassRules("input.mandatory, textarea.mandatory", {
+		required: true      	
+	});
+	
+	$.validator.addClassRules("date_picker", {
+		date: true      	
+	});
+	
+	
 	
 	var validator = $(form).validate({
 	  	// options
@@ -182,19 +206,19 @@ function validation_rules(form){
 		ignore: ':hidden:not(.chzn-done)'						  
 	});
 			
-	$(form).find('.quantity').each(function(){
-		$(this).rules('add', {
-			required: true,
-		      digits: true
-		});
-	});
+	// $(form).find('.quantity').each(function(){
+		// $(this).rules('add', {
+			// required: true,
+		      // digits: true
+		// });
+	// });
 	
-	$(form).find('.price').each(function(){
-		$(this).rules('add', {
-			required: true,
-		      number: true
-		});
-	});
+	// $(form).find('.price').each(function(){
+		// $(this).rules('add', {
+			// required: true,
+		      // number: true
+		// });
+	// });
 
 	$(form).find('select.mandatory').each(function(){
 		$(this).change(function(){
@@ -205,11 +229,11 @@ function validation_rules(form){
 		});				
 	});
 	
-	$(form).find('input.mandatory, textarea.mandatory').each(function(){		
-		$(this).rules('add', {
-			required: true,
-		});				
-	});
+	// $(form).find('input.mandatory, textarea.mandatory').each(function(){		
+		// $(this).rules('add', {
+			// required: true,
+		// });				
+	// });
 	
 	$(form).find('select.multi_select_mandatory').each(function(){
 		$(this).chosen().change(function(){
@@ -1051,6 +1075,8 @@ function add_new_contact(event){
 			tab_contacts_clicked();
 		});
 		
+		datepicker_reload('#tab_contacts');
+		
 		bind_rating_form();
 
 		$('#contact_form_id').submit({url:url}, function(event){
@@ -1058,13 +1084,14 @@ function add_new_contact(event){
 			var url = event.data.url;
 			var data = $(this).serialize();		
 			$.post(url, data, function(result){
-				
+				$('#tab_contacts').replaceWith(result);								
+				rebind_contacts();
 			});
-		});		
+		});
 		
 		var validator = validation_rules('#contact_form_id');
 		$('#tab_contacts').find('#contact_save_btn').off('click').on('click', {validator:validator}, function(){
-			validator.form();
+			validator.form();			
 			if(validator.invalidElements().length == 0){ 
 				$('#contact_form_id').submit();
 			}

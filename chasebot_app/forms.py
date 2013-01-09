@@ -72,31 +72,20 @@ class FilterContactsForm(Form):
     company       = forms.CharField(widget= forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_contacts_company', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=30)
     email         = forms.EmailField(widget= forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_contacts_email', 'autocomplete': 'off', 'data-provide': 'typeahead'}))
 
-class ContactsForm(ModelForm):  
-    def clean_company_name(self):
-        company_name = ''
-        if 'company_name' in self.cleaned_data:                
-            company_name = self.cleaned_data['company_name']
-            if company_name:
-                return company_name
-        if 'last_name' in self.cleaned_data:  
-            last_name = self.cleaned_data['last_name']                               
-            if last_name:
-                return company_name
-        raise forms.ValidationError(_(u'Either the last name OR the company name are required.'))
+class ContactsForm(ModelForm): 
+    def clean(self):
+        cleaned_data = super(ContactsForm, self).clean()
+        company_name = self.cleaned_data['company_name']
+        last_name = self.cleaned_data['last_name']
         
-    def clean_last_name(self):
-        last_name = ''
-        if 'last_name' in self.cleaned_data:                
-            last_name = self.cleaned_data['last_name']
-            if last_name:
-                return last_name
-        if 'company_name' in self.cleaned_data:                                  
-            company_name = self.cleaned_data['company_name']
-            if company_name:
-                return last_name
-        raise forms.ValidationError(_(u'Either the last name OR the company name are required.'))
-    
+        if not company_name and not last_name:
+            msg = _(u'Either the last name OR the company name are required.')
+            self._errors["company_name"] = self.error_class([msg])
+            self._errors["last_name"] = self.error_class([msg])
+            del cleaned_data['company_name']
+            del cleaned_data['last_name']
+        
+        return cleaned_data
       
     class Meta:
         model = Contact
@@ -113,7 +102,7 @@ class ContactsForm(ModelForm):
                 'phone': forms.TextInput(       attrs={'placeholder': _(u'Add a phone number'),         'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                 'mobile_phone': forms.TextInput(attrs={'placeholder': _(u'Add a cell phone number'),    'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                 'fax_number': forms.TextInput(  attrs={'placeholder': _(u'Add a fax number'),           'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
-                'email': forms.TextInput(       attrs={'placeholder': _(u'Add an email'),               'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
+                'email': forms.TextInput(       attrs={'placeholder': _(u'Add an email'),               'class': 'placeholder_fix_css email', 'autocomplete': 'off'}),
                 'birth_date': forms.DateInput(  attrs={'placeholder': _(u'Add the birthday'),           'class': 'placeholder_fix_css date_picker'}),
                 'referred_by': forms.TextInput( attrs={'placeholder': _(u'...was referred by?'),        'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                 'spouse_first_name': forms.TextInput(attrs={'placeholder': _(u'What is the spouse\'s name?'), 'class': 'placeholder_fix_css', 'autocomplete': 'off'}),

@@ -259,7 +259,7 @@ def contact_add_edit(request, contact_id=None):
                          'company_name': company_name, 'contacts' : contacts, 'source' : source
                          }
             variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
-            return render(request, 'contact_list.html', variables)            
+            return render(request, 'contacts.html', variables)            
     else:
         form = ContactsForm(instance=contact)    
     variables = {'form':form, 'template_title': template_title, 'contact_id' : contact_id, }
