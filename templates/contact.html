@@ -10,13 +10,13 @@
 	        <div class="tabbable"> <!-- Only required for left/right tabs -->
 	            <ul class="nav nav-tabs">
 	                <li class="active">
-	                    <a href="#tab1" data-toggle="tab">{% trans 'Basic' %}</a>
+	                    <a class="tab_header" href="#tab1" data-toggle="tab">{% trans 'Basic' %}</a>
 	                </li>
 	                <li>
-	                    <a href="#tab2" data-toggle="tab">{% trans 'Personal' %}</a>
+	                    <a class="tab_header" href="#tab2" data-toggle="tab">{% trans 'Personal' %}</a>
 	                </li>
 	                <li>
-		                <a href="#tab3" data-toggle="tab">{% trans 'Personality Notes' %}</a>
+		                <a class="tab_header" href="#tab3" data-toggle="tab">{% trans 'Personality Notes' %}</a>
 		            </li>
 	            </ul>
 	            <div class="tab-content well well-small">
@@ -42,7 +42,8 @@
 		    		</div>
 	            </div>
 	        </div>  
-	        <div class="cb_req_legend">{% trans '* Required fields' %}</div>  
+	        <div class="cb_req_legend">{% trans '* Required fields' %}</div>
+	        <div id="validation_summary" class="field_error"></div>  
 	        <input id="contact_save_btn" type="button" value="{% trans 'Save All' %}" class="btn btn-primary" />
 	        <input id="contact_cancel_btn" type="button" value="{% trans 'Cancel' %}" class="btn"/>    
     	</div>

@@ -15,6 +15,7 @@
 			<tr>
 				<th>{% trans 'Business Card' %}</th>
 				<th>{% trans 'Preferred Name' %}</th>
+				<th>{% trans 'Company' %}</th>
 				<th>{% trans 'Email' %}</th>
 				<th>{% trans 'Work Phone' %}</th>
 				<th>{% trans 'Cell Phone' %}</th>
@@ -24,7 +25,8 @@
 			<tr>
 				<td><a id="business_card_modal_btn" class="btn" data-toggle="modal" href="#business_card_modal"><i class="icon-search icon-large"></i></a></td>
 				<td>{{contact.dear_name}}</td>
-				<td><a href="mailto:{{contact.email}}">{{contact.email}}</a></td>
+				<td>{{contact.company_name}}</td>
+				<td><a href="mailto:{{contact.email}}">{{contact.email}}</a></td>				
 				<td>{{contact.phone}}</td>
 				<td>{{contact.mobile_phone}}</td>
 			</tr>

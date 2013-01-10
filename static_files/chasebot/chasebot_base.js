@@ -160,10 +160,10 @@ function validation_rules(form){
 		return arg != value;
 	}, gettext('Please select an item!'));
 	
-	// $.validator.addMethod("xrequire_from_group", $.validator.methods.required, gettext('Either the last name OR the company name are required.'));
+	$.validator.addMethod("xrequire_from_group", $.validator.methods.require_from_group, gettext('Either the last name OR the company name are required.'));
  	
 	$.validator.addClassRules("fillone", {
-		require_from_group: [1,".fillone"]
+		xrequire_from_group: [1,".fillone"]
 	});
 	
 	$.validator.addClassRules("email", {
@@ -187,24 +187,36 @@ function validation_rules(form){
 	$.validator.addClassRules("date_picker", {
 		date: true      	
 	});
-	
-	
-	
+		
 	var validator = $(form).validate({
-	  	// options
-		errorPlacement: function(error, element){
-		  	var field_error = $(form).find('#id_' + element.attr('name')).siblings('.field_error');
-		  	if(field_error.length > 0){
-		  		error.appendTo(field_error);
-		  	}				
-			else{
-				field_error = $(form).find('#id_' + element.attr('name')).closest('td').children('.field_error');
-				error.appendTo(field_error);
-			}				
-			$(field_error).show();
-		},
-		ignore: ':hidden:not(.chzn-done)'						  
-	});
+			  	// options
+			  	onkeyup: function(element){
+			  		$(element).valid();
+			  		if(validator.numberOfInvalids() > 0) 					
+ 						mark_tab_header_error(form, validator.lastElement, true);
+			  	},
+				errorPlacement: function(error, element){
+				  	var field_error = $(form).find('#id_' + element.attr('name')).siblings('.field_error');
+				  	if(field_error.length > 0){
+				  		error.appendTo(field_error);		  				  		
+				  	}
+					else{
+						field_error = $(form).find('#id_' + element.attr('name')).closest('td').children('.field_error');
+						error.appendTo(field_error);
+					}				
+					$(field_error).show();		
+				},
+				// ignore: ':hidden:not(.chzn-done)'
+				ignore: "",				
+				invalidHandler: function() {
+				    $("#validation_summary").text(validator.numberOfInvalids() + gettext(" field(s) are invalid"));		    		    
+			  	},
+			  errorContainer:"#validation_summary",
+			  success: function(){
+			  		mark_tab_header_error(form, validator.lastElement, false);
+			  }
+							  
+			});
 			
 	// $(form).find('.quantity').each(function(){
 		// $(this).rules('add', {
@@ -243,8 +255,22 @@ function validation_rules(form){
 			required: true,
 		});
 	});
-	
+	$('.tab_header').each(function(index, value){		
+			$(this).removeAttr('style');			
+	});
 	return validator;
+}
+
+function mark_tab_header_error(form, element, is_error){
+	var id = $(form).find(element).closest('.tab-pane').attr('id');
+	$(form).find(element).closest('.tabbable').find('.tab_header').each(function(index, value){
+		if($(this).attr('href') == '#' + id){
+			if(is_error)
+				$(this).css({color: 'red'});
+			else
+				$(this).removeAttr('style');			
+		}					
+	});	
 }
 
 function create_btn_deals(row){
@@ -273,7 +299,7 @@ function create_btn_deals(row){
 			$('#deal_modal_confirm_btn').off('click').on('click', {validator:validator, btn:btn}, function(event){
 				event.preventDefault();				
 							
-				if(validator.invalidElements().length == 0){
+				if(validator.numberOfInvalids() == 0){
 					var source = $('#deal_modal_body').children('form').children('div').clone();
 	    			var target = $(row).find('#tab-content').find($(btn).attr('href'));    			
 	    			target.empty();
@@ -749,7 +775,7 @@ function negotiate_deal(event){
 		
 		$('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {validator:validator}, function(){
 			validator.form();
-			if(validator.invalidElements().length == 0){ 
+			if(validator.numberOfInvalids() == 0){ 
 				form.submit(); 
 			}
 		});	
@@ -908,7 +934,7 @@ function deal_template_add_edit(event){
 		$('#deal_template_save_btn').off('click').on('click', {validator:validator}, function(event){
 			event.preventDefault();
 			validator.form();
-			if(validator.invalidElements().length == 0){
+			if(validator.numberOfInvalids() == 0){
 				$('#pre_deal_form_id').submit();
 			}
 		});
@@ -964,7 +990,8 @@ function rebind_contacts(){
 	rebind_business_card_modal_link();	
 	rebind_filters($('body'));		
 	$('.conversation').off('click').on('click', conversation_clicked);
-	$('#add_new_contact_btn').off('click').on('click', add_new_contact)	
+	$('#add_new_contact_btn').off('click').on('click', add_edit_new_contact);
+	$('.row_edit_contact_btn').off('click').on('click', add_edit_new_contact);
 }
 
 function rebind_deal_templates(){
@@ -1060,7 +1087,7 @@ function conversation_clicked(event){
 }
 
 
-function add_new_contact(event){
+function add_edit_new_contact(event){
 	event.preventDefault();
 	var url = $(this).attr('href');	
 	
@@ -1084,7 +1111,8 @@ function add_new_contact(event){
 			var url = event.data.url;
 			var data = $(this).serialize();		
 			$.post(url, data, function(result){
-				$('#tab_contacts').replaceWith(result);								
+				$('#tab_contacts').empty();
+				$('#tab_contacts').append(result);								
 				rebind_contacts();
 			});
 		});
@@ -1092,7 +1120,7 @@ function add_new_contact(event){
 		var validator = validation_rules('#contact_form_id');
 		$('#tab_contacts').find('#contact_save_btn').off('click').on('click', {validator:validator}, function(){
 			validator.form();			
-			if(validator.invalidElements().length == 0){ 
+			if(validator.numberOfInvalids() == 0){ 
 				$('#contact_form_id').submit();
 			}
 		});	
@@ -1112,7 +1140,7 @@ function bind_main_tabs(optionalArg){
 		$('#main_tabs a[href="#tab_predefined"]').off('click').on('click', tab_predefined_clicked);	
 }
 
-$(document).ready(function (){
+$(document).ready(function (){	
 	bind_main_tabs();
 	reword_collapseable('#accordion_task');	
 	//rebind_task_edit_delete($('#tasks_pane'));
