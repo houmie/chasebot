@@ -2,37 +2,25 @@
 <div>
 	<ul class="breadcrumb">
 		<li class="active">{% trans 'Pre-defined Deals' %}</li>					    	
-	</ul>
-	<div class="container-fluid">
-		<div class="row-fluid">
-			<div class="span2">
-				<!--Sidebar content-->
-				
-			 </div>
-			<div class="span10">
-				<!--Body content-->			
-				<div>							    	
-			    	<a id="new_deal_template_btn" class="btn" href="/deal/add/" title="{% trans 'New Deal Template' %}"><i class="icon-tag"></i> {% trans 'New Deal Template' %}</a>		    	
-				</div>
-				
-			    <table class="table table-condensed table-striped cb_table-hover">
-			        <thead>
-			            <tr>
-			                <th class="first_th_minwidth"></th>
-			                <th>{% trans 'Deal' %}</th>
-			                <th>{% trans 'Description' %}</th>    
-			                <th>{% trans 'Item' %}</th>
-			                <th>{% trans 'Price' %}</th>
-			                <th>{% trans 'Currency' %}</th>
-			                <th>{% trans 'Term' %}</th>
-			                <th>{% trans 'Quantity' %}</th>                
-			            </tr>
-			        </thead>
-			        <tbody id="search_result">
-			            {% include 'deal_template_list.html'%}
-			        </tbody>
-			    </table>    
-			</div>
-		</div>
-	</div> 
+	</ul>		
+	<div>							    	
+    	<a id="new_deal_template_btn" class="btn" href="deal_template/add/" title="{% trans 'New Deal Template' %}"><i class="icon-tag"></i> {% trans 'New Deal Template' %}</a>		    	
+	</div>	
+    <table class="table table-condensed table-striped cb_table-hover">
+        <thead>
+            <tr>
+                <th class="first_th_minwidth"></th>
+                <th>{% trans 'Deal' %}</th>
+                <th>{% trans 'Description' %}</th>    
+                <th>{% trans 'Item' %}</th>
+                <th>{% trans 'Price' %}</th>
+                <th>{% trans 'Currency' %}</th>
+                <th>{% trans 'Term' %}</th>
+                <th>{% trans 'Quantity' %}</th>                
+            </tr>
+        </thead>
+        <tbody id="search_result">
+            {% include 'deal_template_list.html'%}
+        </tbody>
+    </table>    
 </div>

@@ -7,10 +7,10 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from chasebot_app.forms import RegistrationForm, ContactsForm, ConversationForm, SalesItemForm, DealTemplateForm,\
-     DealForm, FilterContactsForm, FilterConversationForm, FilterDealsForm, FilterSalesItemForm,\
+     DealForm, FilterContactsForm, FilterConversationForm, FilterDealTemplateForm, FilterSalesItemForm,\
     DealsAddForm, OpenDealsAddForm, ColleagueInviteForm, OpenDealTaskForm,\
-    TaskForm, EventForm, DealNegotiateForm
-from chasebot_app.models import Company, Contact, Conversation, SalesItem, DealTemplate, DealStatus, Deal, SalesTerm,\
+    TaskForm, EventForm, DealNegotiateForm, FilterOpenDealForm
+from chasebot_app.models import Company, Contact, Conversation, SalesItem, DealTemplate, Deal, SalesTerm,\
     Invitation, LicenseTemplate, MaritalStatus, \
     Currency, Task, Event
 from chasebot_app.models import UserProfile 
@@ -117,8 +117,34 @@ def index_display(request):
 @login_required
 def open_deals_display(request):
     profile = request.user.get_profile()
-    variables = load_open_deals_variables(request, profile)
-    return render(request, 'open_deals.html', variables)
+    
+    ajax = False    
+    if 'ajax' in request.GET:
+        ajax = True
+        deals_query = all_open_deals(request, profile.company)
+        
+        if 'deal_instance_name' in request.GET:    
+            deal_instance_name = request.GET['deal_instance_name']
+            deals_query = deals_query.filter(deal_instance_name__icontains=deal_instance_name).order_by('deal_instance_name')
+        if 'status' in request.GET:    
+            status = request.GET['status']
+            deals_query = deals_query.filter(status__icontains=status).order_by('status')
+        if 'last_contacted' in request.GET:    
+            last_contacted = request.GET['last_contacted']
+            deals_query = deals_query.filter(last_contacted__icontains=last_contacted).order_by('last_contacted')
+        if 'total_value' in request.GET:    
+            total_value = request.GET['total_value']
+            deals_query = deals_query.filter(total_value__icontains=total_value).order_by('total_value')
+    else:
+        deals_query = all_open_deals(request, profile.company)
+    
+    deals, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deals_query)  
+    variables = {'deals': deals}
+    variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
+    if ajax:
+        return render(request, 'open_deals_list.html', variables)
+    else:
+        return render(request, 'open_deals.html', variables)
 
 @login_required
 def load_open_deals_variables(request, profile):
@@ -769,8 +795,8 @@ def deal_template_display(request):
             quantity = request.GET['quantity']
             deal_templates_queryset = deal_templates_queryset.filter(quantity__icontains=quantity).order_by('quantity')    
     
-    source = 'deals/'
-    filter_form = FilterDealsForm(profile.company, request.GET)            
+    source = 'deal_templates/'
+    filter_form = FilterDealTemplateForm(profile.company, request.GET)            
     deal_templates, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deal_templates_queryset)    
     variables = {
                  'deal_templates': deal_templates, 'filter_form' : filter_form, 'source':source
@@ -785,7 +811,7 @@ def deal_template_display(request):
 @login_required
 def deal_template_add_edit(request, deal_id=None):
     profile = request.user.get_profile()
-    source = 'deals/'    
+    source = 'deal_templates/'    
     if deal_id is None:
         deal = DealTemplate(company=profile.company)        
         template_title = _(u'Add New Pre-defined Deal')
@@ -820,7 +846,7 @@ def deal_template_delete(request, deal_id=None):
         deal_template.delete()
         deal_templates_queryset = profile.company.dealtemplate_set.order_by('deal_name')   
         deal_templates, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deal_templates_queryset)
-        source = 'deals/'          
+        source = 'deal_templates/'          
         variables = { 'deal_templates': deal_templates, 'source':source}
         variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
     return render(request, 'deal_template_list.html', variables)
@@ -925,6 +951,14 @@ def contacts_autocomplete(request):
     if 'query' in request.GET:
         profile, kwargs, fieldname = get_fields_for_autocomplete(request)
         queryset = profile.company.contact_set.filter(**kwargs)[:10]
+        to_json = prepare_json_for_autocomplete(fieldname, queryset)
+        return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')        
+    return HttpResponse()
+
+def opendeal_autocomplete(request):
+    if 'query' in request.GET:
+        profile, kwargs, fieldname = get_fields_for_autocomplete(request)
+        queryset = all_open_deals(request, profile.company).filter(**kwargs)[:10]
         to_json = prepare_json_for_autocomplete(fieldname, queryset)
         return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')        
     return HttpResponse()
@@ -1034,6 +1068,24 @@ def colleague_accept(request, code):
     request.session['invitation'] = invitation.id
     return HttpResponseRedirect('/register/')
     
+@login_required
+def sidebar_contacts(request):
+    filter_form = FilterContactsForm()
+    variables = { 'filter_form':filter_form }
+    return render(request, 'contacts_sidebar.html', variables)
+
+@login_required
+def sidebar_deal_templates(request):
+    profile = request.user.get_profile()
+    filter_form = FilterDealTemplateForm(profile.company)
+    variables = { 'filter_form':filter_form }
+    return render(request, 'deal_template_sidebar.html', variables)    
+
+@login_required
+def sidebar_open_deals(request):    
+    filter_form = FilterOpenDealForm()
+    variables = { 'filter_form':filter_form }
+    return render(request, 'open_deal_sidebar.html', variables)
 
 def part_of_day_statistics(x):
     if x.hour >= 6 and x.hour < 9:

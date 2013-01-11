@@ -11,7 +11,8 @@ from chasebot_app.views import logout_page, contact_delete, conversation_display
     colleague_accept, single_conversation_display, \
     task_display, task_add_edit, task_delete, index_display, open_deals_display,\
     open_deal_conversations_display, event_add_edit, event_delete,\
-    negotiate_open_deal
+    negotiate_open_deal, sidebar_contacts, sidebar_deal_templates,\
+    sidebar_open_deals, opendeal_autocomplete
 from chasebot_app.demo_view import demo
 
 admin.autodiscover()
@@ -50,6 +51,10 @@ urlpatterns = patterns('',
     (r'^contact/(?P<contact_id>\d+)/call/add/$', conversation_add_edit),    
     (r'^contact/(?P<contact_id>\d+)/calls/$', conversation_display),
     (r'^contact/(?P<contact_id>\d+)/call/(?P<call_id>\w+)/$', single_conversation_display),
+
+    (r'^sidebar/contacts/$', sidebar_contacts),
+    (r'^sidebar/deal_templates/$', sidebar_deal_templates),
+    (r'^sidebar/open_deals/$', sidebar_open_deals),
     
     (r'^open_deals/$', open_deals_display),
     (r'^open_deals/(?P<deal_id>\d+)/calls/$', open_deal_conversations_display),
@@ -66,9 +71,9 @@ urlpatterns = patterns('',
     (r'^sales_items/$', sales_item_display),
     (r'^sales_item/delete/(?P<sales_item_id>\d+)/$', sales_item_delete),
     
-    (r'^deal/add/$', deal_template_add_edit),    
-    (r'^deal/edit/(?P<deal_id>\d+)/$', deal_template_add_edit),
-    (r'^deals/$', deal_template_display),
+    (r'^deal_template/add/$', deal_template_add_edit),    
+    (r'^deal_template/edit/(?P<deal_id>\d+)/$', deal_template_add_edit),
+    (r'^deal_templates/$', deal_template_display),
     (r'^deal/delete/(?P<deal_id>\d+)/$', deal_template_delete),
     #(r'^opendeals/$', open_deals),
     
@@ -77,9 +82,10 @@ urlpatterns = patterns('',
     (r'^autocomplete/sales_items/$', sales_item_autocomplete),
     (r'^autocomplete/contacts/$', contacts_autocomplete),
     (r'^autocomplete/conversations/(?P<contact_id>\d+)/$', conversations_autocomplete),   
-    (r'^autocomplete/deals/$', deal_autocomplete),
+    (r'^autocomplete/deal_template/$', deal_autocomplete),
+    (r'^autocomplete/open_deals/$', opendeal_autocomplete),
 
-    (r'^task/add/$', task_add_edit),    
+    (r'^task/add/$', task_add_edit),
     (r'^task/edit/(?P<task_id>\d+)/$', task_add_edit),
 #    (r'^task/(?P<task_id>\d+)/$', task_display),    
     (r'^tasks/$', task_display),

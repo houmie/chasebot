@@ -63,7 +63,8 @@ function row_delete_ajax(event) {
 
 function filter_rows(event){
 	event.preventDefault();
-	var url = '';		
+	var rebind_func = event.data.rebind_func;
+	var url = $(this).attr('action');		
 	
 	// With ajax as first keywork we can check against in views.py and refresh the list if all filters are cleared but the request came by ajax
 	url = url + '?ajax';
@@ -96,10 +97,11 @@ function filter_rows(event){
 		}				 		
 	});
 	//Even if no filter are set, still the query to server is required to get all list and undo filters.	
-	$('#search_result').load(url, function(){		
+	$('#search_result').load(url, {rebind_func:rebind_func}, function(){		
 		//rebind_edit_delete($('#search_result'));
 		//rebind_paginator($('#search_result'));
 		//rebind_add();
+		rebind_func();
 	});	
 };
 
@@ -493,6 +495,22 @@ function typeahead_contacts_last_name(query, process){
 	autocomplete(query, process, 'contacts', 'last_name', '')
 };
 
+function typeahead_opendeal_deal_name(query, process){
+	autocomplete(query, process, 'open_deals', 'deal_name', '')
+};
+
+function typeahead_opendeal_status(query, process){
+	autocomplete(query, process, 'open_deals', 'status', '')
+};
+
+function typeahead_opendeal_last_contacted(query, process){
+	autocomplete(query, process, 'open_deals', 'last_contacted', '')
+};
+
+function typeahead_opendeal_total_price(query, process){
+	autocomplete(query, process, 'open_deals', 'total_value', '')
+};
+
 function typeahead_contacts_first_name(query, process){
 	autocomplete(query, process, 'contacts', 'first_name', '')
 };
@@ -507,23 +525,23 @@ function typeahead_contacts_email(query, process){
 
 //This method passes in three parameters, the last one is the contact_id. Since all calls must belong to a contact.
 function typeahead_deals_deal_name(query, process){
-	autocomplete(query, process, 'deals', 'deal_name', '')
+	autocomplete(query, process, 'deal_template', 'deal_instance_name', '')
 };
 
 function typeahead_deals_sales_item(query, process){
-	autocomplete(query, process, 'deals', 'sales_item', '')
+	autocomplete(query, process, 'deal_template', 'sales_item', '')
 };
 
 function typeahead_deals_price(query, process){
-	autocomplete(query, process, 'deals', 'price', '')
+	autocomplete(query, process, 'deal_template', 'price', '')
 };
 
 function typeahead_deals_sales_term(query, process){
-	autocomplete(query, process, 'deals', 'sales_term', '')
+	autocomplete(query, process, 'deal_template', 'sales_term', '')
 };
 
 function typeahead_deals_quantity(query, process){
-	autocomplete(query, process, 'deals', 'quantity', '')
+	autocomplete(query, process, 'deal_template', 'quantity', '')
 };
 
 
@@ -618,21 +636,9 @@ function clear_filter(event){
 }
 
 
-
-// These bindings are for all existing filters. Since they don't get refreshed like the lists, they don't need to be part of bind()
-function rebind_filters(parent){
-	$(parent).find(".form-filter-ajax").submit(filter_rows);			
-	$(parent).find(".typeahead_sales_items").typeahead({ source: typeahead_sales_items });
-	$(parent).find(".typeahead_contacts_last_name").typeahead({ source: typeahead_contacts_last_name });
-	$(parent).find(".typeahead_contacts_first_name").typeahead({ source: typeahead_contacts_first_name });
-	$(parent).find(".typeahead_contacts_company").typeahead({ source: typeahead_contacts_company });
-	$(parent).find(".typeahead_contacts_email").typeahead({ source: typeahead_contacts_email });	
-	$(parent).find(".typeahead_deals_deal_name").typeahead({ source: typeahead_deals_deal_name });
-	$(parent).find(".typeahead_deals_sales_item").typeahead({ source: typeahead_deals_sales_item });
-	$(parent).find(".typeahead_deals_price").typeahead({ source: typeahead_deals_price });
-	$(parent).find(".typeahead_deals_sales_term").typeahead({ source: typeahead_deals_sales_term });
-	$(parent).find(".typeahead_deals_quantity").typeahead({ source: typeahead_deals_quantity });	
-	$(parent).find(".filter-close").click(clear_filter);
+function rebind_filters(source, rebind_func){
+	$(source).find(".form-filter-ajax").off('submit').on('submit',{rebind_func:rebind_func}, filter_rows);
+	$(source).find(".filter-close").off('click').on('click', clear_filter);
 };
 
 
@@ -798,21 +804,14 @@ function negotiate_deal_submit(event){
       		 //modal.find('#event_form').submit({modal:'#event_modal', events_pane:'#events_pane', form:'#event_form'}, event_modal_add_save);
       		 $('#deal_modal_body').find('#id_sales_item').chosen({no_results_text: gettext('No results match')});
        		 datepicker_reload('#deal_modal_body');
-       		 calc_total_price();      		
-       		 //rebind_delete_paginator($(events_pane));
-      		 //rebind_paginator($(events_pane));      		
+       		 calc_total_price();  		
     	}
     	else {
     		//if there is no error then insert the added row before the current add-button row. (last row)
     		$(modal).modal('hide');    		
-    		//$(modal).empty();
     		$('#tab_open_deals').empty();
     		$('#tab_open_deals').append(result);
-    		load_open_deals();
-    		//$(events_pane).empty();
-    		//$(events_pane).append(result);
-      		//rebind_delete_paginator($(events_pane));
-      		//rebind_paginator($(events_pane));      		      		      		
+    		rebind_open_deals();		      		      		
     	}
   	});
 }
@@ -965,7 +964,7 @@ function rebind_conversations(){
 		event.preventDefault();
 		tab_contacts_clicked();
 	});
-	rebind_filters($('body'));
+	rebind_filters($('body'), rebind_conversations);
 	$('#new_conversation_button').off('click').on('click',new_conversation);
 }
 
@@ -976,9 +975,11 @@ function rebind_sales_item(){
 	$(source).find(".row_edit_ajax").off('click').on('click', row_edit_ajax);
 	//save_add_form currently only used for sales item
     $('#save_add_form').off('submit').on('submit', row_add_save_sales_item);        
-    $('#sales_item_filter').find(".form-filter-ajax").off('submit').on('submit', (filter_rows));			
+    $('#sales_item_filter').find(".form-filter-ajax").off('submit').on('submit', {rebind_func:rebind_sales_item}, filter_rows);			
 	$('#sales_item_filter').find(".typeahead_sales_items").typeahead({ source: typeahead_sales_items });
 	$('#sales_item_filter').find(".filter-close").off('click').on('click', clear_filter);
+	$('#sidebar').find(".typeahead_sales_items").typeahead({ source: typeahead_sales_items });
+	rebind_filters('#sidebar', rebind_sales_item);
 }
 
 function rebind_contacts(){
@@ -988,10 +989,9 @@ function rebind_contacts(){
 	rebind_delete_paginator(source, target, rebind_contacts);
 	$(source).find(".row_edit_ajax").off('click').on('click', row_edit_ajax);
 	rebind_business_card_modal_link();	
-	rebind_filters($('body'));		
 	$('.conversation').off('click').on('click', conversation_clicked);
 	$('#add_new_contact_btn').off('click').on('click', add_edit_new_contact);
-	$('.row_edit_contact_btn').off('click').on('click', add_edit_new_contact);
+	$('.row_edit_contact_btn').off('click').on('click', add_edit_new_contact);	
 }
 
 function rebind_deal_templates(){
@@ -999,7 +999,7 @@ function rebind_deal_templates(){
 	var target = '#search_result'	
 	$(source).find('.deal_template_edit_btn').off('click').on('click', deal_template_add_edit);
 	$('#new_deal_template_btn').off('click').on('click', deal_template_add_edit);	
-	rebind_delete_paginator(source, target, rebind_deal_templates);	
+	rebind_delete_paginator(source, target, rebind_deal_templates);		
 }
 
 function rebind_events(){
@@ -1011,15 +1011,20 @@ function rebind_events(){
 function tab_predefined_clicked(){	
 	$('#tab_contacts').empty();
 	$('#tab_open_deals').empty();
-	$('#tab_predefined').load('deals/', function(result){
+	$('#tab_predefined').load('deal_templates/', function(result){
 		rebind_deal_templates();
 	});	
 	$('#main_tabs a[href="#tab_predefined"]').off('click');
-	bind_main_tabs('tab_predefined');	
+	bind_main_tabs('tab_predefined');
+	$('#sidebar').load('sidebar/deal_templates/', function(result){
+		$('#sidebar').find(".typeahead_deals_deal_name").typeahead({ source: typeahead_deals_deal_name });
+		$('#sidebar').find(".typeahead_deals_sales_item").typeahead({ source: typeahead_deals_sales_item });
+		$('#sidebar').find(".typeahead_deals_price").typeahead({ source: typeahead_deals_price });
+		$('#sidebar').find(".typeahead_deals_sales_term").typeahead({ source: typeahead_deals_sales_term });
+		$('#sidebar').find(".typeahead_deals_quantity").typeahead({ source: typeahead_deals_quantity });
+		rebind_filters('#sidebar', rebind_deal_templates);
+	});	
 }
-
-
-
  
 
 function tab_contacts_clicked(){
@@ -1029,21 +1034,35 @@ function tab_contacts_clicked(){
 		rebind_contacts();
 	});
 	$('#main_tabs a[href="#tab_contacts"]').off('click');
-	bind_main_tabs('tab_contacts');
+	bind_main_tabs('tab_contacts');	
+	$('#sidebar').load('sidebar/contacts/', function(result){
+		$('#sidebar').find(".typeahead_contacts_last_name").typeahead({ source: typeahead_contacts_last_name });
+		$('#sidebar').find(".typeahead_contacts_first_name").typeahead({ source: typeahead_contacts_first_name });
+		$('#sidebar').find(".typeahead_contacts_company").typeahead({ source: typeahead_contacts_company });
+		$('#sidebar').find(".typeahead_contacts_email").typeahead({ source: typeahead_contacts_email });
+		rebind_filters('#sidebar', rebind_contacts);
+	});
 }
 
 function tab_open_deals_clicked(){
 	$('#tab_contacts').empty();
 	$('#tab_predefined').empty();
 	$('#tab_open_deals').load('open_deals/', function(result){				
-		load_open_deals();
+		rebind_open_deals();
 	});
 	$('#main_tabs a[href="#tab_open_deals"]').off('click');
-	bind_main_tabs('tab_open_deals');	
+	bind_main_tabs('tab_open_deals');
+	$('#sidebar').load('sidebar/open_deals/', function(result){
+		$('#sidebar').find(".typeahead_opendeal_deal_name").typeahead({ source: typeahead_opendeal_deal_name });
+		$('#sidebar').find(".typeahead_opendeal_status").typeahead({ source: typeahead_opendeal_status });
+		$('#sidebar').find(".typeahead_opendeal_last_contacted").typeahead({ source: typeahead_opendeal_last_contacted });
+		$('#sidebar').find(".typeahead_opendeal_total_price").typeahead({ source: typeahead_opendeal_total_price });
+		rebind_filters('#sidebar', rebind_open_deals);
+	});	
 }
 
 
-function load_open_deals(){
+function rebind_open_deals(){
 	$('#tab_open_deals tbody tr').off('click').on('click', function(){
 			var clicked_on_same_row = false;
 			var deal_row = $(this);
@@ -1072,7 +1091,7 @@ function load_open_deals(){
 				tr.find(".negotiate_deal_btn").off('click').on('click', negotiate_deal);				
 				$(".collapse").collapse('toggle');
 			});
-		});
+	});
 }
 
 
@@ -1147,8 +1166,7 @@ $(document).ready(function (){
 	$('#timezone_dropdown').change(timezone_dropdown);	
 	$('.timezone_help').click(show_timezone_help);	
 	$('#invite-button').click(invite_colleague);
-	$('#demo-button').click(demo);
-	//bind_rating_form();		
+	$('#demo-button').click(demo);	
 });
 
 

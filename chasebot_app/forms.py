@@ -9,7 +9,7 @@ import re
 from django.contrib.auth.models import User
 from django.forms import ModelForm
 from chasebot_app.models import Contact, MaritalStatus, Conversation, SalesItem, DealTemplate, SalesTerm, Deal,\
-    Invitation, Task, Event
+    Invitation, Task, Event, DealStatus
 from django.forms.models import BaseModelFormSet
 from django.utils.translation import ugettext_lazy as _
 import datetime
@@ -114,7 +114,7 @@ class ContactsForm(ModelForm):
                 'pet_names': forms.TextInput( attrs={'placeholder': _(u'Has any pets?'),        'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                 'spouses_interests': forms.Textarea(attrs={'rows':4, 'class':'textarea_15em', 'placeholder': _(u'Does the spouse have any particular interest?')}),
                 'prev_meeting_places': forms.Textarea(attrs={'rows':4, 'class':'textarea_15em', 'placeholder': _(u'Where did you meet so far?')}), 
-                'important_client': forms.RadioSelect()                      
+                'important_client': forms.RadioSelect()
             }
         
         
@@ -219,10 +219,17 @@ class OpenDealTaskForm(Form):
     open_deal_task = forms.ModelChoiceField(queryset='', label=_(u'Task about an existing deal?'))    
 
 
+class FilterOpenDealForm(Form):            
+    deal_instance_name = forms.CharField(widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_opendeal_deal_name', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=40)    
+    status          = forms.ModelChoiceField(queryset=DealStatus.objects.all(), widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_opendeal_status', 'autocomplete': 'off', 'data-provide': 'typeahead'}))    
+    last_contacted  = forms.DateField(widget = forms.DateInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_opendeal_last_contacted', 'autocomplete': 'off', 'data-provide': 'typeahead'}))
+    total_value     = forms.DecimalField(widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_opendeal_total_price', 'autocomplete': 'off', 'data-provide': 'typeahead'}))
 
-class FilterDealsForm(Form):
+
+
+class FilterDealTemplateForm(Form):
     def __init__(self, company, *args, **kwargs):
-        super(FilterDealsForm, self).__init__(*args, **kwargs)
+        super(FilterDealTemplateForm, self).__init__(*args, **kwargs)
         self.fields['sales_item'].queryset = SalesItem.objects.filter(company=company)
             
     deal_name           = forms.CharField(widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_deals_deal_name', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=40)    
@@ -250,7 +257,7 @@ class DealTemplateForm(ModelForm):
     
     class Meta:
         model = DealTemplate
-        exclude = ('company', 'status')
+        exclude = ('company')
         
         widgets = {
                     'deal_name': forms.TextInput(attrs={'placeholder': _(u'Name the deal'), 'class': 'placeholder_fix_css mandatory', 'autocomplete': 'off'}),

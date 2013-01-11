@@ -3,17 +3,15 @@
     <thead>
         <tr class="well cb_well-small">
             <th class="first_th_minwidth">
-<!--             	<a class="btn" href="/deals" title="{% trans 'Back to Deals' %}"><i class="icon-arrow-left"> </i></a>                	                	 -->
             </th>            
             <th id="sales_item_filter">
             	
-            	<form action="." method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
+            	<form action="sales_items/" method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
     				<div class="input-append filter-container">
     				{{filter_form.item_name}}<div class="close filter-close">&times;</div><button type="submit" class="btn"><i class='icon-filter'> </i></button>
     				</div>	   <br> 
     				<h5>{% trans 'Sales Item' %}</h5>
-            	</form>
-            	                	
+            	</form>            	                	
         	</th>        	                    
         </tr>
     </thead>

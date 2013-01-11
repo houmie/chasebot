@@ -9,9 +9,6 @@
 	                		<a id="save_edit_button" value="{% trans 'Save' %}" class="btn btn-primary"><i class="icon-ok icon-large"></i></a>
 	            			<a id="cancel_edit_button" href="/sales_item/{{ salesitem_id }}" value="{% trans 'Cancel' %}" class="btn"><i class="icon-remove icon-large"></i></a>
 	                	</td>
-	                    <!-- <td>
-	                    	{% if  form.item_name.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.item_name.label}}: *</div>{%else%}{{form.item_name.label}}:{% endif %}                       
-	                    </td> -->
                         {% if form.item_name.errors %}
                         <td class="input-append">
 		                	<div class="field field_error">
