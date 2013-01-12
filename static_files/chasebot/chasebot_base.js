@@ -595,14 +595,14 @@ function bind_rating_form(){
 
 
 
-function datepicker_reload(parent){
-	$(parent).find('.date_picker').datepicker({ format: $('#locale').text(),	autoclose: 'True' });
+function datepicker_reload(source){
+	$(source).find('.date_picker').datepicker({ format: $('#locale').text(),	autoclose: 'True' });
 	var is_showMeridian = false;
 	if ($('#locale').text() == 'mm/dd/yyyy'){
 		is_showMeridian = true;
 	}
 		
-	$(parent).find('.timepicker-default').timepicker({showMeridian:is_showMeridian, defaultTime : false});			
+	$(source).find('.timepicker-default').timepicker({showMeridian:is_showMeridian, defaultTime : false});			
 };
 
 
@@ -935,9 +935,9 @@ function rebind_conversations(){
 	$('.back2contacts').off('click').on('click', function(event){
 		event.preventDefault();
 		tab_contacts_clicked();
-	});
-	rebind_filters($('body'), rebind_conversations);
-	$('#new_conversation_button').off('click').on('click',new_conversation);
+	});	
+	$('#new_conversation_button').off('click').on('click',new_conversation);	
+	rebind_filters($('#sidebar'), rebind_conversations);
 }
 
 function rebind_sales_item(){
@@ -961,7 +961,7 @@ function rebind_contacts(){
 	rebind_delete_paginator(source, target, rebind_contacts);
 	$(source).find(".row_edit_ajax").off('click').on('click', row_edit_ajax);
 	rebind_business_card_modal_link();	
-	$('.conversation').off('click').on('click', conversation_clicked);
+	$('.conversation_btn').off('click').on('click', conversation_clicked);
 	$('#add_new_contact_btn').off('click').on('click', add_edit_new_contact);
 	$('.row_edit_contact_btn').off('click').on('click', add_edit_new_contact);	
 }
@@ -1076,6 +1076,12 @@ function conversation_clicked(event){
 	event.preventDefault();
 	var url = $(this).attr('href');
 	$('#tab_contacts').load(url, function(result){
+		$('#sidebar').load('sidebar/contact/' + $('#contact_id').text() + '/conversations/', function(result){
+			$('#sidebar').find(".typeahead_calls_from_date").typeahead({ source: typeahead_opendeal_deal_name });
+			$('#sidebar').find(".typeahead_calls_to_date").typeahead({ source: typeahead_opendeal_status });			
+			rebind_filters('#sidebar', rebind_conversations);
+			datepicker_reload('#sidebar');
+		});	
 		rebind_conversations();
 	});
 }

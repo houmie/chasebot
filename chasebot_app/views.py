@@ -312,11 +312,7 @@ def conversation_display(request, contact_id):
     profile = request.user.get_profile()
     contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
     show_only_open_deals = False
-    if 'show_only_open_deals' in request.GET:
-        show_only_open_deals = True
-        calls_queryset = conversations_with_open_deals(request, contact)
-    else:
-        calls_queryset = contact.conversation_set.all().order_by('-conversation_datetime')
+    calls_queryset = contact.conversation_set.all().order_by('-conversation_datetime')
     
     ajax = False    
     if 'ajax' in request.GET:
@@ -1086,6 +1082,14 @@ def sidebar_open_deals(request):
     filter_form = FilterOpenDealForm()
     variables = { 'filter_form':filter_form }
     return render(request, 'open_deal_sidebar.html', variables)
+
+@login_required
+def sidebar_conversations(request, contact_id):
+    profile = request.user.get_profile()
+    filter_form = FilterConversationForm()
+    contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
+    variables = { 'filter_form':filter_form, 'contact':contact }
+    return render(request, 'conversations_sidebar.html', variables)
 
 def part_of_day_statistics(x):
     if x.hour >= 6 and x.hour < 9:
