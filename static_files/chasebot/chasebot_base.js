@@ -156,40 +156,7 @@ function reload_edit_save_cancel_buttons(row, url, isNewConversation){
 }
 
 
-function validation_rules(form){
-	// add the rule here
-	$.validator.addMethod("valueNotEquals", function(value, element, arg){
-		return arg != value;
-	}, gettext('Please select an item!'));
-	
-	$.validator.addMethod("xrequire_from_group", $.validator.methods.require_from_group, gettext('Either the last name OR the company name are required.'));
- 	
-	$.validator.addClassRules("fillone", {
-		xrequire_from_group: [1,".fillone"]
-	});
-	
-	$.validator.addClassRules("email", {
-		email: true
-	});
-	
-	$.validator.addClassRules("quantity", {
-		required: true,
-      	digits: true
-	});
-	
-	$.validator.addClassRules("price", {
-		required: true,
-      	number: true
-	});
-	
-	$.validator.addClassRules("input.mandatory, textarea.mandatory", {
-		required: true      	
-	});
-	
-	$.validator.addClassRules("date_picker", {
-		date: true      	
-	});
-		
+function validation_rules(form){		
 	var validator = $(form).validate({
 			  	// options
 			  	onkeyup: function(element){
@@ -216,9 +183,40 @@ function validation_rules(form){
 			  errorContainer:"#validation_summary",
 			  success: function(){
 			  		mark_tab_header_error(form, validator.lastElement, false);
-			  }
-							  
+			  }							  
 			});
+
+	$(form).find('select.mandatory').each(function(){
+		$(this).change(function(){
+			$(this).valid();
+		});
+		$(this).rules('add', {
+			valueNotEquals: ""
+		});				
+	});
+		
+	$(form).find('select.multi_select_mandatory').each(function(){
+		$(this).chosen().change(function(){
+			$(this).valid();
+		});
+		$(this).rules('add', {
+			required: true,
+		});
+	});
+
+	return validator;
+}
+
+	// $('.tab_header').each(function(index, value){		
+			// $(this).removeAttr('style');			
+	// });
+	
+// $(form).find('input.mandatory, textarea.mandatory').each(function(){		
+		// $(this).rules('add', {
+			// required: true,
+		// });				
+	// });
+	
 			
 	// $(form).find('.quantity').each(function(){
 		// $(this).rules('add', {
@@ -234,34 +232,6 @@ function validation_rules(form){
 		// });
 	// });
 
-	$(form).find('select.mandatory').each(function(){
-		$(this).change(function(){
-			$(this).valid();
-		});
-		$(this).rules('add', {
-			valueNotEquals: ""
-		});				
-	});
-	
-	// $(form).find('input.mandatory, textarea.mandatory').each(function(){		
-		// $(this).rules('add', {
-			// required: true,
-		// });				
-	// });
-	
-	$(form).find('select.multi_select_mandatory').each(function(){
-		$(this).chosen().change(function(){
-			$(this).valid();
-		});
-		$(this).rules('add', {
-			required: true,
-		});
-	});
-	$('.tab_header').each(function(index, value){		
-			$(this).removeAttr('style');			
-	});
-	return validator;
-}
 
 function mark_tab_header_error(form, element, is_error){
 	var id = $(form).find(element).closest('.tab-pane').attr('id');
@@ -300,7 +270,7 @@ function create_btn_deals(row){
     		
 			$('#deal_modal_confirm_btn').off('click').on('click', {validator:validator, btn:btn}, function(event){
 				event.preventDefault();				
-							
+				var validator = event.data.validator;							
 				if(validator.numberOfInvalids() == 0){
 					var source = $('#deal_modal_body').children('form').children('div').clone();
 	    			var target = $(row).find('#tab-content').find($(btn).attr('href'));    			
@@ -349,9 +319,17 @@ function bind_attach_deal(row){
 		$('#deal_modal_body').empty();
 		var form = $('<form/>', {id: 'deal_modal_form', action: '.', method: 'get'});
 		$('#deal_modal_body').append(form);
-		new_deal(row);      				 
+		
+		//Adding new deals	
+		var type = 'deals';
+		var empty_X = cloneMore('#X div:first', type, row);		
+		$('#deal_modal_body').children('form').append(empty_X);
+		rebind_attach_deals('#deal_modal_body', row);			    	 
+		calc_total_price();	  				 
+		
 		$('#deal_modal_body').find('.deal_status').val(1);
-		$('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row}, add_deal_to_formset);
+		validator = validation_rules('#deal_modal_form');	
+		$('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row, validator:validator}, add_deal_to_formset);
 		$('#deal_modal').find('#deal_modal_confirm_btn').removeClass("disabled");
 		$('#deal_modal').find('#modal_h3').text(gettext('Create Your Own Deal'));     				 
 		show_modal('#deal_modal');
@@ -496,7 +474,7 @@ function typeahead_contacts_last_name(query, process){
 };
 
 function typeahead_opendeal_deal_name(query, process){
-	autocomplete(query, process, 'open_deals', 'deal_name', '')
+	autocomplete(query, process, 'open_deals', 'deal_instance_name', '')
 };
 
 function typeahead_opendeal_status(query, process){
@@ -525,7 +503,7 @@ function typeahead_contacts_email(query, process){
 
 //This method passes in three parameters, the last one is the contact_id. Since all calls must belong to a contact.
 function typeahead_deals_deal_name(query, process){
-	autocomplete(query, process, 'deal_template', 'deal_instance_name', '')
+	autocomplete(query, process, 'deal_template', 'deal_name', '')
 };
 
 function typeahead_deals_sales_item(query, process){
@@ -670,12 +648,6 @@ function demo(event){
 	$('#form_demo').submit();	
 }
 
-
-// function rebind_conversations(){
-	// $('.conversation').attr('href', function(i, current){
-		// return current + '?show_only_open_deals';
-	// })
-// }
 
 function rebind_new_conversation(parent){
 	$(parent).find('#new_conversation_cancel_button').off('click').on('click', cancel_new_conversation);   
@@ -1011,6 +983,7 @@ function rebind_events(){
 function tab_predefined_clicked(){	
 	$('#tab_contacts').empty();
 	$('#tab_open_deals').empty();
+	$('#deal_modal_body').empty();
 	$('#tab_predefined').load('deal_templates/', function(result){
 		rebind_deal_templates();
 	});	
@@ -1030,6 +1003,7 @@ function tab_predefined_clicked(){
 function tab_contacts_clicked(){
 	$('#tab_open_deals').empty();
 	$('#tab_predefined').empty();
+	$('#deal_modal_body').empty();
 	$('#tab_contacts').load('contacts/', function(result){
 		rebind_contacts();
 	});
@@ -1047,6 +1021,7 @@ function tab_contacts_clicked(){
 function tab_open_deals_clicked(){
 	$('#tab_contacts').empty();
 	$('#tab_predefined').empty();
+	$('#deal_modal_body').empty();
 	$('#tab_open_deals').load('open_deals/', function(result){				
 		rebind_open_deals();
 	});
@@ -1159,7 +1134,47 @@ function bind_main_tabs(optionalArg){
 		$('#main_tabs a[href="#tab_predefined"]').off('click').on('click', tab_predefined_clicked);	
 }
 
+function initialize_validator(){
+	// add the rule here
+	$.validator.addMethod("valueNotEquals", function(value, element, arg){
+		return arg != value;
+	}, gettext('Please select an item!'));
+	
+	$.validator.addMethod("xrequire_from_group", $.validator.methods.require_from_group, gettext('Either the last name OR the company name are required.'));
+ 	
+	$.validator.addClassRules("fillone", {
+		xrequire_from_group: [1,".fillone"]
+	});
+	
+	$.validator.addClassRules("email", {
+		email: true
+	});
+	
+	$.validator.addClassRules("quantity", {
+		required: true,
+      	digits: true
+	});
+	
+	$.validator.addClassRules("price", {
+		required: true,
+      	number: true
+	});
+	
+	$.validator.addClassRules("input_mandatory", {
+		required: true      	
+	});
+	
+	$.validator.addClassRules("textarea_mandatory", {
+		required: true      	
+	});	
+	
+	$.validator.addClassRules("date_picker", {
+		date: true      	
+	});
+}
+
 $(document).ready(function (){	
+	initialize_validator();
 	bind_main_tabs();
 	reword_collapseable('#accordion_task');	
 	//rebind_task_edit_delete($('#tasks_pane'));

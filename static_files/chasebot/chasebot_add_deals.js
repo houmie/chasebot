@@ -104,7 +104,7 @@ function fill_emptyX_with_predefined_or_existing_data(selected_id, type, empty_X
 	    	rebind_attach_deals('#deal_modal_body', row);	    	 
 	    	calc_total_price();   
 	    	validator = validation_rules('#deal_modal_form');	
-	    	$('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row}, add_deal_to_formset);
+	    	$('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row, validator:validator}, add_deal_to_formset);
 	    	$('#deal_modal').find('#deal_modal_confirm_btn').removeClass("disabled");
 		  }		  
 		});	
@@ -112,6 +112,7 @@ function fill_emptyX_with_predefined_or_existing_data(selected_id, type, empty_X
 
 function add_deal_to_formset(event){ 
 	event.preventDefault();
+	var validator = event.data.validator;
 	
 	validator.form();
 	if(validator.invalidElements().length > 0){
@@ -202,19 +203,6 @@ function add_deals(event){
 	if (selected_id){
 		fill_emptyX_with_predefined_or_existing_data(selected_id, type, empty_X, '/deal_template/', row);		
 	}	
-}
-
-function new_deal(row){
-	//Adding new deals	
-	
-	var type = 'deals';
-	var empty_X = cloneMore('#X div:first', type, row);
-	
-	$('#deal_modal_body').children('form').append(empty_X);
-	rebind_attach_deals('#deal_modal_body', row);
-	var total = $(row).find('#id_deals-TOTAL_FORMS').val();	    	 
-	calc_total_price();   
-	validator = validation_rules('#deal_modal_form');			
 }
 
 function add_opendeals(event){

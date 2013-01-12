@@ -244,8 +244,7 @@ class DealTemplateForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(DealTemplateForm, self).__init__(*args, **kwargs)
         self.fields['sales_item'].queryset = SalesItem.objects.filter(company=self.instance.company)                
-        self.fields['sales_term'].widget.attrs['class'] = 'mandatory'
-        self.fields['sales_item'].widget.attrs['class'] = 'multi_select_mandatory'
+        self.fields['sales_term'].widget.attrs['class'] = 'mandatory'        
         self.fields['currency'].widget.attrs['class'] = 'mandatory'
     
     def clean_quantity(self):
@@ -260,11 +259,11 @@ class DealTemplateForm(ModelForm):
         exclude = ('company')
         
         widgets = {
-                    'deal_name': forms.TextInput(attrs={'placeholder': _(u'Name the deal'), 'class': 'placeholder_fix_css mandatory', 'autocomplete': 'off'}),
+                    'deal_name': forms.TextInput(attrs={'placeholder': _(u'Name the deal'), 'class': 'placeholder_fix_css input_mandatory', 'autocomplete': 'off'}),
                     'deal_description': forms.Textarea(attrs={'placeholder': _(u'Describe the deal')}),
-                    'sales_item': forms.SelectMultiple(attrs={'data-placeholder': _(u'What are you selling?'), 'class': 'sales_item'}),                    
-                    'price': forms.TextInput(attrs={'placeholder': _(u'How much is proposed?'), 'class': 'placeholder_fix_css mandatory price', 'autocomplete': 'off'}),                   
-                    'quantity': forms.TextInput(attrs={'placeholder': _(u'How many items?'), 'class': 'placeholder_fix_css mandatory quantity', 'autocomplete': 'off'}),                                                  
+                    'sales_item': forms.SelectMultiple(attrs={'data-placeholder': _(u'What are you selling?'), 'class': 'sales_item multi_select_mandatory'}),                    
+                    'price': forms.TextInput(attrs={'placeholder': _(u'How much is proposed?'), 'class': 'placeholder_fix_css price', 'autocomplete': 'off'}),                   
+                    'quantity': forms.TextInput(attrs={'placeholder': _(u'How many items?'), 'class': 'placeholder_fix_css quantity', 'autocomplete': 'off'}),                                                  
                    }
 
 class DealForm(ModelForm):
@@ -273,14 +272,14 @@ class DealForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(DealForm, self).__init__(*args, **kwargs)                       
         self.fields['status'].widget.attrs['class'] = 'boxes_8em mandatory deal_status'
-        self.fields['price'].widget.attrs['class'] = 'boxes_7em price mandatory'
-        self.fields['quantity'].widget.attrs['class'] = 'boxes_7em quantity mandatory'
+        self.fields['price'].widget.attrs['class'] = 'boxes_7em price'
+        self.fields['quantity'].widget.attrs['class'] = 'boxes_7em quantity'
         self.fields['sales_term'].widget.attrs['class'] = 'boxes_8em mandatory'
         self.fields['sales_item'].widget.attrs['class'] = 'multi_select_mandatory'
         self.fields['currency'].widget.attrs['class'] = 'boxes_8em mandatory'
 
         self.fields['deal_instance_name'].widget.attrs['placeholder'] = _(u'Define an deal name')
-        self.fields['deal_instance_name'].widget.attrs['class'] = 'mandatory'
+        self.fields['deal_instance_name'].widget.attrs['class'] = 'input_mandatory'
         self.fields['deal_template_name'].widget.attrs.update({'readonly' : 'True'})
         self.fields['deal_template'].widget.attrs['class'] = 'hidden'        
         self.fields['deal_description'].widget.attrs['class'] = 'cb_deal_description'
@@ -294,7 +293,7 @@ class DealForm(ModelForm):
                   'deal_description', 'sales_item', 'price', 'currency', 'sales_term', 'quantity', 'total_price'}
         
 class DealNegotiateForm(DealForm):
-    call_notes = forms.CharField(widget = forms.Textarea(attrs={'placeholder': _(u'What did you discuss with the customer?'), 'class' : 'cb_notes_maxwidth mandatory'}))
+    call_notes = forms.CharField(widget = forms.Textarea(attrs={'placeholder': _(u'What did you discuss with the customer?'), 'class' : 'cb_notes_maxwidth textarea_mandatory'}))
     
     def __init__(self, *args, **kwargs):
         super(DealNegotiateForm, self).__init__(*args, **kwargs)                       
