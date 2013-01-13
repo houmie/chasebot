@@ -37,6 +37,9 @@ from django.contrib.auth import authenticate, login
 from django.template.loader_tags import register
 import json
 from django.core import serializers
+from django.utils.timezone import utc
+from django.utils.datetime_safe import date
+
 
 
 ITEMS_PER_PAGE = 5
@@ -647,6 +650,17 @@ def event_add_edit(request, open_deal_id=None, event_id=None):
     return render(request, 'event.html', variables)
 
 @login_required
+def event_tick(request, event_id):
+    if event_id is None:
+        raise Http404(_(u'Event not found'))    
+    else:
+        profile = request.user.get_profile()
+        event = get_object_or_404(profile.company.event_set.all(), pk=event_id)        
+        event.delete()
+        variables = get_event_variables(profile)
+    return render(request, 'events.html', variables)
+
+@login_required
 def event_delete(request, event_id):
     if event_id is None:
         raise Http404(_(u'Event not found'))    
@@ -660,6 +674,42 @@ def event_delete(request, event_id):
         #variables = merge_with_pagination_variables(paginator, page, page_number, variables, 'task_')
     return render(request, 'event_list.html', variables)
 
+
+@login_required
+def events_display(request):
+    profile = request.user.get_profile()    
+    variables = get_event_variables(profile)    
+    return render(request, 'events.html', variables)
+
+def get_event_variables(profile):
+    datetime.date.today()
+    today_min = datetime.datetime.combine(timezone.now(), datetime.time.min)
+    today_max = datetime.datetime.combine(timezone.now(), datetime.time.max)
+    today_events = profile.company.event_set.filter(due_date_time__range=(today_min, today_max))
+    
+    tom_min = datetime.datetime.combine(timezone.now() + datetime.timedelta(days=1), datetime.time.min)
+    tom_max = datetime.datetime.combine(timezone.now() + datetime.timedelta(days=1), datetime.time.max)    
+    tomorrow_events = profile.company.event_set.filter(due_date_time__range=(tom_min, tom_max))
+    
+    today = timezone.now()
+    start_week = today - datetime.timedelta(today.weekday())
+    end_week = start_week + datetime.timedelta(6)
+    week_min = datetime.datetime.combine(start_week, datetime.time.min)
+    week_max = datetime.datetime.combine(end_week, datetime.time.max)
+    this_week_events = profile.company.event_set.filter(due_date_time__range=(week_min, week_max))        
+    this_week_events = this_week_events.exclude(pk__in=[item.pk for item in today_events])
+    this_week_events = this_week_events.exclude(pk__in=[item.pk for item in tomorrow_events])
+                                 
+    start_week_next = start_week + datetime.timedelta(7)  
+    end_week_next = end_week + datetime.timedelta(7)
+    week_min = datetime.datetime.combine(start_week_next, datetime.time.min)
+    week_max = datetime.datetime.combine(end_week_next, datetime.time.max)
+    next_week_events = profile.company.event_set.filter(due_date_time__range=(week_min, week_max))
+    next_week_events = next_week_events.exclude(pk__in=[item.pk for item in today_events])
+    next_week_events = next_week_events.exclude(pk__in=[item.pk for item in tomorrow_events])
+    
+    variables = {'today_events':today_events, 'tomorrow_events':tomorrow_events, 'this_week_events':this_week_events, 'next_week_events':next_week_events}
+    return variables
 
 @login_required
 def sales_item_display(request):

@@ -430,3 +430,8 @@ table.cb_table-hover > tbody > tr:hover > th:not(.override){
 #modal_h3{
 	padding: 0 0 0 5px;
 }
+
+
+.event{
+	padding-bottom: 2.5em; 
+}

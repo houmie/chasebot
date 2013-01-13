@@ -1,0 +1,12 @@
+{% load i18n %}
+{% load l10n %}
+<tr>
+	<td>        
+        <a class="btn btn-small row_event_tick_btn" href="event/tick/{{ event.pk }}/" title="{% trans 'Delete Event' %}"><i class="icon-ok"> </i></a>	        
+    </td>
+    <td>{{event.due_date_time|date:"DATE_FORMAT"}}</td>	    
+    <td>{{event.due_date_time|time:"TIME_FORMAT"}}</td>
+    <td>{{event.type}}</td>		
+    <td>{{event.notes}}</td>				
+</tr>
+

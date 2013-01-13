@@ -360,8 +360,8 @@ class Event(models.Model):
             
     def calc_reminder(self, x):
         return {
-            '0m':   self.due_date_time,
-            '5m':   self.subtractMinutes(5),
+#            '0m':   self.due_date_time,
+#            '5m':   self.subtractMinutes(5),
             '15m':  self.subtractMinutes(15),
             '30m':  self.subtractMinutes(30),
             '1h':   self.subtractHours(1),
@@ -374,8 +374,8 @@ class Event(models.Model):
             }.get(x, self.subtractHours(2))
     
     REMINDER = (
-        ('0m',     _(u'0 minutes before')),
-        ('5m',     _(u'5 minutes before')),
+#        ('0m',     _(u'0 minutes before')),
+#        ('5m',     _(u'5 minutes before')),
         ('15m',    _(u'15 minutes before')),
         ('30m',    _(u'30 minutes before')),
         ('1h',     _(u'1 hour before')),

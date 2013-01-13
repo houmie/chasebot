@@ -998,7 +998,19 @@ function tab_predefined_clicked(){
 		rebind_filters('#sidebar', rebind_deal_templates);
 	});	
 }
- 
+
+function tab_todo_clicked(){
+	$('#tab_contacts').empty();
+	$('#tab_open_deals').empty();
+	$('#tab_predefined').empty();
+	$('#deal_modal_body').empty();
+	$('#tab_todo').load('events/', function(result){
+		rebind_event_tick();
+	});
+	$('#main_tabs a[href="#tab_todo"]').off('click');
+	bind_main_tabs('tab_todo');
+	$('#sidebar').empty();
+}
 
 function tab_contacts_clicked(){
 	$('#tab_open_deals').empty();
@@ -1034,6 +1046,20 @@ function tab_open_deals_clicked(){
 		$('#sidebar').find(".typeahead_opendeal_total_price").typeahead({ source: typeahead_opendeal_total_price });
 		rebind_filters('#sidebar', rebind_open_deals);
 	});	
+}
+
+function rebind_event_tick(){
+	$('.row_event_tick_btn').off('click').on('click', function(event){
+			event.preventDefault();
+			if (confirm(gettext('Are you sure you want to tick off this event and remove it?'))) {
+		    	var url = $(this).attr("href");		    	    	  		
+		        $.post(url, function(result){
+		        	$('#tab_todo').empty();
+		        	$('#tab_todo').append(result);	
+		        	rebind_event_tick();	        	
+		        }); 
+		    }
+		})
 }
 
 
@@ -1137,7 +1163,10 @@ function bind_main_tabs(optionalArg){
 	if(optionalArg != 'tab_open_deals')
 		$('#main_tabs a[href="#tab_open_deals"]').off('click').on('click', tab_open_deals_clicked);
 	if(optionalArg != 'tab_predefined')	
-		$('#main_tabs a[href="#tab_predefined"]').off('click').on('click', tab_predefined_clicked);	
+		$('#main_tabs a[href="#tab_predefined"]').off('click').on('click', tab_predefined_clicked);
+	if(optionalArg != 'tab_todo')	
+		$('#main_tabs a[href="#tab_todo"]').off('click').on('click', tab_todo_clicked);	
+		
 }
 
 function initialize_validator(){
@@ -1188,6 +1217,7 @@ $(document).ready(function (){
 	$('.timezone_help').click(show_timezone_help);	
 	$('#invite-button').click(invite_colleague);
 	$('#demo-button').click(demo);	
+	tab_todo_clicked();
 });
 
 

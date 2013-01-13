@@ -12,7 +12,8 @@ from chasebot_app.views import logout_page, contact_delete, conversation_display
     task_display, task_add_edit, task_delete, index_display, open_deals_display,\
     open_deal_conversations_display, event_add_edit, event_delete,\
     negotiate_open_deal, sidebar_contacts, sidebar_deal_templates,\
-    sidebar_open_deals, opendeal_autocomplete, sidebar_conversations
+    sidebar_open_deals, opendeal_autocomplete, sidebar_conversations,\
+    events_display, event_tick
 from chasebot_app.demo_view import demo
 
 admin.autodiscover()
@@ -95,6 +96,10 @@ urlpatterns = patterns('',
     (r'^event/add/(?P<open_deal_id>\d+)/$', event_add_edit),
     (r'^event/edit/(?P<event_id>\d+)/$', event_add_edit),
     (r'^event/delete/(?P<event_id>\d+)/$', event_delete),
+    (r'^event/tick/(?P<event_id>\d+)/$', event_tick),    
+    (r'^events/$', events_display),
+    
+    
 
     #i18n
     (r'^i18n/', include('django.conf.urls.i18n')),
