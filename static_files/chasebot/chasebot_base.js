@@ -298,7 +298,7 @@ function bind_attach_deal(row){
 		 $('#deal_modal_body').append(form);			 
 		 $('#deal_modal_body').find('#add_deals_button').off('click').on('click', {row: row}, add_deals);		 
 		 $('#deal_modal').find('#deal_modal_confirm_btn').addClass("disabled");	
-		 $('#deal_modal').find('#modal_h3').text(gettext('Add Pre-defined Deal'));
+		 $('#deal_modal').find('#modal_h3').text(gettext('Add Deal Template'));
 		 show_modal('#deal_modal');
 	});
 	

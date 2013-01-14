@@ -1,103 +1,145 @@
 {% load i18n %}
 <div>	
-	<h4>{% trans "Today's Events"%}</h4>
-	<ul class="event">
-		<li>
-			{% if today_events %}
-				<table id='today_event_table' class="table table-condensed table-striped cb_table-hover">
-				    <thead>
-				        <tr>
-				        	<th>{% trans 'Finished?' %}</th>
-				        	<th>{% trans 'Due Date' %}</th>	            	
-				        	<th>{% trans 'Due Time' %}</th>	                
-				            <th>{% trans 'Type' %}</th>
-				            <th>{% trans 'Notes' %}</th>	            
-				        </tr>
-				    </thead>
-				    <tbody id="search_result">
-				    	{% for event in today_events %}	    		    			
-							{% include 'todo_event_list_item.html' %}
-						{% endfor %}					        
-				    </tbody>
-				</table>
-			{% else %}				
-				{% trans 'No events found for today.' %}				
-			{% endif %}
-		</li>
-	</ul>
-	<h4>{% trans "Tomorrow's Events"%}</h4>
-	<ul class="event">
-		<li>
-			{% if tomorrow_events %}
-				<table id='tomorrow_event_table' class="table table-condensed table-striped cb_table-hover">
-				    <thead>
-				        <tr>
-				        	<th>{% trans 'Finished?' %}</th>
-				        	<th>{% trans 'Due Date' %}</th>	            	
-				        	<th>{% trans 'Due Time' %}</th>	                
-				            <th>{% trans 'Type' %}</th>
-				            <th>{% trans 'Notes' %}</th>	            
-				        </tr>
-				    </thead>
-				    <tbody id="search_result">	    		    			
-						{% for event in tomorrow_events %}	    		    			
-							{% include 'todo_event_list_item.html' %}
-						{% endfor %}					       					        
-				    </tbody>
-				</table>
-			{% else %}				
-				{% trans 'No events found for tomorrow.' %}								
-			{% endif %}
-		</li>
-	</ul>
-	<h4>{% trans "This week's Events"%}</h4>
-	<ul class="event">
-		<li>
-			{% if this_week_events %}
-				<table id='this_week_event_table' class="table table-condensed table-striped cb_table-hover">
-				    <thead>
-				        <tr>
-				        	<th>{% trans 'Finished?' %}</th>
-				        	<th>{% trans 'Due Date' %}</th>	            	
-				        	<th>{% trans 'Due Time' %}</th>	                
-				            <th>{% trans 'Type' %}</th>
-				            <th>{% trans 'Notes' %}</th>	            
-				        </tr>
-				    </thead>
-				    <tbody id="search_result">	    		    			
-						{% for event in this_week_events %}	    		    			
-							{% include 'todo_event_list_item.html' %}
-						{% endfor %}					       					        
-				    </tbody>
-				</table>
-			{% else %}				
-				{% trans 'No other event found for rest of the week.' %}								
-			{% endif %}
-		</li>
-	</ul>
-	<h4>{% trans "Next week's Events"%}</h4>
-	<ul class="event">
-		<li>
-			{% if next_week_events %}
-				<table id='next_week_event_table' class="table table-condensed table-striped cb_table-hover">
-				    <thead>
-				        <tr>
-				        	<th>{% trans 'Finished?' %}</th>
-				        	<th>{% trans 'Due Date' %}</th>	            	
-				        	<th>{% trans 'Due Time' %}</th>	                
-				            <th>{% trans 'Type' %}</th>
-				            <th>{% trans 'Notes' %}</th>	            
-				        </tr>
-				    </thead>
-				    <tbody id="search_result">	    		    			
-						{% for event in next_week_events %}	    		    			
-							{% include 'todo_event_list_item.html' %}
-						{% endfor %}					       					        
-				    </tbody>
-				</table>
-			{% else %}				
-				{% trans 'No other event found for next week.' %}								
-			{% endif %}
-		</li>
-	</ul>		
+	<div class="accordion" id="accordion_">
+		<div class="accordion-group">
+			<div class="accordion-heading">
+				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion_" href="#collapse_today">
+					<h4>{% trans "Today's Events"%}</h4>
+				</a>
+			</div>
+			<div id="collapse_today" class="accordion-body collapse in">
+				<div class="accordion-inner">
+					<ul class="event well well-small  event_container">
+						<li>
+							{% if today_events %}			
+								<table id='today_event_table' class="table table-condensed table-striped cb_table-hover">
+								    <thead>
+								        <tr>
+								        	<th>{% trans 'Finished?' %}</th>
+								        	<th>{% trans 'Due Date' %}</th>	            	
+								        	<th>{% trans 'Due Time' %}</th>	                
+								            <th>{% trans 'Type' %}</th>
+								            <th>{% trans 'Notes' %}</th>	            
+								        </tr>
+								    </thead>
+								    <tbody id="search_result">
+								    	{% for event in today_events %}	    		    			
+											{% include 'todo_event_list_item.html' %}
+										{% endfor %}					        
+								    </tbody>
+								</table>
+							{% else %}				
+								{% trans 'No events found for today.' %}				
+							{% endif %}
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	 	<div class="accordion-group">
+			<div class="accordion-heading">
+				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion_" href="#collapse_tom">
+					<h4>{% trans "Tomorrow's Events"%}</h4>
+			 	</a>
+			</div>
+			<div id="collapse_tom" class="accordion-body collapse">
+				<div class="accordion-inner">
+					<ul class="event well well-small  event_container">
+						<li>
+						{% if tomorrow_events %}
+							<table id='tomorrow_event_table' class="table table-condensed table-striped cb_table-hover">
+							    <thead>
+							        <tr>
+							        	<th>{% trans 'Finished?' %}</th>
+							        	<th>{% trans 'Due Date' %}</th>	            	
+							        	<th>{% trans 'Due Time' %}</th>	                
+							            <th>{% trans 'Type' %}</th>
+							            <th>{% trans 'Notes' %}</th>	            
+							        </tr>
+							    </thead>
+							    <tbody id="search_result">	    		    			
+									{% for event in tomorrow_events %}	    		    			
+										{% include 'todo_event_list_item.html' %}
+									{% endfor %}					       					        
+							    </tbody>
+							</table>
+						{% else %}				
+							{% trans 'No events found for tomorrow.' %}								
+						{% endif %}
+						</li>
+					</ul>
+			 	</div>
+			</div>
+		</div>	 	
+		<div class="accordion-group">
+			<div class="accordion-heading">
+				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion_" href="#collapse_week">
+					<h4>{% trans "This week's Events"%}</h4>
+			 	</a>
+			</div>
+			<div id="collapse_week" class="accordion-body collapse">
+				<div class="accordion-inner">
+					<ul class="event well well-small  event_container">
+						<li>
+							{% if this_week_events %}
+								<table id='this_week_event_table' class="table table-condensed table-striped cb_table-hover">
+								    <thead>
+								        <tr>
+								        	<th>{% trans 'Finished?' %}</th>
+								        	<th>{% trans 'Due Date' %}</th>	            	
+								        	<th>{% trans 'Due Time' %}</th>	                
+								            <th>{% trans 'Type' %}</th>
+								            <th>{% trans 'Notes' %}</th>	            
+								        </tr>
+								    </thead>
+								    <tbody id="search_result">	    		    			
+										{% for event in this_week_events %}	    		    			
+											{% include 'todo_event_list_item.html' %}
+										{% endfor %}					       					        
+								    </tbody>
+								</table>
+							{% else %}				
+								{% trans 'No other event found for rest of the week.' %}								
+							{% endif %}
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>	
+		<div class="accordion-group">
+			<div class="accordion-heading">
+				<a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion_" href="#collapse_nextweek">
+					<h4>{% trans "Next week's Events"%}</h4>
+			 	</a>
+			</div>
+			<div id="collapse_nextweek" class="accordion-body collapse">
+				<div class="accordion-inner">
+					<ul class="event well well-small  event_container">
+						<li>
+							{% if next_week_events %}
+								<table id='next_week_event_table' class="table table-condensed table-striped cb_table-hover">
+								    <thead>
+								        <tr>
+								        	<th>{% trans 'Finished?' %}</th>
+								        	<th>{% trans 'Due Date' %}</th>	            	
+								        	<th>{% trans 'Due Time' %}</th>	                
+								            <th>{% trans 'Type' %}</th>
+								            <th>{% trans 'Notes' %}</th>	            
+								        </tr>
+								    </thead>
+								    <tbody id="search_result">	    		    			
+										{% for event in next_week_events %}	    		    			
+											{% include 'todo_event_list_item.html' %}
+										{% endfor %}					       					        
+								    </tbody>
+								</table>
+							{% else %}				
+								{% trans 'No other event found for next week.' %}								
+							{% endif %}
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>		
+	</div>
 </div>

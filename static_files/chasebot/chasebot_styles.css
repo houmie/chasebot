@@ -453,3 +453,20 @@ table.cb_table-hover > tbody > tr:hover > th:not(.override){
 .badge-75 {
   background-color: #53871c;
 }
+
+
+.event_container{
+	width: 96%;
+}
+
+.well {
+  background-color: #dcf4de; 
+}
+
+.well-tiny {
+  padding: 0; 
+}
+
+.breadcrumb {
+  background-color: #dcf4de;
+}

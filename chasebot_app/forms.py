@@ -176,7 +176,7 @@ class DealsAddForm(Form):
         self.fields['deal_template'].queryset = company.dealtemplate_set.exclude(id__in=exclude_list)
         self.fields['deal_template'].required = False
  
-    deal_template       = forms.ModelChoiceField(queryset='', label=_(u'Add pre-defined deal'), widget = forms.Select(attrs={'class': 'pre_defined_deal_dropdown'}))
+    deal_template       = forms.ModelChoiceField(queryset='', label=_(u'Add new from template'), widget = forms.Select(attrs={'class': 'pre_defined_deal_dropdown'}))
 
 
 
