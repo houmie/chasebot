@@ -984,6 +984,7 @@ function tab_predefined_clicked(){
 	$('#tab_contacts').empty();
 	$('#tab_open_deals').empty();
 	$('#deal_modal_body').empty();
+	$('#tab_todo').empty();
 	$('#tab_predefined').load('deal_templates/', function(result){
 		rebind_deal_templates();
 	});	
@@ -1016,6 +1017,7 @@ function tab_contacts_clicked(){
 	$('#tab_open_deals').empty();
 	$('#tab_predefined').empty();
 	$('#deal_modal_body').empty();
+	$('#tab_todo').empty();
 	$('#tab_contacts').load('contacts/', function(result){
 		rebind_contacts();
 	});
@@ -1034,6 +1036,7 @@ function tab_open_deals_clicked(){
 	$('#tab_contacts').empty();
 	$('#tab_predefined').empty();
 	$('#deal_modal_body').empty();
+	$('#tab_todo').empty();
 	$('#tab_open_deals').load('open_deals/', function(result){				
 		rebind_open_deals();
 	});

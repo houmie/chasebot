@@ -435,3 +435,21 @@ table.cb_table-hover > tbody > tr:hover > th:not(.override){
 .event{
 	padding-bottom: 2.5em; 
 }
+
+
+.badge-0 {
+  background-color: #9c9d99;
+}
+
+.badge-25 {
+  background-color: #8e9a4a;
+}
+
+.badge-50 {
+  background-color: #799a4a;
+}
+
+
+.badge-75 {
+  background-color: #53871c;
+}

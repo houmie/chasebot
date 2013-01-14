@@ -14,10 +14,9 @@
 	        	{% endfor %}
 	    	</td>
 	        <td>{{ item.price }}</td>
-	        <td>{{ item.currency }}</td>
-	        <td>{{ item.sales_term }}</td>
+	        <td><span class="badge badge-success">{{ item.currency }}</span></td>
+	        <td><span class="badge badge-info">{{ item.sales_term }}</span></td>
 	        <td>{{ item.quantity }}</td>
-	        <td>{{ item.status }}</td>                           
 	    </tr>
 	{% endfor %}
 	{% include '_paginator.html' %}
