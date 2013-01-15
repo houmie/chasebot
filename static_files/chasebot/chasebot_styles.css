@@ -449,7 +449,6 @@ table.cb_table-hover > tbody > tr:hover > th:not(.override){
   background-color: #799a4a;
 }
 
-
 .badge-75 {
   background-color: #53871c;
 }
@@ -469,4 +468,8 @@ table.cb_table-hover > tbody > tr:hover > th:not(.override){
 
 .breadcrumb {
   background-color: #dcf4de;
+}
+
+.funnel{
+	padding-left: 1em;
 }

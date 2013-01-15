@@ -1048,21 +1048,26 @@ function tab_open_deals_clicked(){
 		$('#sidebar').find(".typeahead_opendeal_last_contacted").typeahead({ source: typeahead_opendeal_last_contacted });
 		$('#sidebar').find(".typeahead_opendeal_total_price").typeahead({ source: typeahead_opendeal_total_price });
 		rebind_filters('#sidebar', rebind_open_deals);
-	});	
+		$("<img />", {class: 'funnel', src: $.chasebot.STATIC_URL + 'img/funnel.png'}).load(function(){
+			var h4 = $('<h4 />', {class: 'funnel'}).append(gettext('Sales Funnel'));
+			$('#sidebar').append(h4);
+			$(this).appendTo($('#sidebar'));
+		});
+	});
 }
 
 function rebind_event_tick(){
 	$('.row_event_tick_btn').off('click').on('click', function(event){
-			event.preventDefault();
-			if (confirm(gettext('Are you sure you want to tick off this event and remove it?'))) {
-		    	var url = $(this).attr("href");		    	    	  		
-		        $.post(url, function(result){
-		        	$('#tab_todo').empty();
-		        	$('#tab_todo').append(result);	
-		        	rebind_event_tick();	        	
-		        }); 
-		    }
-		})
+		event.preventDefault();
+		if (confirm(gettext('Are you sure you want to tick off this event and remove it?'))) {
+	    	var url = $(this).attr("href");		    	    	  		
+	        $.post(url, function(result){
+	        	$('#tab_todo').empty();
+	        	$('#tab_todo').append(result);	
+	        	rebind_event_tick();	        	
+	        }); 
+	    }
+	});
 }
 
 
