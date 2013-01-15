@@ -215,8 +215,9 @@ def negotiate_open_deal(request, deal_pk):
             
     else:
         form = DealNegotiateForm(instance=actual_deal)
-        
-    variables = {'fs':form, 'validation_error_ajax':validation_error_ajax }
+
+    
+    variables = {'fs':form, 'validation_error_ajax':validation_error_ajax, 'contact':actual_deal.contact }
     return render(request, '_deal_edit_item.html', variables)
 
 

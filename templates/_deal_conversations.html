@@ -7,14 +7,14 @@
 					<div class="tabbable"> <!-- Only required for left/right tabs -->
 			            <ul class="nav nav-tabs">
 			                <li class="active">
-			                    <a href="#tab1" data-toggle="tab">{% trans 'Upcoming Events' %}</a>
+			                    <a href="#tab-1" data-toggle="tab">{% trans 'Upcoming Events' %}</a>
 			                </li>
 			                <li>
-			                    <a href="#tab2" data-toggle="tab">{% trans 'Previous Conversations' %}</a>
+			                    <a href="#tab-2" data-toggle="tab">{% trans 'Previous Conversations' %}</a>
 			                </li>		                
 			            </ul>
 			            <div class="tab-content well well-small">
-			                <div class="tab-pane active" id="tab1">		                    
+			                <div class="tab-pane active" id="tab-1">		                    
 								<a id="new_event_button" class="btn right-margin" title="{% trans 'New Event' %}" href="/event/add/{{deal_id}}/"><i class="icon-tasks"></i> {% trans 'New Event' %}</a>		    
 								<table class="table table-condensed">
 								    <thead>
@@ -32,7 +32,7 @@
 								    </tbody>
 								</table>     
 			                </div>
-			                <div class="tab-pane" id="tab2">
+			                <div class="tab-pane" id="tab-2">
 			                    <table id='call_contact_table' class="table table-condensed cb_table-striped cb_sub_table-hover">
 								    <thead>
 								        <tr>

@@ -747,6 +747,7 @@ function negotiate_deal(event){
 		$('#deal_modal_body').find('#id_sales_item').chosen({no_results_text: gettext('No results match')});		
 		calc_total_price();
 		$('#deal_modal').find('#modal_h3').text(gettext('Negotiate Deal'));
+		$('#modal_icon').html('<i class="icon-phone"></i>');
 		$(this).submit({modal:'#deal_modal', form:$(this)}, negotiate_deal_submit);	
 		
 		var validator = validation_rules('#deal_modal_form');			
@@ -866,6 +867,7 @@ function add_more_tag_to_all_notefields(){
 
 function load_business_card(event){	
 	event.preventDefault();
+	event.stopPropagation();
 	var url = $(this).attr("href");
 	$('#business_card_modal').load(url, function(result){					
 			rebind_ratings($('#business_card_modal'));
@@ -1079,9 +1081,9 @@ function rebind_open_deals(){
 				clicked_on_same_row = true;												
 			}			
 			$(".collapse").collapse('toggle');
-			$('.collapse').on('hidden', function () {
-				$(this).closest('tr').prev().find(".negotiate_deal_btn").hide();
-				$(this).closest('#details').remove();										    	
+			$('.collapse').on('hidden', function () {				
+				$(this).closest('tr').prev().find(".negotiate_deal_btn, .business_card_btn").hide();
+				$(this).closest('#details').remove();														    	
 		    })			
 			
 			if(clicked_on_same_row){				
@@ -1097,7 +1099,9 @@ function rebind_open_deals(){
 				row.find('#new_event_button').off('click').on('click', edit_new_event);
 				rebind_events();
 				tr.find(".negotiate_deal_btn").show();
-				tr.find(".negotiate_deal_btn").off('click').on('click', negotiate_deal);				
+				tr.find('.business_card_btn').show();
+				tr.find(".negotiate_deal_btn").off('click').on('click', negotiate_deal);
+				tr.find('.business_card_btn').off('click').on('click', load_business_card);				
 				$(".collapse").collapse('toggle');
 			});
 	});

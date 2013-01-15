@@ -114,7 +114,7 @@
 			<tr>
 				<th>
                     {% if  fs.call_notes.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.call_notes.label}}: *</div>{%else%}{{fs.call_notes.label}}:{% endif %}
-                </th>
+                </th>                
             </tr>
         </thead>
         <tbody>
@@ -123,7 +123,41 @@
                 	{{fs.call_notes}}
                 	<div class="hide field field_error"></div>				                    	
                 </td>
+                <td>
+                	<div class="well well-grey well-small">
+	                	<table>
+	                		<thead>
+	                			<tr>
+	                				<th>{% trans 'First Name' %}:</th>
+	                				<th>{% trans 'Last Name' %}:</th>
+	                				<th>{% trans 'Preferred Name' %}:</th> 
+	                			</tt>                			
+	                		</thead>
+	                		<tbody>
+	                			<tr>
+		                			<td>{{ contact.first_name }}</td>
+		                			<td>{{ contact.last_name }}</td>
+		                			<td>{{ contact.dear_name }}</td>
+	                			</tr>                			
+	                		</tbody>
+	                		<thead>
+	                			<tr>
+	                				<th>{% trans 'Phone' %}:</th>
+	                				<th>{% trans 'Mobile' %}</th>
+	                				<th>{% trans 'Email' %}:</th>
+	                			</tr>
+	                		</thead>
+	                		<tbody>
+	                			<tr>                			
+			            			<td>{{ contact.phone }}</td>
+			            			<td>{{ contact.mobile_phone }}</td>
+			            			<td><a href="mailto:{{contact.email}}">{{contact.email}}</a></td>
+	                			</tr>
+	                		</tbody>
+	                	</table>
+                	</div>
+                </td>                
             </tr>
-        </tbody>
+        </tbody>        
 	</table>  
 </div>

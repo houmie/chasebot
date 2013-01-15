@@ -313,7 +313,12 @@ input[type="checkbox"]{
 
 .modal-body {
 	max-height: 520px;
+	padding: 0 15px;
 }
+
+/*.modal-footer{
+	padding: 0px 15px 15px 15px;
+}*/
 
 .body_padding{
 	padding-bottom: 10px;	
@@ -384,12 +389,12 @@ table.cb_table-hover > tbody > tr:hover > th:not(.override){
 }
 
 
-.cb_table-hover tbody tr .icon-search{
+table.cb_table-hover > tbody > tr .magnifier_glass{
     visibility: hidden;
 }
 
 
-.cb_table-hover tbody tr:hover .icon-search{
+table.cb_table-hover > tbody > tr:hover .magnifier_glass{
     visibility: visible;
 }
 
@@ -459,7 +464,11 @@ table.cb_table-hover > tbody > tr:hover > th:not(.override){
 }
 
 .well {
-  background-color: #dcf4de; 
+  	background-color: #dcf4de; 
+}
+
+.well-grey{
+	background-color: #f5f5f5;
 }
 
 .well-tiny {
@@ -473,3 +482,5 @@ table.cb_table-hover > tbody > tr:hover > th:not(.override){
 .funnel{
 	padding-left: 1em;
 }
+
+

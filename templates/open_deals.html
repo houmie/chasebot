@@ -10,15 +10,20 @@
 	<table id='open_deal_table' class="table table-condensed cb_table-striped cb_table-hover">
 	    <thead>
 	        <tr>
-	        	<th class="first_th_minwidth"></th>	            	
+	        	<th class="first_th_minwidth"></th>	 
+	        	<th>{% trans 'Last Name' %}</th>           	
+	        	<th>{% trans 'Company' %}</th>
 	        	<th>{% trans 'Deal Name' %}</th>
-	        	<th>{% trans 'Status' %}</th>	                
-	            <th>{% trans 'Total Value' %}</th>
-	            <th>{% trans 'Last Contacted On' %}</th>	            
+	        	<th>{% trans 'Status' %}</th>
+	            <th>{% trans 'Value' %}</th>
+	            <th>{% trans 'Last Contacted' %}</th>
 	        </tr>
 	    </thead>
 	    <tbody id="search_result">
 	        {% include 'open_deals_list.html' %}
 	    </tbody>
-	</table>	
+	</table>
+	<div class="modal hide fade" id="business_card_modal" tabindex="-1" role="dialog" aria-labelledby="businesscard_label" aria-hidden="true">
+		
+	</div>	
 </div>
