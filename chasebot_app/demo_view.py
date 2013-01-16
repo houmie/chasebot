@@ -639,7 +639,7 @@ def demo_continue(request, username, password, email):
                         deal_id=deal1.deal_id,
                         conversation = call2,
                         deal_datetime=call2.conversation_datetime, 
-                        status=DealStatus.objects.get(pk=3),
+                        status=DealStatus.objects.get(pk=4),
                         deal_template=deal1.deal_template,
                         deal_template_name=deal1.deal_template_name,
                         deal_instance_name=deal1.deal_instance_name,
@@ -874,25 +874,25 @@ def demo_continue(request, username, password, email):
         deal1.sales_item.add(item)
     deal1.save()
     
-    call2 = c13.conversation_set.create(conversation_datetime=call1.conversation_datetime + timezone.timedelta(days=4, hours=1), notes=_(u'I offered him a discount of 5%%. %(name)s will consider the offer and needs some time to think about it.') % {'name' : 'Tamara'})
-    deal2 = c13.deal_set.create(
-                        deal_id=deal1.deal_id,
-                        conversation = call2,
-                        deal_datetime=call2.conversation_datetime, 
-                        status=DealStatus.objects.get(pk=3),
-                        deal_template=deal1.deal_template,
-                        deal_template_name=deal1.deal_template_name,
-                        deal_instance_name=deal1.deal_instance_name,
-                        company = profile.company,
-                        deal_description = deal1.deal_description,
-                        price = deal1.price - deal1.price * 0.05,
-                        currency = deal1.currency,                
-                        sales_term = deal1.sales_term,
-                        quantity = deal1.quantity                                                                    
-                        )
-    for item in deal1.sales_item.all():
-        deal2.sales_item.add(item)
-    deal2.save()
+#    call2 = c13.conversation_set.create(conversation_datetime=call1.conversation_datetime + timezone.timedelta(days=4, hours=1), notes=_(u'I offered him a discount of 5%%. %(name)s will consider the offer and needs some time to think about it.') % {'name' : 'Tamara'})
+#    deal2 = c13.deal_set.create(
+#                        deal_id=deal1.deal_id,
+#                        conversation = call2,
+#                        deal_datetime=call2.conversation_datetime, 
+#                        status=DealStatus.objects.get(pk=3),
+#                        deal_template=deal1.deal_template,
+#                        deal_template_name=deal1.deal_template_name,
+#                        deal_instance_name=deal1.deal_instance_name,
+#                        company = profile.company,
+#                        deal_description = deal1.deal_description,
+#                        price = deal1.price - deal1.price * 0.05,
+#                        currency = deal1.currency,                
+#                        sales_term = deal1.sales_term,
+#                        quantity = deal1.quantity                                                                    
+#                        )
+#    for item in deal1.sales_item.all():
+#        deal2.sales_item.add(item)
+#    deal2.save()
 
 #    call3 = c13.conversation_set.create(conversation_datetime=timezone.now(), notes=_(u'%(name)s is happy with discount and would like to purchase ten packages.') % {'name' : 'Tamara'})
 #    deal3 = c13.deal_set.create(

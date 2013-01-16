@@ -941,6 +941,7 @@ function rebind_conversations(){
 	});	
 	$('#new_conversation_button').off('click').on('click',new_conversation);	
 	rebind_filters($('#sidebar'), rebind_conversations);
+	add_more_tag_to_all_notefields();
 }
 
 function rebind_sales_item(){
@@ -1117,6 +1118,7 @@ function rebind_open_deals(){
 				tr.find(".negotiate_deal_btn").off('click').on('click', negotiate_deal);
 				tr.find('.business_card_btn').off('click').on('click', load_business_card);				
 				$(".collapse").collapse('toggle');
+				add_more_tag_to_all_notefields();
 			});
 	});
 }
@@ -1191,8 +1193,7 @@ function bind_main_tabs(optionalArg){
 	if(optionalArg != 'tab_predefined')	
 		$('#main_tabs a[href="#tab_predefined"]').off('click').on('click', tab_predefined_clicked);
 	if(optionalArg != 'tab_todo')	
-		$('#main_tabs a[href="#tab_todo"]').off('click').on('click', tab_todo_clicked);	
-		
+		$('#main_tabs a[href="#tab_todo"]').off('click').on('click', tab_todo_clicked);		
 }
 
 function initialize_validator(){
