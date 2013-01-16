@@ -55,7 +55,7 @@ div.field_error li, div.field_error p, div.field_error{
 }
 
 .boxes_8em{
-	width: 8em;
+	width: 8.5em;
 }
 
 .boxes_7em{
@@ -360,6 +360,10 @@ input[type="checkbox"]{
 	cursor: pointer;
 }
 
+.todo_event_tr{
+	cursor: pointer;
+}
+
 .textarea_15em{
 	width: 15em;
 }
@@ -469,6 +473,7 @@ table.cb_table-hover > tbody > tr:hover .magnifier_glass{
 
 .well-grey{
 	background-color: #f5f5f5;
+	width: 95%;
 }
 
 .well-tiny {
@@ -481,6 +486,15 @@ table.cb_table-hover > tbody > tr:hover .magnifier_glass{
 
 .funnel{
 	padding-left: 1em;
+}
+
+table.mini_contact {
+  border-collapse: separate;
+}
+
+table.mini_contact td, table.mini_contact th {
+  /*border-spacing: 7px;*/
+ 	padding: 4px 25px;
 }
 
 

@@ -1034,13 +1034,20 @@ function tab_contacts_clicked(){
 	});
 }
 
-function tab_open_deals_clicked(){
+function tab_open_deals_clicked(deal_id){
 	$('#tab_contacts').empty();
 	$('#tab_predefined').empty();
 	$('#deal_modal_body').empty();
 	$('#tab_todo').empty();
 	$('#tab_open_deals').load('open_deals/', function(result){				
 		rebind_open_deals();
+		if(deal_id){
+			$('#tab_open_deals tbody tr').each(function(index, value){
+				if($(this).find('#open_deal_uuid').text() == deal_id)
+					$(this).click();
+				//Todo: Else go to server and see in which page it is
+			});
+		}; 
 	});
 	$('#main_tabs a[href="#tab_open_deals"]').off('click');
 	bind_main_tabs('tab_open_deals');
@@ -1070,6 +1077,12 @@ function rebind_event_tick(){
 	        }); 
 	    }
 	});
+	
+	$('.todo_event_tr').off('click').on('click', function(event){
+		event.preventDefault();
+		$('#main_tabs a[href="#tab_open_deals"]').tab('show');
+		tab_open_deals_clicked($(this).attr('id'));		
+	})
 }
 
 

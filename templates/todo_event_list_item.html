@@ -1,6 +1,6 @@
 {% load i18n %}
 {% load l10n %}
-<tr>
+<tr class="todo_event_tr" id="{{ event.deal_id }}">
 	<td>        
         <a class="btn btn-small row_event_tick_btn" href="event/tick/{{ event.pk }}/" title="{% trans 'Delete Event' %}"><i class="icon-ok"> </i></a>	        
     </td>
@@ -9,4 +9,3 @@
     <td>{{event.type}}</td>		
     <td>{{event.notes}}</td>				
 </tr>
-

@@ -6,6 +6,7 @@
 	        <a class="btn btn-link-left negotiate_deal_btn hidden2" href="open_deals/negotiate/{{ deal.pk }}/" title="{% trans 'Negotiate' %}"> <i class="icon-phone icon-large"> </i></a>
 	        <a class="btn btn-link-left business_card_btn hidden2" href="contact/{{deal.contact.pk}}/" title="{% trans 'See Business Card' %}" data-toggle="modal"> <i class="icon-search icon-large"> </i></a>
 	       	<div id="open_deal_url" class="hidden">/open_deals/{{ deal.pk }}/calls</div>
+	       	<div id="open_deal_uuid" class="hidden">{{ deal.deal_id }}</div>
 	    </td>	 
 	    <td>{{deal.contact.last_name}}</td>
 	    <td>{{deal.contact.company_name}}</td>   
