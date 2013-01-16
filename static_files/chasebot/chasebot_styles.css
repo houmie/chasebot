@@ -498,3 +498,17 @@ table.mini_contact td, table.mini_contact th {
 }
 
 
+.maintop{
+	background-color: #F5F5F5;
+    border-bottom: 1px solid #DDDDDD;
+    border-top: 1px solid #FFFFFF;
+    padding: 15px 0;	
+}
+
+.mainfooter {
+    background-color: #F5F5F5;
+    border-top: 1px solid #E5E5E5;
+    margin-top: 70px;
+    padding: 30px 0;
+    text-align: center;
+}

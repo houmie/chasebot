@@ -1,7 +1,7 @@
 {% load i18n %}
 <div class="well well-tiny">       			
 	<div class="hidden" id="validation_error_ajax">{{validation_error_ajax}}</div>
-	<table>
+	<table id="delete_deal_table" class="hidden">
 		<tbody>
 			<tr>
 				<td>
@@ -110,6 +110,7 @@
                 </td>
             </tr>
 		</tbody>	
+		{% if fs.call_notes %}
 		<thead>
 			<tr>
 				<th>
@@ -124,6 +125,7 @@
                 	<div class="hide field field_error"></div>				                    	
                 </td>
                 <td colspan="2">
+                	{% if contact %}
                 	<div class="well well-grey well-small">
 	                	<table class="mini_contact">
 	                		<thead>
@@ -156,8 +158,10 @@
 	                		</tbody>
 	                	</table>
                 	</div>
+                	{% endif %}
                 </td>                
             </tr>
         </tbody>        
+		{% endif %}
 	</table>  
 </div>

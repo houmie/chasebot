@@ -283,7 +283,8 @@ function create_btn_deals(row){
 			
 			rebind_attach_deals('#deal_modal_body', row); //TODO: Recheck later
 			calc_total_price();
-			$('#deal_modal').find('#modal_h3').text(gettext('Edit Deal'));   
+			$('#deal_modal').find('#modal_h3').text(gettext('Edit Deal'));  
+			$('#delete_deal_table').removeClass('hidden');
 			show_modal('#deal_modal');
 		});			
 	});	
@@ -297,8 +298,8 @@ function bind_attach_deal(row){
 		 var form = $('<form/>', {id: 'deal_modal_form', action: '.', method: 'get'}).append(dropdown);
 		 $('#deal_modal_body').append(form);			 
 		 $('#deal_modal_body').find('#add_deals_button').off('click').on('click', {row: row}, add_deals);		 
-		 $('#deal_modal').find('#deal_modal_confirm_btn').addClass("disabled");	
-		 $('#deal_modal').find('#modal_h3').text(gettext('Add Deal Template'));
+		 $('#deal_modal').find('#deal_modal_confirm_btn').hide();
+		 $('#deal_modal').find('#modal_h3').text(gettext('Add New Deal From Template'));
 		 show_modal('#deal_modal');
 	});
 	
@@ -309,7 +310,7 @@ function bind_attach_deal(row){
 		 var form = $('<form/>', {id: 'deal_modal_form', action: '.', method: 'get'}).append(dropdown);
 		 $('#deal_modal_body').append(form);
 		 $('#deal_modal_body').find('#add_opendeals_button').off('click').on('click', {row: row}, add_opendeals);		 
-		 $('#deal_modal').find('#deal_modal_confirm_btn').addClass("disabled");
+		 $('#deal_modal').find('#deal_modal_confirm_btn').hide();
 		 $('#deal_modal').find('#modal_h3').text(gettext('Continue With Existing Deal'));
 		 show_modal('#deal_modal');
 	});	
@@ -330,7 +331,7 @@ function bind_attach_deal(row){
 		$('#deal_modal_body').find('.deal_status').val(1);
 		validator = validation_rules('#deal_modal_form');	
 		$('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row, validator:validator}, add_deal_to_formset);
-		$('#deal_modal').find('#deal_modal_confirm_btn').removeClass("disabled");
+		$('#deal_modal').find('#deal_modal_confirm_btn').show();
 		$('#deal_modal').find('#modal_h3').text(gettext('Create Your Own Deal'));     				 
 		show_modal('#deal_modal');
 	});	
