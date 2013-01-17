@@ -431,6 +431,8 @@ function row_edit_save_ajax(event) {
       			rebind_conversations();
       			rebind_sales_item();
       		});
+      		rebind_conversations();
+      		rebind_sales_item();
       		if(isNewConversation)
       			$('#new_conversation_button').button('toggle');
     	}
@@ -842,28 +844,118 @@ function reword_collapseable(parent){
     });
 }
 
-function add_more_tag_to_all_notefields(){
-	$('.cb_notes').filter(function(){
-    	return $(this).innerHeight() / $(this).css('line-height').slice(0,-2) > 3; //more than 3 lines
-	}).each(function(){
-		var arr = [];				
-	    while($(this).innerHeight() / $(this).css('line-height').slice(0,-2) > 3){	    		    		
-	        arr.push($(this).text().slice(-10));
-	        $(this).text($(this).text().slice(0,-10));				
-	    }
-	    arr.reverse();
-	    var morecontent = arr.join("");
-	    var extracontentspan = $("<span/>").text(morecontent).hide();
-	    var extracontentbutton = $("<a/>",{href:"#", class:"badge badge-info"}).text(gettext("More...")).click(function(){
-	        var span = $(this).prev().toggle();
-	        if(span.is(':hidden'))
-	        	$(this).text(gettext("More..."));
-        	else
-        		$(this).text(gettext("Less..."));
-	    });
-	    $(this).append(extracontentspan);
-	    $(this).append(extracontentbutton);
+function add_more_tag_to_all_notefields(source){	
+	var showChars = 135;
+    var ellipsesText = "...";
+    var moreText = gettext("more");
+    var lessText = gettext("less");    
+    		
+	$('.cb_notes:not(:has(*))', source).each(function() {
+		var $this = $(this);
+ 
+	      var content = $this.html();
+	      if (content.length > showChars) {
+	        var c = content.substr(0, showChars);
+	        if (c.indexOf('<') >= 0) // If there's HTML don't want to cut it
+	        {
+	          var inTag = false; // I'm in a tag?
+	          var bag = ''; // Put the characters to be shown here
+	          var countChars = 0; // Current bag size
+	          var openTags = []; // Stack for opened tags, so I can close them later
+	         
+	          for (i=0; i<content.length; i++)
+	          {
+	            if (content[i] == '<' && !inTag)
+	            {
+	              inTag = true;
+	             
+	              // This could be "tag" or "/tag"
+	              tagName = content.substring(i+1, content.indexOf('>', i));
+	             
+	              // If its a closing tag
+	              if (tagName[0] == '/')
+	              {
+	                if (tagName != '/'+openTags[0]){
+	                	
+	                } 	                	
+	                else
+	                  openTags.shift(); // Pops the last tag from the open tag stack (the tag is closed in the retult HTML!)
+	              }
+	              else
+	              {
+	                // There are some nasty tags that don't have a close tag like <br/>
+	                if (tagName.toLowerCase() != 'br')
+	                  openTags.unshift( tagName );
+	              }
+	            }
+	            if (inTag && content[i] == '>')
+	            {
+	              inTag = false;
+	            }
+	           
+	            if (inTag) bag += content[i]; // Add tag name chars to the result
+	            else
+	            {
+	              if (countChars < showChars)
+	              {
+	                bag += content[i];
+	                countChars ++;
+	              }
+	              else 
+	              {
+	                if (openTags.length > 0)
+	                {	                  
+	                  for (j=0; j<openTags.length; j++)
+	                  {	                    
+	                    bag += '</'+ openTags[j] +'>'; 
+	 
+	                    // You could shift the tag from the stack to check if you end with an empty stack, that means you have closed all open tags
+	                  }
+	                  break;
+	                }
+	              }
+	            }
+	          }
+	          c = bag;
+	        }
+	       
+	        var html = '<span class="shortcontent">' + c + '&nbsp;' + ellipsesText +
+	                   '</span><span class="allcontent">' + content +
+	                   '</span>&nbsp;&nbsp;<span><a href="javascript:void(0)" class="morelink badge">' + moreText + '</a></span>';
+	       
+	        $this.html(html);
+	        $(".allcontent").hide(); 
+	      }
 	});
+	
+	$(".morelink").click(function(){
+      var $this = $(this);
+           
+      if ($this.hasClass('less')) { 
+       
+        $this.removeClass('less');
+        $this.html(moreText);
+               
+        $this.parent().prev().prev().show(); // shortcontent
+        $this.parent().prev().hide(); // allcontent
+       
+      } else { 
+       
+        $this.addClass('less');
+        $this.html(lessText);
+       
+        $this.parent().prev().prev().hide(); // shortcontent
+        $this.parent().prev().show(); // allcontent
+      }
+     
+      return false;
+	});
+}
+
+
+
+function add_more_less(){
+	
 }
 
 function load_business_card(event){	
@@ -941,7 +1033,7 @@ function rebind_conversations(){
 	});	
 	$('#new_conversation_button').off('click').on('click',new_conversation);	
 	rebind_filters($('#sidebar'), rebind_conversations);
-	add_more_tag_to_all_notefields();
+	add_more_tag_to_all_notefields(source);
 }
 
 function rebind_sales_item(){
@@ -975,13 +1067,15 @@ function rebind_deal_templates(){
 	var target = '#search_result'	
 	$(source).find('.deal_template_edit_btn').off('click').on('click', deal_template_add_edit);
 	$('#new_deal_template_btn').off('click').on('click', deal_template_add_edit);	
-	rebind_delete_paginator(source, target, rebind_deal_templates);		
+	rebind_delete_paginator(source, target, rebind_deal_templates);
+	add_more_tag_to_all_notefields(source);
 }
 
 function rebind_events(){
 	var source = '#tab_open_deals';	
 	rebind_delete_paginator(source, '#events_pane', rebind_events);
     $(source).find(".row_edit_event").click(edit_new_event);
+    add_more_tag_to_all_notefields(source);
 }
 
 function tab_predefined_clicked(){	
@@ -1068,13 +1162,14 @@ function tab_open_deals_clicked(deal_id){
 }
 
 function rebind_event_tick(){
+	var source = '#tab_todo';
 	$('.row_event_tick_btn').off('click').on('click', function(event){
 		event.preventDefault();
 		if (confirm(gettext('Are you sure you want to tick off this event and remove it?'))) {
 	    	var url = $(this).attr("href");		    	    	  		
 	        $.post(url, function(result){
 	        	$('#tab_todo').empty();
-	        	$('#tab_todo').append(result);	
+	        	$('#tab_todo').append(result);	        		
 	        	rebind_event_tick();	        	
 	        }); 
 	    }
@@ -1085,6 +1180,10 @@ function rebind_event_tick(){
 		$('#main_tabs a[href="#tab_open_deals"]').tab('show');
 		tab_open_deals_clicked($(this).attr('id'));		
 	})
+	add_more_tag_to_all_notefields(source);	
+	// $(".collapse").off('shown').on('shown', function(){
+		// add_more_tag_to_all_notefields();
+	// });
 }
 
 
@@ -1118,7 +1217,10 @@ function rebind_open_deals(){
 				tr.find(".negotiate_deal_btn").off('click').on('click', negotiate_deal);
 				tr.find('.business_card_btn').off('click').on('click', load_business_card);				
 				$(".collapse").collapse('toggle');
-				add_more_tag_to_all_notefields();
+				// $('#open_deal_tabs a[href="#tab-2"]').on('shown', function (e) {
+					// add_more_tag_to_all_notefields($(this));				
+				// })
+				//add_more_tag_to_all_notefields('#tab_open_deals');
 			});
 	});
 }

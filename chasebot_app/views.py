@@ -164,7 +164,7 @@ def open_deal_conversations_display(request, deal_id):
     deal = get_object_or_404(profile.company.deal_set.all(), pk=deal_id)
     related_deals = Deal.objects.filter(deal_id = deal.deal_id).order_by('-deal_datetime')[:3]
     calls = Conversation.objects.filter(pk__in = [deal.conversation.pk for deal in related_deals]).order_by('-conversation_datetime')
-    events = profile.company.event_set.filter(deal_id = deal.deal_id).order_by('-due_date_time')
+    events = profile.company.event_set.filter(deal_id = deal.deal_id).order_by('due_date_time')
     variables = {'calls': calls, 'events' : events, 'deal_id':deal_id}
     return render(request, '_deal_conversations.html', variables)
     
@@ -333,17 +333,17 @@ def conversation_display(request, contact_id):
     filter_form = FilterConversationForm(request.GET)
     calls, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, calls_queryset)
     
-    task_queryset = contact.task_set.order_by('-due_date_time')
-    tasks = []
-    if task_queryset:
-        tasks, paginator_t, page_t, page_number_t = makePaginator(request, 3, task_queryset)        
+#    task_queryset = contact.task_set.order_by('-due_date_time')
+#    tasks = []
+#    if task_queryset:
+#        tasks, paginator_t, page_t, page_number_t = makePaginator(request, 3, task_queryset)        
     source = u'{0}/{1}/{2}'.format('contact', contact.pk, 'calls')
     variables = {
-                 'calls': calls, 'contact': contact, 'contact_id':contact.pk, 'filter_form' : filter_form, 'show_only_open_deals' : show_only_open_deals, 'tasks': tasks, 'source' : source
+                 'calls': calls, 'contact': contact, 'contact_id':contact.pk, 'filter_form' : filter_form, 'show_only_open_deals' : show_only_open_deals, 'source' : source
                  }
     variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
-    if task_queryset:
-        variables = merge_with_pagination_variables(paginator_t, page_t, page_number_t, variables, 'task_')
+#    if task_queryset:
+#        variables = merge_with_pagination_variables(paginator_t, page_t, page_number_t, variables, 'task_')
     if ajax:    
         return render(request, 'conversation_list.html', variables)
     else:
@@ -521,94 +521,94 @@ def conversation_delete(request, contact_id, call_id):
     return render(request, 'conversation_list.html', variables)
 
 
-@login_required
-def task_display(request):    
-    profile = request.user.get_profile()
-    if request.GET.get('contact', None):
-        contact = get_object_or_404(profile.company.contact_set.all(), pk=request.GET['contact'])
-    if contact:
-        task_queryset = contact.task_set.order_by('-due_date_time')
-    else:
-        task_queryset = profile.company.task_set.order_by('-due_date_time')
-    tasks, paginator, page, page_number = makePaginator(request, 3, task_queryset)            
-    variables = {
-                 'tasks': tasks, 'contact_id':contact.pk
-                }
-    variables = merge_with_pagination_variables(paginator, page, page_number, variables, 'task_')
-    return render(request, 'task_list.html', variables)
+#@login_required
+#def task_display(request):    
+#    profile = request.user.get_profile()
+#    if request.GET.get('contact', None):
+#        contact = get_object_or_404(profile.company.contact_set.all(), pk=request.GET['contact'])
+#    if contact:
+#        task_queryset = contact.task_set.order_by('-due_date_time')
+#    else:
+#        task_queryset = profile.company.task_set.order_by('-due_date_time')
+#    tasks, paginator, page, page_number = makePaginator(request, 3, task_queryset)            
+#    variables = {
+#                 'tasks': tasks, 'contact_id':contact.pk
+#                }
+#    variables = merge_with_pagination_variables(paginator, page, page_number, variables, 'task_')
+#    return render(request, 'task_list.html', variables)
 
 
-@login_required
-def task_add_edit(request, task_id=None):
-    profile = request.user.get_profile()
-        
-    if task_id is None:
-        task = Task(company=profile.company, user=request.user) 
-        template_title = _(u'Add New Task')
-    else:
-        task = get_object_or_404(profile.company.task_set.all(), pk=task_id)
-        template_title = _(u'Edit Task')
-    validation_error_ajax = False
-    
-    contact = None
-    if request.GET.get('contact', None):
-        contact = get_object_or_404(profile.company.contact_set.all(), pk=request.GET['contact'])    
-        task.contact = contact
-        
-    if request.method == 'POST':
-        opendeals_task_form = OpenDealTaskForm(contact, task.deal_id, request.POST, prefix='opendeals_task_form')
-        form = TaskForm(request.POST, instance=task, prefix='form', initial = {'contact' : contact.pk})
-        if form.is_valid():
-            selected_open_deal = None
-            
-            if opendeals_task_form.is_valid():
-                selected_open_deal = opendeals_task_form.cleaned_data['open_deal_task']            
-            task = form.save(commit=False)
-            if selected_open_deal is not None:
-                task.deal_id = selected_open_deal.deal_id
-            task.save()
-            task_queryset = profile.company.task_set.order_by('-due_date_time')
-            tasks, paginator_t, page_t, page_number_t = makePaginator(request, 3, task_queryset) 
-            variables = {'tasks':tasks, 'contact_id':contact.pk}
-            variables = merge_with_pagination_variables(paginator_t, page_t, page_number_t, variables, 'task_')
-            return render(request, 'task_list.html', variables)
-        else:
-            validation_error_ajax = True
-    else:
-        #opendeass_add_form contains only one dropdown to add open deals to task        
-        opendeals_task_form = OpenDealTaskForm(contact, task.deal_id, prefix='opendeals_task_form')
-        if contact:
-            form = TaskForm(instance=task, prefix='form', initial = {'contact' : contact.pk})
-        else:
-            form = TaskForm(instance=task, prefix='form')
-
-    variables = {'form':form, 'template_title':template_title, 'opendeals_task_form':opendeals_task_form, 'validation_error_ajax':validation_error_ajax }
-    variables = merge_with_localized_variables(request, variables)    
-    return render(request, 'task.html', variables)
-
-
-@login_required
-def task_delete(request, task_id):
-    if task_id is None:
-        raise Http404(_(u'Task not found'))    
-    else:
-        profile = request.user.get_profile()
-        task = get_object_or_404(profile.company.task_set.all(), pk=task_id)        
-        task.delete()
-        task_queryset = profile.company.task_set.order_by('-due_date_time')   
-        tasks, paginator, page, page_number = makePaginator(request, 3, task_queryset)
-        contact_id = None
-        if 'contact' in request.GET:
-            contact_id = request.GET['contact']          
-        variables = { 'tasks': tasks , 'contact_id':contact_id}
-        variables = merge_with_pagination_variables(paginator, page, page_number, variables, 'task_')
-    return render(request, 'task_list.html', variables)
+#@login_required
+#def task_add_edit(request, task_id=None):
+#    profile = request.user.get_profile()
+#        
+#    if task_id is None:
+#        task = Task(company=profile.company, user=request.user) 
+#        template_title = _(u'Add New Task')
+#    else:
+#        task = get_object_or_404(profile.company.task_set.all(), pk=task_id)
+#        template_title = _(u'Edit Task')
+#    validation_error_ajax = False
+#    
+#    contact = None
+#    if request.GET.get('contact', None):
+#        contact = get_object_or_404(profile.company.contact_set.all(), pk=request.GET['contact'])    
+#        task.contact = contact
+#        
+#    if request.method == 'POST':
+#        opendeals_task_form = OpenDealTaskForm(contact, task.deal_id, request.POST, prefix='opendeals_task_form')
+#        form = TaskForm(request.POST, instance=task, prefix='form', initial = {'contact' : contact.pk})
+#        if form.is_valid():
+#            selected_open_deal = None
+#            
+#            if opendeals_task_form.is_valid():
+#                selected_open_deal = opendeals_task_form.cleaned_data['open_deal_task']            
+#            task = form.save(commit=False)
+#            if selected_open_deal is not None:
+#                task.deal_id = selected_open_deal.deal_id
+#            task.save()
+#            task_queryset = profile.company.task_set.order_by('-due_date_time')
+#            tasks, paginator_t, page_t, page_number_t = makePaginator(request, 3, task_queryset) 
+#            variables = {'tasks':tasks, 'contact_id':contact.pk}
+#            variables = merge_with_pagination_variables(paginator_t, page_t, page_number_t, variables, 'task_')
+#            return render(request, 'task_list.html', variables)
+#        else:
+#            validation_error_ajax = True
+#    else:
+#        #opendeass_add_form contains only one dropdown to add open deals to task        
+#        opendeals_task_form = OpenDealTaskForm(contact, task.deal_id, prefix='opendeals_task_form')
+#        if contact:
+#            form = TaskForm(instance=task, prefix='form', initial = {'contact' : contact.pk})
+#        else:
+#            form = TaskForm(instance=task, prefix='form')
+#
+#    variables = {'form':form, 'template_title':template_title, 'opendeals_task_form':opendeals_task_form, 'validation_error_ajax':validation_error_ajax }
+#    variables = merge_with_localized_variables(request, variables)    
+#    return render(request, 'task.html', variables)
+#
+#
+#@login_required
+#def task_delete(request, task_id):
+#    if task_id is None:
+#        raise Http404(_(u'Task not found'))    
+#    else:
+#        profile = request.user.get_profile()
+#        task = get_object_or_404(profile.company.task_set.all(), pk=task_id)        
+#        task.delete()
+#        task_queryset = profile.company.task_set.order_by('-due_date_time')   
+#        tasks, paginator, page, page_number = makePaginator(request, 3, task_queryset)
+#        contact_id = None
+#        if 'contact' in request.GET:
+#            contact_id = request.GET['contact']          
+#        variables = { 'tasks': tasks , 'contact_id':contact_id}
+#        variables = merge_with_pagination_variables(paginator, page, page_number, variables, 'task_')
+#    return render(request, 'task_list.html', variables)
 
 
 @login_required
 def event_display(request):
     profile = request.user.get_profile()        
-    events = profile.company.event_set.order_by('-due_date_time')
+    events = profile.company.event_set.order_by('due_date_time')
     
     #tasks, paginator, page, page_number = makePaginator(request, 3, task_queryset)
     variables = {
@@ -635,8 +635,8 @@ def event_add_edit(request, open_deal_id=None, event_id=None):
     if request.method == 'POST':        
         form = EventForm(request.POST, instance=event, prefix='form')
         if form.is_valid():                        
-            form.save()
-            events = profile.company.event_set.order_by('-due_date_time')[:3]
+            event = form.save()            
+            events = profile.company.event_set.filter(deal_id = event.deal_id).order_by('due_date_time')[:3]
             #tasks, paginator_t, page_t, page_number_t = makePaginator(request, 3, event_queryset) 
             variables = {'events':events}
             #variables = merge_with_pagination_variables(paginator_t, page_t, page_number_t, variables, 'task_')
@@ -668,8 +668,9 @@ def event_delete(request, event_id):
     else:
         profile = request.user.get_profile()
         event = get_object_or_404(profile.company.event_set.all(), pk=event_id)        
-        event.delete()
-        events = profile.company.event_set.order_by('-due_date_time')[:3]   
+        deal_id = event.deal_id
+        event.delete()           
+        events = profile.company.event_set.filter(deal_id = deal_id).order_by('due_date_time')[:3]
         #tasks, paginator, page, page_number = makePaginator(request, 3, event_queryset)        
         variables = { 'events': events}
         #variables = merge_with_pagination_variables(paginator, page, page_number, variables, 'task_')

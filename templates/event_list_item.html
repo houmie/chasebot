@@ -6,7 +6,7 @@
 	        <a class="btn btn-small btn-link-left row_edit_event" href="event/edit/{{ event.pk }}/" title="{% trans 'Edit Event' %}"> <i class="icon-pencil"> </i></a>
 	        <a class="btn btn-small row_delete_ajax" href="event/delete/{{ event.pk }}/" title="{% trans 'Delete Event' %}"><i class="icon-trash"> </i></a>	        
 	    </td>
-	    <td>{{event.notes}}</td>
+	    <td class="cb_notes">{{event.notes}}</td>
 		<td><span class="badge badge-inverse">{{event.type}}</span></td>		
 		<td>{{event.due_date_time|date:"DATE_FORMAT"}}</td>
 		<td>{{event.due_date_time|time:"TIME_FORMAT"}}</td>

@@ -9,7 +9,7 @@ from chasebot_app.views import logout_page, contact_delete, conversation_display
     sales_item_autocomplete, contacts_autocomplete, conversations_autocomplete,\
     deal_autocomplete, get_deal_template, get_opendeal, colleague_invite,\
     colleague_accept, single_conversation_display, \
-    task_display, task_add_edit, task_delete, index_display, open_deals_display,\
+    index_display, open_deals_display,\
     open_deal_conversations_display, event_add_edit, event_delete,\
     negotiate_open_deal, sidebar_contacts, sidebar_deal_templates,\
     sidebar_open_deals, opendeal_autocomplete, sidebar_conversations,\
@@ -87,11 +87,11 @@ urlpatterns = patterns('',
     (r'^autocomplete/deal_template/$', deal_autocomplete),
     (r'^autocomplete/open_deals/$', opendeal_autocomplete),
 
-    (r'^task/add/$', task_add_edit),
-    (r'^task/edit/(?P<task_id>\d+)/$', task_add_edit),
+#    (r'^task/add/$', task_add_edit),
+#    (r'^task/edit/(?P<task_id>\d+)/$', task_add_edit),
 #    (r'^task/(?P<task_id>\d+)/$', task_display),    
-    (r'^tasks/$', task_display),
-    (r'^task/delete/(?P<task_id>\d+)/$', task_delete),
+#    (r'^tasks/$', task_display),
+#    (r'^task/delete/(?P<task_id>\d+)/$', task_delete),
 
     (r'^event/add/(?P<open_deal_id>\d+)/$', event_add_edit),
     (r'^event/edit/(?P<event_id>\d+)/$', event_add_edit),
