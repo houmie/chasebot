@@ -821,7 +821,7 @@ function event_modal_add_save(event){
       		 modal.find('#event_form').get(0).setAttribute("action", url);      		       		 
       		 modal.find('#event_form').submit({modal:'#event_modal', events_pane:'#events_pane', form:'#event_form'}, event_modal_add_save);
        		 datepicker_reload($(modal));      		
-       		 rebind_events();      		 		
+       		 rebind_events('#events_pane');      		 		
     	}
     	else {
     		//if there is no error then insert the added row before the current add-button row. (last row)
@@ -829,7 +829,7 @@ function event_modal_add_save(event){
     		$(modal).empty();
     		$(events_pane).empty();
     		$(events_pane).append(result);
-      		rebind_events();      		      		      		      		
+      		rebind_events('#events_pane');      		      		      		      		
     	}
   	});  	
 };
@@ -928,7 +928,7 @@ function add_more_tag_to_all_notefields(source){
 	      }
 	});
 	
-	$(".morelink").click(function(){
+	$(".morelink").off('click').on('click', function(){
       var $this = $(this);
            
       if ($this.hasClass('less')) { 
@@ -1071,11 +1071,13 @@ function rebind_deal_templates(){
 	add_more_tag_to_all_notefields(source);
 }
 
-function rebind_events(){
-	var source = '#tab_open_deals';	
-	rebind_delete_paginator(source, '#events_pane', rebind_events);
-    $(source).find(".row_edit_event").click(edit_new_event);
-    add_more_tag_to_all_notefields(source);
+function rebind_events(source){
+	var src = '#tab_open_deals';
+	if(source)
+		src = source;		
+	rebind_delete_paginator(src, '#events_pane', rebind_events);
+    $(src).find(".row_edit_event").click(edit_new_event);
+    add_more_tag_to_all_notefields(src);
 }
 
 function tab_predefined_clicked(){	
