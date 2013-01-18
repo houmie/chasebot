@@ -44,9 +44,13 @@ from django.utils.datetime_safe import date
 
 ITEMS_PER_PAGE = 5
 
+@login_required
 def set_timezone(request):
     if request.method == 'POST':
         request.session['django_timezone'] = pytz.timezone(request.POST['timezone'])
+        profile = request.user.get_profile()
+        profile.timezone = request.POST['timezone']
+        profile.save()
         return redirect(request.path)
     else:
         return redirect('/')
@@ -112,8 +116,11 @@ def conversations_with_open_deals(request, contact):
 @login_required
 def index_display(request):
     profile = request.user.get_profile()
+    if not 'django_timezone' in request.session: 
+        request.session['django_timezone'] = pytz.timezone(profile.timezone)
     company_name = profile.company.company_name
     variables = {'company_name': company_name}
+    variables = merge_with_localized_variables(request, variables)
     return render(request, 'index.html', variables)        
 
 
@@ -154,8 +161,7 @@ def load_open_deals_variables(request, profile):
     deals_query = all_open_deals(request, profile.company)
     deals, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deals_query)  
     variables = {'deals': deals}
-    variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
-    variables = merge_with_localized_variables(request, variables) 
+    variables = merge_with_additional_variables(request, paginator, page, page_number, variables)     
     return variables
 
 @login_required
@@ -292,8 +298,7 @@ def contact_add_edit(request, contact_id=None):
             return render(request, 'contacts.html', variables)            
     else:
         form = ContactsForm(instance=contact)    
-    variables = {'form':form, 'template_title': template_title, 'contact_id' : contact_id, }
-    variables = merge_with_localized_variables(request, variables)
+    variables = {'form':form, 'template_title': template_title, 'contact_id' : contact_id, }    
     return render(request, 'contact.html', variables)
 
 @login_required
@@ -496,8 +501,7 @@ def conversation_add_edit(request, contact_id, call_id=None):
     
     #The extra deal formset will always be independent of POST/GET since its hidden and remains empty as a starting point for cloning
     extra_deal_formset = extra_deal_formset_factory(prefix='extra_deal')
-    variables = {'form':form, 'template_title':template_title, 'deals_add_form':deals_add_form, 'opendeals_add_form':opendeals_add_form, 'attached_deals_formset':attached_deals_formset, 'contact_id':contact.pk, 'call_id':call_id, 'extra_deal_formset':extra_deal_formset, 'validation_error_ajax':validation_error_ajax }
-    variables = merge_with_localized_variables(request, variables)  
+    variables = {'form':form, 'template_title':template_title, 'deals_add_form':deals_add_form, 'opendeals_add_form':opendeals_add_form, 'attached_deals_formset':attached_deals_formset, 'contact_id':contact.pk, 'call_id':call_id, 'extra_deal_formset':extra_deal_formset, 'validation_error_ajax':validation_error_ajax }    
     #if call_id:
     return render(request, '_conversation_edit.html', variables)      
     #return render(request, '_conversation.html', variables)
@@ -646,8 +650,7 @@ def event_add_edit(request, open_deal_id=None, event_id=None):
     else:        
         form = EventForm(instance=event, prefix='form')
 
-    variables = {'form':form, 'template_title':template_title, 'validation_error_ajax':validation_error_ajax }
-    #variables = merge_with_localized_variables(request, variables)    
+    variables = {'form':form, 'template_title':template_title, 'validation_error_ajax':validation_error_ajax }       
     return render(request, 'event.html', variables)
 
 @login_required
@@ -791,8 +794,7 @@ def sales_item_add_edit(request, sales_item_id=None):
         # Only first-time GET Edit or invalid POST Edit --> Edit Save row will be rendered
         variables = {
                      'form':form, 'salesitem_id' : sales_item_id, 'validation_error_ajax' : validation_error_ajax, 'source':source 
-                    }
-        variables = merge_with_localized_variables(request, variables)   
+                    }        
         return render(request, 'sales_item_edit_save_form.html', variables)
 
 @login_required
@@ -947,8 +949,7 @@ def register_page(request):
             form = RegistrationForm(is_accept_invite = True, _company_name = profile.company.company_name, _company_email = profile.company.company_email, _email = invitation.email)
         else:            
             form = RegistrationForm()
-    variables = {'form':form}
-    variables = merge_with_localized_variables(request, variables)   
+    variables = {'form':form}    
     return render(request, 'registration/register.html', variables)
 
 
@@ -978,8 +979,7 @@ def charts_display(request, contact_id):
     for deal in deals:        
         part = part_of_day_statistics(deal.conversation.conversation_datetime)
         stac[part] += 1    
-    variables = {'deals':deals, 'stac':stac, 'contact':contact}
-    variables = merge_with_localized_variables(request, variables)   
+    variables = {'deals':deals, 'stac':stac, 'contact':contact}    
     return render(request, 'charts.html', variables)
 
 
@@ -1213,7 +1213,8 @@ def get_paginator_variables(paginator, page, page_number, custom_prefix):
                 }
 
 def get_localized_variables(request):
-    return { 'locale' : get_datepicker_format(request), 'timezones': pytz.common_timezones}  
+    timezone = request.session['django_timezone'].zone
+    return { 'locale' : get_datepicker_format(request), 'timezones': pytz.common_timezones, 'timezone':timezone}  
 
 def merge_with_additional_variables(request, paginator, page, page_number, variables):
     variables = dict(variables.items() + get_paginator_variables(paginator, page, page_number, None).items() + get_localized_variables(request).items())

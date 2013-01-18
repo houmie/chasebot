@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">    
-    <script src="{{ STATIC_URL }}jquery/jquery-1.8.2.min.js"></script>    
+    <script src="{{ STATIC_URL }}jquery/jquery-1.9.0.min.js"></script>    
     <script src='{{ STATIC_URL }}jquery.fix.clone/jquery.fix.clone.js'></script>
     <script src="{{ STATIC_URL }}jquery-validation/dist/jquery.validate.min.js"></script>
     <script src="{{ STATIC_URL }}jquery-validation/dist/additional-methods.min.js"></script>    
@@ -47,7 +47,7 @@
 </head>
 
 <body> 
-<!-- <div id="locale" class="hidden1">{{locale}}</div> -->
+<div id="locale" class="hidden">{{locale}}</div>
    
 <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
@@ -71,7 +71,7 @@
                     	<li><a href="/logout/">{% trans 'Logout' %}</a></li>
                     {% else %}
                     	<li><a href="/login/">{% trans 'Login' %}</a></li>
-                    	<li><a href="/register/">{% trans 'Register' %}</a></li>
+                    	<!-- <li><a href="/register/">{% trans 'Register' %}</a></li> -->
                     	<li><a class="cb_live_demo" href="/demo/">{% trans 'Live Demo' %}</a></li>
                     {% endif %}
 
@@ -84,7 +84,7 @@
 					    {% csrf_token %}
 					    <select id="timezone_dropdown" class="cb_timezone right-margin" data-trigger="manual" role="menu" aria-labelledby="dropdownMenu" name="timezone" data-content="{% trans 'Please set your current time zone here' %}" rel="popover" data-placement="left">
 				        {% for tz in timezones %}
-					        <option value="{{ tz }}"{% if tz == TIME_ZONE %} selected="selected"{% endif %}>{{ tz }}</option>
+					        <option value="{{ tz }}"{% if tz == timezone %} selected="selected"{% endif %}>{{ tz }}</option>
 				        {% endfor %}
 					    </select>
 					</form>

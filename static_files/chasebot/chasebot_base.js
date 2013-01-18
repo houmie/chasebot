@@ -1342,8 +1342,7 @@ function initialize_validator(){
 $(document).ready(function (){	
 	initialize_validator();
 	bind_main_tabs();
-	reword_collapseable('#accordion_task');	
-	//rebind_task_edit_delete($('#tasks_pane'));
+	// reword_collapseable('#accordion_task');	
 	$('#timezone_dropdown').change(timezone_dropdown);	
 	$('.timezone_help').click(show_timezone_help);	
 	$('#invite-button').click(invite_colleague);

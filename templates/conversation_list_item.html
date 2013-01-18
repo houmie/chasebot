@@ -13,9 +13,6 @@
 		{% for deal in call.deal_set.all %}
 	    	<span class="badge badge-info">{{ deal }}</span>
 	    {% endfor %}
-	    </td>
-	    <td class="hidden">
-	    	<div id="contact_id" class="hidden">{{contact.pk}}</div>
-    	</td>
+	    </td>	    
 	</tr>
 {% endfor %}

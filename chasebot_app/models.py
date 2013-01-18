@@ -54,6 +54,7 @@ class UserProfile(models.Model):
     ip                  = models.CharField(max_length=45, blank=True, null=True)
     country             = models.CharField(max_length=100, blank=True, null=True)
     city                = models.CharField(max_length=100, blank=True, null=True)
+    timezone            = models.CharField(max_length=100)
     
     def __unicode__(self):
         return u'%s, %s' % (self.user.username, self.company.company_name)

@@ -43,14 +43,14 @@ def demo(request):
     if request.method == 'POST':        
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
-            demo_continue(request, form.cleaned_data['username'], form.cleaned_data['password'], form.cleaned_data['email'])
+            demo_continue(request, form.cleaned_data['username'], form.cleaned_data['password'], form.cleaned_data['email'], form.cleaned_data['timezone'])
             return redirect('/')
     else:
         form = UserRegistrationForm()
     variables = {'form': form}
     return render(request, 'demo.html', variables)
 
-def demo_continue(request, username, password, email):
+def demo_continue(request, username, password, email, time_zone):
     
     #username = generate_random_username()
     #password = User.objects.make_random_password(7)
@@ -82,7 +82,7 @@ def demo_continue(request, username, password, email):
         except TypeError:
             pass
     
-    userProfile = UserProfile(user=user, company = company, is_cb_superuser=True, license = LicenseTemplate.objects.get(pk=3), ip=ip, country=country, city=city)
+    userProfile = UserProfile(user=user, company = company, is_cb_superuser=True, license = LicenseTemplate.objects.get(pk=3), ip=ip, country=country, city=city, timezone=time_zone)
     userProfile.save()
     
     user = authenticate(username=username, password=password)

@@ -16,7 +16,7 @@ cur.execute("INSERT INTO chasebot_app_licensetemplate (name, max_users, descript
 cur.execute("INSERT INTO chasebot_app_licensetemplate (name, max_users, description, currency_id, price) VALUES ('Premium', '15', 'For mid-sized teams (15 users, 15 GB file storage, 15,000 contacts)', 1,  '39');")
 cur.execute("INSERT INTO chasebot_app_licensetemplate (name, max_users, description, currency_id, price) VALUES ('Coorporate', '42', 'For large teams (40 users, 40 GB file storage, 40,0000 contacts)', 1, '89');")
 
-cur.execute("INSERT INTO chasebot_app_userprofile (user_id, company_id, is_cb_superuser, license_id) VALUES (1, 1, TRUE, 3);")
+cur.execute("INSERT INTO chasebot_app_userprofile (user_id, company_id, is_cb_superuser, license_id, timezone) VALUES (1, 1, TRUE, 3, 'Europe/London');")
 
 #cur.execute("INSERT INTO chasebot_app_gender (gender) VALUES ('Female'),('Male');")
 

@@ -68,6 +68,20 @@
     	</tr>
     	<tr>
     		<td>
+    			{{ form.timezone.label }}:
+    		</td>
+    		<td>
+    			{% if form.timezone.errors %}
+				<div class="field field_error cb_inline">
+			    	{{form.timezone}} {{form.timezone.errors}}                   	
+				</div>
+				{% else %}
+					{{form.timezone}}
+				{% endif %}    			
+    		</td>
+    	</tr>
+    	<tr>
+    		<td>
 
     		</td>
     		<td>
