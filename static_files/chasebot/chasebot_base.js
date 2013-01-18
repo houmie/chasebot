@@ -77,10 +77,14 @@ function sort_table(table){
 	      0: { 
 	        // disable it by setting the property sorter to false 
 	        sorter: false 
-	      }
+	      },
+	      4: { sorter: "text" },
     }, 
     widthFixed: true, 
- 
+ 	textExtraction : {
+        4: function(node) { return $(node).text(); },
+        
+    },
     headerTemplate : '{content} {icon}', // new in v2.7. Needed to add the bootstrap icon! 
  
     // widget code contained in the jquery.tablesorter.widgets.js file 
