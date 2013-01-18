@@ -11,7 +11,8 @@
     <script src="{{ STATIC_URL }}jquery/jquery-1.9.0.min.js"></script>    
     <script src='{{ STATIC_URL }}jquery.fix.clone/jquery.fix.clone.js'></script>
     <script src="{{ STATIC_URL }}jquery-validation/dist/jquery.validate.min.js"></script>
-    <script src="{{ STATIC_URL }}jquery-validation/dist/additional-methods.min.js"></script>    
+    <script src="{{ STATIC_URL }}jquery-validation/dist/additional-methods.min.js"></script>
+          
     <script type="text/javascript">  
     	$.chasebot = {} // namespace
     	$.chasebot.STATIC_URL = '{{ STATIC_URL }}';
@@ -19,8 +20,7 @@
 
     <!-- <script type="text/javascript" src="{{ STATIC_URL }}chasebot/chasebot_base.js" ></script> --> 
     <!-- <script type="text/javascript" src="{{ STATIC_URL }}chasebot/chasebot_add_deals.js"></script> -->
-    {% compressed_js 'chasebot_add_deals_js' %}
-    {% compressed_js 'chasebot_js' %}    
+      
     <!-- Le styles -->
     <link href="{{ STATIC_URL }}bootstrap/css/bootstrap.min.css" rel="stylesheet">    
     <link href="{{ STATIC_URL }}famfamfam_flags/famfamfam-flags.css" rel="stylesheet">
@@ -32,6 +32,7 @@
     <script src="{{ STATIC_URL }}chosen/chosen/chosen.jquery.min.js"></script>
     <script src="{{ STATIC_URL }}raty/js/jquery.raty.min.js"></script>
 	<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}chosen/chosen/chosen.css" />
+	
 	<script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>	
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -67,7 +68,7 @@
                     <!-- <li><a href="#contact">{% trans 'Contact' %}</a></li> -->
 
                     {% if user.is_authenticated %}
-                    	<li><a href="/colleague/invite/">{% trans 'Invite' %}</a></li>
+                    	<!-- <li><a href="/colleague/invite/">{% trans 'Invite' %}</a></li> -->
                     	<li><a href="/logout/">{% trans 'Logout' %}</a></li>
                     {% else %}
                     	<li><a href="/login/">{% trans 'Login' %}</a></li>
@@ -153,9 +154,17 @@
 
 <Script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></Script>
 
+<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}tablesorter/css/theme.bootstrap.css" />
+<link type="text/css" rel="stylesheet" href="{{ STATIC_URL }}tablesorter/addons/pager/jquery.tablesorter.pager.css" />
+
+<script src="{{ STATIC_URL }}tablesorter/js/jquery.tablesorter.js"></script>
+<script src="{{ STATIC_URL }}tablesorter/js/jquery.tablesorter.widgets.js"></script>
+<script src="{{ STATIC_URL }}tablesorter/addons/pager/jquery.tablesorter.pager.js"></script>
+
 <Script src="{{ STATIC_URL }}bootstrap-datepicker/js/bootstrap-datepicker.js"></Script>
 <Script src="{{ STATIC_URL }}bootstrap-timepicker/js/bootstrap-timepicker.js"></Script>
-
+{% compressed_js 'chasebot_add_deals_js' %}
+{% compressed_js 'chasebot_js' %}  
 
 </body>
 </html>
