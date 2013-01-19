@@ -13,7 +13,7 @@ from chasebot_app.views import logout_page, contact_delete, conversation_display
     open_deal_conversations_display, event_add_edit, event_delete,\
     negotiate_open_deal, sidebar_contacts, sidebar_deal_templates,\
     sidebar_open_deals, opendeal_autocomplete, sidebar_conversations,\
-    events_display, event_tick
+    events_display, event_tick, deal_template_sales_item_display
 from chasebot_app.demo_view import demo
 
 admin.autodiscover()
@@ -69,7 +69,8 @@ urlpatterns = patterns('',
         
     (r'^sales_item/add/$', sales_item_add_edit),    
     (r'^sales_item/edit/(?P<sales_item_id>\d+)/$', sales_item_add_edit),
-    (r'^sales_item/(?P<sales_item_id>\d+)/$', single_sales_item_display),    
+    (r'^sales_item/(?P<sales_item_id>\d+)/$', single_sales_item_display),
+    (r'^sales_items/deal_template/$', deal_template_sales_item_display),    
     (r'^sales_items/$', sales_item_display),
     (r'^sales_item/delete/(?P<sales_item_id>\d+)/$', sales_item_delete),
     

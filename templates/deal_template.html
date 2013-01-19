@@ -1,9 +1,9 @@
 {% load i18n %}
 <ul class="breadcrumb">	
-	<li><a id="back2pre_deals" href="#">{% trans 'Deal Templates' %}</a> <span class="divider">></span></li>
+	<li><a id="back2deal_templates" href="#">{% trans 'Deal Templates' %}</a> <span class="divider">></span></li>
 	<li class="active">{{template_title}}</li>	    	
 </ul>
-<form id="pre_deal_form_id" method="post" action=".">
+<form id="deal_template_form_id" method="post" action=".">
     {% csrf_token %}
     <div class="row-fluid">    	
     	<div class="well well-small">  
@@ -39,12 +39,8 @@
 			                    <td>          
 			                    	{% if  form.sales_item.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.sales_item.label}}: *</div>{%else%}{{form.sales_item.label}}:{% endif %}              
 			                    </td>
-			                    <td>
-			                    	<div class="input-append">			                        
-				                		{{form.sales_item}}			                		
-				                		<a id="modal_sales_items_btn" class="btn cb_btn" href="/sales_items" title="{% trans 'Add New Sales Item' %}"><i class="icon-barcode"></i> {% trans 'Edit' %}</a>
-			                		</div>
-			                		<div class="hide field field_error"></div>
+			                    <td id="deal_template_sales_item">
+			                    	{% include 'deal_template_sales_item.html' %}
 			                    </td>
 			                </tr>		                
 			                <tr>

@@ -754,6 +754,14 @@ def single_sales_item_display(request, sales_item_id):
     variables = {'sales_items' : [sales_item]}
     return render(request, '_sales_item_rows.html', variables)
 
+@login_required
+def deal_template_sales_item_display(request):
+    profile = request.user.get_profile()        
+    deal = DealTemplate(company=profile.company)
+    form = DealTemplateForm(instance=deal)    
+    variables = {'form':form }
+    return render(request, 'deal_template_sales_item.html', variables)
+   
 
 @login_required
 def sales_item_add_edit(request, sales_item_id=None):    
