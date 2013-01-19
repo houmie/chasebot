@@ -382,10 +382,10 @@ def demo_continue(request, username, password, email, time_zone):
                         status=DealStatus.objects.get(pk=1),                         
                         deal_template=cotton,
                         deal_template_name=cotton.deal_name,
-                        deal_instance_name=cotton.deal_name + u'- New Client Only',
+                        deal_instance_name=cotton.deal_name + u'- Entry Deal',
                         company = profile.company,
                         deal_description = cotton.deal_description,
-                        price = cotton.price,        
+                        price = cotton.price - 200,
                         currency = cotton.currency,                
                         sales_term = cotton.sales_term,
                         quantity = cotton.quantity                                                                    

@@ -49,29 +49,38 @@ if (!String.prototype.trim) {
 
 $(function() { 
  
-  $.extend($.tablesorter.themes.bootstrap, { 
+  $.extend($.tablesorter.themes.bootstrap, {
     // these classes are added to the table. To see other table classes available, 
     // look here: http://twitter.github.com/bootstrap/base-css.html#tables 
-    table      : 'table table-bordered', 
-    header     : 'bootstrap-header', // give the header a gradient background 
-    footerRow  : '', 
-    footerCells: '', 
-    icons      : '', // add "icon-white" to make them white; this icon class is added to the <i> in the header 
-    sortNone   : 'bootstrap-icon-unsorted', 
-    sortAsc    : 'icon-chevron-up', 
-    sortDesc   : 'icon-chevron-down', 
-    active     : '', // applied when column is sorted 
-    hover      : '', // use custom css here - bootstrap class may not override it 
-    filterRow  : '', // filter row class 
-    even       : '', // odd row zebra striping 
-    odd        : ''  // even row zebra striping 
-  }); 
+    table: 'table',
+    header: 'bootstrap-header', // give the header a gradient background 
+    footerRow: '',
+    footerCells: '',
+    icons: '', // add "icon-white" to make them white; this icon class is added to the <i> in the header 
+    sortNone: 'bootstrap-icon-unsorted',
+    sortAsc: 'icon-chevron-up',
+    sortDesc: 'icon-chevron-down',
+    active: '', // applied when column is sorted 
+    hover: '', // use custom css here - bootstrap class may not override it 
+    filterRow: '', // filter row class 
+    even: '', // odd row zebra striping 
+    odd: '' // even row zebra striping 
+  });
+  
 });
 
-function sort_table(table){
+function sort_table(table, condition){
+	
+  $(table).bind("sortBegin",function(e, table) { 
+    // do something crazy! 
+    if($(condition).length > 0){
+    	alert(gettext("Can't sort while an open-deal-row is clicked. Please click on the open row to close it first and try again."));
+    	throw new Error("Can't sort, while open deal row is openened.");	
+    }    	
+  }); 
 	// call the tablesorter plugin and apply the uitheme widget 
-  $(table).tablesorter({ 
-    theme : "bootstrap", // this will  
+  $(table).tablesorter({
+    theme: "bootstrap", // this will  
 	headers: { 
 	      // disable sorting of the first column (we start counting at zero) 
 	      0: { 
@@ -80,47 +89,45 @@ function sort_table(table){
 	      },
 	      4: { sorter: "text" },
     }, 
-    widthFixed: true, 
- 	textExtraction : {
-        4: function(node) { return $(node).text(); },
-        
-    },
-    headerTemplate : '{content} {icon}', // new in v2.7. Needed to add the bootstrap icon! 
- 
+    widthFixed: true,
+    // textExtraction : {
+        // 4: function(node) { return $(node).text(); },        
+    // },
+    headerTemplate: '{content} {icon}', // new in v2.7. Needed to add the bootstrap icon! 
+    
     // widget code contained in the jquery.tablesorter.widgets.js file 
     // use the zebra stripe widget if you plan on hiding any rows (filter widget) 
-    widgets : [ "uitheme", "zebra" ], 
- 
-    widgetOptions : { 
+    widgets: ["uitheme", "zebra"],
+
+    widgetOptions: {
       // using the default zebra striping class name, so it actually isn't included in the theme variable above 
       // this is ONLY needed for bootstrap theming if you are using the filter widget, because rows are hidden 
-      zebra : ["even", "odd"], 
- 
+      zebra: ["even", "odd"],
+
       // reset filters button 
-      filter_reset : ".reset", 
- 
+      filter_reset: ".reset"
+
       // set the uitheme widget to use the bootstrap theme class names 
       // uitheme : "bootstrap" 
- 
-    } 
-  }) 
-  .tablesorterPager({ 
- 
+    }
+  })
+    .tablesorterPager({
+
     // target the pager markup - see the HTML block below 
-    container: $(".pager"), 
- 
+    container: $(".pager"),
+
     // target the pager page select dropdown - choose a page 
-    cssGoto  : ".pagenum", 
- 
+    cssGoto: ".pagenum",
+
     // remove rows from the table to speed up the sort of large tables. 
     // setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled. 
-    removeRows: false, 
- 
+    removeRows: false,
+
     // output string - default is '{page}/{totalPages}'; 
     // possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows} 
-    output: '{startRow} - {endRow} / {filteredRows} ({totalRows})' 
- 
-  }); 
+    output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
+
+  });	
 }
 
 function row_delete_ajax(event) {
@@ -1266,8 +1273,8 @@ function rebind_event_tick(){
 
 
 function rebind_open_deals(){
-	sort_table('#open_deal_table');
-	//$('#open_deal_table').tablesorter();
+	sort_table('#open_deal_table','#open_deal_tabs');
+	
 	$('#tab_open_deals tbody tr').off('click').on('click', function(){
 			var clicked_on_same_row = false;
 			var deal_row = $(this);
