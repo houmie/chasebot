@@ -235,7 +235,7 @@ function reload_edit_save_cancel_buttons(row, url, isNewConversation, source){
 		    	}
 		  	);
 		});	
-	datepicker_reload($(row));
+	datepicker_reload($(row), true);
 }
 
 
@@ -659,8 +659,21 @@ function bind_rating_form(){
 
 
 
-function datepicker_reload(source){
-	$(source).find('.date_picker').datepicker({ format: $('#locale').text(),	autoclose: 'True' });
+function datepicker_reload(source, isPast){
+	var options = { format: $('#locale').text(), 
+            weekStart:1, 
+            calendarWeeks:'True',   
+            autoclose: 'True', 
+            todayHighlight: 'True'  };
+
+	if(isPast)
+   		options["endDate"] = new Date();
+	else		
+   		options["startDate"] = new Date();
+	            
+    $(source).find('.date_picker').datepicker(options);
+    
+	
 	var is_showMeridian = false;
 	if ($('#locale').text() == 'mm/dd/yyyy'){
 		is_showMeridian = true;
@@ -731,70 +744,55 @@ function new_conversation(event){
 		$('#search_result').prepend(row);
   		reload_edit_save_cancel_buttons($(row), url, true);  		
   		bind_attach_deal(row);
-		datepicker_reload('#new_conversation_div');			
+		datepicker_reload('#new_conversation_div', true);			
 	});		
 }
 
-function new_conversation_old(event){	
-	event.preventDefault();
-	if($(this).hasClass('active')){
-		$('#new_conversation_div').empty();		
-		return;
-	}
-	var url = $(this).attr("href") + "/";	
-	$('#new_conversation_div').load(url, function(result){					
-		rebind_new_conversation('#new_conversation_div');
-		rebind_add_deals();	
-		datepicker_reload('#new_conversation_div');			
-	});
-	
-}
-
-function edit_new_task(event){	
-	event.preventDefault();
-	var url = $(this).attr("href");
-	$('#task_modal').empty();
-	$('#task_modal').load(url, function(result){
-		$(this).modal('show');	
-		$("#task_form").get(0).setAttribute("action", url);
-		datepicker_reload('#task_modal');
-		$('#task_form').submit({modal:'#task_modal', tasks_pane:'#tasks_pane', form:'#task_form'}, task_modal_add_save);
-		reword_collapseable('#accordion_task');		
-	});
-}
-
-function task_modal_add_save(event){
-	event.preventDefault();	
-	var modal = $(event.data.modal);
-	var tasks_pane = $(event.data.tasks_pane);
-	var form = $(event.data.form);
-	// selector starts from Add Button (this)	
-	var url = $(form).attr('action');		
-	//var row = $(this).closest('tr'); //real row containing also the form	
-	var data = $(form).serialize();
-  	
-  	$.post(url, data, function (result) {
-  		//If there are validation errors upon adding the field
-  		if ($('#validation_error_ajax', result).text() == 'True') {  			 
-    		 modal.empty();    		 
-      		 modal.append(result);
-      		 modal.find('#task_form').get(0).setAttribute("action", url);      		       		 
-      		 modal.find('#task_form').submit({modal:'#task_modal', tasks_pane:'#tasks_pane', form:'#task_form'}, task_modal_add_save);
-       		 datepicker_reload($(modal));      		
-       		 rebind_task_edit_delete($(tasks_pane));
-      		 rebind_paginator($(tasks_pane));      		
-    	}
-    	else {
-    		//if there is no error then insert the added row before the current add-button row. (last row)
-    		$(modal).modal('hide');    		
-    		$(modal).empty();
-    		$(tasks_pane).empty();
-    		$(tasks_pane).append(result);
-      		rebind_task_edit_delete($(tasks_pane));
-      		rebind_paginator($(tasks_pane));      		      		      		
-    	}
-  	});  	
-};
+// function edit_new_task(event){	
+	// event.preventDefault();
+	// var url = $(this).attr("href");
+	// $('#task_modal').empty();
+	// $('#task_modal').load(url, function(result){
+		// $(this).modal('show');	
+		// $("#task_form").get(0).setAttribute("action", url);
+		// datepicker_reload('#task_modal');
+		// $('#task_form').submit({modal:'#task_modal', tasks_pane:'#tasks_pane', form:'#task_form'}, task_modal_add_save);
+		// reword_collapseable('#accordion_task');		
+	// });
+// }
+// 
+// function task_modal_add_save(event){
+	// event.preventDefault();	
+	// var modal = $(event.data.modal);
+	// var tasks_pane = $(event.data.tasks_pane);
+	// var form = $(event.data.form);
+	// // selector starts from Add Button (this)	
+	// var url = $(form).attr('action');		
+	// //var row = $(this).closest('tr'); //real row containing also the form	
+	// var data = $(form).serialize();
+//   	
+  	// $.post(url, data, function (result) {
+  		// //If there are validation errors upon adding the field
+  		// if ($('#validation_error_ajax', result).text() == 'True') {  			 
+    		 // modal.empty();    		 
+      		 // modal.append(result);
+      		 // modal.find('#task_form').get(0).setAttribute("action", url);      		       		 
+      		 // modal.find('#task_form').submit({modal:'#task_modal', tasks_pane:'#tasks_pane', form:'#task_form'}, task_modal_add_save);
+       		 // datepicker_reload($(modal));      		
+       		 // rebind_task_edit_delete($(tasks_pane));
+      		 // rebind_paginator($(tasks_pane));      		
+    	// }
+    	// else {
+    		// //if there is no error then insert the added row before the current add-button row. (last row)
+    		// $(modal).modal('hide');    		
+    		// $(modal).empty();
+    		// $(tasks_pane).empty();
+    		// $(tasks_pane).append(result);
+      		// rebind_task_edit_delete($(tasks_pane));
+      		// rebind_paginator($(tasks_pane));      		      		      		
+    	// }
+  	// });  	
+// };
 
 
 function negotiate_deal(event){	
@@ -807,7 +805,7 @@ function negotiate_deal(event){
 	form.load(url, function(result){		
 		show_modal('#deal_modal');
 		$(this).get(0).setAttribute("action", url);
-		datepicker_reload('#deal_modal_body');		
+		datepicker_reload('#deal_modal_body', false);		
 		chosenify_field('#id_sales_item', '#deal_modal_body');		
 		calc_total_price();
 		$('#deal_modal').find('#modal_h3').text(gettext('Negotiate Deal'));
@@ -841,7 +839,7 @@ function negotiate_deal_submit(event){
       		 //modal.find('#event_form').submit({modal:'#event_modal', events_pane:'#events_pane', form:'#event_form'}, event_modal_add_save);
       		 
        		 chosenify_field('#id_sales_item', '#deal_modal_body');
-       		 datepicker_reload('#deal_modal_body');
+       		 datepicker_reload('#deal_modal_body', false);
        		 calc_total_price();  		
     	}
     	else {
@@ -862,7 +860,7 @@ function edit_new_event(event){
 	$('#event_modal').load(url, function(result){
 		$(this).modal('show');	
 		$("#event_form").get(0).setAttribute("action", url);
-		datepicker_reload('#event_modal');
+		datepicker_reload('#event_modal', false);
 		$('#event_form').submit({modal:'#event_modal', events_pane:'#events_pane', form:'#event_form'}, event_modal_add_save);		
 	});
 }
@@ -882,7 +880,7 @@ function event_modal_add_save(event){
       		 modal.append(result);
       		 modal.find('#event_form').get(0).setAttribute("action", url);      		       		 
       		 modal.find('#event_form').submit({modal:'#event_modal', events_pane:'#events_pane', form:'#event_form'}, event_modal_add_save);
-       		 datepicker_reload($(modal));      		
+       		 datepicker_reload($(modal), false);      		
        		 rebind_events('#events_pane');      		 		
     	}
     	else {
@@ -1332,7 +1330,7 @@ function conversation_clicked(event){
 			$('#sidebar').find(".typeahead_calls_from_date").typeahead({ source: typeahead_opendeal_deal_name });
 			$('#sidebar').find(".typeahead_calls_to_date").typeahead({ source: typeahead_opendeal_status });			
 			rebind_filters('#sidebar', rebind_conversations);
-			datepicker_reload('#sidebar');
+			datepicker_reload('#sidebar', true);
 		});	
 		rebind_conversations();
 	});
@@ -1354,7 +1352,7 @@ function add_edit_new_contact(event){
 			tab_contacts_clicked();
 		});
 		
-		datepicker_reload('#tab_contacts');
+		datepicker_reload('#tab_contacts', true);
 		
 		bind_rating_form();
 
