@@ -42,7 +42,7 @@ from django.utils.datetime_safe import date
 
 
 
-ITEMS_PER_PAGE = 5
+ITEMS_PER_PAGE = 10
 
 @login_required
 def set_timezone(request):

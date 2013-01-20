@@ -513,6 +513,10 @@ table.mini_contact td, table.mini_contact th {
     text-align: center;
 }
 
+.right-aligned{
+	float:right;
+}
+
 /*table .header {
   cursor: pointer;
 }
