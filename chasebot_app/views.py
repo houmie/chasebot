@@ -331,7 +331,8 @@ def conversation_display(request, contact_id):
             if 'to_date' in request.GET:
                 to_date = create_date_from_javascript_date(request, request.GET['to_date'], True)                
             else:
-                to_date = timezone.now()        
+                current_tz = timezone.get_current_timezone()                
+                to_date = timezone.now().replace(tzinfo=pytz.utc).astimezone(current_tz)
             calls_queryset = calls_queryset.filter(conversation_datetime__range=(from_date, to_date))
                   
     
@@ -691,15 +692,17 @@ def events_display(request):
 
 def get_event_variables(profile):
     datetime.date.today()
-    today_min = datetime.datetime.combine(timezone.now(), datetime.time.min)
-    today_max = datetime.datetime.combine(timezone.now(), datetime.time.max)
+    current_tz = timezone.get_current_timezone()
+    current_date_time = timezone.now().replace(tzinfo=pytz.utc).astimezone(current_tz)
+    today_min = datetime.datetime.combine(current_date_time, datetime.time.min)
+    today_max = datetime.datetime.combine(current_date_time, datetime.time.max)
     today_events = profile.company.event_set.filter(due_date_time__range=(today_min, today_max))
     
-    tom_min = datetime.datetime.combine(timezone.now() + datetime.timedelta(days=1), datetime.time.min)
-    tom_max = datetime.datetime.combine(timezone.now() + datetime.timedelta(days=1), datetime.time.max)    
+    tom_min = datetime.datetime.combine(current_date_time + datetime.timedelta(days=1), datetime.time.min)
+    tom_max = datetime.datetime.combine(current_date_time + datetime.timedelta(days=1), datetime.time.max)    
     tomorrow_events = profile.company.event_set.filter(due_date_time__range=(tom_min, tom_max))
     
-    today = timezone.now()
+    today = current_date_time
     start_week = today - datetime.timedelta(today.weekday())
     end_week = start_week + datetime.timedelta(6)
     week_min = datetime.datetime.combine(start_week, datetime.time.min)
