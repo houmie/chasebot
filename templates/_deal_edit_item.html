@@ -87,7 +87,7 @@
 				 	{% if  fs.price.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.price.label}}: *</div>{%else%}{{fs.price.label}}:{% endif %}                       
                 </th>
                 <th> 
-                	{% if  fs.total_price.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.total_price.label}}: *</div>{%else%}{{fs.total_price.label}}:{% endif %}   		                    		                   
+                	{% if  fs.total_value.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.total_value.label}}: *</div>{%else%}{{fs.total_value.label}}:{% endif %}   		                    		                   
                 </th>
             </tr>
 		</thead>
@@ -102,7 +102,7 @@
 					<div class="hide field field_error"></div>  			                    	
                 </td>
                 <td>                       
-					{{fs.total_price}}
+					{{fs.total_value}}
                 	<div class="hide field field_error"></div>
                 </td>
             	<td class="hidden">                        

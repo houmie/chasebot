@@ -138,10 +138,17 @@ def open_deals_display(request):
             deals_query = deals_query.filter(deal_instance_name__icontains=deal_instance_name).order_by('deal_instance_name')
         if 'status' in request.GET:    
             status = request.GET['status']
-            deals_query = deals_query.filter(status__icontains=status).order_by('status')
+            deals_query = deals_query.filter(status__deal_status__icontains=status).order_by('status')
         if 'last_contacted' in request.GET:    
-            last_contacted = request.GET['last_contacted']
-            deals_query = deals_query.filter(last_contacted__icontains=last_contacted).order_by('last_contacted')
+            last_contacted = request.GET['last_contacted']            
+            current_tz = timezone.get_current_timezone()
+            try:
+                date_time = current_tz.localize(dt.strptime(last_contacted, get_current_date_input_format(request)))
+                date_min = date_time.replace(hour=0, minute=0, second=0)
+                date_max = date_time.replace(hour=23, minute=59, second=59)                        
+                deals_query = deals_query.filter(deal_datetime__range=(date_min, date_max))
+            except:
+                pass            
         if 'total_value' in request.GET:    
             total_value = request.GET['total_value']
             deals_query = deals_query.filter(total_value__icontains=total_value).order_by('total_value')
@@ -690,31 +697,29 @@ def events_display(request):
     variables = get_event_variables(profile)    
     return render(request, 'events.html', variables)
 
-def get_event_variables(profile):
-    datetime.date.today()
+def get_event_variables(profile):    
     current_tz = timezone.get_current_timezone()
     current_date_time = timezone.now().replace(tzinfo=pytz.utc).astimezone(current_tz)
-    today_min = datetime.datetime.combine(current_date_time, datetime.time.min)
-    today_max = datetime.datetime.combine(current_date_time, datetime.time.max)
+    
+    today_max = current_date_time.replace(hour=23, minute=59, second=59, microsecond=0)
+    today_min = current_date_time.replace(hour=00, minute=00, second=00, microsecond=0)
     today_events = profile.company.event_set.filter(due_date_time__range=(today_min, today_max))
     
-    tom_min = datetime.datetime.combine(current_date_time + datetime.timedelta(days=1), datetime.time.min)
-    tom_max = datetime.datetime.combine(current_date_time + datetime.timedelta(days=1), datetime.time.max)    
-    tomorrow_events = profile.company.event_set.filter(due_date_time__range=(tom_min, tom_max))
+    tomorrow_events = profile.company.event_set.filter(due_date_time__range=(today_min + datetime.timedelta(days=1), today_max + datetime.timedelta(days=1)))
     
     today = current_date_time
     start_week = today - datetime.timedelta(today.weekday())
     end_week = start_week + datetime.timedelta(6)
-    week_min = datetime.datetime.combine(start_week, datetime.time.min)
-    week_max = datetime.datetime.combine(end_week, datetime.time.max)
+    week_max = end_week.replace(hour=23, minute=59, second=59, microsecond=0)
+    week_min = start_week.replace(hour=00, minute=00, second=00, microsecond=0)    
     this_week_events = profile.company.event_set.filter(due_date_time__range=(week_min, week_max))        
     this_week_events = this_week_events.exclude(pk__in=[item.pk for item in today_events])
     this_week_events = this_week_events.exclude(pk__in=[item.pk for item in tomorrow_events])
                                  
     start_week_next = start_week + datetime.timedelta(7)  
-    end_week_next = end_week + datetime.timedelta(7)
-    week_min = datetime.datetime.combine(start_week_next, datetime.time.min)
-    week_max = datetime.datetime.combine(end_week_next, datetime.time.max)
+    end_week_next = end_week + datetime.timedelta(7)    
+    week_max = end_week_next.replace(hour=23, minute=59, second=59, microsecond=0)
+    week_min = start_week_next.replace(hour=00, minute=00, second=00, microsecond=0)
     next_week_events = profile.company.event_set.filter(due_date_time__range=(week_min, week_max))
     next_week_events = next_week_events.exclude(pk__in=[item.pk for item in today_events])
     next_week_events = next_week_events.exclude(pk__in=[item.pk for item in tomorrow_events])
@@ -1020,7 +1025,13 @@ def contacts_autocomplete(request):
 def opendeal_autocomplete(request):
     if 'query' in request.GET:
         profile, kwargs, fieldname = get_fields_for_autocomplete(request)
-        queryset = all_open_deals(request, profile.company).filter(**kwargs)[:10]
+        q = all_open_deals(request, profile.company)
+        try:        
+            queryset = q.filter(**kwargs)[:10]
+        except:
+            # Foreignkey related fields must folow this pattern
+            if fieldname == 'status':
+                queryset = q.filter(status__deal_status__icontains=request.GET['query'])[:10]
         to_json = prepare_json_for_autocomplete(fieldname, queryset)
         return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')        
     return HttpResponse()

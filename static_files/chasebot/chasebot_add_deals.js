@@ -102,7 +102,7 @@ function fill_emptyX_with_predefined_or_existing_data(selected_id, type, empty_X
 		    
 		    $('#deal_modal_body').children('form').append(empty_X);
 	    	rebind_attach_deals('#deal_modal_body', row);	    	 
-	    	calc_total_price();   
+	    	calc_total_value();   
 	    	validator = validation_rules('#deal_modal_form');	
 	    	$('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row, validator:validator}, add_deal_to_formset);
 	    	$('#deal_modal').find('#deal_modal_confirm_btn').show();
@@ -239,7 +239,7 @@ function rebind_attach_deals(parent, row){
 	var total = $(row).find('#id_deals-TOTAL_FORMS').val();
 	for(i=0;i<=total;i++){
 		$(parent).find('#id_deals-' + i + '-sales_item').chosen({no_results_text: gettext('No results match')});
-		$(parent).find('#id_deals-' + i +  '-total_price').val($(parent).find('#id_deals-' + i +  '-price').val() * $(parent).find('#id_deals-' + i +  '-quantity').val());
+		$(parent).find('#id_deals-' + i +  '-total_value').val($(parent).find('#id_deals-' + i +  '-price').val() * $(parent).find('#id_deals-' + i +  '-quantity').val());
 	}
 }
 

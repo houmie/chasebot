@@ -340,7 +340,7 @@ function create_btn_deals(row){
 			});		
 			
 			rebind_attach_deals('#deal_modal_body', row); //TODO: Recheck later
-			calc_total_price();
+			calc_total_value();
 			$('#deal_modal').find('#modal_h3').text(gettext('Edit Deal'));  
 			$('#delete_deal_table').removeClass('hidden');
 			show_modal('#deal_modal');
@@ -384,7 +384,7 @@ function bind_attach_deal(row){
 		var empty_X = cloneMore('#X div:first', type, row);		
 		$('#deal_modal_body').children('form').append(empty_X);
 		rebind_attach_deals('#deal_modal_body', row);			    	 
-		calc_total_price();	  				 
+		calc_total_value();	  				 
 		
 		$('#deal_modal_body').find('.deal_status').val(1);
 		validator = validation_rules('#deal_modal_form');	
@@ -395,15 +395,15 @@ function bind_attach_deal(row){
 	});	
 }
 
-function calc_total_price(){
+function calc_total_value(){
 	$('#deal_modal_body').find('.quantity').off('change').on('change', calc_totals);
 	$('#deal_modal_body').find('.price').off('change').on('change', calc_totals);
 }
 
 function calc_totals(event){	
-  	var total_price = $('#deal_modal_body').find('.quantity').val() * $('#deal_modal_body').find('.price').val();
-	total_price = (Math.round(total_price*100)/100);
-	$('#deal_modal_body').find('.total_price').val(total_price); 
+  	var total_value = $('#deal_modal_body').find('.quantity').val() * $('#deal_modal_body').find('.price').val();
+	total_value = (Math.round(total_value*100)/100);
+	$('#deal_modal_body').find('.total_value').val(total_value); 
 }
 
 //Currently used by Conversations & sales items
@@ -545,11 +545,7 @@ function typeahead_opendeal_status(query, process){
 	autocomplete(query, process, 'open_deals', 'status', '')
 };
 
-function typeahead_opendeal_last_contacted(query, process){
-	autocomplete(query, process, 'open_deals', 'last_contacted', '')
-};
-
-function typeahead_opendeal_total_price(query, process){
+function typeahead_opendeal_total_value(query, process){
 	autocomplete(query, process, 'open_deals', 'total_value', '')
 };
 
@@ -808,7 +804,7 @@ function negotiate_deal(event){
 		$(this).get(0).setAttribute("action", url);
 		datepicker_reload('#deal_modal_body', false);		
 		chosenify_field('#id_sales_item', '#deal_modal_body');		
-		calc_total_price();
+		calc_total_value();
 		$('#deal_modal').find('#modal_h3').text(gettext('Negotiate Deal'));
 		$('#modal_icon').html('<i class="icon-phone"></i>');
 		$(this).submit({modal:'#deal_modal', form:$(this)}, negotiate_deal_submit);	
@@ -841,14 +837,14 @@ function negotiate_deal_submit(event){
       		 
        		 chosenify_field('#id_sales_item', '#deal_modal_body');
        		 datepicker_reload('#deal_modal_body', false);
-       		 calc_total_price();  		
+       		 calc_total_value();  		
     	}
     	else {
     		//if there is no error then insert the added row before the current add-button row. (last row)
     		$(modal).modal('hide');    		
     		$('#tab_open_deals').empty();
     		$('#tab_open_deals').append(result);
-    		rebind_open_deals();		      		      		
+    		rebind_open_deals(false);		      		      		
     	}
   	});
 }
@@ -1229,7 +1225,7 @@ function tab_open_deals_clicked(deal_id){
 	$('#deal_modal_body').empty();
 	$('#tab_todo').empty();
 	$('#tab_open_deals').load('open_deals/', function(result){				
-		rebind_open_deals();
+		rebind_open_deals(true);
 		if(deal_id){
 			$('#tab_open_deals tbody tr').each(function(index, value){
 				if($(this).find('#open_deal_uuid').text() == deal_id)
@@ -1242,9 +1238,8 @@ function tab_open_deals_clicked(deal_id){
 	bind_main_tabs('tab_open_deals');
 	$('#sidebar').load('sidebar/open_deals/', function(result){
 		$('#sidebar').find(".typeahead_opendeal_deal_name").typeahead({ source: typeahead_opendeal_deal_name });
-		$('#sidebar').find(".typeahead_opendeal_status").typeahead({ source: typeahead_opendeal_status });
-		$('#sidebar').find(".typeahead_opendeal_last_contacted").typeahead({ source: typeahead_opendeal_last_contacted });
-		$('#sidebar').find(".typeahead_opendeal_total_price").typeahead({ source: typeahead_opendeal_total_price });
+		$('#sidebar').find(".typeahead_opendeal_status").typeahead({ source: typeahead_opendeal_status });		
+		$('#sidebar').find(".typeahead_opendeal_total_value").typeahead({ source: typeahead_opendeal_total_value });
 		rebind_filters('#sidebar', rebind_open_deals);
 		$("<img />", {class: 'funnel', src: $.chasebot.STATIC_URL + 'img/funnel.png'}).load(function(){
 			var h4 = $('<h4 />', {class: 'funnel'}).append(gettext('Sales Funnel'));
@@ -1280,8 +1275,9 @@ function rebind_event_tick(){
 }
 
 
-function rebind_open_deals(){
-	sort_table('#open_deal_table','#open_deal_tabs');
+function rebind_open_deals(load_sorttable){
+	if(load_sorttable)
+		sort_table('#open_deal_table','#open_deal_tabs');
 	
 	$('#tab_open_deals tbody tr').off('click').on('click', function(){
 			var clicked_on_same_row = false;

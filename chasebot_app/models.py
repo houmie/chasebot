@@ -223,7 +223,7 @@ class Deal(models.Model):
     currency            = models.ForeignKey(Currency)
     sales_term          = models.ForeignKey(SalesTerm)
     quantity            = models.PositiveIntegerField(_(u'Quantity'))
-    total_price         = models.DecimalField(_(u'Total'), decimal_places=2, max_digits=12, validators=[MinValueValidator(0.01)], blank=True, null=True)
+    total_value         = models.DecimalField(_(u'Total'), decimal_places=2, max_digits=12, validators=[MinValueValidator(0.01)], blank=True, null=True)
     company             = models.ForeignKey(Company)
     
     def __unicode__(self):
@@ -233,7 +233,7 @@ class Deal(models.Model):
     def save(self, *args, **kwargs):
         if self.deal_template:
             self.deal_template_name = self.deal_template.deal_name
-        self.total_price = self.quantity * self.price
+        self.total_value = self.quantity * self.price
         super(Deal, self).save(*args, **kwargs) # Call the "real" save() method.
     
     class Meta:

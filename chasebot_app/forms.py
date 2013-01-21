@@ -239,8 +239,8 @@ class OpenDealTaskForm(Form):
 class FilterOpenDealForm(Form):            
     deal_instance_name = forms.CharField(widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_opendeal_deal_name', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=40)    
     status          = forms.ModelChoiceField(queryset=DealStatus.objects.all(), widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_opendeal_status', 'autocomplete': 'off', 'data-provide': 'typeahead'}))    
-    last_contacted  = forms.DateField(widget = forms.DateInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_opendeal_last_contacted', 'autocomplete': 'off', 'data-provide': 'typeahead'}))
-    total_value     = forms.DecimalField(widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_opendeal_total_price', 'autocomplete': 'off', 'data-provide': 'typeahead'}))
+    last_contacted  = forms.DateField(widget = forms.DateInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query', 'autocomplete': 'off'}))
+    total_value     = forms.DecimalField(widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_opendeal_total_value', 'autocomplete': 'off', 'data-provide': 'typeahead'}))
 
 
 
@@ -254,7 +254,7 @@ class FilterDealTemplateForm(Form):
     price               = forms.DecimalField(widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_deals_price', 'autocomplete': 'off', 'data-provide': 'typeahead'}))
     sales_term          = forms.ModelChoiceField(queryset=SalesTerm.objects.all(), widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_deals_sales_term', 'autocomplete': 'off', 'data-provide': 'typeahead'}))
     quantity            = forms.IntegerField(widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_deals_quantity', 'autocomplete': 'off', 'data-provide': 'typeahead'})) 
-    total_price         = forms.DecimalField(widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_deals_price', 'autocomplete': 'off', 'data-provide': 'typeahead'}))
+    total_value         = forms.DecimalField(widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_deals_price', 'autocomplete': 'off', 'data-provide': 'typeahead'}))
 
 
 class DealTemplateForm(ModelForm):    
@@ -300,14 +300,14 @@ class DealForm(ModelForm):
         self.fields['deal_template_name'].widget.attrs.update({'readonly' : 'True'})
         self.fields['deal_template'].widget.attrs['class'] = 'hidden'        
         self.fields['deal_description'].widget.attrs['class'] = 'cb_deal_description'
-        self.fields['total_price'].widget.attrs['class'] = 'boxes_7em total_price'
-        self.fields['total_price'].widget.attrs['readonly'] = 'True'
+        self.fields['total_value'].widget.attrs['class'] = 'boxes_7em total_value'
+        self.fields['total_value'].widget.attrs['readonly'] = 'True'
         
     
     class Meta:
         model = Deal
         fields = {'deal_template', 'deal_template_name', 'deal_instance_name', 'status', 
-                  'deal_description', 'sales_item', 'price', 'currency', 'sales_term', 'quantity', 'total_price'}
+                  'deal_description', 'sales_item', 'price', 'currency', 'sales_term', 'quantity', 'total_value'}
         
 class DealNegotiateForm(DealForm):
     call_notes = forms.CharField(widget = forms.Textarea(attrs={'placeholder': _(u'What did you discuss with the customer?'), 'class' : 'cb_notes_maxwidth textarea_mandatory'}))
