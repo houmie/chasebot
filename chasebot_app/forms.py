@@ -148,6 +148,22 @@ class ConversationForm(ModelForm):
         widgets = {                    
                     'notes': forms.Textarea(attrs={'placeholder': _(u'Add relevant notes...'), 'class' : 'cb_notes_maxwidth'}),                                      
                    }
+
+    def clean(self):
+        cleaned_data = super(ConversationForm, self).clean()
+        if 'conversation_date' in self.cleaned_data and 'conversation_time' in self.cleaned_data:
+            call_date = self.cleaned_data['conversation_date']
+            call_time = self.cleaned_data['conversation_time']
+    
+            current_tz = timezone.get_current_timezone() 
+            date_time = current_tz.localize(datetime.datetime(call_date.year, call_date.month, call_date.day, call_time.hour, call_time.minute))
+            if date_time.date() > timezone.now().replace(tzinfo=pytz.utc).astimezone(current_tz).date():            
+                self._errors["conversation_date"] = self.error_class([_(u'A conversation date can not take place in future.')])
+                del cleaned_data['conversation_date']
+            if date_time.time() > timezone.now().replace(tzinfo=pytz.utc).astimezone(current_tz).time():
+                self._errors["conversation_time"] = self.error_class([_(u'A conversation time can not take place in future.')])            
+                del cleaned_data['conversation_time']        
+        return cleaned_data
     
     def get_non_open_deals(self, call, company):
         open_deals = call.contact.get_raw_open_deals()
@@ -411,8 +427,9 @@ class TaskForm(ModelForm):
                 }
         
         
-class EventForm(ModelForm):
-    due_time  = forms.TimeField(localize=True)
+class EventForm(ModelForm):    
+    due_time  = forms.TimeField(localize=True)    
+    due_datetime = forms.DateField(label='Date', localize=True, widget=forms.DateInput(attrs={'placeholder': _(u'When is this event due?'), 'class':'placeholder_fix_css date_picker event_date', 'autocomplete':'off'}))        
     contact_text  = forms.CharField(max_length=81, label = _(u'Contact person'), required= False) 
     
 
@@ -431,8 +448,8 @@ class EventForm(ModelForm):
         self.fields['due_time'].widget.attrs['placeholder'] = _(u'What time?')
         self.fields['due_time'].widget.attrs['autocomplete'] = 'off'
         #If the date_time is set, it means the form is in edit mode, and we edit the existing time value 
-        if self.instance.due_date_time:
-            local_tz = timezone.get_current_timezone()
+        local_tz = timezone.get_current_timezone()
+        if self.instance.due_date_time:            
             #Convert the UTC date_time into currenct time zone
             self.fields['due_time'].initial = self.instance.due_date_time.replace(tzinfo=pytz.utc).astimezone(local_tz).time()  
         else:            
@@ -440,7 +457,11 @@ class EventForm(ModelForm):
         #Todo: refactor
         deal = Deal.objects.filter(deal_id = self.instance.deal_id)[0]        
         self.fields['contact_text'].initial = u'{0} {1}'.format(deal.contact.first_name, deal.contact.last_name)
-        self.fields['contact_text'].widget.attrs['readonly'] = True
+        self.fields['contact_text'].widget.attrs['readonly'] = True       
+        if self.instance.pk: 
+            self.fields['due_datetime'].initial = self.instance.due_date_time.replace(tzinfo=pytz.utc).astimezone(local_tz).date()
+        #self.fields['due_date_time'].localize=True
+        #self.fields['due_date_time'].widget.is_localized = True
     
     def clean_due_time(self):            
         due_time = self.cleaned_data['due_time']
@@ -448,8 +469,8 @@ class EventForm(ModelForm):
         if self.instance.pk:
             return due_time
         
-        if 'due_date_time' in self.cleaned_data:
-            due_date_time = self.cleaned_data['due_date_time']
+        if 'due_datetime' in self.cleaned_data:
+            due_date_time = self.cleaned_data['due_datetime']
         else:
             return due_time
         
@@ -465,8 +486,8 @@ class EventForm(ModelForm):
     def save(self, commit=True):
         instance = super(EventForm, self).save(commit=False)
         # Always localize the entered date by user into his timezone before saving it to database
-        if 'due_date_time' in self.cleaned_data and 'due_time' in self.cleaned_data:
-            due_date_time = self.cleaned_data['due_date_time']
+        if 'due_datetime' in self.cleaned_data and 'due_time' in self.cleaned_data:
+            due_date_time = self.cleaned_data['due_datetime']
             due_time = self.cleaned_data['due_time']
             current_tz = timezone.get_current_timezone()            
             instance.due_date_time = current_tz.localize(datetime.datetime(due_date_time.year, due_date_time.month, due_date_time.day, due_time.hour, due_time.minute, 0, 0))
@@ -474,13 +495,27 @@ class EventForm(ModelForm):
             instance.save()
         return instance
     
+    def clean(self):
+        cleaned_data = super(EventForm, self).clean()
+        if 'due_datetime' in self.cleaned_data and 'due_time' in self.cleaned_data:
+            due_date_time = self.cleaned_data['due_datetime']        
+            due_time = self.cleaned_data['due_time']
+            current_tz = timezone.get_current_timezone() 
+            date_time = current_tz.localize(datetime.datetime(due_date_time.year, due_date_time.month, due_date_time.day, due_time.hour, due_time.minute))
+            if date_time.date() < timezone.now().replace(tzinfo=pytz.utc).astimezone(current_tz).date():            
+                self._errors["due_datetime"] = self.error_class([_(u'An event date can not take place in the past.')])
+                del cleaned_data['due_datetime']
+            if date_time.time() < timezone.now().replace(tzinfo=pytz.utc).astimezone(current_tz).time():            
+                self._errors["due_time"] = self.error_class([_(u'An event time can not take place in the past.')])
+                del cleaned_data['due_time']
+        return cleaned_data
     
     class Meta:
         model = Event
-        exclude = {'reminder_date_time', 'company', 'user'}
+        exclude = {'reminder_date_time', 'company', 'user', 'due_date_time'}
         widgets={                    
                     'reminder' : forms.Select(attrs={'class':'placeholder_fix_css event_reminder'}),
-                    'due_date_time': forms.DateInput(attrs={'placeholder': _(u'When is this event due?'), 'class':'placeholder_fix_css date_picker event_date', 'autocomplete':'off'}),
+                    
                     'notes': forms.Textarea(attrs={'placeholder': _(u'What do you have to do to win this deal?'), 'class':'placeholder_fix_css textarea_15em', 'autocomplete':'off'}),                    
                 }
   

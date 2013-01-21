@@ -501,7 +501,9 @@ def conversation_add_edit(request, contact_id, call_id=None):
     
     #The extra deal formset will always be independent of POST/GET since its hidden and remains empty as a starting point for cloning
     extra_deal_formset = extra_deal_formset_factory(prefix='extra_deal')
-    variables = {'form':form, 'template_title':template_title, 'deals_add_form':deals_add_form, 'opendeals_add_form':opendeals_add_form, 'attached_deals_formset':attached_deals_formset, 'contact_id':contact.pk, 'call_id':call_id, 'extra_deal_formset':extra_deal_formset, 'validation_error_ajax':validation_error_ajax }    
+    current_tz = timezone.get_current_timezone(); 
+    user_date = timezone.now().replace(tzinfo=pytz.utc).astimezone(current_tz)
+    variables = {'form':form, 'template_title':template_title, 'deals_add_form':deals_add_form, 'opendeals_add_form':opendeals_add_form, 'attached_deals_formset':attached_deals_formset, 'contact_id':contact.pk, 'call_id':call_id, 'extra_deal_formset':extra_deal_formset, 'validation_error_ajax':validation_error_ajax, 'user_date':user_date }    
     #if call_id:
     return render(request, '_conversation_edit.html', variables)      
     #return render(request, '_conversation.html', variables)
@@ -649,8 +651,9 @@ def event_add_edit(request, open_deal_id=None, event_id=None):
             validation_error_ajax = True
     else:        
         form = EventForm(instance=event, prefix='form')
-
-    variables = {'form':form, 'template_title':template_title, 'validation_error_ajax':validation_error_ajax }       
+    current_tz = timezone.get_current_timezone();
+    user_date = timezone.now().replace(tzinfo=pytz.utc).astimezone(current_tz)
+    variables = {'form':form, 'template_title':template_title, 'validation_error_ajax':validation_error_ajax, 'user_date':user_date }       
     return render(request, 'event.html', variables)
 
 @login_required

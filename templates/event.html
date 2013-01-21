@@ -11,10 +11,12 @@
 		    		{% csrf_token %}
 			    	<div class="parent">	    	
 				    	<div class="well">				    		
-				    		{% show_row_div form.due_date_time ignore_error_text=True %}
+				    		{% show_row_div form.due_datetime ignore_error_text=True %}
+				    		<div class="field field_error">{{form.due_datetime.errors}}</div>
 				    		{% show_row_time_div form.due_time %}
 				    		{% show_row_div form.reminder %}
-				    	</div>
+				    	</div>				    	
+				    	
 				    	<div>
 				    		{% show_row_div form.notes %}
 				    		{% show_row_div form.type %}							    									    		
@@ -42,5 +44,6 @@
 		    </div>
 		</div>
 	</div>
-	<div class="hidden" id="validation_error_ajax">{{validation_error_ajax}}</div>	
+	<div class="hidden" id="validation_error_ajax">{{validation_error_ajax}}</div>
+	<div class="hidden" id="user_date">{{user_date}}</div>	
 </div>

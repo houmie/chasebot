@@ -661,15 +661,16 @@ function bind_rating_form(){
 
 function datepicker_reload(source, isPast){
 	var options = { format: $('#locale').text(), 
-            weekStart:1, 
-            calendarWeeks:'True',   
+            weekStart:1,               
             autoclose: 'True', 
             todayHighlight: 'True'  };
-
+	
+	var d = new Date();
 	if(isPast)
-   		options["endDate"] = new Date();
+   		options["endDate"] = $('#user_date').text();
 	else		
-   		options["startDate"] = new Date();
+   		options["startDate"] = $('#user_date').text(); 
+   		//new Date(d.setDate(d.getDate() - 1));
 	            
     $(source).find('.date_picker').datepicker(options);
     
@@ -734,18 +735,18 @@ function rebind_new_conversation(parent){
 function new_conversation(event){
 	event.preventDefault();
 	if($(this).hasClass('active')){
-		$('#new_conversation_div').empty();		
+		$('#new_conversation_id').remove();		
 		return;
 	}
+	
 	var contact_id = $('#contact_id').text();
 	var url = '/contact/' + contact_id + '/call/add/';
-	var row = $('<tr/>');
+	var row = $('<tr/>', {id: 'new_conversation_id'});
 	row.load(url, function(result){
 		$('#search_result').prepend(row);
   		reload_edit_save_cancel_buttons($(row), url, true);  		
-  		bind_attach_deal(row);
-		datepicker_reload('#new_conversation_div', true);			
-	});		
+  		bind_attach_deal(row);			
+	});
 }
 
 // function edit_new_task(event){	
@@ -1095,12 +1096,12 @@ function bind_sales_item_btn(){
 		});
 }
 
-function rebind_conversations(){
-	var source = '#tab_contacts';
+function rebind_conversations(source){
+	//var source = '#tab_contacts';
 	var target = '#search_result';	
 	rebind_ratings($('#business_card_modal'));	
 	rebind_delete_paginator(source, target, rebind_conversations);
-	$(source).find(".row_edit_ajax").off('click').on('click', row_edit_ajax);
+	$(source).find(".row_edit_ajax").off('click').on('click',{source:source}, row_edit_ajax);
 	$('.back2contacts').off('click').on('click', function(event){
 		event.preventDefault();
 		tab_contacts_clicked();
@@ -1332,7 +1333,7 @@ function conversation_clicked(event){
 			rebind_filters('#sidebar', rebind_conversations);
 			datepicker_reload('#sidebar', true);
 		});	
-		rebind_conversations();
+		rebind_conversations('#tab_contacts');
 	});
 }
 
