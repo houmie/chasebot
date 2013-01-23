@@ -71,6 +71,15 @@ td.center_cb{
     vertical-align: middle; /* center checkbox vertically */
 }
 
+.center_content{	
+	margin: 0 auto;
+}
+
+input.demo-input{
+	padding: 10px;
+}
+
+
 
 .btn-success2, .btn-success2:hover {
     color: #333333;

@@ -8,8 +8,8 @@
 	    </td>
 	    <td class="cb_notes">{{event.notes}}</td>
 		<td><span class="badge badge-inverse">{{event.type}}</span></td>		
-		<td>{{event.due_date_time|date:"DATE_FORMAT"}}</td>
-		<td>{{event.due_date_time|time:"TIME_FORMAT"}}</td>
+		<td class="minwidth_6em">{{event.due_date_time|date:"DATE_FORMAT"}}</td>
+		<td class="minwidth">{{event.due_date_time|time:"TIME_FORMAT"}}</td>
 		<td><span class="badge badge-warning">{{event.reminder}}</span></td>				
 	</tr>
 {% endfor %}

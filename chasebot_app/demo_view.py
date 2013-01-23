@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from chasebot_app.models import Company, DealStatus, SalesTerm,\
     LicenseTemplate, MaritalStatus, \
-    Currency
+    Currency, Event
 from chasebot_app.models import UserProfile
 from django.utils.translation import ugettext as _
 from django.db.models.aggregates import Max
@@ -313,6 +313,17 @@ def demo_continue(request, username, password, email, time_zone):
         deal2.sales_item.add(item)
     deal2.save()
     
+    event = c3.event_set.create(
+                        type="call",
+                        due_date_time = timezone.now() + timezone.timedelta(days=1, hours=3),
+                        reminder = "none", 
+                        is_public = False,
+                        deal_id=deal2.deal_id,                  
+                        company=profile.company, 
+                        user=request.user, 
+                        notes=_(u'Need to make a follow up call tomorrow. Prepare data about health and nutritions of the lunch deal package to be convincing.')
+                        )
+    
     call1 = c4.conversation_set.create(conversation_datetime=timezone.now() - timezone.timedelta(days=8, hours=3), notes=_(u'%(name)s has a new fashion shop and might be interested in our quality shirts and ties as a package.') % {'name' : 'Michael'})
   
     deal1 = c4.deal_set.create(
@@ -385,7 +396,7 @@ def demo_continue(request, username, password, email, time_zone):
                         deal_instance_name=cotton.deal_name + u'- Entry Deal',
                         company = profile.company,
                         deal_description = cotton.deal_description,
-                        price = cotton.price - 200,
+                        price = cotton.price,
                         currency = cotton.currency,                
                         sales_term = cotton.sales_term,
                         quantity = cotton.quantity                                                                    
@@ -394,7 +405,18 @@ def demo_continue(request, username, password, email, time_zone):
         deal1.sales_item.add(item)
     deal1.save()
     
-    call2 = c5.conversation_set.create(conversation_datetime=timezone.now(), notes=_(u'%(name)s doesn\'t need the 10 cotton saws. I agreed to remove it from the package and offer a 25%% discount. He needs now some time to think about it.') % {'name' : 'Harry'})
+    event = c5.event_set.create(
+                        type="call",
+                        due_date_time = timezone.now() + timezone.timedelta(days=1, hours=1),
+                        reminder = "none", 
+                        is_public = False,
+                        deal_id=deal1.deal_id,                  
+                        company=profile.company, 
+                        user=request.user, 
+                        notes=_(u'Need to prepare a chart about the effiency of the machine and send it by email to be more convincing in the next follow up call.')
+                        )
+    
+    call2 = c5.conversation_set.create(conversation_datetime=timezone.now(), notes=_(u'%(name)s doesn\'t need the 10 cotton saws. I agreed to remove it from the package and offer a 20%% discount. He needs now some time to think about it.') % {'name' : 'Harry'})
     deal2 = c5.deal_set.create(
                         deal_id=deal1.deal_id,
                         conversation = call2,
@@ -405,7 +427,7 @@ def demo_continue(request, username, password, email, time_zone):
                         deal_instance_name=deal1.deal_instance_name,
                         company = profile.company,
                         deal_description = deal1.deal_description,
-                        price = deal1.price - deal1.price * 0.25,
+                        price = deal1.price - deal1.price * 0.20,
                         currency = deal1.currency,                
                         sales_term = deal1.sales_term,
                         quantity = deal1.quantity                                                                    
@@ -634,7 +656,18 @@ def demo_continue(request, username, password, email, time_zone):
         deal1.sales_item.add(item)
     deal1.save()
     
-    call2 = c9.conversation_set.create(conversation_datetime=call1.conversation_datetime + timezone.timedelta(days=1, hours=4), notes=_(u'%(name)s doesn\'t need the 10 cotton saws. I agreed to remove it from the package and offer a 25%% discount. He needs now some time to think about it.') % {'name' : 'William'})
+    event = c9.event_set.create(
+                        type="email",
+                        due_date_time = timezone.now() + timezone.timedelta(days=2, hours=3),
+                        reminder = "2h", 
+                        is_public = False,
+                        deal_id=deal1.deal_id,                  
+                        company=profile.company, 
+                        user=request.user, 
+                        notes=_(u'Deal is nearly closed. Bill is happy about the deal and need to clarify date of delivery. I should call him back a bit later in the week.')
+                        )
+    
+    call2 = c9.conversation_set.create(conversation_datetime=call1.conversation_datetime + timezone.timedelta(days=1, hours=4), notes=_(u'%(name)s doesn\'t need the 10 cotton saws. I agreed to remove it from the package and offer a 10%% discount. He needs now some time to think about it.') % {'name' : 'William'})
     deal2 = c9.deal_set.create(
                         deal_id=deal1.deal_id,
                         conversation = call2,
@@ -645,7 +678,7 @@ def demo_continue(request, username, password, email, time_zone):
                         deal_instance_name=deal1.deal_instance_name,
                         company = profile.company,
                         deal_description = deal1.deal_description,
-                        price = deal1.price - deal1.price * 0.25,
+                        price = deal1.price - deal1.price * 0.10,
                         currency = deal1.currency,                
                         sales_term = deal1.sales_term,
                         quantity = deal1.quantity                                                                    
@@ -802,7 +835,7 @@ def demo_continue(request, username, password, email, time_zone):
                         status=DealStatus.objects.get(pk=1),                         
                         deal_template=holiday,
                         deal_template_name=holiday.deal_name,
-                        deal_instance_name=holiday.deal_name + u'- Elaborate',
+                        deal_instance_name=holiday.deal_name + u'- 5 Star',
                         company = profile.company,
                         deal_description = holiday.deal_description,
                         price = holiday.price,        
@@ -813,6 +846,17 @@ def demo_continue(request, username, password, email, time_zone):
     for item in holiday.sales_item.all():
         deal1.sales_item.add(item)
     deal1.save()
+    
+    event = c12.event_set.create(
+                        type="email",
+                        due_date_time = timezone.now() + timezone.timedelta(days=3, hours=2),
+                        reminder = "none", 
+                        is_public = False,
+                        deal_id=deal1.deal_id,                  
+                        company=profile.company, 
+                        user=request.user, 
+                        notes=_(u'Customer needs a few days to discuss it with the staff. I should prepare a few photos of the holiday resort to convince him.')
+                        )
     
     call2 = c12.conversation_set.create(conversation_datetime=call1.conversation_datetime + timezone.timedelta(days=4, hours=3), notes=_(u'%(name)s would commit if there is a discount of 5%% on the deal.') % {'name' : 'Kaylee'})
     deal2 = c12.deal_set.create(
@@ -873,6 +917,17 @@ def demo_continue(request, username, password, email, time_zone):
     for item in shirt.sales_item.all():
         deal1.sales_item.add(item)
     deal1.save()
+    
+    event = c13.event_set.create(
+                        type="call",
+                        due_date_time = timezone.now() + timezone.timedelta(days=0, hours=2),
+                        reminder = "none", 
+                        is_public = False,
+                        deal_id=deal1.deal_id,                  
+                        company=profile.company, 
+                        user=request.user, 
+                        notes=_(u'Need to make a follow up call later today. Prepare a 5% discount in case there is a hesitation.')
+                        )
     
 #    call2 = c13.conversation_set.create(conversation_datetime=call1.conversation_datetime + timezone.timedelta(days=4, hours=1), notes=_(u'I offered him a discount of 5%%. %(name)s will consider the offer and needs some time to think about it.') % {'name' : 'Tamara'})
 #    deal2 = c13.deal_set.create(

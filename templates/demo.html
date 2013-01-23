@@ -3,93 +3,28 @@
 {% block external %}
 {% endblock %}
 {% block title %}{{ template_title }}{% endblock %}
-{% block head %}<i class="icon-beaker"></i> {% trans "Welcome to Chasebot live demo" %}{% endblock %}
+{% block head %}{% endblock %}
 {% block content %}
-
-<h5>{% trans 'Simply enter a memorable username, password and your email to continue:' %}</h5>
-
-<form id="form_demo" class="cb_margin_top" method="post" action=".">
-    <table class="table no_border_table demo_table table-condensed">
-    	<tr>
-    		<td>
-    			{{ form.username.label }}:    			
-    		</td>
-    		<td>
-    			{% if form.username.errors %}
-					<div class="field field_error cb_inline">
-						{{ form.username }}	{{ form.username.errors }}	
-					</div>
-				{% else %}
-					{{form.username}}
-				{% endif %}
-    		</td>
-    	</tr>    	
-    	<tr>
-    		<td>
-    			{{ form.email.label }}:
-    		</td>
-    		<td>
-    			{% if form.email.errors %}
-				<div class="field field_error cb_inline">
-			    	{{form.email}} {{form.email.errors}}                   	
+<div class="row-fluid">
+	<div class="span6 offset3">
+		<h1>{% trans 'Get Started with a Beta demo' %}</h1>
+		<h3>{% trans 'Sign up in 30 seconds. No credit card required.' %}</h3>
+	</div>
+    <div class="span6 offset3">    	
+		<form id="form_demo" class="cb_margin_top" method="post" action=".">
+			<div class="parent">	    	
+				<div class="well well-large">	
+					{% show_row_div form.username %}	
+					{% show_row_div form.email %}
+					{% show_row_div form.password %}
+					{% show_row_div form.password2 %}
+					{% show_row_div form.timezone %}
+						
+	    			<a id="demo-button" autocomplete="off" class="btn btn-primary btn-large right-aligned">{% trans 'Start Free Demo' %}</a>    			
 				</div>
-				{% else %}
-					{{form.email}}
-				{% endif %}    			
-    		</td>
-    	</tr>
-    	<tr>
-    		<td>
-    			{{ form.password.label }}:
-    		</td>
-    		<td>
-    			{% if form.password.errors %}
-				<div class="field field_error cb_inline">
-			    	{{form.password}} {{form.password.errors}}                   	
-				</div>
-				{% else %}
-					{{form.password}}
-				{% endif %}    			
-    		</td>
-    	</tr>
-    	<tr>
-    		<td>
-    			{{ form.password2.label }}:
-    		</td>
-    		<td>
-    			{% if form.password2.errors %}
-				<div class="field field_error cb_inline">
-			    	{{form.password2}} {{form.password2.errors}}                   	
-				</div>
-				{% else %}
-					{{form.password2}}
-				{% endif %}    			
-    		</td>
-    	</tr>
-    	<tr>
-    		<td>
-    			{{ form.timezone.label }}:
-    		</td>
-    		<td>
-    			{% if form.timezone.errors %}
-				<div class="field field_error cb_inline">
-			    	{{form.timezone}} {{form.timezone.errors}}                   	
-				</div>
-				{% else %}
-					{{form.timezone}}
-				{% endif %}    			
-    		</td>
-    	</tr>
-    	<tr>
-    		<td>
-
-    		</td>
-    		<td>
-    			<input id="demo-button" autocomplete="off" type="submit" class="btn btn-primary" data-loading-text="{% trans 'Loading Demo. Please wait...' %}" value="{% trans 'Start Free Demo' %}"/>    			
-    		</td>
-    	</tr>
-    </table>  
-    
-    {% csrf_token %}
-</form>
+			</div>    
+    		{% csrf_token %}
+		</form>
+	</div>
+</div>
 {% endblock %}

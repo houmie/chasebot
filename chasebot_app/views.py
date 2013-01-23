@@ -9,10 +9,10 @@ from django.shortcuts import get_object_or_404
 from chasebot_app.forms import RegistrationForm, ContactsForm, ConversationForm, SalesItemForm, DealTemplateForm,\
      DealForm, FilterContactsForm, FilterConversationForm, FilterDealTemplateForm, FilterSalesItemForm,\
     DealsAddForm, OpenDealsAddForm, ColleagueInviteForm, OpenDealTaskForm,\
-    TaskForm, EventForm, DealNegotiateForm, FilterOpenDealForm
+    EventForm, DealNegotiateForm, FilterOpenDealForm
 from chasebot_app.models import Company, Contact, Conversation, SalesItem, DealTemplate, Deal, SalesTerm,\
     Invitation, LicenseTemplate, MaritalStatus, \
-    Currency, Task, Event
+    Currency, Event
 from chasebot_app.models import UserProfile 
 from django.utils.translation import ugettext as _, ungettext
 from django.utils import timezone, simplejson

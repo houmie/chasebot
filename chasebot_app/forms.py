@@ -9,7 +9,7 @@ import re
 from django.contrib.auth.models import User
 from django.forms import ModelForm
 from chasebot_app.models import Contact, MaritalStatus, Conversation, SalesItem, DealTemplate, SalesTerm, Deal,\
-    Invitation, Task, Event, DealStatus
+    Invitation, Event, DealStatus
 from django.forms.models import BaseModelFormSet
 from django.utils.translation import ugettext_lazy as _
 import datetime
@@ -17,10 +17,10 @@ import datetime
    
     
 class UserRegistrationForm(Form):
-    username        = forms.CharField(widget=forms.TextInput(attrs={'placeholder': _(u'Enter a memorable username...')}), label = _(u'Username'), max_length=30)
-    email           = forms.EmailField(widget=forms.TextInput(attrs={'placeholder': _(u'Enter your email address...')}), label= _(u'Email'))
-    password        = forms.CharField(label = _(u'Password'), widget=forms.PasswordInput(render_value=False,attrs={'placeholder': _(u'Enter a memorable password...')}))
-    password2       = forms.CharField(label = _(u'Password (retype)'), widget=forms.PasswordInput(render_value=False, attrs={'placeholder': _(u'Retype your password...')}))    
+    username        = forms.CharField(widget=forms.TextInput(attrs={'class':'demo-input', 'placeholder': _(u'Choose a memorable username...')}), label = _(u'Username'), max_length=30)
+    email           = forms.EmailField(widget=forms.TextInput(attrs={'class':'demo-input', 'placeholder': _(u"What's your email address?")}), label= _(u'Email'))
+    password        = forms.CharField(label = _(u'Password'), widget=forms.PasswordInput(render_value=False,attrs={'class':'demo-input', 'placeholder': _(u'Choose a memorable password')}))
+    password2       = forms.CharField(label = _(u'Password (retype)'), widget=forms.PasswordInput(render_value=False, attrs={'class':'demo-input', 'placeholder': _(u'Retype the same password')}))    
     timezone        = forms.ChoiceField(choices=[(x, x) for x in pytz.common_timezones], initial='US/Eastern')
 
     def clean_password2(self):
@@ -363,69 +363,69 @@ class ColleagueInviteForm(ModelForm):
         fields = {'name', 'email'}
             
 
-class TaskForm(ModelForm):
-    due_time  = forms.TimeField(localize=True)
-    contact_text  = forms.CharField(max_length=81, label = _(u'Contact person'), required= False) 
-    
-
-    def round_time_to_nearest_quarter(self):
-        #form is in Add mode., hence we just pick the currenct date_time as base.
-        current_tz = timezone.get_current_timezone() 
-        time_close_to_quarter = timezone.now().replace(tzinfo=pytz.utc).astimezone(current_tz)
-        # Time difference to 15 min round 
-        time_discard = datetime.timedelta(minutes=time_close_to_quarter.time().minute % 15, seconds=time_close_to_quarter.second) 
-        # Deduct that difference from the current time to round it down to nearest quarter.
-        time_close_to_quarter -= time_discard
-        return time_close_to_quarter
-
-    def __init__(self, *args, **kwargs):
-        super(TaskForm, self).__init__(*args, **kwargs)
-        self.fields['due_time'].widget.attrs['class'] = 'timepicker-default input-small' 
-        self.fields['due_time'].widget.attrs['placeholder'] = _(u'What time?')
-        self.fields['due_time'].widget.attrs['autocomplete'] = 'off'
-        #If the date_time is set, it means the form is in edit mode, and we edit the existing time value 
-        if self.instance.due_date_time:
-            local_tz = timezone.get_current_timezone()
-            #Convert the UTC date_time into currenct time zone
-            self.fields['due_time'].initial = self.instance.due_date_time.replace(tzinfo=pytz.utc).astimezone(local_tz).time()  
-        else:            
-            self.fields['due_time'].initial = (self.round_time_to_nearest_quarter() +  datetime.timedelta(minutes=30)).time() 
-
-        self.fields['contact_text'].initial = u'{0} {1}'.format(self.instance.contact.first_name, self.instance.contact.last_name)
-        self.fields['contact_text'].widget.attrs['readonly'] = True
-    
-    def clean_due_time(self):
-        due_time = self.cleaned_data['due_time']        
-        current_tz = timezone.get_current_timezone()  
-        due_date_time = timezone.now().replace(tzinfo=pytz.utc).astimezone(current_tz)
-        selected_due_date_time = current_tz.localize(datetime.datetime(due_date_time.year, due_date_time.month, due_date_time.day, due_time.hour, due_time.minute))        
-        
-        # time_close_to_quarter is always rounded down by max 15 min. Hence if the selected due date time is less than equal full 15 min in future, then
-        # there won't be enough time for the system to remind the user, hence it will be rejected. 
-        if selected_due_date_time <= self.round_time_to_nearest_quarter() + datetime.timedelta(minutes=15):
-            raise forms.ValidationError(_(u"The due time of a task has to be set at least 15 minutes in the future."))
-        return due_time
-    
-    def save(self, commit=True):
-        instance = super(TaskForm, self).save(commit=False)
-        # Always localize the entered date by user into his timezone before saving it to database
-        if 'due_date_time' in self.cleaned_data and 'due_time' in self.cleaned_data:
-            due_date_time = self.cleaned_data['due_date_time']
-            due_time = self.cleaned_data['due_time']
-            current_tz = timezone.get_current_timezone()            
-            instance.due_date_time = current_tz.localize(datetime.datetime(due_date_time.year, due_date_time.month, due_date_time.day, due_time.hour, due_time.minute))
-        if commit:
-            instance.save()
-        return instance
-    
-    
-    class Meta:
-        model = Task
-        exclude = {'reminder_date_time', 'company', 'contact', 'user'}
-        widgets={                    
-                    'title' : forms.TextInput(attrs={'placeholder': _(u'What is this task about?'), 'class':'placeholder_fix_css', 'autocomplete':'off'}),
-                    'due_date_time': forms.DateInput(attrs={'placeholder': _(u'When is this task due?'), 'class':'placeholder_fix_css date_picker', 'autocomplete':'off'}),                    
-                }
+#class TaskForm(ModelForm):
+#    due_time  = forms.TimeField(localize=True)
+#    contact_text  = forms.CharField(max_length=81, label = _(u'Contact person'), required= False) 
+#    
+#
+#    def round_time_to_nearest_quarter(self):
+#        #form is in Add mode., hence we just pick the currenct date_time as base.
+#        current_tz = timezone.get_current_timezone() 
+#        time_close_to_quarter = timezone.now().replace(tzinfo=pytz.utc).astimezone(current_tz)
+#        # Time difference to 15 min round 
+#        time_discard = datetime.timedelta(minutes=time_close_to_quarter.time().minute % 15, seconds=time_close_to_quarter.second) 
+#        # Deduct that difference from the current time to round it down to nearest quarter.
+#        time_close_to_quarter -= time_discard
+#        return time_close_to_quarter
+#
+#    def __init__(self, *args, **kwargs):
+#        super(TaskForm, self).__init__(*args, **kwargs)
+#        self.fields['due_time'].widget.attrs['class'] = 'timepicker-default input-small' 
+#        self.fields['due_time'].widget.attrs['placeholder'] = _(u'What time?')
+#        self.fields['due_time'].widget.attrs['autocomplete'] = 'off'
+#        #If the date_time is set, it means the form is in edit mode, and we edit the existing time value 
+#        if self.instance.due_date_time:
+#            local_tz = timezone.get_current_timezone()
+#            #Convert the UTC date_time into currenct time zone
+#            self.fields['due_time'].initial = self.instance.due_date_time.replace(tzinfo=pytz.utc).astimezone(local_tz).time()  
+#        else:            
+#            self.fields['due_time'].initial = (self.round_time_to_nearest_quarter() +  datetime.timedelta(minutes=30)).time() 
+#
+#        self.fields['contact_text'].initial = u'{0} {1}'.format(self.instance.contact.first_name, self.instance.contact.last_name)
+#        self.fields['contact_text'].widget.attrs['readonly'] = True
+#    
+#    def clean_due_time(self):
+#        due_time = self.cleaned_data['due_time']        
+#        current_tz = timezone.get_current_timezone()  
+#        due_date_time = timezone.now().replace(tzinfo=pytz.utc).astimezone(current_tz)
+#        selected_due_date_time = current_tz.localize(datetime.datetime(due_date_time.year, due_date_time.month, due_date_time.day, due_time.hour, due_time.minute))        
+#        
+#        # time_close_to_quarter is always rounded down by max 15 min. Hence if the selected due date time is less than equal full 15 min in future, then
+#        # there won't be enough time for the system to remind the user, hence it will be rejected. 
+#        if selected_due_date_time <= self.round_time_to_nearest_quarter() + datetime.timedelta(minutes=15):
+#            raise forms.ValidationError(_(u"The due time of a task has to be set at least 15 minutes in the future."))
+#        return due_time
+#    
+#    def save(self, commit=True):
+#        instance = super(TaskForm, self).save(commit=False)
+#        # Always localize the entered date by user into his timezone before saving it to database
+#        if 'due_date_time' in self.cleaned_data and 'due_time' in self.cleaned_data:
+#            due_date_time = self.cleaned_data['due_date_time']
+#            due_time = self.cleaned_data['due_time']
+#            current_tz = timezone.get_current_timezone()            
+#            instance.due_date_time = current_tz.localize(datetime.datetime(due_date_time.year, due_date_time.month, due_date_time.day, due_time.hour, due_time.minute))
+#        if commit:
+#            instance.save()
+#        return instance
+#    
+#    
+#    class Meta:
+#        model = Task
+#        exclude = {'reminder_date_time', 'company', 'contact', 'user'}
+#        widgets={                    
+#                    'title' : forms.TextInput(attrs={'placeholder': _(u'What is this task about?'), 'class':'placeholder_fix_css', 'autocomplete':'off'}),
+#                    'due_date_time': forms.DateInput(attrs={'placeholder': _(u'When is this task due?'), 'class':'placeholder_fix_css date_picker', 'autocomplete':'off'}),                    
+#                }
         
         
 class EventForm(ModelForm):    

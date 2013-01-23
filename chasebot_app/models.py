@@ -260,93 +260,93 @@ class Invitation(models.Model):
         send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [self.email])    
 
 
-class Task(models.Model):
-    #The functions below help to deduct the date_time by the selected reminder to determine the real reminder date for the task
-    def subtractMinutes(self, mnt):        
-        return self.due_date_time - datetime.timedelta(minutes=mnt)
-    
-    def subtractHours(self, hrs):        
-        return self.due_date_time - datetime.timedelta(hours=hrs)
-    
-    def subtractDays(self, dys):        
-        return self.due_date_time - datetime.timedelta(days=dys)
-            
-    def calc_reminder(self, x):
-        return {
-            '0m':   self.due_date_time,
-            '5m':   self.subtractMinutes(5),
-            '15m':  self.subtractMinutes(15),
-            '30m':  self.subtractMinutes(30),
-            '1h':   self.subtractHours(1),
-            '2h':   self.subtractHours(2),
-            '12h':  self.subtractHours(12),
-            '1d':   self.subtractDays(1),
-            '2d':   self.subtractDays(2),
-            '1w':   self.subtractDays(7),
-            }.get(x, self.subtractMinutes(15))
-    
-    REMINDER = (
-        ('0m',     _(u'0 minutes before')),
-        ('5m',     _(u'5 minutes before')),
-        ('15m',    _(u'15 minutes before')),
-        ('30m',    _(u'30 minutes before')),
-        ('1h',     _(u'1 hour before')),
-        ('2h',     _(u'2 hours before')),
-        ('12h',    _(u'12 hours before')),
-        ('1d',     _(u'1 day before')),
-        ('2d',     _(u'2 days before')),
-        ('1w',     _(u'1 week before')),        
-    )
-    PRIORITY = (
-        ('2',     _(u'High')),
-        ('1',   _(u'Medium')),
-        ('0',      _(u'Low')),
-    )
-    # Todo: This needs to be a proper table
-    Type = (
-        ('call',     _(u'Call')),
-        ('email',    _(u'Email')),
-        ('fax',      _(u'Fax')),
-        ('lunch',    _(u'Lunch')),
-        ('meeting',  _(u'Meeting')),        
-    )
-    
-    title = models.CharField(max_length=30)
-    type = models.CharField(max_length=7, choices=Type, default='call', blank=True, null=True)
-    due_date_time = models.DateTimeField()
-    reminder_date_time = models.DateTimeField()
-    reminder = models.CharField(max_length=3, choices=REMINDER, default='15m', blank=True, null=True)
-    priority = models.CharField(max_length=1, choices=PRIORITY, default='1', blank=True, null=True)    
-    is_public = models.BooleanField(verbose_name=_(u'Visible to your team?'))
-    contact = models.ForeignKey(Contact, null=True, blank=True)
-    deal_id = UUIDField(null=True, blank=True)
-    company = models.ForeignKey(Company)
-    user = models.ForeignKey(User)
-    
-    def __unicode__(self):
-        return self.title
-    
-    def save(self, *args, **kwargs):
-        self.reminder_date_time = self.calc_reminder(self.reminder)        
-        super(Task, self).save(*args, **kwargs) # Call the "real" save() method.
-    
-    def sendMail(self):
-        subject = u'Task Reminder (Priority: {0})'.format(self.get_priority_display())
-        link = contact_name = deal_name = None        
-        if self.contact:
-            link = 'http://%s/contact/%s/calls' % (settings.SITE_HOST, self.contact.pk)
-            contact_name = u'{0} {1}'.format(self.contact.first_name, self.contact.last_name)
-            if self.deal_id:
-                deal_name = self.contact.get_open_deals_query().get(deal_id = self.deal_id).deal_instance_name
-
-        template = get_template('reminder_email.txt')
-        context = Context({'name': self.user.first_name, 'link': link, 'contact': contact_name, 'deal':deal_name, 'title':self.title, 'communication_type':self.type, 'due_date_time':self.due_date_time})
-        message = template.render(context)
-        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [self.user.email])    
-    
-    class Meta:
-        verbose_name = _(u'Task')
-        verbose_name_plural = _(u'Tasks')
+#class Task(models.Model):
+#    #The functions below help to deduct the date_time by the selected reminder to determine the real reminder date for the task
+#    def subtractMinutes(self, mnt):        
+#        return self.due_date_time - datetime.timedelta(minutes=mnt)
+#    
+#    def subtractHours(self, hrs):        
+#        return self.due_date_time - datetime.timedelta(hours=hrs)
+#    
+#    def subtractDays(self, dys):        
+#        return self.due_date_time - datetime.timedelta(days=dys)
+#            
+#    def calc_reminder(self, x):
+#        return {
+#            '0m':   self.due_date_time,
+#            '5m':   self.subtractMinutes(5),
+#            '15m':  self.subtractMinutes(15),
+#            '30m':  self.subtractMinutes(30),
+#            '1h':   self.subtractHours(1),
+#            '2h':   self.subtractHours(2),
+#            '12h':  self.subtractHours(12),
+#            '1d':   self.subtractDays(1),
+#            '2d':   self.subtractDays(2),
+#            '1w':   self.subtractDays(7),
+#            }.get(x, self.subtractMinutes(15))
+#    
+#    REMINDER = (
+#        ('0m',     _(u'0 minutes before')),
+#        ('5m',     _(u'5 minutes before')),
+#        ('15m',    _(u'15 minutes before')),
+#        ('30m',    _(u'30 minutes before')),
+#        ('1h',     _(u'1 hour before')),
+#        ('2h',     _(u'2 hours before')),
+#        ('12h',    _(u'12 hours before')),
+#        ('1d',     _(u'1 day before')),
+#        ('2d',     _(u'2 days before')),
+#        ('1w',     _(u'1 week before')),        
+#    )
+#    PRIORITY = (
+#        ('2',     _(u'High')),
+#        ('1',   _(u'Medium')),
+#        ('0',      _(u'Low')),
+#    )
+#    # Todo: This needs to be a proper table
+#    Type = (
+#        ('call',     _(u'Call')),
+#        ('email',    _(u'Email')),
+#        ('fax',      _(u'Fax')),
+#        ('lunch',    _(u'Lunch')),
+#        ('meeting',  _(u'Meeting')),        
+#    )
+#    
+#    title = models.CharField(max_length=30)
+#    type = models.CharField(max_length=7, choices=Type, default='call', blank=True, null=True)
+#    due_date_time = models.DateTimeField()
+#    reminder_date_time = models.DateTimeField()
+#    reminder = models.CharField(max_length=4, choices=REMINDER, default='15m', blank=True, null=True)
+#    priority = models.CharField(max_length=1, choices=PRIORITY, default='1', blank=True, null=True)    
+#    is_public = models.BooleanField(verbose_name=_(u'Visible to your team?'))
+#    contact = models.ForeignKey(Contact, null=True, blank=True)
+#    deal_id = UUIDField(null=True, blank=True)
+#    company = models.ForeignKey(Company)
+#    user = models.ForeignKey(User)
+#    
+#    def __unicode__(self):
+#        return self.title
+#    
+#    def save(self, *args, **kwargs):
+#        self.reminder_date_time = self.calc_reminder(self.reminder)        
+#        super(Task, self).save(*args, **kwargs) # Call the "real" save() method.
+#    
+#    def sendMail(self):
+#        subject = u'Task Reminder (Priority: {0})'.format(self.get_priority_display())
+#        link = contact_name = deal_name = None        
+#        if self.contact:
+#            link = 'http://%s/contact/%s/calls' % (settings.SITE_HOST, self.contact.pk)
+#            contact_name = u'{0} {1}'.format(self.contact.first_name, self.contact.last_name)
+#            if self.deal_id:
+#                deal_name = self.contact.get_open_deals_query().get(deal_id = self.deal_id).deal_instance_name
+#
+#        template = get_template('reminder_email.txt')
+#        context = Context({'name': self.user.first_name, 'link': link, 'contact': contact_name, 'deal':deal_name, 'title':self.title, 'communication_type':self.type, 'due_date_time':self.due_date_time})
+#        message = template.render(context)
+#        send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [self.user.email])    
+#    
+#    class Meta:
+#        verbose_name = _(u'Task')
+#        verbose_name_plural = _(u'Tasks')
 
 class Event(models.Model):
     #The functions below help to deduct the date_time by the selected reminder to determine the real reminder date for the task
@@ -363,6 +363,7 @@ class Event(models.Model):
         return {
 #            '0m':   self.due_date_time,
 #            '5m':   self.subtractMinutes(5),
+            'none': None,
             '15m':  self.subtractMinutes(15),
             '30m':  self.subtractMinutes(30),
             '1h':   self.subtractHours(1),
@@ -375,6 +376,7 @@ class Event(models.Model):
             }.get(x, self.subtractHours(2))
     
     REMINDER = (
+        ('none',   _(u'No Reminder Email')),
 #        ('0m',     _(u'0 minutes before')),
 #        ('5m',     _(u'5 minutes before')),
         ('15m',    _(u'15 minutes before')),
@@ -401,8 +403,8 @@ class Event(models.Model):
 
     type = models.CharField(max_length=7, choices=Type, default='call', blank=True, null=True)
     due_date_time = models.DateTimeField()
-    reminder_date_time = models.DateTimeField()
-    reminder = models.CharField(max_length=3, choices=REMINDER, default='2h', blank=True, null=True)    
+    reminder_date_time = models.DateTimeField(blank=True, null=True)
+    reminder = models.CharField(max_length=4, choices=REMINDER, default='2h', blank=True, null=True)    
     is_public = models.BooleanField(verbose_name=_(u'Visible to your team?'))
     contact = models.ForeignKey(Contact)
     deal_id = UUIDField()

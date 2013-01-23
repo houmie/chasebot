@@ -721,9 +721,10 @@ function invite_colleague(event){
 
 
 function demo(event){
-	event.preventDefault();
-	$(this).button('loading');	
-	$('#form_demo').submit();	
+	event.preventDefault();	
+	$(this).addClass('disabled');
+	$(this).html('<i class="icon-spinner icon-spin"></i> Please wait...');	
+	$('#form_demo').submit();		
 }
 
 
