@@ -449,6 +449,7 @@ class EventForm(ModelForm):
         self.fields['due_time'].widget.attrs['class'] = 'timepicker-default input-small' 
         self.fields['due_time'].widget.attrs['placeholder'] = _(u'What time?')
         self.fields['due_time'].widget.attrs['autocomplete'] = 'off'
+        self.fields['type'].widget.attrs['class'] = 'textarea_13em' 
         #If the date_time is set, it means the form is in edit mode, and we edit the existing time value 
         local_tz = timezone.get_current_timezone()
         if self.instance.due_date_time:            
@@ -497,26 +498,27 @@ class EventForm(ModelForm):
     
     def clean(self):
         cleaned_data = super(EventForm, self).clean()
-        if 'due_date' in self.cleaned_data and 'due_time' in self.cleaned_data:
-            due_date = self.cleaned_data['due_date']        
-            due_time = self.cleaned_data['due_time']
-            current_tz = timezone.get_current_timezone()
-            date_time = current_tz.localize(datetime.datetime(due_date.year, due_date.month, due_date.day, due_time.hour, due_time.minute))            
-            current_date_time = timezone.now().replace(tzinfo=pytz.utc).astimezone(current_tz)
-            if date_time.date() < current_date_time.date():            
-                self._errors["due_date"] = self.error_class([_(u'An event date can not take place in the past.')])
-                del cleaned_data['due_date']
-            if date_time.time() < current_date_time.time():            
-                self._errors["due_time"] = self.error_class([_(u'An event time can not take place in the past.')])
-                del cleaned_data['due_time']
+        if not self.instance.pk:
+            if 'due_date' in self.cleaned_data and 'due_time' in self.cleaned_data:
+                due_date = self.cleaned_data['due_date']        
+                due_time = self.cleaned_data['due_time']
+                current_tz = timezone.get_current_timezone()
+                date_time = current_tz.localize(datetime.datetime(due_date.year, due_date.month, due_date.day, due_time.hour, due_time.minute))            
+                current_date_time = timezone.now().replace(tzinfo=pytz.utc).astimezone(current_tz)
+                if date_time.date() < current_date_time.date():            
+                    self._errors["due_date"] = self.error_class([_(u'An event date can not take place in the past.')])
+                    del cleaned_data['due_date']
+                if date_time.time() < current_date_time.time():            
+                    self._errors["due_time"] = self.error_class([_(u'An event time can not take place in the past.')])
+                    del cleaned_data['due_time']
         return cleaned_data
     
     class Meta:
         model = Event
-        exclude = {'reminder_date_time', 'company', 'user', 'due_date_time'}
+        exclude = {'reminder_date_time', 'company', 'user', 'due_date_time', 'contact'}
         widgets={                    
                     'reminder' : forms.Select(attrs={'class':'placeholder_fix_css event_reminder'}),
                     
-                    'notes': forms.Textarea(attrs={'placeholder': _(u'What do you have to do to win this deal?'), 'class':'placeholder_fix_css textarea_15em', 'autocomplete':'off'}),                    
+                    'notes': forms.Textarea(attrs={'placeholder': _(u'What do you have to do to win this deal?'), 'class':'placeholder_fix_css textarea_13em', 'autocomplete':'off'}),                    
                 }
   

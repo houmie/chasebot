@@ -401,8 +401,7 @@ function calc_total_value(){
 }
 
 function calc_totals(event){	
-  	var total_value = $('#deal_modal_body').find('.quantity').val() * $('#deal_modal_body').find('.price').val();
-	total_value = (Math.round(total_value*100)/100);
+  	var total_value = multiply($('#deal_modal_body').find('.quantity').val(), $('#deal_modal_body').find('.price').val());
 	$('#deal_modal_body').find('.total_value').val(total_value); 
 }
 
@@ -424,12 +423,17 @@ function row_edit_ajax(event) {
 
 
 
-function show_modal(target){
+function show_modal(target, custom_width){
+	if(custom_width)
+		width = custom_width;
+	else
+		width = 'auto';
+		
 	$(target).modal({
         backdrop: true,
         keyboard: true
-    }).css({
-        width: 'auto',        
+    }).css({    	
+    	width: width,        
         'margin-left': function () {
             return -($(this).width() / 2);
         }
@@ -590,7 +594,7 @@ function rebind_paginator(source, target, rebind_func){
 
 function rebind_edit_delete(source, rebind_func){	
 	$(source).find(".row_delete_ajax").off('click').on('click', {target: source, rebind_func:rebind_func}, row_delete_ajax);	
-	$(source).find(".row_edit_ajax").off('click').on('click', row_edit_ajax);	
+	$(source).find(".row_edit_ajax").off('click').on('click', {source:source}, row_edit_ajax);	
 }
 
 function rebind_task_edit_delete(parent){	
@@ -855,10 +859,10 @@ function edit_new_event(event){
 	var url = $(this).attr("href");
 	$('#event_modal').empty();
 	$('#event_modal').load(url, function(result){
-		$(this).modal('show');	
 		$("#event_form").get(0).setAttribute("action", url);
-		datepicker_reload('#event_modal', false);
-		$('#event_form').submit({modal:'#event_modal', events_pane:'#events_pane', form:'#event_form'}, event_modal_add_save);		
+		//$(this).modal('show');
+		show_modal($(this), '30em');
+		rebind_events('#events_pane');						
 	});
 }
 
@@ -875,9 +879,7 @@ function event_modal_add_save(event){
   		if ($('#validation_error_ajax', result).text() == 'True') {  			 
     		 modal.empty();    		 
       		 modal.append(result);
-      		 modal.find('#event_form').get(0).setAttribute("action", url);      		       		 
-      		 modal.find('#event_form').submit({modal:'#event_modal', events_pane:'#events_pane', form:'#event_form'}, event_modal_add_save);
-       		 datepicker_reload($(modal), false);      		
+      		 $("#event_form").get(0).setAttribute("action", url);
        		 rebind_events('#events_pane');      		 		
     	}
     	else {
@@ -1124,7 +1126,7 @@ function rebind_contacts(){
 	var target = '#search_result'	 
 	rebind_ratings($('#search_result'));
 	rebind_delete_paginator(source, target, rebind_contacts);
-	$(source).find(".row_edit_ajax").off('click').on('click', row_edit_ajax);
+	$(source).find(".row_edit_ajax").off('click').on('click',{source:source}, row_edit_ajax);
 	rebind_business_card_modal_link();	
 	$('.conversation_btn').off('click').on('click', conversation_clicked);
 	$('#add_new_contact_btn').off('click').on('click', add_edit_new_contact);
@@ -1147,6 +1149,13 @@ function rebind_events(source){
 	rebind_delete_paginator(src, '#events_pane', rebind_events);
     $(src).find(".row_edit_event").click(edit_new_event);
     add_more_tag_to_all_notefields(src);
+    		
+	$('#event_form').submit({modal:'#event_modal', events_pane:'#events_pane', form:'#event_form'}, event_modal_add_save);
+	datepicker_reload('#event_modal', false);
+	$('#event_modal_save_btn').off('click').on('click', function(event){
+		event.preventDefault();
+		$('#event_form').submit();
+	});
 }
 
 function tab_deal_templates_clicked(){

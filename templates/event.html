@@ -11,9 +11,8 @@
 		    		{% csrf_token %}
 			    	<div class="parent">	    	
 				    	<div class="well">				    		
-				    		{% show_row_div form.due_datetime ignore_error_text=True %}
-				    		<div class="field field_error">{{form.due_datetime.errors}}</div>
-				    		{% show_row_time_div form.due_time %}
+				    		{% show_row_div_below_error form.due_date %}				    		
+				    		{% show_row_icon form.due_time 'icon-time'%}
 				    		{% show_row_div form.reminder %}
 				    	</div>				    	
 				    	
@@ -35,15 +34,16 @@
 								</div>
 							</div>
 			    		</div> -->
-		    		</div>
-			    	<div class="pull-right">
-				    	<input type="submit" value="{% trans 'Save Event' %}" class="btn btn-primary right-margin" />
-		        		<input name="cancel" type="button" value="{% trans 'Cancel' %}" class="btn close_link" data-dismiss="modal"/>	        			
-	        		</div> 
+		    		</div>			    	 
 		    	</form>	        
 		    </div>
 		</div>
 	</div>
 	<div class="hidden" id="validation_error_ajax">{{validation_error_ajax}}</div>
-	<div class="hidden" id="user_date">{{user_date}}</div>	
+	<div class="hidden" id="user_date">{{user_date}}</div>
+	<div class="modal-footer">
+		<a id="event_modal_save_btn" href='#' title="{% trans 'Save Event' %}" class="btn btn-primary right-margin">{% trans 'Save Event' %}</a>
+		<!-- <a id="deal_modal_confirm_btn" href="#" class="btn btn-primary" >{% trans 'Confirm' %}</a> -->
+		<a href="#" class="btn close_link" data-dismiss="modal">{% trans 'Cancel' %}</a>		
+	</div>	
 </div>

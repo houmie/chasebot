@@ -404,7 +404,7 @@ class Event(models.Model):
     reminder_date_time = models.DateTimeField()
     reminder = models.CharField(max_length=3, choices=REMINDER, default='2h', blank=True, null=True)    
     is_public = models.BooleanField(verbose_name=_(u'Visible to your team?'))
-    #contact = models.ForeignKey(Contact, null=True, blank=True)
+    contact = models.ForeignKey(Contact)
     deal_id = UUIDField()
     company = models.ForeignKey(Company)
     user = models.ForeignKey(User)
@@ -414,7 +414,8 @@ class Event(models.Model):
         return self.deal_id
     
     def save(self, *args, **kwargs):
-        self.reminder_date_time = self.calc_reminder(self.reminder)        
+        self.reminder_date_time = self.calc_reminder(self.reminder)
+        self.contact = Deal.objects.filter(deal_id = self.deal_id)[0].contact
         super(Event, self).save(*args, **kwargs) # Call the "real" save() method.
     
     def sendMail(self):

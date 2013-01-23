@@ -219,6 +219,11 @@ td.minwidth{
 	min-width: 5em;
 }
 
+td.minwidth_6em{
+	min-width: 7em;
+}
+
+
 .navbar .nav > li > a.cb_live_demo {
 	background-color: orange;
 	text-shadow: none;
@@ -366,6 +371,10 @@ input[type="checkbox"]{
 
 .textarea_15em{
 	width: 15em;
+}
+
+.textarea_13em{
+	width: 13em;
 }
 
 .textarea_15_5em{

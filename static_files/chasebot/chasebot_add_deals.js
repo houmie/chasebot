@@ -239,9 +239,43 @@ function rebind_attach_deals(parent, row){
 	var total = $(row).find('#id_deals-TOTAL_FORMS').val();
 	for(i=0;i<=total;i++){
 		$(parent).find('#id_deals-' + i + '-sales_item').chosen({no_results_text: gettext('No results match')});
-		$(parent).find('#id_deals-' + i +  '-total_value').val($(parent).find('#id_deals-' + i +  '-price').val() * $(parent).find('#id_deals-' + i +  '-quantity').val());
+		
+		var total_value = multiply($(parent).find('#id_deals-' + i +  '-price').val(), $(parent).find('#id_deals-' + i +  '-quantity').val());		  
+		//total_value = (Math.round(total_value*100)/100);
+		$(parent).find('#id_deals-' + i +  '-total_value').val(total_value);
 	}
 }
+
+var bd = {"BigDecimal":BigDecimal, "BigInteger":BigInteger, "RoundingMode":RoundingMode};
+function run(opts) {
+	var result;
+	var ops = {'*': "multiply", '/': "divide", '+': "add", '-': "subtract"};
+	var a = new bd.BigDecimal("" + opts.a);
+	var b = new bd.BigDecimal("" + opts.b);
+	var op = ops[opts.op];
+	if (op == "divide") {
+		return a.divide(b, 300, bd.RoundingMode.HALF_UP());
+	} else {
+		return a[op].call(a, b);
+	}
+}
+
+if(document.addEventListener){
+	document.addEventListener("DOMContentLoaded", function() {
+		
+		// var result = run({"a":"321.4567890","b":"123456789.123456789987654321","op":"*"});
+		// document.getElementById("browser_result").innerHTML = result;
+	});
+}
+	
+function multiply(a, b){
+	//var bigdecimal = require("bigdecimal");
+	// var bd = {"BigDecimal":BigDecimal, "BigInteger":BigInteger, "RoundingMode":RoundingMode};
+	// var total_value = new bd.BigDecimal(a) * new bd.BigInteger(b);
+	// return total_value
+	var result = run({"a":a,"b":b,"op":"*"});
+	return result;
+} 
 
 function rebind_add_deals(){
 	//rebind_attach_deals();

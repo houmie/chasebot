@@ -512,9 +512,7 @@ def conversation_add_edit(request, contact_id, call_id=None):
     current_tz = timezone.get_current_timezone(); 
     user_date = timezone.now().replace(tzinfo=pytz.utc).astimezone(current_tz)
     variables = {'form':form, 'template_title':template_title, 'deals_add_form':deals_add_form, 'opendeals_add_form':opendeals_add_form, 'attached_deals_formset':attached_deals_formset, 'contact_id':contact.pk, 'call_id':call_id, 'extra_deal_formset':extra_deal_formset, 'validation_error_ajax':validation_error_ajax, 'user_date':user_date }    
-    #if call_id:
     return render(request, '_conversation_edit.html', variables)      
-    #return render(request, '_conversation.html', variables)
 
 
 @login_required
@@ -528,7 +526,7 @@ def conversation_delete(request, contact_id, call_id):
         contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
         call = get_object_or_404(contact.conversation_set.all(), pk=call_id)
         call.delete()
-        call_queryset = contact.conversation_set.order_by('conversation_datetime')   
+        call_queryset = contact.conversation_set.order_by('-conversation_datetime')   
         calls, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, call_queryset)          
         variables = { 'calls': calls, 'contact':contact }
         variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
@@ -1268,12 +1266,20 @@ def show_row_div(form_field, *args, **kwargs):
         ignore_error_text = True
     return {'form_field': form_field, 'ignore_error_text':ignore_error_text}
 
+@register.inclusion_tag('tag_form_label_div_below_error.html')
+def show_row_div_below_error(form_field, *args, **kwargs):
+    return {'form_field': form_field }
+
 @register.inclusion_tag('tag_form_label_time_div.html')
 def show_row_time_div(form_field, *args, **kwargs):
     ignore_error_text = False
     if 'ignore_error_text' in kwargs:
         ignore_error_text = True
     return {'form_field': form_field, 'ignore_error_text':ignore_error_text}
+
+@register.inclusion_tag('tag_form_label_icon.html')
+def show_row_icon(form_field, icon, *args, **kwargs):    
+    return {'form_field': form_field, 'icon':icon}
 
 #@login_required
 

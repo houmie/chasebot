@@ -1,0 +1,14 @@
+./.npmignore
+./.npminclude
+./.gitignore
+./.*.swp
+./apache-ant-*/
+./apache-ant-*
+./gwt-2.*/
+./BigDecimalApp/
+./Rakefile
+./TODO
+./npm-debug.log
+./CouchDB/
+./commonjs_wrapper.js.erb
+./build/
