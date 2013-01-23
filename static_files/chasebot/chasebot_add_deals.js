@@ -223,16 +223,6 @@ function add_opendeals(event){
 	$(this).parent().parent().parent().remove();
 }
 
-function show_tab(e){
-	//Uncheck all active tab checkboxes
-	//$('.last_active_tab').attr('checked', false);
-	//var current_tab_href = $(this).attr('href');
-	
-	//current_tab_href is the #id that the tab-header is pointing to. Hence by searching for #id we are searching within the tab content.	
-	//$(current_tab_href).find('.last_active_tab').attr('checked', true);	
-	//now the last_actice_tab boolean is set to true of the current tab 
-}
-
 function rebind_attach_deals(parent, row){
 	//Upon opening make sure that all deals from attached_deal_formset will get chosenified. 
 	// Attention: Do NOT chosenify the extra-deal form, or it would break.	
@@ -240,14 +230,14 @@ function rebind_attach_deals(parent, row){
 	for(i=0;i<=total;i++){
 		$(parent).find('#id_deals-' + i + '-sales_item').chosen({no_results_text: gettext('No results match')});
 		
-		var total_value = multiply($(parent).find('#id_deals-' + i +  '-price').val(), $(parent).find('#id_deals-' + i +  '-quantity').val());		  
-		//total_value = (Math.round(total_value*100)/100);
+		var total_value = multiply($(parent).find('#id_deals-' + i +  '-price').val(), $(parent).find('#id_deals-' + i +  '-quantity').val());		
 		$(parent).find('#id_deals-' + i +  '-total_value').val(total_value);
 	}
 }
 
-var bd = {"BigDecimal":BigDecimal, "BigInteger":BigInteger, "RoundingMode":RoundingMode};
+
 function run(opts) {
+	var bd = {"BigDecimal":BigDecimal, "BigInteger":BigInteger, "RoundingMode":RoundingMode};
 	var result;
 	var ops = {'*': "multiply", '/': "divide", '+': "add", '-': "subtract"};
 	var a = new bd.BigDecimal("" + opts.a);
@@ -260,21 +250,9 @@ function run(opts) {
 	}
 }
 
-if(document.addEventListener){
-	document.addEventListener("DOMContentLoaded", function() {
-		
-		// var result = run({"a":"321.4567890","b":"123456789.123456789987654321","op":"*"});
-		// document.getElementById("browser_result").innerHTML = result;
-	});
-}
-	
+
 function multiply(a, b){
-	//var bigdecimal = require("bigdecimal");
-	// var bd = {"BigDecimal":BigDecimal, "BigInteger":BigInteger, "RoundingMode":RoundingMode};
-	// var total_value = new bd.BigDecimal(a) * new bd.BigInteger(b);
-	// return total_value
-	var result = run({"a":a,"b":b,"op":"*"});
-	return result;
+	return run({"a":a,"b":b,"op":"*"});	
 } 
 
 function rebind_add_deals(){

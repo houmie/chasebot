@@ -57,7 +57,7 @@ DATABASES = {
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
 PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
-PIPELINE_YUI_BINARY = '/home/houman/node_modules/yuglify/bin/yuglify'
+PIPELINE_YUI_BINARY = '/home/hooman/venuscloud/chasebot-env/node_modules/yuglify/bin/yuglify'
 PIPELINE_CSS = {
     'chasebot_css': {
         'source_filenames': (
@@ -79,6 +79,12 @@ PIPELINE_JS = {
           'chasebot/chasebot_add_deals.js',          
         ),
         'output_filename': 'chasebot/chasebot_add_deals.min.js',
+    },
+    'bigdecimal_js': {
+        'source_filenames': (
+          'bigdecimal.js/bigdecimal.js',          
+        ),
+        'output_filename': 'bigdecimal.js/bigdecimal.min.js',
     }
 }
 
