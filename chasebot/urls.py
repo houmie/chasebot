@@ -13,7 +13,7 @@ from chasebot_app.views import logout_page, contact_delete, conversation_display
     open_deal_conversations_display, event_add_edit, event_delete,\
     negotiate_open_deal, sidebar_contacts, sidebar_deal_templates,\
     sidebar_open_deals, opendeal_autocomplete, sidebar_conversations,\
-    events_display, event_tick, deal_template_sales_item_display
+    events_display, event_tick, deal_template_sales_item_display, sidebar_todo
 from chasebot_app.demo_view import demo
 
 admin.autodiscover()
@@ -33,10 +33,10 @@ urlpatterns = patterns('',
     (r'^password_reset_done/$','django.contrib.auth.views.password_reset_done'),
     (r'^password_reset_confirm/(?P<uidb36>[0-9A-Za-z]+)-(?P<token>.+)/$','django.contrib.auth.views.password_reset_confirm'),
     (r'^password_reset_complete/$','django.contrib.auth.views.password_reset_complete'),
-    (r'^register/$', register_page),
-    (r'^register/success/$', direct_to_template, {'template': 'registration/register_success.html'}),
-    (r'^colleague/invite/$', colleague_invite),
-    (r'^colleague/accept/(\w+)/$', colleague_accept),
+#    (r'^register/$', register_page),
+#    (r'^register/success/$', direct_to_template, {'template': 'registration/register_success.html'}),
+#    (r'^colleague/invite/$', colleague_invite),
+#    (r'^colleague/accept/(\w+)/$', colleague_accept),
     (r'^demo/$', demo),
 
     #Browsing
@@ -56,6 +56,7 @@ urlpatterns = patterns('',
     (r'^sidebar/contacts/$', sidebar_contacts),
     (r'^sidebar/deal_templates/$', sidebar_deal_templates),
     (r'^sidebar/open_deals/$', sidebar_open_deals),
+    (r'^sidebar/todo/$', sidebar_todo),
     (r'^sidebar/contact/(?P<contact_id>\d+)/conversations/$', sidebar_conversations),
     
     (r'^open_deals/$', open_deals_display),

@@ -1,0 +1,29 @@
+{% load i18n %}
+<!--Sidebar content-->
+<div class="well cb_well-small">
+	<div class="accordion" id="accordion_sidebar">
+		<div class="accordion-group">
+			<div class="accordion-heading">
+				<a class="accordion-inner-lesspadding" data-toggle="collapse" data-parent="#accordion_sidebar" href="#collapsetodo1">
+					<h5>{% trans 'How it works?' %}</h5>
+				</a>
+			</div>
+			<div id="collapsetodo1" class="accordion-body collapse">
+				<div class="accordion-inner-lesspadding">	
+					<p>{% trans "In 'Open Deals' tab you will find all the deals that are currently in progress. You may add new task reminders (events) and see the history of the ongoing negotiation." %}</p>
+				</div>
+			</div>
+		</div>
+		<div class="accordion-group">
+			<div class="accordion-heading">
+				<a class="accordion-inner-lesspadding" data-toggle="collapse" data-parent="#accordion2" href="#collapsetodo2">		
+					<h5>{% trans "How to make a new deal?" %}</h5>
+				</a>
+			</div>
+		<div id="collapsetodo2" class="accordion-body collapse">
+			<div class="accordion-inner-lesspadding">
+				<p>{% blocktrans with icon="<i class='icon-comments-alt icon-large'></i>" pic="<img src='/static/img/attach.png'>" %}In 'Contacts' tab you will have to select the contact you would like to sell something. Then click on {{icon}} to add a new conversation and attach a new deal {{pic}}, which will then appear from now on in 'Open Deals' tab.{% endblocktrans %}</p>
+			</div>
+		</div>
+	</div>
+</div>

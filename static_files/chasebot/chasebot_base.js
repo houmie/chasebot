@@ -698,34 +698,8 @@ function rebind_filters(source, rebind_func){
 };
 
 
-function timezone_dropdown(event){
-	event.preventDefault();
-	$('#timezone_form').submit();			
-}
-
-function show_timezone_help(event){
-	event.preventDefault();	
-	$('#timezone_dropdown').popover('toggle');
-	isVisible = true;	
-}
-
 var isVisible = false;
 var clickedAway = false;
-
-
-function invite_colleague(event){
-	event.preventDefault();
-	$(this).button(gettext('Loading'));	
-	$('#form_invite').submit();	
-}
-
-
-function demo(event){
-	event.preventDefault();	
-	$(this).addClass('disabled');
-	$(this).html('<i class="icon-spinner icon-spin"></i> Please wait...');	
-	$('#form_demo').submit();		
-}
 
 
 function rebind_new_conversation(parent){
@@ -1191,7 +1165,9 @@ function tab_todo_clicked(){
 	});
 	$('#main_tabs a[href="#tab_todo"]').off('click');
 	bind_main_tabs('tab_todo');
-	$('#sidebar').empty();
+	$('#sidebar').load('sidebar/todo/', function(result){
+		
+	});
 }
 
 function tab_contacts_clicked(){
@@ -1442,12 +1418,33 @@ function initialize_validator(){
 
 $(document).ready(function (){	
 	initialize_validator();
-	bind_main_tabs();
-	// reword_collapseable('#accordion_task');	
-	$('#timezone_dropdown').change(timezone_dropdown);	
-	$('.timezone_help').click(show_timezone_help);	
-	$('#invite-button').click(invite_colleague);
-	$('#demo-button').click(demo);	
+	bind_main_tabs();	
+	
+	$('#timezone_dropdown').change(function(event){
+		event.preventDefault();
+		$('#timezone_form').submit();
+	});
+		
+	$('.timezone_help').click(function(event){
+		event.preventDefault();	
+		$('#timezone_dropdown').popover('toggle');
+		isVisible = true;
+	});	
+	
+	$('#invite-button').click(function(event){
+		event.preventDefault();
+		$(this).button(gettext('Loading'));	
+		$('#form_invite').submit();	
+	});
+	
+	$('#demo-button').click(function(event){
+		event.preventDefault();	
+		$(this).off('click');
+		$(this).addClass('disabled');
+		$(this).html('<i class="icon-spinner icon-spin"></i> Please wait...');	
+		$('#form_demo').submit();
+	});
+		
 	tab_todo_clicked();
 });
 

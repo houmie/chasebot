@@ -1153,6 +1153,11 @@ def sidebar_deal_templates(request):
     return render(request, 'deal_template_sidebar.html', variables)    
 
 @login_required
+def sidebar_todo(request):
+    return render(request, 'todo_sidebar.html')
+    
+
+@login_required
 def sidebar_open_deals(request):    
     filter_form = FilterOpenDealForm()
     variables = { 'filter_form':filter_form }
