@@ -70,16 +70,10 @@ PIPELINE_CSS = {
 PIPELINE_JS = {
     'chasebot_js': {
         'source_filenames': (
-          'chasebot/chasebot_base.js',          
+          'chasebot/chasebot.js',          
         ),
-        'output_filename': 'chasebot/chasebot_base.min.js',
-    },
-    'chasebot_add_deals_js': {
-        'source_filenames': (
-          'chasebot/chasebot_add_deals.js',          
-        ),
-        'output_filename': 'chasebot/chasebot_add_deals.min.js',
-    },
+        'output_filename': 'chasebot/chasebot.min.js',
+    },    
     'bigdecimal_js': {
         'source_filenames': (
           'bigdecimal.js/bigdecimal.js',          

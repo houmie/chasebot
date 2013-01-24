@@ -740,7 +740,7 @@ def sales_item_display(request):
 
     
     filter_form = FilterSalesItemForm(request.GET)    
-    sales_items, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, sales_items_queryset)    
+    sales_items, paginator, page, page_number = makePaginator(request, 7, sales_items_queryset)    
     #New SalesItem form for adding a possible new one on UI
     sales_item = SalesItem(company=profile.company)
     form = SalesItemForm(instance=sales_item)
