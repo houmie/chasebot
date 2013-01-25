@@ -93,6 +93,16 @@ def get_raw_all_open_deals():
     return Deal.objects.raw(query)
 
 @login_required
+def testme(request):    
+    print "Starting"    
+    now = datetime.datetime.utcnow().replace(tzinfo=utc,second=00, microsecond=00)
+    events = Event.objects.filter(reminder_date_time__range=(now - datetime.timedelta(minutes=5), now))
+    for event in events:        
+        print "match"
+        event.sendMail()
+    print "Ending"
+
+@login_required
 def feedback(request):
     if request.method == 'POST':
         form = FeedbackForm(request.POST)
