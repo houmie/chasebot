@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404
 from chasebot_app.forms import RegistrationForm, ContactsForm, ConversationForm, SalesItemForm, DealTemplateForm,\
      DealForm, FilterContactsForm, FilterConversationForm, FilterDealTemplateForm, FilterSalesItemForm,\
     DealsAddForm, OpenDealsAddForm, ColleagueInviteForm, OpenDealTaskForm,\
-    EventForm, DealNegotiateForm, FilterOpenDealForm
+    EventForm, DealNegotiateForm, FilterOpenDealForm, FeedbackForm
 from chasebot_app.models import Company, Contact, Conversation, SalesItem, DealTemplate, Deal, SalesTerm,\
     Invitation, LicenseTemplate, MaritalStatus, \
     Currency, Event
@@ -39,7 +39,8 @@ import json
 from django.core import serializers
 from django.utils.timezone import utc
 from django.utils.datetime_safe import date
-
+from django.core.mail import send_mail
+from chasebot import settings
 
 
 ITEMS_PER_PAGE = 10
@@ -91,6 +92,16 @@ def get_raw_all_open_deals():
             WHERE l1.deal_id not in (select deal_id from chasebot_app_deal where status_id in (5, 6))' 
     return Deal.objects.raw(query)
 
+@login_required
+def feedback(request):
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            send_mail('Feedback', form.cleaned_data['feedback'], settings.DEFAULT_FROM_EMAIL, [settings.DEFAULT_FROM_EMAIL])
+    else:
+        form = FeedbackForm()
+    variables = {'form':form}
+    return render(request, 'feedback.html', variables)
 
 @login_required
 def all_open_deals(request, company):    

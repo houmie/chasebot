@@ -9,14 +9,16 @@ from django.utils.timezone import utc
 from chasebot_app.models import Event
 
 @celery.task(name='tasks.check_for_events')
-@periodic_task(run_every=datetime.timedelta(minutes=15))  
+@periodic_task(run_every=datetime.timedelta(minutes=1))  
 def check_for_events():    
+    print "Starting"
     events = Event.objects.all()
     now = datetime.datetime.utcnow().replace(tzinfo=utc,second=00, microsecond=00)
     for event in events:
         if event.reminder_date_time.replace(tzinfo=utc,second=00, microsecond=00) == now:
             print "match"
             event.sendMail()
+    print "Ending"
 
 #@task()
 #def add(x, y):

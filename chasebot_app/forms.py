@@ -14,7 +14,11 @@ from django.forms.models import BaseModelFormSet
 from django.utils.translation import ugettext_lazy as _
 import datetime
 
-   
+
+
+class FeedbackForm(Form):
+    feedback        = forms.CharField(widget=forms.Textarea(attrs={'class': 'textarea_mandatory', 'placeholder': _(u"Please tell us what you think about Chasebot.          How could we improve it for your day to day work?     What is important to you that is missing?   What do you like about Chasebot?")}))
+    
     
 class UserRegistrationForm(Form):
     username        = forms.CharField(widget=forms.TextInput(attrs={'class':'demo-input', 'placeholder': _(u'Choose a memorable username...')}), label = _(u'Username'), max_length=30)

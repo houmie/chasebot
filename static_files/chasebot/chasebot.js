@@ -516,7 +516,7 @@ function sort_table(table, condition) {
     "use strict";
     $(table).bind("sortBegin", function (e, table) {
         if ($(condition).length > 0) {
-            alert(gettext("Can't sort while an open-deal-row is clicked. Please click on the open row to close it first and try again."));
+            alert(gettext("Can't sort while a deal is expanded. Please collapse the open row first and try again."));
             throw new Error("Can't sort, while open deal row is openened.");
         }
     });
@@ -1685,6 +1685,26 @@ $(document).ready(function () {
         $(this).html('<i class="icon-spinner icon-spin"></i> Please wait...');
         $('#form_demo').submit();
     });
+
+	$('#feedback_btn').off('click').on('click', function (event) {
+        event.preventDefault();
+        var url = $(this).attr('href');
+        $('#feedback_modal_body').load(url, function (result) {
+            var validator = validation_rules('#feedback_form');
+            $('#feedback_send_btn').off('click').on('click', {validator: validator}, function (event) {
+                var data, validator;
+                validator = event.data.validator;
+                validator.form();
+                if (validator.numberOfInvalids() === 0) {
+                    data = $('#feedback_form').serialize();
+                    $.post(url, data, function (result) {
+                        $('#feedback_modal').modal('hide');
+                    });
+                }
+            });
+            show_modal('#feedback_modal', 'auto');
+        });
+	});
 
     tab_todo_clicked();
 });

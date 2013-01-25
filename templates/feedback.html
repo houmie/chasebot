@@ -1,0 +1,16 @@
+<div class="row-fluid">
+	<div class="well well-small well-auto">
+		<form id="feedback_form" method="post" action="feedback/">		
+			<div>
+				{% if form.feedback.required %}<label for="{{ form_field.auto_id }}" class="cb_inline_block" rel="tooltip" title="Required Field">{{form.feedback.label}}: *</label>{%else%}<label for="{{ form.feedback.auto_id }}">{{form.feedback.label}}:</label>{% endif %}
+			</div>
+			
+			{{form.feedback}}
+			<div class="row field field_error">
+				<div class="right-aligned">
+					{{form.feedback.errors}}
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

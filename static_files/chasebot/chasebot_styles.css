@@ -533,6 +533,7 @@ table.mini_contact td, table.mini_contact th {
 
 .right-aligned{
 	float:right;
+	margin-right: 10px;
 }
 
 .flag{
@@ -541,4 +542,12 @@ table.mini_contact td, table.mini_contact th {
 
 .accordion-inner-lesspadding { 
     padding: 9px 0px;
+}
+
+.well-auto{
+	width: auto;	
+}
+
+.accordion-group-cb{
+	border: 0;
 }
