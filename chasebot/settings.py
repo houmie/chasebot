@@ -219,7 +219,10 @@ INSTALLED_APPS = (
 )
 
 BROKER_URL = 'amqp://guest:guest@localhost:5672/'
-CELERY_RESULT_BACKEND = 'amqp://'
+BROKER_URL = 'sqs://AKIAILRT74QLK3ER2GNA:FIYfsjJ8gD8ldg+zKPHo+0CZebwTo1CP7izbe2q3@'
+BROKER_TRANSPORT_OPTIONS = {'queue_name_prefix': 'chasebot-', 'visibility_timeout': 300}
+#CELERY_RESULT_BACKEND = 'amqp://'
+#CELERY_RESULT_BACKEND="database"
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 
