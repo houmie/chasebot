@@ -14,7 +14,7 @@ import json
 import pytz
 import dateutil
 from django.utils import timezone
-
+#from pytz import timezone as pytzone
 
 
 @celery.task(name='tasks.check_for_events')
@@ -26,12 +26,12 @@ def check_for_events():
     dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None    
     for event in events:        
         print "match"        
-        time_zone = event.user.get_profile().timezone
-        timezone.activate(pytz.timezone(time_zone))        
-        current_tz = timezone.get_current_timezone()
-        date_time = current_tz.localize(datetime.datetime(event.due_date_time.year, event.due_date_time.month, event.due_date_time.day, event.due_date_time.hour, event.due_date_time.minute))         
-                                          
-        sendEmail.delay(event.deal_id, event.user.first_name, event.user.email, event.type, json.dumps(date_time, default=dthandler), event.notes)
+        time_zone = event.user.get_profile().timezone        
+        timezone.activate(pytz.timezone(time_zone))
+        current_tz = timezone.get_current_timezone()                
+        utc_dt = datetime.datetime(event.due_date_time.year, event.due_date_time.month, event.due_date_time.day, event.due_date_time.hour, event.due_date_time.minute, 0, tzinfo=utc)
+        loc_dt = current_tz.normalize(utc_dt.astimezone(current_tz))                                          
+        sendEmail.delay(event.deal_id, event.user.first_name, event.user.email, event.type, json.dumps(loc_dt, default=dthandler), event.notes)
     print "Ending"
 
     

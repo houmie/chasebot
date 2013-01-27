@@ -222,9 +222,10 @@ BROKER_URL = 'amqp://guest:guest@localhost:5672/'
 BROKER_URL = 'sqs://AKIAILRT74QLK3ER2GNA:FIYfsjJ8gD8ldg+zKPHo+0CZebwTo1CP7izbe2q3@'
 BROKER_TRANSPORT_OPTIONS = {'queue_name_prefix': 'chasebot-', 'visibility_timeout': 300}
 #CELERY_RESULT_BACKEND = 'amqp://'
-#CELERY_RESULT_BACKEND="database"
+CELERY_RESULT_BACKEND="database"
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
+CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
