@@ -1,5 +1,5 @@
-import datetime
-from datetime import datetime as dt 
+from datetime import datetime
+from datetime import timedelta
 from django.http import Http404, HttpResponse, HttpResponseForbidden
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
@@ -64,7 +64,7 @@ def get_current_date_input_format(request):
 
 def create_date_from_javascript_date(request, date, to_date_format = None):
     current_tz = timezone.get_current_timezone()    
-    date_time_unaware = dt.strptime(date, get_current_date_input_format(request))
+    date_time_unaware = datetime.strptime(date, get_current_date_input_format(request))
     if to_date_format:    
         date_time_unaware = date_time_unaware.replace(hour=23, minute=59, second=59)
     date_time = current_tz.localize(date_time_unaware)            
@@ -93,24 +93,16 @@ def get_raw_all_open_deals():
     return Deal.objects.raw(query)
 
 @login_required
-def testme(request):    
-    print "Starting"    
-    now = datetime.datetime.utcnow().replace(tzinfo=utc,second=00, microsecond=00)
-    events = Event.objects.filter(reminder_date_time__range=(now - datetime.timedelta(minutes=5), now))
-    for event in events:        
-        print "match"
-        event.sendMail()
-    print "Ending"
-
-@login_required
 def feedback(request):
     if request.method == 'POST':
         form = FeedbackForm(request.POST)
         if form.is_valid():
             send_mail('Feedback', form.cleaned_data['feedback'], settings.DEFAULT_FROM_EMAIL, [settings.DEFAULT_FROM_EMAIL])
+            messages.info(request, _(u'Thank you for your feedback. :-)'))
+            return render(request, 'messages.html')
     else:
         form = FeedbackForm()
-    variables = {'form':form}
+    variables = {'form':form}    
     return render(request, 'feedback.html', variables)
 
 @login_required
@@ -164,7 +156,7 @@ def open_deals_display(request):
             last_contacted = request.GET['last_contacted']            
             current_tz = timezone.get_current_timezone()
             try:
-                date_time = current_tz.localize(dt.strptime(last_contacted, get_current_date_input_format(request)))
+                date_time = current_tz.localize(datetime.strptime(last_contacted, get_current_date_input_format(request)))
                 date_min = date_time.replace(hour=0, minute=0, second=0)
                 date_max = date_time.replace(hour=23, minute=59, second=59)                        
                 deals_query = deals_query.filter(deal_datetime__range=(date_min, date_max))
@@ -338,8 +330,9 @@ def contact_delete(request, contact_id):
         contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
         contact.delete()        
         contacts_queryset = profile.company.contact_set.order_by('last_name')
-        contacts, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, contacts_queryset)    
-        variables = { 'contacts': contacts, }
+        contacts, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, contacts_queryset)
+        source = '/contacts'    
+        variables = { 'contacts': contacts, 'source':source}
         variables = merge_with_pagination_variables(paginator, page, page_number, variables, None)
     return render(request, 'contact_list.html', variables)     
 
@@ -360,7 +353,7 @@ def conversation_display(request, contact_id):
                 to_date = create_date_from_javascript_date(request, request.GET['to_date'], True)                
             else:
                 current_tz = timezone.get_current_timezone()                
-                to_date = timezone.now().replace(tzinfo=pytz.utc).astimezone(current_tz)
+                to_date = current_tz.normalize(timezone.now().astimezone(current_tz))
             calls_queryset = calls_queryset.filter(conversation_datetime__range=(from_date, to_date))
                   
     
@@ -458,7 +451,7 @@ def conversation_add_edit(request, contact_id, call_id=None):
             current_tz = timezone.get_current_timezone()            
             date = form.cleaned_data['conversation_date']
             time = form.cleaned_data['conversation_time']            
-            date_time = current_tz.localize(datetime.datetime(date.year, date.month, date.day, time.hour, time.minute))                        
+            date_time = current_tz.localize(datetime(date.year, date.month, date.day, time.hour, time.minute))                        
             call.conversation_datetime = date_time
             call.save()
             
@@ -531,7 +524,7 @@ def conversation_add_edit(request, contact_id, call_id=None):
     #The extra deal formset will always be independent of POST/GET since its hidden and remains empty as a starting point for cloning
     extra_deal_formset = extra_deal_formset_factory(prefix='extra_deal')
     current_tz = timezone.get_current_timezone(); 
-    user_date = timezone.now().replace(tzinfo=pytz.utc).astimezone(current_tz)
+    user_date = current_tz.normalize(timezone.now().astimezone(current_tz))
     variables = {'form':form, 'template_title':template_title, 'deals_add_form':deals_add_form, 'opendeals_add_form':opendeals_add_form, 'attached_deals_formset':attached_deals_formset, 'contact_id':contact.pk, 'call_id':call_id, 'extra_deal_formset':extra_deal_formset, 'validation_error_ajax':validation_error_ajax, 'user_date':user_date }    
     return render(request, '_conversation_edit.html', variables)      
 
@@ -548,95 +541,11 @@ def conversation_delete(request, contact_id, call_id):
         call = get_object_or_404(contact.conversation_set.all(), pk=call_id)
         call.delete()
         call_queryset = contact.conversation_set.order_by('-conversation_datetime')   
-        calls, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, call_queryset)          
-        variables = { 'calls': calls, 'contact':contact }
+        calls, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, call_queryset)
+        source = u'{0}/{1}/{2}'.format('contact', contact.pk, 'calls')          
+        variables = { 'calls': calls, 'contact':contact, 'source':source }
         variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
     return render(request, 'conversation_list.html', variables)
-
-
-#@login_required
-#def task_display(request):    
-#    profile = request.user.get_profile()
-#    if request.GET.get('contact', None):
-#        contact = get_object_or_404(profile.company.contact_set.all(), pk=request.GET['contact'])
-#    if contact:
-#        task_queryset = contact.task_set.order_by('-due_date_time')
-#    else:
-#        task_queryset = profile.company.task_set.order_by('-due_date_time')
-#    tasks, paginator, page, page_number = makePaginator(request, 3, task_queryset)            
-#    variables = {
-#                 'tasks': tasks, 'contact_id':contact.pk
-#                }
-#    variables = merge_with_pagination_variables(paginator, page, page_number, variables, 'task_')
-#    return render(request, 'task_list.html', variables)
-
-
-#@login_required
-#def task_add_edit(request, task_id=None):
-#    profile = request.user.get_profile()
-#        
-#    if task_id is None:
-#        task = Task(company=profile.company, user=request.user) 
-#        template_title = _(u'Add New Task')
-#    else:
-#        task = get_object_or_404(profile.company.task_set.all(), pk=task_id)
-#        template_title = _(u'Edit Task')
-#    validation_error_ajax = False
-#    
-#    contact = None
-#    if request.GET.get('contact', None):
-#        contact = get_object_or_404(profile.company.contact_set.all(), pk=request.GET['contact'])    
-#        task.contact = contact
-#        
-#    if request.method == 'POST':
-#        opendeals_task_form = OpenDealTaskForm(contact, task.deal_id, request.POST, prefix='opendeals_task_form')
-#        form = TaskForm(request.POST, instance=task, prefix='form', initial = {'contact' : contact.pk})
-#        if form.is_valid():
-#            selected_open_deal = None
-#            
-#            if opendeals_task_form.is_valid():
-#                selected_open_deal = opendeals_task_form.cleaned_data['open_deal_task']            
-#            task = form.save(commit=False)
-#            if selected_open_deal is not None:
-#                task.deal_id = selected_open_deal.deal_id
-#            task.save()
-#            task_queryset = profile.company.task_set.order_by('-due_date_time')
-#            tasks, paginator_t, page_t, page_number_t = makePaginator(request, 3, task_queryset) 
-#            variables = {'tasks':tasks, 'contact_id':contact.pk}
-#            variables = merge_with_pagination_variables(paginator_t, page_t, page_number_t, variables, 'task_')
-#            return render(request, 'task_list.html', variables)
-#        else:
-#            validation_error_ajax = True
-#    else:
-#        #opendeass_add_form contains only one dropdown to add open deals to task        
-#        opendeals_task_form = OpenDealTaskForm(contact, task.deal_id, prefix='opendeals_task_form')
-#        if contact:
-#            form = TaskForm(instance=task, prefix='form', initial = {'contact' : contact.pk})
-#        else:
-#            form = TaskForm(instance=task, prefix='form')
-#
-#    variables = {'form':form, 'template_title':template_title, 'opendeals_task_form':opendeals_task_form, 'validation_error_ajax':validation_error_ajax }
-#    variables = merge_with_localized_variables(request, variables)    
-#    return render(request, 'task.html', variables)
-#
-#
-#@login_required
-#def task_delete(request, task_id):
-#    if task_id is None:
-#        raise Http404(_(u'Task not found'))    
-#    else:
-#        profile = request.user.get_profile()
-#        task = get_object_or_404(profile.company.task_set.all(), pk=task_id)        
-#        task.delete()
-#        task_queryset = profile.company.task_set.order_by('-due_date_time')   
-#        tasks, paginator, page, page_number = makePaginator(request, 3, task_queryset)
-#        contact_id = None
-#        if 'contact' in request.GET:
-#            contact_id = request.GET['contact']          
-#        variables = { 'tasks': tasks , 'contact_id':contact_id}
-#        variables = merge_with_pagination_variables(paginator, page, page_number, variables, 'task_')
-#    return render(request, 'task_list.html', variables)
-
 
 @login_required
 def event_display(request):
@@ -679,7 +588,7 @@ def event_add_edit(request, open_deal_id=None, event_id=None):
     else:        
         form = EventForm(instance=event, prefix='form')
     current_tz = timezone.get_current_timezone();
-    user_date = timezone.now().replace(tzinfo=pytz.utc).astimezone(current_tz)
+    user_date = current_tz.normalize(timezone.now().astimezone(current_tz))
     variables = {'form':form, 'template_title':template_title, 'validation_error_ajax':validation_error_ajax, 'user_date':user_date }       
     return render(request, 'event.html', variables)
 
@@ -718,25 +627,25 @@ def events_display(request):
 
 def get_event_variables(profile):    
     current_tz = timezone.get_current_timezone()
-    current_date_time = timezone.now().replace(tzinfo=pytz.utc).astimezone(current_tz)
+    current_date_time = current_tz.normalize(timezone.now().astimezone(current_tz))
     
     today_max = current_date_time.replace(hour=23, minute=59, second=59, microsecond=0)
     today_min = current_date_time.replace(hour=00, minute=00, second=00, microsecond=0)
     today_events = profile.company.event_set.filter(due_date_time__range=(today_min, today_max))
     
-    tomorrow_events = profile.company.event_set.filter(due_date_time__range=(today_min + datetime.timedelta(days=1), today_max + datetime.timedelta(days=1)))
+    tomorrow_events = profile.company.event_set.filter(due_date_time__range=(today_min + timedelta(days=1), today_max + timedelta(days=1)))
     
     today = current_date_time
-    start_week = today - datetime.timedelta(today.weekday())
-    end_week = start_week + datetime.timedelta(6)
+    start_week = today - timedelta(today.weekday())
+    end_week = start_week + timedelta(6)
     week_max = end_week.replace(hour=23, minute=59, second=59, microsecond=0)
     week_min = start_week.replace(hour=00, minute=00, second=00, microsecond=0)    
     this_week_events = profile.company.event_set.filter(due_date_time__range=(week_min, week_max))        
     this_week_events = this_week_events.exclude(pk__in=[item.pk for item in today_events])
     this_week_events = this_week_events.exclude(pk__in=[item.pk for item in tomorrow_events])
                                  
-    start_week_next = start_week + datetime.timedelta(7)  
-    end_week_next = end_week + datetime.timedelta(7)    
+    start_week_next = start_week + timedelta(7)  
+    end_week_next = end_week + timedelta(7)    
     week_max = end_week_next.replace(hour=23, minute=59, second=59, microsecond=0)
     week_min = start_week_next.replace(hour=00, minute=00, second=00, microsecond=0)
     next_week_events = profile.company.event_set.filter(due_date_time__range=(week_min, week_max))
@@ -821,7 +730,7 @@ def sales_item_add_edit(request, sales_item_id=None):
     if sales_item_id is None:
         # Only first-time GET Add or Successful Add (POST) --> The List incl. paginators will get updated
         sales_items_queryset = profile.company.salesitem_set.all().order_by('item_name')
-        sales_items, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, sales_items_queryset)        
+        sales_items, paginator, page, page_number = makePaginator(request, 7, sales_items_queryset)        
         variables = {
                      'sales_items': sales_items, 'form':form, 'source':source,
                      'salesitem_id' : sales_item_id, 'validation_error_ajax' : validation_error_ajax, 'get_request':get_request_parameters(request)
@@ -845,7 +754,7 @@ def sales_item_delete(request, sales_item_id=None):
         sales_item = get_object_or_404(profile.company.salesitem_set.all(), pk=sales_item_id)
         sales_item.delete()                
         sales_items_queryset = profile.company.salesitem_set.all().order_by('item_name')   
-        sales_items, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, sales_items_queryset)    
+        sales_items, paginator, page, page_number = makePaginator(request, 7, sales_items_queryset)    
         #New SalesItem form for adding a possible new one on UI
         sales_item = SalesItem(company=profile.company)
         form = SalesItemForm(instance=sales_item)        
@@ -1181,7 +1090,9 @@ def sidebar_todo(request):
 @login_required
 def sidebar_open_deals(request):    
     filter_form = FilterOpenDealForm()
-    variables = { 'filter_form':filter_form }
+    current_tz = timezone.get_current_timezone()
+    user_date = current_tz.normalize(timezone.now().astimezone(current_tz))
+    variables = { 'filter_form':filter_form, 'user_date':user_date }
     return render(request, 'open_deal_sidebar.html', variables)
 
 @login_required

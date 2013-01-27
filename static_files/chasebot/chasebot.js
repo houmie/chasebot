@@ -124,18 +124,25 @@ function multiply(a, b) {
 
 function rebind_attach_deals(parent, row) {
     "use strict";
-    var total, i, total_value;
+    var total, i, total_value, total_node, a, b;
     //Upon opening make sure that all deals from attached_deal_formset will get chosenified. 
     // Attention: Do NOT chosenify the extra-deal form, or it would break.  
     total = $(row).find('#id_deals-TOTAL_FORMS').val();
     for (i = 0; i <= total; i++) {
         $(parent).find('#id_deals-' + i + '-sales_item').chosen({no_results_text: gettext('No results match')});
-        total_value = multiply($(parent).find('#id_deals-' + i +  '-price').val(), $(parent).find('#id_deals-' + i +  '-quantity').val());
-        $(parent).find('#id_deals-' + i +  '-total_value').val(total_value);
+        a = $(parent).find('#id_deals-' + i +  '-price').val();
+        b = $(parent).find('#id_deals-' + i +  '-quantity').val();
+        if (a && b) {
+            total_value = multiply(a, b);
+            total_node = $(parent).find('#id_deals-' + i +  '-total_value');
+            if (total_node) {
+                total_node.val(total_value);
+            }
+        }
     }
 }
 
-function calc_totals(event) {
+function calc_totals() {
     "use strict";
     var total_value = multiply($('#deal_modal_body').find('.quantity').val(), $('#deal_modal_body').find('.price').val());
     $('#deal_modal_body').find('.total_value').val(total_value);
@@ -360,6 +367,7 @@ function fill_emptyX_with_predefined_or_existing_data(selected_id, type, empty_X
             $('#deal_modal_body').children('form').append(empty_X);
             rebind_attach_deals('#deal_modal_body', row);
             calc_total_value();
+            calc_totals();
             validator = validation_rules('#deal_modal_form');
             $('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {row: row, validator: validator}, add_deal_to_formset);
             $('#deal_modal').find('#deal_modal_confirm_btn').show();
@@ -633,7 +641,7 @@ function paginator_navigate(event) {
     event.preventDefault();
     var url, target_pane, rebind_func;
     url = $(event.currentTarget).attr('href');
-    target_pane = $(event.data.target_pane);
+    target_pane = event.data.target_pane;
     rebind_func = event.data.rebind_func;
     //If the page containing the paginator is a modal, then we need to know its type, to modify the url accordingly 
     //Otherwise the url would point to the page containing the modal.    
@@ -695,13 +703,12 @@ function row_edit_save_ajax(event) {
 
 function datepicker_reload(source, isPast) {
     "use strict";
-    var options, d, is_showMeridian;
+    var options, is_showMeridian;
     options = { format: $('#locale').text(),
             weekStart: 1,
             autoclose: 'True',
             todayHighlight: 'True' };
 
-    d = new Date();
     if (isPast) {
         options.endDate = $('#user_date').text();
     } else {
@@ -902,7 +909,7 @@ function rebind_delete_paginator(source, target, rebind_func) {
     "use strict";
     $(source).find(".row_delete_ajax").off('click').on('click', {target: target, rebind_func: rebind_func}, row_delete_ajax);
     var target_pane = $(source).find(target);
-    $(source).find(".paginator_nav_links").off('click').on('click', {target_pane: target_pane, rebind_func: rebind_func}, paginator_navigate);
+    $(source).find(".paginator_nav_links").off('click').on('click', {target_pane: target, rebind_func: rebind_func}, paginator_navigate);
 }
 
 // This rebinds all rating classes within the templates (not forms)
@@ -1173,7 +1180,7 @@ function negotiate_deal_submit(event) {
             $(modal).modal('hide');
             $('#tab_open_deals').empty();
             $('#tab_open_deals').append(result);
-            rebind_open_deals(false);
+            rebind_open_deals(true);
         }
     });
 }
@@ -1378,17 +1385,23 @@ function tab_contacts_clicked() {
 
 function rebind_conversations(source) {
     "use strict";
-    var target = '#search_result';
+    var target, src;
+    target = '#search_result';
+    if (source) {
+        src = source;
+    } else {
+        src = '#tab_contacts';
+    }
     rebind_ratings($('#business_card_modal'));
-    rebind_delete_paginator(source, target, rebind_conversations);
-    $(source).find(".row_edit_ajax").off('click').on('click', {source: source}, row_edit_ajax);
+    rebind_delete_paginator(src, target, rebind_conversations);
+    $(src).find(".row_edit_ajax").off('click').on('click', {source: src}, row_edit_ajax);
     $('.back2contacts').off('click').on('click', function (event) {
         event.preventDefault();
         tab_contacts_clicked();
     });
     $('#new_conversation_button').off('click').on('click', new_conversation);
     rebind_filters($('#sidebar'), rebind_conversations);
-    add_more_tag_to_all_notefields(source);
+    add_more_tag_to_all_notefields(src);
 }
 
 function rebind_sales_item(source) {
@@ -1509,6 +1522,7 @@ function tab_open_deals_clicked(deal_id) {
         $('#sidebar').find(".typeahead_opendeal_deal_name").typeahead({ source: typeahead_opendeal_deal_name });
         $('#sidebar').find(".typeahead_opendeal_status").typeahead({ source: typeahead_opendeal_status });
         $('#sidebar').find(".typeahead_opendeal_total_value").typeahead({ source: typeahead_opendeal_total_value });
+        datepicker_reload('#sidebar', true);
         rebind_filters('#sidebar', rebind_open_deals);
         $("<img />", {'class': 'funnel', src: $.chasebot.STATIC_URL + 'img/funnel.png'}).load(function () {
             var h4 = $('<h4 />', {'class': 'funnel'}).append(gettext('Sales Funnel'));
@@ -1554,7 +1568,7 @@ function tab_todo_clicked() {
     $('#main_tabs a[href="#tab_todo"]').off('click');
     bind_main_tabs('tab_todo');
     $('#sidebar').load('sidebar/todo/', function (result) {
-
+        $('#feedback_btn').removeClass('hidden');
     });
 }
 
@@ -1698,11 +1712,14 @@ $(document).ready(function () {
                 if (validator.numberOfInvalids() === 0) {
                     data = $('#feedback_form').serialize();
                     $.post(url, data, function (result) {
-                        $('#feedback_modal').modal('hide');
+                        //Don't wait for feedback to be sent.
+                        $('#messages_id').empty();
+                        $('#messages_id').append(result);
                     });
+                    $('#feedback_modal').modal('hide');
                 }
             });
-            show_modal('#feedback_modal', 'auto');
+            show_modal('#feedback_modal');
         });
 	});
 

@@ -122,7 +122,7 @@
 							                	{% trans 'Sex' %}:				                	                    
 							                </td>
 							                <td>
-							                	{{contact.gender}}
+							                	{{contact.get_gender_display}}
 							                </td>
 							            </tr>
 						           </tbody>
@@ -166,7 +166,7 @@
 							                	{% trans 'Country' %}:				                	                    
 							                </td>
 							                <td>
-							                	{{contact.country}}
+							                	{{contact.get_country_display}}
 							                </td>
 							            </tr>
 						            </tbody>

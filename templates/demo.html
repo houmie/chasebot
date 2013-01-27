@@ -7,14 +7,15 @@
 {% block content %}
 <div class="row-fluid">
 	<div class="span6 offset3">
-		<h1>{% trans 'Get Started with a Beta demo' %}</h1>
+		<h1>{% trans 'Get Started with a Beta Demo' %}</h1>
 		<h3>{% trans 'Sign up in 30 seconds. No credit card required.' %}</h3>
 	</div>
     <div class="span6 offset3">    	
 		<form id="form_demo" class="cb_margin_top" method="post" action=".">
 			<div class="parent">	    	
 				<div class="well well-large">	
-					{% show_row_div form.username %}	
+					{% show_row_div form.username %}
+					{% show_row_div form.company %}	
 					{% show_row_div form.email %}
 					{% show_row_div form.password %}
 					{% show_row_div form.password2 %}

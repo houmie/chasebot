@@ -49,7 +49,7 @@
 
 <body> 
 <div id="locale" class="hidden">{{locale}}</div>
-<a class="btn right-aligned btn-success btn-large" id="feedback_btn" href="feedback/">{% trans 'Please send us your feedback' %}</a>   
+<a class="btn right-aligned btn-success btn-large hidden" id="feedback_btn" href="feedback/">{% trans 'Please send us your feedback' %}</a>   
 <div class="modal hide fade" id="feedback_modal" tabindex="-1" role="dialog" aria-labelledby="feedback_label" aria-hidden="true">
 	{% include 'feedback_modal.html' %}
 </div>
@@ -93,7 +93,7 @@
 				        {% endfor %}
 					    </select>
 					</form>
-					<a class="btn btn-small cb_inline_block icon timezone_help right-margin" href="#"><i class="icon-question-sign icon-large"></i></a>
+					<a class="hidden btn btn-small cb_inline_block icon timezone_help right-margin" href="#"><i class="icon-question-sign icon-large"></i></a>
 				</div>
 			    <div class="dropdown cb_inline_block">
 			    	{% get_current_language as LANGUAGE_CODE %} 
@@ -121,24 +121,9 @@
 
 <div class="container">   
 	<h2>{% block head %}{% endblock %}</h2> 
-	{% if messages %}		
-		  {% for message in messages %}		  
-		  	{% if message.tags %}
-		  		{%if message.tags == 'success'%}
-		  		<div class="alert alert-success">		  			
-		  		{% elif message.tags == 'error' %}
-		  			<div class="alert alert-error">		  		
-		  		{% elif message.tags == 'info' %}
-		  			<div class="alert alert-info">
-	  			{% elif message.tags == 'warning' %}
-	  				<div class="alert">
-		  		{% endif %}
-		  			<button type="button" class="close" data-dismiss="alert">×</button>
-		  			{{ message }}
-		  			</div>		    
-		  	{% endif %}		  
-		  {% endfor %}		
-	  {% endif %}
+	<div id="messages_id">
+		{% include 'messages.html' %}
+	</div>
     
 	<div class="modal hide fade" id="deal_modal" tabindex="-1" role="dialog" aria-labelledby="deal_label" aria-hidden="true">
 		<div id="previous_dealinstance_name"></div>

@@ -12,7 +12,8 @@ from chasebot_app.models import Contact, MaritalStatus, Conversation, SalesItem,
     Invitation, Event, DealStatus
 from django.forms.models import BaseModelFormSet
 from django.utils.translation import ugettext_lazy as _
-import datetime
+from datetime import datetime
+from datetime import timedelta
 
 
 
@@ -20,8 +21,9 @@ class FeedbackForm(Form):
     feedback        = forms.CharField(widget=forms.Textarea(attrs={'class': 'textarea_mandatory', 'placeholder': _(u"Please tell us what you think about Chasebot.          How could we improve it for your day to day work?     What is important to you that is missing?   What do you like about Chasebot?")}))
     
     
-class UserRegistrationForm(Form):
+class DemoRegistrationForm(Form):
     username        = forms.CharField(widget=forms.TextInput(attrs={'class':'demo-input', 'placeholder': _(u'Choose a memorable username...')}), label = _(u'Username'), max_length=30)
+    company         = forms.CharField(required = False, widget=forms.TextInput(attrs={'class':'demo-input', 'placeholder': _(u'(Optional) Your company name...')}), label = _(u'Company'), max_length=75)
     email           = forms.EmailField(widget=forms.TextInput(attrs={'class':'demo-input', 'placeholder': _(u"What's your email address?")}), label= _(u'Email'))
     password        = forms.CharField(label = _(u'Password'), widget=forms.PasswordInput(render_value=False,attrs={'class':'demo-input', 'placeholder': _(u'Choose a memorable password')}))
     password2       = forms.CharField(label = _(u'Password (retype)'), widget=forms.PasswordInput(render_value=False, attrs={'class':'demo-input', 'placeholder': _(u'Retype the same password')}))    
@@ -52,7 +54,7 @@ class UserRegistrationForm(Form):
             raise forms.ValidationError(_(u"The email is already taken, please select another."))
         return email
 
-class RegistrationForm(UserRegistrationForm):
+class RegistrationForm(DemoRegistrationForm):
     def __init__(self, *args, **kwargs):
         company_name = kwargs.pop('_company_name', None)
         company_email = kwargs.pop('_company_email', None)
@@ -142,9 +144,9 @@ class ConversationForm(ModelForm):
     
     def __init__(self, company, *args, **kwargs):
         super(ConversationForm, self).__init__(*args, **kwargs)        
-        local_tz = timezone.get_current_timezone()
-        self.fields['conversation_date'].initial = self.instance.conversation_datetime.replace(tzinfo=pytz.utc).astimezone(local_tz).date()
-        self.fields['conversation_time'].initial = self.instance.conversation_datetime.replace(tzinfo=pytz.utc).astimezone(local_tz).time()    
+        current_tz = timezone.get_current_timezone()        
+        self.fields['conversation_date'].initial = current_tz.normalize(self.instance.conversation_datetime.astimezone(current_tz)).date()
+        self.fields['conversation_time'].initial = current_tz.normalize(self.instance.conversation_datetime.astimezone(current_tz)).time()    
     
     class Meta:
         model = Conversation
@@ -158,9 +160,9 @@ class ConversationForm(ModelForm):
         if 'conversation_date' in self.cleaned_data and 'conversation_time' in self.cleaned_data:
             call_date = self.cleaned_data['conversation_date']
             call_time = self.cleaned_data['conversation_time']
-            date_time = datetime.datetime(call_date.year, call_date.month, call_date.day, call_time.hour, call_time.minute)
+            date_time = datetime(call_date.year, call_date.month, call_date.day, call_time.hour, call_time.minute)
             current_tz = timezone.get_current_timezone()
-            current_date_time = timezone.now().replace(tzinfo=pytz.utc).astimezone(current_tz)            
+            current_date_time = current_tz.normalize(timezone.now().astimezone(current_tz))                                
             if date_time.date() > current_date_time.date():            
                 self._errors["conversation_date"] = self.error_class([_(u'A conversation date can not take place in future.')])
                 del cleaned_data['conversation_date']
@@ -243,7 +245,7 @@ class OpenDealTaskForm(Form):
 class FilterOpenDealForm(Form):            
     deal_instance_name = forms.CharField(widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_opendeal_deal_name', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=40)    
     status          = forms.ModelChoiceField(queryset=DealStatus.objects.all(), widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_opendeal_status', 'autocomplete': 'off', 'data-provide': 'typeahead'}))    
-    last_contacted  = forms.DateField(widget = forms.DateInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query', 'autocomplete': 'off'}))
+    last_contacted  = forms.DateField(widget = forms.DateInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small date_picker search-query', 'autocomplete': 'off'}))
     total_value     = forms.DecimalField(widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_opendeal_total_value', 'autocomplete': 'off', 'data-provide': 'typeahead'}))
 
 
@@ -367,70 +369,6 @@ class ColleagueInviteForm(ModelForm):
         fields = {'name', 'email'}
             
 
-#class TaskForm(ModelForm):
-#    due_time  = forms.TimeField(localize=True)
-#    contact_text  = forms.CharField(max_length=81, label = _(u'Contact person'), required= False) 
-#    
-#
-#    def round_time_to_nearest_quarter(self):
-#        #form is in Add mode., hence we just pick the currenct date_time as base.
-#        current_tz = timezone.get_current_timezone() 
-#        time_close_to_quarter = timezone.now().replace(tzinfo=pytz.utc).astimezone(current_tz)
-#        # Time difference to 15 min round 
-#        time_discard = datetime.timedelta(minutes=time_close_to_quarter.time().minute % 15, seconds=time_close_to_quarter.second) 
-#        # Deduct that difference from the current time to round it down to nearest quarter.
-#        time_close_to_quarter -= time_discard
-#        return time_close_to_quarter
-#
-#    def __init__(self, *args, **kwargs):
-#        super(TaskForm, self).__init__(*args, **kwargs)
-#        self.fields['due_time'].widget.attrs['class'] = 'timepicker-default input-small' 
-#        self.fields['due_time'].widget.attrs['placeholder'] = _(u'What time?')
-#        self.fields['due_time'].widget.attrs['autocomplete'] = 'off'
-#        #If the date_time is set, it means the form is in edit mode, and we edit the existing time value 
-#        if self.instance.due_date_time:
-#            local_tz = timezone.get_current_timezone()
-#            #Convert the UTC date_time into currenct time zone
-#            self.fields['due_time'].initial = self.instance.due_date_time.replace(tzinfo=pytz.utc).astimezone(local_tz).time()  
-#        else:            
-#            self.fields['due_time'].initial = (self.round_time_to_nearest_quarter() +  datetime.timedelta(minutes=30)).time() 
-#
-#        self.fields['contact_text'].initial = u'{0} {1}'.format(self.instance.contact.first_name, self.instance.contact.last_name)
-#        self.fields['contact_text'].widget.attrs['readonly'] = True
-#    
-#    def clean_due_time(self):
-#        due_time = self.cleaned_data['due_time']        
-#        current_tz = timezone.get_current_timezone()  
-#        due_date_time = timezone.now().replace(tzinfo=pytz.utc).astimezone(current_tz)
-#        selected_due_date_time = current_tz.localize(datetime.datetime(due_date_time.year, due_date_time.month, due_date_time.day, due_time.hour, due_time.minute))        
-#        
-#        # time_close_to_quarter is always rounded down by max 15 min. Hence if the selected due date time is less than equal full 15 min in future, then
-#        # there won't be enough time for the system to remind the user, hence it will be rejected. 
-#        if selected_due_date_time <= self.round_time_to_nearest_quarter() + datetime.timedelta(minutes=15):
-#            raise forms.ValidationError(_(u"The due time of a task has to be set at least 15 minutes in the future."))
-#        return due_time
-#    
-#    def save(self, commit=True):
-#        instance = super(TaskForm, self).save(commit=False)
-#        # Always localize the entered date by user into his timezone before saving it to database
-#        if 'due_date_time' in self.cleaned_data and 'due_time' in self.cleaned_data:
-#            due_date_time = self.cleaned_data['due_date_time']
-#            due_time = self.cleaned_data['due_time']
-#            current_tz = timezone.get_current_timezone()            
-#            instance.due_date_time = current_tz.localize(datetime.datetime(due_date_time.year, due_date_time.month, due_date_time.day, due_time.hour, due_time.minute))
-#        if commit:
-#            instance.save()
-#        return instance
-#    
-#    
-#    class Meta:
-#        model = Task
-#        exclude = {'reminder_date_time', 'company', 'contact', 'user'}
-#        widgets={                    
-#                    'title' : forms.TextInput(attrs={'placeholder': _(u'What is this task about?'), 'class':'placeholder_fix_css', 'autocomplete':'off'}),
-#                    'due_date_time': forms.DateInput(attrs={'placeholder': _(u'When is this task due?'), 'class':'placeholder_fix_css date_picker', 'autocomplete':'off'}),                    
-#                }
-        
         
 class EventForm(ModelForm):    
     due_time  = forms.TimeField(localize=True)    
@@ -440,10 +378,10 @@ class EventForm(ModelForm):
 
     def round_time_to_nearest_quarter(self):
         #form is in Add mode., hence we just pick the currenct date_time as base.
-        current_tz = timezone.get_current_timezone()
-        time_close_to_quarter = timezone.now().replace(tzinfo=pytz.utc).astimezone(current_tz)
+        current_tz = timezone.get_current_timezone()        
+        time_close_to_quarter = current_tz.normalize(timezone.now().astimezone(current_tz))
         # Time difference to 15 min round 
-        time_discard = datetime.timedelta(minutes=time_close_to_quarter.time().minute % 15, seconds=time_close_to_quarter.second, microseconds=time_close_to_quarter.microsecond) 
+        time_discard = timedelta(minutes=time_close_to_quarter.time().minute % 15, seconds=time_close_to_quarter.second, microseconds=time_close_to_quarter.microsecond) 
         # Deduct that difference from the current time to round it down to nearest quarter.
         time_close_to_quarter -= time_discard
         return time_close_to_quarter
@@ -455,38 +393,19 @@ class EventForm(ModelForm):
         self.fields['due_time'].widget.attrs['autocomplete'] = 'off'
         self.fields['type'].widget.attrs['class'] = 'textarea_13em' 
         #If the date_time is set, it means the form is in edit mode, and we edit the existing time value 
-        local_tz = timezone.get_current_timezone()
+        current_tz = timezone.get_current_timezone()
         if self.instance.due_date_time:            
-            #Convert the UTC date_time into currenct time zone
-            self.fields['due_time'].initial = self.instance.due_date_time.replace(tzinfo=pytz.utc).astimezone(local_tz).time()  
+            #Convert the UTC date_time into currenct time zone            
+            self.fields['due_time'].initial = current_tz.normalize(self.instance.due_date_time.astimezone(current_tz)).time()  
         else:            
-            self.fields['due_time'].initial = (self.round_time_to_nearest_quarter() +  datetime.timedelta(minutes=135)).time() 
+            self.fields['due_time'].initial = (self.round_time_to_nearest_quarter() +  timedelta(minutes=120)).time() 
         #Todo: refactor
         deal = Deal.objects.filter(deal_id = self.instance.deal_id)[0]        
         self.fields['contact_text'].initial = u'{0} {1}'.format(deal.contact.first_name, deal.contact.last_name)
         self.fields['contact_text'].widget.attrs['readonly'] = True       
         if self.instance.pk: 
-            self.fields['due_date'].initial = self.instance.due_date_time.replace(tzinfo=pytz.utc).astimezone(local_tz).date()
-
-    def clean_due_time(self):            
-        due_time = self.cleaned_data['due_time']
-        
-        if self.instance.pk:
-            return due_time
-        
-        if 'due_date' in self.cleaned_data:
-            due_date = self.cleaned_data['due_date']
-        else:
-            return due_time
-        
-        current_tz = timezone.get_current_timezone()  
-        selected_due_date_time = current_tz.localize(datetime.datetime(due_date.year, due_date.month, due_date.day, due_time.hour, due_time.minute, 0, 0))        
-        
-        # time_close_to_quarter is always rounded down by max 15 min. Hence if the selected due date time is less than equal full 15 min in future, then
-        # there won't be enough time for the system to remind the user, hence it will be rejected. 
-        if selected_due_date_time < self.round_time_to_nearest_quarter() + datetime.timedelta(minutes=135):
-            raise forms.ValidationError(_(u"The due time of an event has to be set at least 2 hours in the future."))
-        return due_time
+            self.fields['due_date'].initial = current_tz.normalize(self.instance.due_date_time.astimezone(current_tz)).date()
+    
     
     def save(self, commit=True):
         instance = super(EventForm, self).save(commit=False)
@@ -495,7 +414,7 @@ class EventForm(ModelForm):
             due_date = self.cleaned_data['due_date']
             due_time = self.cleaned_data['due_time']
             current_tz = timezone.get_current_timezone()            
-            instance.due_date_time = current_tz.localize(datetime.datetime(due_date.year, due_date.month, due_date.day, due_time.hour, due_time.minute, 0, 0))
+            instance.due_date_time = current_tz.localize(datetime(due_date.year, due_date.month, due_date.day, due_time.hour, due_time.minute, 0, 0))
         if commit:
             instance.save()
         return instance
@@ -507,13 +426,18 @@ class EventForm(ModelForm):
                 due_date = self.cleaned_data['due_date']        
                 due_time = self.cleaned_data['due_time']
                 current_tz = timezone.get_current_timezone()
-                date_time = current_tz.localize(datetime.datetime(due_date.year, due_date.month, due_date.day, due_time.hour, due_time.minute))            
-                current_date_time = timezone.now().replace(tzinfo=pytz.utc).astimezone(current_tz)
+                date_time = current_tz.localize(datetime(due_date.year, due_date.month, due_date.day, due_time.hour, due_time.minute))            
+                current_date_time = current_tz.normalize(timezone.now().astimezone(current_tz))
                 if date_time.date() < current_date_time.date():            
                     self._errors["due_date"] = self.error_class([_(u'An event date can not take place in the past.')])
                     del cleaned_data['due_date']
                 if date_time.time() < current_date_time.time():            
                     self._errors["due_time"] = self.error_class([_(u'An event time can not take place in the past.')])
+                    del cleaned_data['due_time']
+                # time_close_to_quarter is always rounded down by max 15 min. Hence if the selected due date time is less than equal full 15 min in future, then
+                # there won't be enough time for the system to remind the user, hence it will be rejected. 
+                elif date_time <= self.round_time_to_nearest_quarter() + timedelta(minutes=15):
+                    self._errors["due_time"] = self.error_class([_(u"Please set the time at least 15 minutes in the future.")])
                     del cleaned_data['due_time']
         return cleaned_data
     

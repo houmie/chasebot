@@ -1,8 +1,6 @@
-from celery import task
-from celery.schedules import crontab
 from celery.task.base import periodic_task
-import datetime
-import chasebot_app
+from datetime import datetime
+from datetime import timedelta
 import celery
 from django.utils.timezone import utc
 from chasebot_app.models import Event, Deal
@@ -14,25 +12,22 @@ import json
 import pytz
 import dateutil
 from django.utils import timezone
-#from pytz import timezone as pytzone
 
 
 @celery.task(name='tasks.check_for_events')
-@periodic_task(run_every=datetime.timedelta(minutes=1))  
+@periodic_task(run_every=timedelta(minutes=1))  
 def check_for_events():    
-    print "Starting"    
-    now = datetime.datetime.utcnow().replace(tzinfo=utc,second=00, microsecond=00)
-    events = Event.objects.filter(reminder_date_time__range=(now - datetime.timedelta(minutes=1), now))    
-    dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime.datetime) else None    
+    now = datetime.utcnow().replace(tzinfo=utc,second=00, microsecond=00)
+    events = Event.objects.filter(reminder_date_time__range=(now - timedelta(minutes=15), now))    
+    dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime) else None    
     for event in events:        
-        print "match"        
+        print "Executing Task"
         time_zone = event.user.get_profile().timezone        
         timezone.activate(pytz.timezone(time_zone))
         current_tz = timezone.get_current_timezone()                
-        utc_dt = datetime.datetime(event.due_date_time.year, event.due_date_time.month, event.due_date_time.day, event.due_date_time.hour, event.due_date_time.minute, 0, tzinfo=utc)
+        utc_dt = datetime(event.due_date_time.year, event.due_date_time.month, event.due_date_time.day, event.due_date_time.hour, event.due_date_time.minute, 0, tzinfo=utc)
         loc_dt = current_tz.normalize(utc_dt.astimezone(current_tz))                                          
-        sendEmail.delay(event.deal_id, event.user.first_name, event.user.email, event.type, json.dumps(loc_dt, default=dthandler), event.notes)
-    print "Ending"
+        sendEmail.delay(event.deal_id, event.user.first_name, event.user.email, event.type, json.dumps(loc_dt, default=dthandler), event.notes)    
 
     
 
