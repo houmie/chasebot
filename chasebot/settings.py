@@ -61,9 +61,45 @@ PIPELINE_YUI_BINARY = '/home/hooman/venuscloud/chasebot-env/node_modules/yuglify
 PIPELINE_CSS = {
     'chasebot_css': {
         'source_filenames': (
-          'chasebot/chasebot_styles.css',          
+          'chasebot/chasebot.css',          
         ),
-        'output_filename': 'chasebot/chasebot_styles.min.css',        
+        'output_filename': 'chasebot/chasebot.min.css',        
+    },
+    'bootstrap_datepicker_css': {
+        'source_filenames': (
+          'bootstrap-datepicker/css/datepicker.css',          
+        ),
+        'output_filename': 'bootstrap-datepicker/css/datepicker.min.css',        
+    },
+    'bootstrap_timepicker_css': {
+        'source_filenames': (
+          'bootstrap-timepicker/compiled/timepicker.css',          
+        ),
+        'output_filename': 'bootstrap-timepicker/compiled/timepicker.min.css',        
+    },
+    'chosen_css': {
+        'source_filenames': (
+          'chosen/chosen/chosen.css',
+        ),
+        'output_filename': 'chosen/chosen/chosen.min.css',        
+    },
+    'famfamfam_flags_css': {
+        'source_filenames': (
+          'famfamfam_flags/famfamfam-flags.css',
+        ),
+        'output_filename': 'famfamfam_flags/famfamfam-flags.min.css',        
+    },
+    'tablesorter_pager_css': {
+        'source_filenames': (
+          'tablesorter/addons/pager/jquery.tablesorter.pager.css',
+        ),
+        'output_filename': 'tablesorter/addons/pager/jquery.tablesorter.pager.min.css',        
+    },
+    'tablesorter_theme_css': {
+        'source_filenames': (
+          'tablesorter/css/theme.bootstrap.css',
+        ),
+        'output_filename': 'tablesorter/css/theme.bootstrap.min.css',        
     },
 }
 
@@ -73,13 +109,31 @@ PIPELINE_JS = {
           'chasebot/chasebot.js',          
         ),
         'output_filename': 'chasebot/chasebot.min.js',
-    },    
+    },
     'bigdecimal_js': {
         'source_filenames': (
           'bigdecimal.js/bigdecimal.js',          
         ),
         'output_filename': 'bigdecimal.js/bigdecimal.min.js',
-    }
+    },
+   'bootstrap_datepicker_js': {
+        'source_filenames': (
+          'bootstrap-datepicker/js/bootstrap-datepicker.js',
+        ),
+        'output_filename': 'bootstrap-datepicker/js/bootstrap-datepicker.min.js',
+    },
+   'bootstrap_timepicker_js': {
+        'source_filenames': (
+          'bootstrap-timepicker/js/bootstrap-timepicker.js',
+        ),
+        'output_filename': 'bootstrap-timepicker/js/bootstrap-timepicker.min.js',
+    },
+   'jquery_fix_clone_js': {
+        'source_filenames': (
+          'jquery.fix.clone/jquery.fix.clone.js',          
+        ),
+        'output_filename': 'jquery.fix.clone/jquery.fix.clone.min.js',
+    },
 }
 
 FORMAT_MODULE_PATH = 'chasebot.formats'
