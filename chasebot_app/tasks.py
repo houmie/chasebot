@@ -15,10 +15,10 @@ from django.utils import timezone
 
 
 @celery.task(name='tasks.check_for_events')
-@periodic_task(run_every=timedelta(minutes=1))  
+@periodic_task(run_every=timedelta(minutes=15))  
 def check_for_events():    
     now = datetime.utcnow().replace(tzinfo=utc,second=00, microsecond=00)
-    events = Event.objects.filter(reminder_date_time__range=(now - timedelta(minutes=15), now))    
+    events = Event.objects.filter(is_reminder_sent = False).filter(reminder_date_time__range=(now - timedelta(minutes=15), now))    
     dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime) else None    
     for event in events:        
         print "Executing Task"
@@ -27,13 +27,13 @@ def check_for_events():
         current_tz = timezone.get_current_timezone()                
         utc_dt = datetime(event.due_date_time.year, event.due_date_time.month, event.due_date_time.day, event.due_date_time.hour, event.due_date_time.minute, 0, tzinfo=utc)
         loc_dt = current_tz.normalize(utc_dt.astimezone(current_tz))                                          
-        sendEmail.delay(event.deal_id, event.user.first_name, event.user.email, event.type, json.dumps(loc_dt, default=dthandler), event.notes)    
+        sendEmail.delay(event.pk, event.deal_id, event.user.first_name, event.user.email, event.type, json.dumps(loc_dt, default=dthandler), event.notes)    
 
     
 
 
 @celery.task(name='tasks.sendEmail')
-def sendEmail(deal_id, first_name, email, event_type, due_date_time, notes):       
+def sendEmail(event_id, deal_id, first_name, email, event_type, due_date_time, notes):       
     duedatetime_clean = dateutil.parser.parse(json.loads(due_date_time))
     subject = 'Event Reminder'
     link = None
@@ -46,7 +46,9 @@ def sendEmail(deal_id, first_name, email, event_type, due_date_time, notes):
     #Development
     send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [settings.DEFAULT_FROM_EMAIL])
     
-    #Production
+    #Production (Run Daemon at 15 min o'clock)
     #send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [email])
 
-    
+    event = Event.objects.get(pk = event_id)
+    event.is_reminder_sent = True
+    event.save()

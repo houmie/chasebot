@@ -323,6 +323,7 @@ class Event(models.Model):
     company = models.ForeignKey(Company)
     user = models.ForeignKey(User)
     notes = models.TextField(_(u'Notes'),        blank=True)
+    is_reminder_sent = models.BooleanField()
 
     def __unicode__(self):
         return self.deal_id

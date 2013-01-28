@@ -22,11 +22,11 @@ class FeedbackForm(Form):
     
     
 class DemoRegistrationForm(Form):
-    username        = forms.CharField(widget=forms.TextInput(attrs={'class':'demo-input', 'placeholder': _(u'Choose a memorable username...')}), label = _(u'Username'), max_length=30)
-    company         = forms.CharField(required = False, widget=forms.TextInput(attrs={'class':'demo-input', 'placeholder': _(u'(Optional) Your company name...')}), label = _(u'Company'), max_length=75)
-    email           = forms.EmailField(widget=forms.TextInput(attrs={'class':'demo-input', 'placeholder': _(u"What's your email address?")}), label= _(u'Email'))
-    password        = forms.CharField(label = _(u'Password'), widget=forms.PasswordInput(render_value=False,attrs={'class':'demo-input', 'placeholder': _(u'Choose a memorable password')}))
-    password2       = forms.CharField(label = _(u'Password (retype)'), widget=forms.PasswordInput(render_value=False, attrs={'class':'demo-input', 'placeholder': _(u'Retype the same password')}))    
+    username        = forms.CharField(widget=forms.TextInput(attrs={'autocomplete': 'off', 'class':'demo-input', 'placeholder': _(u'Choose a memorable username...')}), label = _(u'Username'), max_length=30)
+    company         = forms.CharField(required = False, widget=forms.TextInput(attrs={'autocomplete': 'off', 'class':'demo-input', 'placeholder': _(u'(Optional) Your company name...')}), label = _(u'Company'), max_length=75)
+    email           = forms.EmailField(widget=forms.TextInput(attrs={'autocomplete': 'off', 'class':'demo-input', 'placeholder': _(u"What's your email address?")}), label= _(u'Email'))
+    password        = forms.CharField(label = _(u'Password'), widget=forms.PasswordInput(render_value=False,attrs={'autocomplete': 'off', 'class':'demo-input', 'placeholder': _(u'Choose a memorable password')}))
+    password2       = forms.CharField(label = _(u'Password (retype)'), widget=forms.PasswordInput(render_value=False, attrs={'autocomplete': 'off', 'class':'demo-input', 'placeholder': _(u'Retype the same password')}))    
     timezone        = forms.ChoiceField(choices=[(x, x) for x in pytz.common_timezones], initial='US/Eastern')
 
     def clean_password2(self):

@@ -97,8 +97,8 @@ def feedback(request):
     if request.method == 'POST':
         form = FeedbackForm(request.POST)
         if form.is_valid():
-            send_mail('Feedback', form.cleaned_data['feedback'], settings.DEFAULT_FROM_EMAIL, [settings.DEFAULT_FROM_EMAIL])
-            messages.info(request, _(u'Thank you for your feedback. :-)'))
+            send_mail('Feedback', form.cleaned_data['feedback'] + ' username: ' + request.user.username, settings.DEFAULT_FROM_EMAIL, [settings.DEFAULT_FROM_EMAIL])
+            messages.info(request, _(u'Thank you for your feedback.'))
             return render(request, 'messages.html')
     else:
         form = FeedbackForm()

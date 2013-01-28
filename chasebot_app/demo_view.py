@@ -15,7 +15,24 @@ from django.shortcuts import redirect, render
 from django.contrib.gis.geoip import GeoIP
 from chasebot_app.forms import DemoRegistrationForm
 from django_countries.fields import Country
+from datetime import datetime
+from datetime import timedelta
 
+def get_user_local_datetime():
+    current_tz = timezone.get_current_timezone()
+    loc_dt = current_tz.normalize(timezone.now().astimezone(current_tz))
+    return loc_dt
+
+def get_rounded_event_datetime():        
+    #form is in Add mode., hence we just pick the currenct date_time as base.
+    current_tz = timezone.get_current_timezone()        
+    time_close_to_quarter = current_tz.normalize(timezone.now().astimezone(current_tz))
+    # Time difference to 15 min round 
+    time_discard = timedelta(minutes=time_close_to_quarter.time().minute % 15, seconds=time_close_to_quarter.second, microseconds=time_close_to_quarter.microsecond) 
+    # Deduct that difference from the current time to round it down to nearest quarter.
+    time_close_to_quarter -= time_discard
+    return time_close_to_quarter
+        
 
 def generate_random_username(length=4, chars=ascii_lowercase+digits, split=4, delimiter='-'):
     username = ''.join([choice(chars) for i in xrange(length)])
@@ -158,7 +175,7 @@ def demo_continue(request, username, password, email, time_zone, company):
     web.sales_item.add(w3)    
     web.save()
     
-    call1 = c1.conversation_set.create(conversation_datetime=timezone.now() - timezone.timedelta(days=7, hours=4), notes=_(u'%(name)s doesn\'t seem too keen on the new offer. Maybe a discount would be helpful.') % {'name' : 'John'})
+    call1 = c1.conversation_set.create(conversation_datetime=get_user_local_datetime() - timedelta(days=7, hours=4), notes=_(u'%(name)s doesn\'t seem too keen on the new offer. Maybe a discount would be helpful.') % {'name' : 'John'})
 
     deal1 = c1.deal_set.create(
                         conversation = call1,
@@ -178,7 +195,7 @@ def demo_continue(request, username, password, email, time_zone, company):
         deal1.sales_item.add(item)
     deal1.save()
     
-    call2 = c1.conversation_set.create(conversation_datetime=call1.conversation_datetime + timezone.timedelta(days=4, hours=3), notes=_(u'%(name)s would commit if there is a discount of 5%% on the deal.') % {'name' : 'John'})
+    call2 = c1.conversation_set.create(conversation_datetime=call1.conversation_datetime + timedelta(days=4, hours=3), notes=_(u'%(name)s would commit if there is a discount of 5%% on the deal.') % {'name' : 'John'})
     deal2 = c1.deal_set.create(
                         deal_id=deal1.deal_id,
                         conversation = call2,
@@ -198,7 +215,7 @@ def demo_continue(request, username, password, email, time_zone, company):
         deal2.sales_item.add(item)
     deal2.save()
     
-    call3 = c1.conversation_set.create(conversation_datetime=timezone.now(), notes=_(u"After another conversation, %(name)s has accepted the offer. It's a win.") % {'name' : 'John'})
+    call3 = c1.conversation_set.create(conversation_datetime=get_user_local_datetime(), notes=_(u"After another conversation, %(name)s has accepted the offer. It's a win.") % {'name' : 'John'})
     deal3 = c1.deal_set.create(
                         deal_id=deal2.deal_id,
                         conversation = call3,
@@ -218,7 +235,7 @@ def demo_continue(request, username, password, email, time_zone, company):
         deal3.sales_item.add(item)
     deal3.save()
 
-    call1 = c2.conversation_set.create(conversation_datetime=timezone.now() - timezone.timedelta(days=5, hours=3), notes=_(u'%(name)s looks for a cloud solution for her B2B business. I will try to see if our Website package might interest her.') % {'name' : 'Ashley' })
+    call1 = c2.conversation_set.create(conversation_datetime=get_user_local_datetime() - timedelta(days=5, hours=3), notes=_(u'%(name)s looks for a cloud solution for her B2B business. I will try to see if our Website package might interest her.') % {'name' : 'Ashley' })
    
     deal1 = c2.deal_set.create(
                         conversation = call1,
@@ -238,7 +255,7 @@ def demo_continue(request, username, password, email, time_zone, company):
         deal1.sales_item.add(item)
     deal1.save()
     
-    call2 = c2.conversation_set.create(conversation_datetime=call1.conversation_datetime + timezone.timedelta(days=2, hours=1), notes=_(u'%(name)s will consider the offer and needs some time to think about it.') % {'name' : 'Ashley'})
+    call2 = c2.conversation_set.create(conversation_datetime=call1.conversation_datetime + timedelta(days=2, hours=1), notes=_(u'%(name)s will consider the offer and needs some time to think about it.') % {'name' : 'Ashley'})
     deal2 = c2.deal_set.create(
                         deal_id=deal1.deal_id,
                         conversation = call2,
@@ -258,7 +275,7 @@ def demo_continue(request, username, password, email, time_zone, company):
         deal2.sales_item.add(item)
     deal2.save()
 
-    call3 = c2.conversation_set.create(conversation_datetime=timezone.now(), notes=_(u'After another conversation, %(name)s doesn\'t seem to be interested any longer. Its a loss.') % {'name' : 'Ashley'})
+    call3 = c2.conversation_set.create(conversation_datetime=get_user_local_datetime(), notes=_(u'After another conversation, %(name)s doesn\'t seem to be interested any longer. Its a loss.') % {'name' : 'Ashley'})
     deal3 = c2.deal_set.create(
                         deal_id=deal2.deal_id,
                         conversation = call3,
@@ -278,7 +295,7 @@ def demo_continue(request, username, password, email, time_zone, company):
         deal3.sales_item.add(item)
     deal3.save()
 
-    call1 = c3.conversation_set.create(conversation_datetime=timezone.now() - timezone.timedelta(days=2, hours=1), notes=_(u'%(name)s is interested in purchasing 25 lunch deals for her food store.') % {'name' : 'Silvia'})
+    call1 = c3.conversation_set.create(conversation_datetime=get_user_local_datetime() - timedelta(days=2, hours=1), notes=_(u'%(name)s is interested in purchasing 25 lunch deals for her food store.') % {'name' : 'Silvia'})
    
     deal1 = c3.deal_set.create(
                         conversation = call1,
@@ -298,7 +315,7 @@ def demo_continue(request, username, password, email, time_zone, company):
         deal1.sales_item.add(item)
     deal1.save()
     
-    call2 = c3.conversation_set.create(conversation_datetime=timezone.now(), notes=_(u'Made some progress with the deal. Trying to convince %(name)s of the lunch deal quality. Deal still in progress...') % {'name' : 'Silvia'})
+    call2 = c3.conversation_set.create(conversation_datetime=get_user_local_datetime(), notes=_(u'Made some progress with the deal. Trying to convince %(name)s of the lunch deal quality. Deal still in progress...') % {'name' : 'Silvia'})
     deal2 = c3.deal_set.create(
                         deal_id=deal1.deal_id,
                         conversation = call2,
@@ -320,7 +337,7 @@ def demo_continue(request, username, password, email, time_zone, company):
     
     event = c3.event_set.create(
                         type="call",
-                        due_date_time = timezone.now() + timezone.timedelta(days=1, hours=3),
+                        due_date_time = get_rounded_event_datetime() + timedelta(days=1, hours=3),
                         reminder = "none", 
                         is_public = False,
                         deal_id=deal2.deal_id,                  
@@ -329,7 +346,7 @@ def demo_continue(request, username, password, email, time_zone, company):
                         notes=_(u'Need to make a follow up call tomorrow. Prepare data about health and nutritions of the lunch deal package to be convincing.')
                         )
     
-    call1 = c4.conversation_set.create(conversation_datetime=timezone.now() - timezone.timedelta(days=8, hours=3), notes=_(u'%(name)s has a new fashion shop and might be interested in our quality shirts and ties as a package.') % {'name' : 'Michael'})
+    call1 = c4.conversation_set.create(conversation_datetime=get_user_local_datetime() - timedelta(days=8, hours=3), notes=_(u'%(name)s has a new fashion shop and might be interested in our quality shirts and ties as a package.') % {'name' : 'Michael'})
   
     deal1 = c4.deal_set.create(
                         conversation = call1,
@@ -349,7 +366,7 @@ def demo_continue(request, username, password, email, time_zone, company):
         deal1.sales_item.add(item)
     deal1.save()
     
-    call2 = c4.conversation_set.create(conversation_datetime=call1.conversation_datetime + timezone.timedelta(days=4, hours=1), notes=_(u'I offered him a discount of 5%%. %(name)s will consider the offer and needs some time to think about it.') % {'name' : 'Michael'})
+    call2 = c4.conversation_set.create(conversation_datetime=call1.conversation_datetime + timedelta(days=4, hours=1), notes=_(u'I offered him a discount of 5%%. %(name)s will consider the offer and needs some time to think about it.') % {'name' : 'Michael'})
     deal2 = c4.deal_set.create(
                         deal_id=deal1.deal_id,
                         conversation = call2,
@@ -369,7 +386,7 @@ def demo_continue(request, username, password, email, time_zone, company):
         deal2.sales_item.add(item)
     deal2.save()
 
-    call3 = c4.conversation_set.create(conversation_datetime=timezone.now(), notes=_(u'%(name)s is happy with discount and would like to purchase ten packages.') % {'name' : 'Michael'})
+    call3 = c4.conversation_set.create(conversation_datetime=get_user_local_datetime(), notes=_(u'%(name)s is happy with discount and would like to purchase ten packages.') % {'name' : 'Michael'})
     deal3 = c4.deal_set.create(
                         deal_id=deal2.deal_id,
                         conversation = call3,
@@ -390,7 +407,7 @@ def demo_continue(request, username, password, email, time_zone, company):
     deal3.save() 
 
 
-    call1 = c5.conversation_set.create(conversation_datetime=timezone.now() - timezone.timedelta(days=1, hours=4), notes=_(u'%(name)s is investing into a cotton mill factory and might be a potential client.') % {'name' : 'Harry'})
+    call1 = c5.conversation_set.create(conversation_datetime=get_user_local_datetime() - timedelta(days=1, hours=4), notes=_(u'%(name)s is investing into a cotton mill factory and might be a potential client.') % {'name' : 'Harry'})
    
     deal1 = c5.deal_set.create(
                         conversation = call1,
@@ -412,7 +429,7 @@ def demo_continue(request, username, password, email, time_zone, company):
     
     event = c5.event_set.create(
                         type="call",
-                        due_date_time = timezone.now() + timezone.timedelta(days=1, hours=1),
+                        due_date_time = get_rounded_event_datetime() + timedelta(days=1, hours=1),
                         reminder = "none", 
                         is_public = False,
                         deal_id=deal1.deal_id,                  
@@ -421,7 +438,7 @@ def demo_continue(request, username, password, email, time_zone, company):
                         notes=_(u'Need to prepare a chart about the effiency of the machine and send it by email to be more convincing in the next follow up call.')
                         )
     
-    call2 = c5.conversation_set.create(conversation_datetime=timezone.now(), notes=_(u'%(name)s doesn\'t need the 10 cotton saws. I agreed to remove it from the package and offer a 20%% discount. He needs now some time to think about it.') % {'name' : 'Harry'})
+    call2 = c5.conversation_set.create(conversation_datetime=get_user_local_datetime(), notes=_(u'%(name)s doesn\'t need the 10 cotton saws. I agreed to remove it from the package and offer a 20%% discount. He needs now some time to think about it.') % {'name' : 'Harry'})
     deal2 = c5.deal_set.create(
                         deal_id=deal1.deal_id,
                         conversation = call2,
@@ -441,7 +458,7 @@ def demo_continue(request, username, password, email, time_zone, company):
     deal2.sales_item.add(co3)    
     deal2.save()
 
-#    call3 = c5.conversation_set.create(conversation_datetime=call2.conversation_datetime + timezone.timedelta(days=3, hours=2), notes=_(u"%(name)s is happy with the new deal and price. It's a win.") % {'name' : 'Harry'})
+#    call3 = c5.conversation_set.create(conversation_datetime=call2.conversation_datetime + timedelta(days=3, hours=2), notes=_(u"%(name)s is happy with the new deal and price. It's a win.") % {'name' : 'Harry'})
 #    deal3 = c5.deal_set.create(
 #                        deal_id=deal2.deal_id,
 #                        conversation = call3,
@@ -461,7 +478,7 @@ def demo_continue(request, username, password, email, time_zone, company):
 #        deal3.sales_item.add(item)
 #    deal3.save()
     
-    call1 = c6.conversation_set.create(conversation_datetime=timezone.now() - timezone.timedelta(days=5, hours=3), notes=_(u'%(name)s looks for a cloud solution for her B2B business. I will try to see if our Website package might interest her.') % {'name' : 'Rosa' })
+    call1 = c6.conversation_set.create(conversation_datetime=get_user_local_datetime() - timedelta(days=5, hours=3), notes=_(u'%(name)s looks for a cloud solution for her B2B business. I will try to see if our Website package might interest her.') % {'name' : 'Rosa' })
     
     deal1 = c6.deal_set.create(
                         conversation = call1,
@@ -481,7 +498,7 @@ def demo_continue(request, username, password, email, time_zone, company):
         deal1.sales_item.add(item)
     deal1.save()
     
-    call2 = c6.conversation_set.create(conversation_datetime=call1.conversation_datetime + timezone.timedelta(days=2, hours=1), notes=_(u'%(name)s will consider the offer and needs some time to think about it. ') % {'name' : 'Rosa'})
+    call2 = c6.conversation_set.create(conversation_datetime=call1.conversation_datetime + timedelta(days=2, hours=1), notes=_(u'%(name)s will consider the offer and needs some time to think about it. ') % {'name' : 'Rosa'})
     deal2 = c6.deal_set.create(
                         deal_id=deal1.deal_id,
                         conversation = call2,
@@ -501,7 +518,7 @@ def demo_continue(request, username, password, email, time_zone, company):
         deal2.sales_item.add(item)
     deal2.save()
 
-    call3 = c6.conversation_set.create(conversation_datetime=timezone.now(), notes=_(u"After another conversation, %(name)s seems to be interested. It's a win") % {'name' : 'Rosa'})
+    call3 = c6.conversation_set.create(conversation_datetime=get_user_local_datetime(), notes=_(u"After another conversation, %(name)s seems to be interested. It's a win") % {'name' : 'Rosa'})
     deal3 = c6.deal_set.create(
                         deal_id=deal2.deal_id,
                         conversation = call3,
@@ -521,7 +538,7 @@ def demo_continue(request, username, password, email, time_zone, company):
         deal3.sales_item.add(item)
     deal3.save()
 
-    call1 = c7.conversation_set.create(conversation_datetime=timezone.now() - timezone.timedelta(days=7, hours=4), notes=_(u'%(name)s doesn\'t seem too keen on the new offer. Maybe a discount would be helpful.') % {'name' : 'Hugo'})
+    call1 = c7.conversation_set.create(conversation_datetime=get_user_local_datetime() - timedelta(days=7, hours=4), notes=_(u'%(name)s doesn\'t seem too keen on the new offer. Maybe a discount would be helpful.') % {'name' : 'Hugo'})
     
     deal1 = c7.deal_set.create(
                         conversation = call1,
@@ -541,7 +558,7 @@ def demo_continue(request, username, password, email, time_zone, company):
         deal1.sales_item.add(item)
     deal1.save()
     
-    call2 = c7.conversation_set.create(conversation_datetime=call1.conversation_datetime + timezone.timedelta(days=4, hours=3), notes=_(u'%(name)s would commit if there is a discount of 5%% on the deal.') % {'name' : 'Hugo'})
+    call2 = c7.conversation_set.create(conversation_datetime=call1.conversation_datetime + timedelta(days=4, hours=3), notes=_(u'%(name)s would commit if there is a discount of 5%% on the deal.') % {'name' : 'Hugo'})
     deal2 = c7.deal_set.create(
                         deal_id=deal1.deal_id,
                         conversation = call2,
@@ -561,7 +578,7 @@ def demo_continue(request, username, password, email, time_zone, company):
         deal2.sales_item.add(item)
     deal2.save()
     
-    call3 = c7.conversation_set.create(conversation_datetime=timezone.now(), notes=_(u"After another conversation, %(name)s has accepted the offer. It's a win.") % {'name' : 'Hugo'})
+    call3 = c7.conversation_set.create(conversation_datetime=get_user_local_datetime(), notes=_(u"After another conversation, %(name)s has accepted the offer. It's a win.") % {'name' : 'Hugo'})
     deal3 = c7.deal_set.create(
                         deal_id=deal2.deal_id,
                         conversation = call3,
@@ -581,7 +598,7 @@ def demo_continue(request, username, password, email, time_zone, company):
         deal3.sales_item.add(item)
     deal3.save()
 
-    call1 = c8.conversation_set.create(conversation_datetime=timezone.now() - timezone.timedelta(days=2, hours=1), notes=_(u'%(name)s is interested in purchasing 25 lunch deals for her food store.') % {'name' : 'Homer'})
+    call1 = c8.conversation_set.create(conversation_datetime=get_user_local_datetime() - timedelta(days=2, hours=1), notes=_(u'%(name)s is interested in purchasing 25 lunch deals for her food store.') % {'name' : 'Homer'})
    
     deal1 = c8.deal_set.create(
                         conversation = call1,
@@ -601,7 +618,7 @@ def demo_continue(request, username, password, email, time_zone, company):
         deal1.sales_item.add(item)
     deal1.save()
     
-    call2 = c8.conversation_set.create(conversation_datetime=call1.conversation_datetime + timezone.timedelta(days=1, hours=1), notes=_(u'Made some progress with the deal. Trying to convince %(name)s of the lunch deal quality. Deal still in progress...') % {'name' : 'Homer'})
+    call2 = c8.conversation_set.create(conversation_datetime=call1.conversation_datetime + timedelta(days=1, hours=1), notes=_(u'Made some progress with the deal. Trying to convince %(name)s of the lunch deal quality. Deal still in progress...') % {'name' : 'Homer'})
     deal2 = c8.deal_set.create(
                         deal_id=deal1.deal_id,
                         conversation = call2,
@@ -621,7 +638,7 @@ def demo_continue(request, username, password, email, time_zone, company):
         deal2.sales_item.add(item)
     deal2.save()
     
-    call3 = c8.conversation_set.create(conversation_datetime=timezone.now(), notes=_(u"%(name)s is happy with the price. It's a win.") % {'name' : 'Homer'})
+    call3 = c8.conversation_set.create(conversation_datetime=get_user_local_datetime(), notes=_(u"%(name)s is happy with the price. It's a win.") % {'name' : 'Homer'})
     deal3 = c8.deal_set.create(
                         deal_id=deal2.deal_id,
                         conversation = call3,
@@ -641,7 +658,7 @@ def demo_continue(request, username, password, email, time_zone, company):
         deal3.sales_item.add(item)
     deal3.save()
     
-    call1 = c9.conversation_set.create(conversation_datetime=timezone.now() - timezone.timedelta(days=3, hours=2), notes=_(u'%(name)s is investing into a cotton mill factory and might be a potential client.') % {'name' : 'William'})
+    call1 = c9.conversation_set.create(conversation_datetime=get_user_local_datetime() - timedelta(days=3, hours=2), notes=_(u'%(name)s is investing into a cotton mill factory and might be a potential client.') % {'name' : 'William'})
    
     deal1 = c9.deal_set.create(
                         conversation = call1,
@@ -663,7 +680,7 @@ def demo_continue(request, username, password, email, time_zone, company):
     
     event = c9.event_set.create(
                         type="email",
-                        due_date_time = timezone.now() + timezone.timedelta(days=2, hours=3),
+                        due_date_time = get_rounded_event_datetime() + timedelta(days=2, hours=3),
                         reminder = "2h", 
                         is_public = False,
                         deal_id=deal1.deal_id,                  
@@ -672,7 +689,7 @@ def demo_continue(request, username, password, email, time_zone, company):
                         notes=_(u'Deal is nearly closed. Bill is happy about the deal and need to clarify date of delivery. I should call him back a bit later in the week.')
                         )
     
-    call2 = c9.conversation_set.create(conversation_datetime=call1.conversation_datetime + timezone.timedelta(days=1, hours=4), notes=_(u'%(name)s doesn\'t need the 10 cotton saws. I agreed to remove it from the package and offer a 10%% discount. He needs now some time to think about it.') % {'name' : 'William'})
+    call2 = c9.conversation_set.create(conversation_datetime=call1.conversation_datetime + timedelta(days=1, hours=4), notes=_(u'%(name)s doesn\'t need the 10 cotton saws. I agreed to remove it from the package and offer a 10%% discount. He needs now some time to think about it.') % {'name' : 'William'})
     deal2 = c9.deal_set.create(
                         deal_id=deal1.deal_id,
                         conversation = call2,
@@ -692,7 +709,7 @@ def demo_continue(request, username, password, email, time_zone, company):
     deal2.sales_item.add(co3)    
     deal2.save()
 
-#    call3 = c9.conversation_set.create(conversation_datetime=call2.conversation_datetime + timezone.timedelta(days=3, hours=2), notes=_(u"%(name)s is happy with the new deal and price. It's a win.") % {'name' : 'William'})
+#    call3 = c9.conversation_set.create(conversation_datetime=call2.conversation_datetime + timedelta(days=3, hours=2), notes=_(u"%(name)s is happy with the new deal and price. It's a win.") % {'name' : 'William'})
 #    deal3 = c9.deal_set.create(
 #                        deal_id=deal2.deal_id,
 #                        conversation = call3,
@@ -712,7 +729,7 @@ def demo_continue(request, username, password, email, time_zone, company):
 #        deal3.sales_item.add(item)
 #    deal3.save()
     
-    call1 = c10.conversation_set.create(conversation_datetime=timezone.now() - timezone.timedelta(days=5, hours=3), notes=_(u'%(name)s looks for a cloud solution for her B2B business. I will try to see if our Website package might interest her.') % {'name' : 'Matthew' })
+    call1 = c10.conversation_set.create(conversation_datetime=get_user_local_datetime() - timedelta(days=5, hours=3), notes=_(u'%(name)s looks for a cloud solution for her B2B business. I will try to see if our Website package might interest her.') % {'name' : 'Matthew' })
    
     deal1 = c10.deal_set.create(
                         conversation = call1,
@@ -732,7 +749,7 @@ def demo_continue(request, username, password, email, time_zone, company):
         deal1.sales_item.add(item)
     deal1.save()
     
-    call2 = c10.conversation_set.create(conversation_datetime=call1.conversation_datetime + timezone.timedelta(days=2, hours=1), notes=_(u'%(name)s will consider the offer and needs some time to think about it.') % {'name' : 'Matthew'})
+    call2 = c10.conversation_set.create(conversation_datetime=call1.conversation_datetime + timedelta(days=2, hours=1), notes=_(u'%(name)s will consider the offer and needs some time to think about it.') % {'name' : 'Matthew'})
     deal2 = c10.deal_set.create(
                         deal_id=deal1.deal_id,
                         conversation = call2,
@@ -752,7 +769,7 @@ def demo_continue(request, username, password, email, time_zone, company):
         deal2.sales_item.add(item)
     deal2.save()
 
-    call3 = c10.conversation_set.create(conversation_datetime=timezone.now(), notes=_(u'After another conversation, %(name)s doesn\'t seem to be interested any longer. Its a loss.') % {'name' : 'Matthew'})
+    call3 = c10.conversation_set.create(conversation_datetime=get_user_local_datetime(), notes=_(u'After another conversation, %(name)s doesn\'t seem to be interested any longer. Its a loss.') % {'name' : 'Matthew'})
     deal3 = c10.deal_set.create(
                         deal_id=deal2.deal_id,
                         conversation = call3,
@@ -772,7 +789,7 @@ def demo_continue(request, username, password, email, time_zone, company):
         deal3.sales_item.add(item)
     deal3.save()
     
-    call1 = c11.conversation_set.create(conversation_datetime=timezone.now() - timezone.timedelta(days=8, hours=3), notes=_(u'%(name)s has a new fashion shop and might be interested in our quality shirts and ties as a package.') % {'name' : 'Jonas'})
+    call1 = c11.conversation_set.create(conversation_datetime=get_user_local_datetime() - timedelta(days=8, hours=3), notes=_(u'%(name)s has a new fashion shop and might be interested in our quality shirts and ties as a package.') % {'name' : 'Jonas'})
   
     deal1 = c11.deal_set.create(
                         conversation = call1,
@@ -792,7 +809,7 @@ def demo_continue(request, username, password, email, time_zone, company):
         deal1.sales_item.add(item)
     deal1.save()
     
-    call2 = c11.conversation_set.create(conversation_datetime=call1.conversation_datetime + timezone.timedelta(days=4, hours=1), notes=_(u'I offered him a discount of 5%%. %(name)s will consider the offer and needs some time to think about it.') % {'name' : 'Michael'})
+    call2 = c11.conversation_set.create(conversation_datetime=call1.conversation_datetime + timedelta(days=4, hours=1), notes=_(u'I offered him a discount of 5%%. %(name)s will consider the offer and needs some time to think about it.') % {'name' : 'Michael'})
     deal2 = c11.deal_set.create(
                         deal_id=deal1.deal_id,
                         conversation = call2,
@@ -812,7 +829,7 @@ def demo_continue(request, username, password, email, time_zone, company):
         deal2.sales_item.add(item)
     deal2.save()
 
-    call3 = c11.conversation_set.create(conversation_datetime=timezone.now(), notes=_(u'%(name)s is happy with discount and would like to purchase ten packages.') % {'name' : 'Michael'})
+    call3 = c11.conversation_set.create(conversation_datetime=get_user_local_datetime(), notes=_(u'%(name)s is happy with discount and would like to purchase ten packages.') % {'name' : 'Michael'})
     deal3 = c11.deal_set.create(
                         deal_id=deal2.deal_id,
                         conversation = call3,
@@ -832,7 +849,7 @@ def demo_continue(request, username, password, email, time_zone, company):
         deal3.sales_item.add(item)
     deal3.save()
     
-    call1 = c12.conversation_set.create(conversation_datetime=timezone.now() - timezone.timedelta(days=7, hours=4), notes=_(u'%(name)s doesn\'t seem too keen on the new offer. Maybe a discount would be helpful.') % {'name' : 'Kaylee'})
+    call1 = c12.conversation_set.create(conversation_datetime=get_user_local_datetime() - timedelta(days=7, hours=4), notes=_(u'%(name)s doesn\'t seem too keen on the new offer. Maybe a discount would be helpful.') % {'name' : 'Kaylee'})
   
     deal1 = c12.deal_set.create(
                         conversation = call1,
@@ -854,7 +871,7 @@ def demo_continue(request, username, password, email, time_zone, company):
     
     event = c12.event_set.create(
                         type="email",
-                        due_date_time = timezone.now() + timezone.timedelta(days=3, hours=2),
+                        due_date_time = get_rounded_event_datetime() + timedelta(days=3, hours=2),
                         reminder = "none", 
                         is_public = False,
                         deal_id=deal1.deal_id,                  
@@ -863,7 +880,7 @@ def demo_continue(request, username, password, email, time_zone, company):
                         notes=_(u'Customer needs a few days to discuss it with the staff. I should prepare a few photos of the holiday resort to convince him.')
                         )
     
-    call2 = c12.conversation_set.create(conversation_datetime=call1.conversation_datetime + timezone.timedelta(days=4, hours=3), notes=_(u'%(name)s would commit if there is a discount of 5%% on the deal.') % {'name' : 'Kaylee'})
+    call2 = c12.conversation_set.create(conversation_datetime=call1.conversation_datetime + timedelta(days=4, hours=3), notes=_(u'%(name)s would commit if there is a discount of 5%% on the deal.') % {'name' : 'Kaylee'})
     deal2 = c12.deal_set.create(
                         deal_id=deal1.deal_id,
                         conversation = call2,
@@ -883,7 +900,7 @@ def demo_continue(request, username, password, email, time_zone, company):
         deal2.sales_item.add(item)
     deal2.save()
     
-#    call3 = c12.conversation_set.create(conversation_datetime=call2.timezone.now(), notes=_(u"After another conversation, %(name)s has accepted the offer. It's a win.") % {'name' : 'Kaylee'})
+#    call3 = c12.conversation_set.create(conversation_datetime=call2.get_user_local_datetime(), notes=_(u"After another conversation, %(name)s has accepted the offer. It's a win.") % {'name' : 'Kaylee'})
 #    deal3 = c12.deal_set.create(
 #                        deal_id=deal2.deal_id,
 #                        conversation = call3,
@@ -903,7 +920,7 @@ def demo_continue(request, username, password, email, time_zone, company):
 #        deal3.sales_item.add(item)
 #    deal3.save()
     
-    call1 = c13.conversation_set.create(conversation_datetime=timezone.now() - timezone.timedelta(days=8, hours=3), notes=_(u'%(name)s has a new fashion shop and might be interested in our quality shirts and ties as a package.') % {'name' : 'Tamara'})
+    call1 = c13.conversation_set.create(conversation_datetime=get_user_local_datetime() - timedelta(days=8, hours=3), notes=_(u'%(name)s has a new fashion shop and might be interested in our quality shirts and ties as a package.') % {'name' : 'Tamara'})
    
     deal1 = c13.deal_set.create(
                         conversation = call1,
@@ -925,16 +942,16 @@ def demo_continue(request, username, password, email, time_zone, company):
     
     event = c13.event_set.create(
                         type="call",
-                        due_date_time = timezone.now() + timezone.timedelta(days=0, hours=2),
+                        due_date_time = get_rounded_event_datetime() + timedelta(days=0, hours=2),
                         reminder = "none", 
                         is_public = False,
                         deal_id=deal1.deal_id,                  
                         company=profile.company, 
                         user=request.user, 
-                        notes=_(u'Need to make a follow up call later today. Prepare a 5% discount in case there is a hesitation.')
+                        notes=_(u'Need to make a follow up call later today. Prepare a 5% discount in case there is any hesitation.')
                         )
     
-#    call2 = c13.conversation_set.create(conversation_datetime=call1.conversation_datetime + timezone.timedelta(days=4, hours=1), notes=_(u'I offered him a discount of 5%%. %(name)s will consider the offer and needs some time to think about it.') % {'name' : 'Tamara'})
+#    call2 = c13.conversation_set.create(conversation_datetime=call1.conversation_datetime + timedelta(days=4, hours=1), notes=_(u'I offered him a discount of 5%%. %(name)s will consider the offer and needs some time to think about it.') % {'name' : 'Tamara'})
 #    deal2 = c13.deal_set.create(
 #                        deal_id=deal1.deal_id,
 #                        conversation = call2,
@@ -954,7 +971,7 @@ def demo_continue(request, username, password, email, time_zone, company):
 #        deal2.sales_item.add(item)
 #    deal2.save()
 
-#    call3 = c13.conversation_set.create(conversation_datetime=timezone.now(), notes=_(u'%(name)s is happy with discount and would like to purchase ten packages.') % {'name' : 'Tamara'})
+#    call3 = c13.conversation_set.create(conversation_datetime=get_user_local_datetime(), notes=_(u'%(name)s is happy with discount and would like to purchase ten packages.') % {'name' : 'Tamara'})
 #    deal3 = c13.deal_set.create(
 #                        deal_id=deal2.deal_id,
 #                        conversation = call3,
