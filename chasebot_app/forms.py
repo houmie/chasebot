@@ -144,9 +144,8 @@ class ConversationForm(ModelForm):
     
     def __init__(self, company, *args, **kwargs):
         super(ConversationForm, self).__init__(*args, **kwargs)        
-        current_tz = timezone.get_current_timezone()        
-        self.fields['conversation_date'].initial = current_tz.normalize(self.instance.conversation_datetime.astimezone(current_tz)).date()
-        self.fields['conversation_time'].initial = current_tz.normalize(self.instance.conversation_datetime.astimezone(current_tz)).time()    
+        self.fields['conversation_date'].initial = self.instance.conversation_datetime.date()
+        self.fields['conversation_time'].initial = self.instance.conversation_datetime.time()    
     
     class Meta:
         model = Conversation

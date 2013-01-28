@@ -206,7 +206,8 @@ def negotiate_open_deal(request, deal_pk):
         
         if form.is_valid():
             # Always localize the entered date by user into his timezone before saving it to database
-            call = Conversation(contact=actual_deal.contact, conversation_datetime = timezone.now(), notes=form.cleaned_data['call_notes'])
+            current_tz = timezone.get_current_timezone() 
+            call = Conversation(contact=actual_deal.contact, conversation_datetime = current_tz.normalize(timezone.now().astimezone(current_tz)), notes=form.cleaned_data['call_notes'])
             call.save()
             modified_deal = form.save(commit=False)            
             deal = Deal.objects.create(
@@ -427,7 +428,8 @@ def conversation_add_edit(request, contact_id, call_id=None):
     contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
     
     if call_id is None:
-        call = Conversation(contact=contact, conversation_datetime = timezone.now()) 
+        current_tz = timezone.get_current_timezone()
+        call = Conversation(contact=contact, conversation_datetime = current_tz.normalize(timezone.now().astimezone(current_tz))) 
         template_title = _(u'Add New Conversation')
     else:
         call = get_object_or_404(contact.conversation_set.all(), pk=call_id)
