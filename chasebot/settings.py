@@ -35,8 +35,6 @@ GEOIP_PATH = '/home/hooman/venuscloud/chasebot-env/site/database/'
 
 DATABASES = {
     'default': {
-        #'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        #'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'ENGINE': 'django.contrib.gis.db.backends.mysql',
         'NAME': 'Ch4seb0tDB',                      # Or path to database file if using sqlite3.
         'USER': 'django_user',                      # Not used with sqlite3.
@@ -53,11 +51,12 @@ DATABASES = {
 #        'args': (16, 16)
 #    },
 #}
-
+PIPELINE_YUGLIFY_BINARY = '/home/hooman/venuscloud/chasebot-env/node_modules/yuglify/bin/yuglify'
+PIPELINE_CLOSURE_BINARY = '/home/hooman/venuscloud/chasebot-env/bin/closure'
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
-PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
-PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.yui.YUICompressor'
-PIPELINE_YUI_BINARY = '/home/hooman/venuscloud/chasebot-env/node_modules/yuglify/bin/yuglify'
+PIPELINE_JS_COMPRESSOR = 'pipeline.compressors.closure.ClosureCompressor'
+PIPELINE_CSS_COMPRESSOR = 'pipeline.compressors.yuglify.YuglifyCompressor'
+
 PIPELINE_CSS = {
     'chasebot_css': {
         'source_filenames': (
@@ -110,12 +109,12 @@ PIPELINE_JS = {
         ),
         'output_filename': 'chasebot/chasebot.min.js',
     },
-    'bigdecimal_js': {
-        'source_filenames': (
-          'bigdecimal.js/bigdecimal.js',          
-        ),
-        'output_filename': 'bigdecimal.js/bigdecimal.min.js',
-    },
+#    'bigdecimal_js': {
+#        'source_filenames': (
+#          'bigdecimal.js/bigdecimal.js',          
+#        ),
+#        'output_filename': 'bigdecimal.js/bigdecimal.min.js',
+#    },
    'bootstrap_datepicker_js': {
         'source_filenames': (
           'bootstrap-datepicker/js/bootstrap-datepicker.js',
