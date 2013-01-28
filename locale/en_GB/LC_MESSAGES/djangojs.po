@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Chasebot 1.0.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-17 13:00+0100\n"
-"PO-Revision-Date: 2012-10-17 15:43+0100\n"
-"Last-Translator: Houman Khorasani <houman@venuscloud.com>\n"
+"POT-Creation-Date: 2013-01-28 15:23+0000\n"
+"PO-Revision-Date: 2013-01-28 15:23+0100\n"
+"Last-Translator: Hooman <hooman@venuscloud.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
@@ -17,35 +17,97 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: static_files/chasebot/chasebot_add_deals.js:55
-msgid "To be set after saving..."
-msgstr "To be set after saving..."
-
-#: static_files/chasebot/chasebot_add_deals.js:196
-#: static_files/chasebot/chasebot_chosen.js:2
+#: static_files/chasebot/chasebot.js:132
+#: static_files/chasebot/chasebot.js:1005
 msgid "No results match"
-msgstr "No results match BB"
+msgstr "No results match"
 
-#: static_files/chasebot/chasebot_base.js:65
+#: static_files/chasebot/chasebot.js:194
+msgid " field(s) are invalid"
+msgstr ""
+
+#: static_files/chasebot/chasebot.js:284
+msgid "Edit Deal"
+msgstr ""
+
+#: static_files/chasebot/chasebot.js:424
+msgid "Add New Deal From Template"
+msgstr ""
+
+#: static_files/chasebot/chasebot.js:437
+msgid "Continue With Existing Deal"
+msgstr ""
+
+#: static_files/chasebot/chasebot.js:459
+msgid "Create Your Own Deal"
+msgstr ""
+
+#: static_files/chasebot/chasebot.js:527
+msgid "Can't sort while a deal is expanded. Please collapse the open row first and try again."
+msgstr ""
+
+#: static_files/chasebot/chasebot.js:586
 msgid "Are you sure you want to delete this row?"
 msgstr "Are you sure you want to delete this row?"
 
-#: static_files/chasebot/chasebot_base.js:347
-#: static_files/chasebot/chasebot_base.js:365
+#: static_files/chasebot/chasebot.js:929
+#: static_files/chasebot/chasebot.js:949
 msgid "Less Important"
 msgstr "Less Important"
 
-#: static_files/chasebot/chasebot_base.js:347
-#: static_files/chasebot/chasebot_base.js:365
+#: static_files/chasebot/chasebot.js:929
+#: static_files/chasebot/chasebot.js:949
 msgid "Important"
 msgstr "Important"
 
-#: static_files/chasebot/chasebot_base.js:347
-#: static_files/chasebot/chasebot_base.js:365
+#: static_files/chasebot/chasebot.js:929
+#: static_files/chasebot/chasebot.js:949
 msgid "Very Important"
 msgstr "Very Important"
 
-#: static_files/chasebot/chasebot_base.js:362
+#: static_files/chasebot/chasebot.js:946
 msgid "Cancel this rating"
 msgstr "Cancel this rating"
 
+#: static_files/chasebot/chasebot.js:1026
+msgid "more"
+msgstr ""
+
+#: static_files/chasebot/chasebot.js:1027
+msgid "less"
+msgstr ""
+
+#: static_files/chasebot/chasebot.js:1203
+msgid "Negotiate Deal"
+msgstr ""
+
+#: static_files/chasebot/chasebot.js:1270
+msgid "Less Details"
+msgstr ""
+
+#: static_files/chasebot/chasebot.js:1273
+msgid "More Details"
+msgstr ""
+
+#: static_files/chasebot/chasebot.js:1528
+msgid "Sales Funnel"
+msgstr ""
+
+#: static_files/chasebot/chasebot.js:1540
+msgid "Are you sure you want to tick off this event and remove it?"
+msgstr ""
+
+#: static_files/chasebot/chasebot.js:1638
+msgid "Please select an item!"
+msgstr ""
+
+#: static_files/chasebot/chasebot.js:1640
+msgid "Either the last name OR the company name are required."
+msgstr ""
+
+#: static_files/chasebot/chasebot.js:1691
+msgid "Loading"
+msgstr ""
+
+#~ msgid "To be set after saving..."
+#~ msgstr "To be set after saving..."
