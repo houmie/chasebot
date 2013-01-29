@@ -44,13 +44,7 @@ DATABASES = {
     }
 }
 
-#CELERYBEAT_SCHEDULE = {
-#    'runs-every-30-seconds': {
-#        'task': 'tasks.add',
-#        'schedule': timedelta(seconds=30),
-#        'args': (16, 16)
-#    },
-#}
+
 PIPELINE_YUGLIFY_BINARY = '/home/hooman/venuscloud/chasebot-env/node_modules/yuglify/bin/yuglify'
 PIPELINE_CLOSURE_BINARY = '/home/hooman/venuscloud/chasebot-env/bin/closure'
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
@@ -271,14 +265,24 @@ INSTALLED_APPS = (
     'djcelery',
 )
 
-BROKER_URL = 'amqp://guest:guest@localhost:5672/'
+BROKER_BACKEND = "SQS"
 BROKER_URL = 'sqs://AKIAILRT74QLK3ER2GNA:FIYfsjJ8gD8ldg+zKPHo+0CZebwTo1CP7izbe2q3@'
-BROKER_TRANSPORT_OPTIONS = {'queue_name_prefix': 'chasebot-', 'visibility_timeout': 300}
-#CELERY_RESULT_BACKEND = 'amqp://'
+BROKER_TRANSPORT_OPTIONS = {'queue_name_prefix': '-sqs', 'visibility_timeout': 300}
 CELERY_RESULT_BACKEND="database"
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERYBEAT_SCHEDULER = "djcelery.schedulers.DatabaseScheduler"
+
+CELERY_DEFAULT_QUEUE = "chasebot_queue"
+CELERY_DEFAULT_EXCHANGE = CELERY_DEFAULT_QUEUE
+CELERY_DEFAULT_EXCHANGE_TYPE = CELERY_DEFAULT_QUEUE
+CELERY_DEFAULT_ROUTING_KEY = CELERY_DEFAULT_QUEUE
+CELERY_QUEUES = {
+    CELERY_DEFAULT_QUEUE: {
+        'exchange': CELERY_DEFAULT_QUEUE,
+        'binding_key': CELERY_DEFAULT_QUEUE,
+        }
+}
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
