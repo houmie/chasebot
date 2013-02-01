@@ -1,39 +1,15 @@
 {% load i18n %}
 <!--Sidebar content-->
-<div class="well cb_well-small">
-	<!-- <div class="accordion" id="accordion_sidebar">
-		<div class="accordion-group-cb">
-			<div class="accordion-heading">
-				<a class="accordion-toggle accordion-inner-lesspadding" data-toggle="collapse" data-parent="#accordion_sidebar" href="#collapsetodo1">
-					
-				</a>
-			</div>
-			<div id="collapsetodo1" class="accordion-body collapse">
-				<div class="accordion-inner-lesspadding">	
-					
-				</div>
-			</div>
-		</div>
-		<div class="accordion-group-cb">
-			<div class="accordion-heading">
-				<a class="accordion-toggle accordion-inner-lesspadding" data-toggle="collapse" data-parent="#accordion_sidebar" href="#collapsetodo2">		
-					
-				</a>
-			</div>
-			<div id="collapsetodo2" class="accordion-body collapse">
-				<div class="accordion-inner accordion-inner-lesspadding">
-					
-				</div>
-			</div>
-	</div> -->
+<div class="well cb_well-small">	
 	<div class="accordion" id="accordion_sidebar">
 		<div class="accordion-group accordion-group-cb">
 			<div class="accordion-heading">
 				<a class="accordion-toggle accordion-inner-lesspadding" data-toggle="collapse" data-parent="#accordion_sidebar" href="#collapsetodo1"><h5>{% trans 'How it works?' %}</h5></a>
 			</div>
 			<div id="collapsetodo1" class="accordion-body collapse">
-				<div class="accordion-inner">
-					<p>{% trans "In 'Open Deals' tab you will find all the deals that are currently in progress. You may add new task reminders (events) and see the history of the ongoing negotiations." %}</p>
+				<div class="accordion-inner accordion-inner-lesspadding">
+					<p>{% blocktrans %}Boost your productivity by using the “Open Deal” tab, where all in-progress items are shown and you control how to prioritize the deal list based on progress, value, or age.{% endblocktrans %}</p>
+					<p>{% blocktrans %}A simple click on a deal reveals the historical conversations as well as any upcoming event. Further, the deal’s price can be adjusted to offer a discount.{% endblocktrans %}</p>
 				</div>
 			</div>
 		</div>
@@ -42,8 +18,9 @@
 				<a class="accordion-toggle accordion-inner-lesspadding" data-toggle="collapse" data-parent="#accordion_sidebar" href="#collapsetodo2"><h5>{% trans "How to make a new deal?" %}</h5></a>
 			</div>
 			<div id="collapsetodo2" class="accordion-body collapse">
-				<div class="accordion-inner">
-					<p>{% blocktrans with icon="<i class='icon-comments-alt icon-large'></i>" pic="<img src='/static/img/attach.png'>" %}In 'Contacts' tab you will have to select the contact you would like to sell something. Then click on {{icon}} to add a new conversation and attach a new deal {{pic}}. Once the conversation is saved, the attached deal will appear from now on in the 'Open Deals' tab.{% endblocktrans %}</p>
+				<div class="accordion-inner accordion-inner-lesspadding">
+					<p>{% blocktrans with symbol="<i class='icon-comments-alt icon-large'></i>" pic="<img src='/static/img/attach.png'>" %}In the 'Contacts' tab, select the contact you would like to make a sale to. Then, click on {{symbol}} to add a new conversation and attach a new deal {{pic}}.{% endblocktrans %} </p>
+					<p>{% blocktrans %}You can attach a new deal from existing templates or attach a new deal from scratch. Once the conversation is saved, the attached deal will appear from now on in the "Open Deals" tab, where it can be negotiated.{% endblocktrans %}</p>
 				</div>
 			</div>
 		</div>

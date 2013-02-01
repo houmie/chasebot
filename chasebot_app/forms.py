@@ -18,7 +18,7 @@ from datetime import timedelta
 
 
 class FeedbackForm(Form):
-    feedback        = forms.CharField(widget=forms.Textarea(attrs={'class': 'textarea_mandatory', 'placeholder': _(u"Please tell us what you think about Chasebot.          How could we improve it for your day to day work?     What is important to you that is missing?   What do you like about Chasebot?")}))
+    feedback        = forms.CharField(widget=forms.Textarea(attrs={'class': 'textarea_mandatory', 'placeholder': _(u"Please tell us what you think about Chasebot.          How could we improve it for your day-to-day work?     What is important to you that is missing?   What do you like about Chasebot?")}))
     
     
 class DemoRegistrationForm(Form):
