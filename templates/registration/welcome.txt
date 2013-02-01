@@ -1,0 +1,20 @@
+Welcome to Chasebot,
+
+
+Thank you for your interest in participating in Chasebot Beta.
+
+Your username is {{username}}
+
+If you have forgotten your password, you may reset it here:
+https://login.chasebot.com/password_reset/
+
+If you would like to login, please follow this link:
+https://login.chasebot.com/
+
+
+Once you log in, you may test the system and, when you are ready, please provide your feedback by clicking the green feedback button on top right of the screen.  
+Active beta participants will win a free one-user license for Chasebot once it goes final.
+
+
+Kind Regards,
+-- Chasebot.com

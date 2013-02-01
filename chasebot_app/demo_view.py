@@ -17,6 +17,10 @@ from chasebot_app.forms import DemoRegistrationForm
 from django_countries.fields import Country
 from datetime import datetime
 from datetime import timedelta
+from django.core.mail import send_mail
+from chasebot import settings
+from django.template.loader import get_template
+from django.template.context import Context
 
 def get_user_local_datetime():
     current_tz = timezone.get_current_timezone()
@@ -994,4 +998,15 @@ def demo_continue(request, username, password, email, time_zone, company):
     #messages.success(request, _(u'Username') + ': ' + username + ' - ' + _(u'Password') + ': ' + password + ' ' + _(u'please write down your username and password.'))
     messages.success(request, _(u'Congratulations. Your live demo account is now ready.'))
     messages.warning(request, _(u'This temporary account is only for testing purposes.'))    
+    
+
+    template = get_template('registration/welcome.txt')
+    context = Context({'username': username})
+    message = template.render(context)    
+    send_mail('Welcome to Chasebot', message, settings.DEFAULT_FROM_EMAIL, [email])
+    
+    template = get_template('registration/new_signup.txt')
+    context = Context({'username': username, 'time_zone':time_zone, 'company':company, 'country':country, 'city':city})
+    message = template.render(context)    
+    send_mail('New User Signup', message, settings.DEFAULT_FROM_EMAIL, [settings.DEFAULT_FROM_EMAIL])
     

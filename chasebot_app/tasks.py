@@ -43,11 +43,7 @@ def sendEmail(event_id, deal_id, first_name, email, event_type, due_date_time, n
     context = Context({'name': first_name, 'link': link, 'contact': contact_name, 'deal':deal.deal_instance_name, 'communication_type':event_type, 'due_date_time':duedatetime_clean, 'notes':notes})
     message = template.render(context)
     
-    #Development
-    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [settings.DEFAULT_FROM_EMAIL])
-    
-    #Production (Run Daemon at 15 min o'clock)
-    #send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [email])
+    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [email])
 
     event = Event.objects.get(pk = event_id)
     event.is_reminder_sent = True
