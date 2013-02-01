@@ -1,6 +1,6 @@
 Hello {{name}},
 
-This is a friendly reminder that you have to {{communication_type}} your client {{contact}} on {{due_date_time}} at {{due_date_time}}.
+This is a friendly reminder that you have to {{communication_type}} your client {{contact}} on {{due_date_time|date:"DATE_FORMAT"}} at {{due_date_time|time:"TIME_FORMAT"}}.
   
 Disclaimer: As part of the beta demo, you receive only this one reminder email, unless you have set up more event reminders on purpose during the demo session.
 

@@ -15,10 +15,10 @@ from django.utils import timezone
 
 
 @celery.task(name='tasks.check_for_events')
-@periodic_task(run_every=timedelta(minutes=15))  
+@periodic_task(run_every=timedelta(minutes=1))  
 def check_for_events():    
     now = datetime.utcnow().replace(tzinfo=utc,second=00, microsecond=00)
-    events = Event.objects.filter(is_reminder_sent = False).filter(reminder_date_time__range=(now - timedelta(minutes=15), now))    
+    events = Event.objects.filter(is_reminder_sent = False).filter(reminder_date_time__range=(now - timedelta(minutes=1), now))    
     dthandler = lambda obj: obj.isoformat() if isinstance(obj, datetime) else None    
     for event in events:        
         print "Executing Task"
