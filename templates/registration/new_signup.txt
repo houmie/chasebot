@@ -6,7 +6,7 @@ company:	{{company}}
 country:	{{country}} 
 city:		{{city}}
 time_zone: 	{{time_zone}}
-
+browser:	{{browser}}
 
 
 Kind Regards,

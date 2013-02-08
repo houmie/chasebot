@@ -128,6 +128,10 @@ def conversations_with_open_deals(request, contact):
 
 @login_required
 def index_display(request):
+    if 'demo' in request.GET:
+        messages.success(request, _(u'Congratulations. Your live demo account is now ready.'))
+        messages.warning(request, _(u'This temporary account is only for testing purposes.'))
+
     profile = request.user.get_profile()
     if not 'django_timezone' in request.session: 
         request.session['django_timezone'] = pytz.timezone(profile.timezone)

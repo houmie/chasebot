@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block external %}
+<meta http-equiv="refresh" content="5;url=/?demo">
+{% endblock %}
+{% block title %}{% trans 'Demo Registration Completed' %}{% endblock %}
+{% block head %}{% trans 'Demo Registration Completed' %}{% endblock %}
+{% block content %}
+<div class="well well large">
+	<h3>
+	{% trans 'Thank you for signing up.'  %}
+	</h3>
+	<h4>{% trans 'Demo will start in 5 seconds...' %}</h4>
+</div>
+{% endblock %}
+{% block tracking %}
+	<!-- Google Code for signup Conversion Page -->
+	<script type="text/javascript">
+	/* <![CDATA[ */
+	var google_conversion_id = 987271458;
+	var google_conversion_language = "en";
+	var google_conversion_format = "3";
+	var google_conversion_color = "ffffff";
+	var google_conversion_label = "15QJCI7P0gQQoqLi1gM";
+	var google_conversion_value = 0;
+	/* ]]> */
+	</script>
+	<script type="text/javascript" src="https://www.googleadservices.com/pagead/conversion.js">
+	</script>
+	<noscript>
+	<div style="display:inline;">
+	<img height="1" width="1" style="border-style:none;" alt="" src="https://www.googleadservices.com/pagead/conversion/987271458/?value=0&amp;label=15QJCI7P0gQQoqLi1gM&amp;guid=ON&amp;script=0"/>
+	</div>
+	</noscript>
+{% endblock %}

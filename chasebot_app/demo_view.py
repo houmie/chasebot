@@ -65,7 +65,7 @@ def demo(request):
         form = DemoRegistrationForm(request.POST)
         if form.is_valid():
             demo_continue(request, form.cleaned_data['username'], form.cleaned_data['password'], form.cleaned_data['email'], form.cleaned_data['timezone'], form.cleaned_data['company'])
-            return redirect('/')
+            return render(request, 'demo_success.html')
     else:
         form = DemoRegistrationForm()
     variables = {'form': form}
@@ -107,8 +107,11 @@ def demo_continue(request, username, password, email, time_zone, company):
                 country = g.country(ip)['country_name']
         except TypeError:
             pass
-    
-    userProfile = UserProfile(user=user, company = company, is_cb_superuser=True, license = LicenseTemplate.objects.get(pk=3), ip=ip, country=country, city=city, timezone=time_zone)
+        
+    browser_type = ''
+    if 'HTTP_USER_AGENT' in request.META:
+        browser_type = request.META['HTTP_USER_AGENT']
+    userProfile = UserProfile(user=user, company = company, is_cb_superuser=True, license = LicenseTemplate.objects.get(pk=3), ip=ip, country=country, city=city, timezone=time_zone, browser=browser_type)
     userProfile.save()
     
     user = authenticate(username=username, password=password)
@@ -996,8 +999,7 @@ def demo_continue(request, username, password, email, time_zone, company):
 #    deal3.save()
 
     #messages.success(request, _(u'Username') + ': ' + username + ' - ' + _(u'Password') + ': ' + password + ' ' + _(u'please write down your username and password.'))
-    messages.success(request, _(u'Congratulations. Your live demo account is now ready.'))
-    messages.warning(request, _(u'This temporary account is only for testing purposes.'))    
+  
     
 
     template = get_template('registration/welcome.txt')
@@ -1006,7 +1008,7 @@ def demo_continue(request, username, password, email, time_zone, company):
     send_mail('Welcome to Chasebot', message, settings.DEFAULT_FROM_EMAIL, [email])
     
     template = get_template('registration/new_signup.txt')
-    context = Context({'username': username, 'time_zone':time_zone, 'company':company, 'country':country, 'city':city})
-    message = template.render(context)    
+    context = Context({'username': username, 'time_zone':time_zone, 'company':company, 'country':country, 'city':city, 'browser':browser_type})
+    message = template.render(context)
     send_mail('New User Signup', message, settings.DEFAULT_FROM_EMAIL, [settings.DEFAULT_FROM_EMAIL])
     
