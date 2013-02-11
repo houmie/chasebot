@@ -127,6 +127,12 @@ PIPELINE_JS = {
         ),
         'output_filename': 'jquery.fix.clone/jquery.fix.clone.min.js',
     },
+    'jquery_raty_js': {
+        'source_filenames': (
+          'raty/lib/jquery.raty.js',
+        ),
+        'output_filename': 'raty/lib/jquery.raty.min.js',
+    },
 }
 
 FORMAT_MODULE_PATH = 'chasebot.formats'

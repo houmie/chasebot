@@ -754,7 +754,7 @@ def sales_item_add_edit(request, sales_item_id=None):
 def sales_item_delete(request, sales_item_id=None):
     source = 'sales_items/'  
     if sales_item_id is None:
-        raise Http404(_(u'Sales item not found'))
+        raise Http404(_(u'Product/Service not found'))
     else:
         profile = request.user.get_profile()
         sales_item = get_object_or_404(profile.company.salesitem_set.all(), pk=sales_item_id)

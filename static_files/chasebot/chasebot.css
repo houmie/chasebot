@@ -531,7 +531,7 @@ table.mini_contact td, table.mini_contact th {
     text-align: center;
 }
 
-.right-aligned{
+.cb-float-to-right{
 	float:right;
 	margin-right: 10px;
 }
@@ -550,4 +550,12 @@ table.mini_contact td, table.mini_contact th {
 
 .accordion-group-cb{
 	border: 0;
+}
+
+#feedback_modal_h3{
+	padding-left: 5px;
+}
+
+td.number {
+  text-align: right;
 }

@@ -35,7 +35,7 @@
 
 <body> 
 <div id="locale" class="hidden">{{locale}}</div>
-<a class="btn right-aligned btn-success btn-large hidden" id="feedback_btn" href="feedback/">{% trans 'Please send us your feedback' %}</a>   
+<a class="btn cb-float-to-right btn-success btn-large hidden" id="feedback_btn" href="feedback/">{% trans 'Please send us your feedback' %}</a>   
 <div class="modal hide fade" id="feedback_modal" tabindex="-1" role="dialog" aria-labelledby="feedback_label" aria-hidden="true">
 	{% include 'feedback_modal.html' %}
 </div>
@@ -127,7 +127,7 @@
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 
-<script src="{{ STATIC_URL }}jquery/jquery-1.9.0.min.js"></script>
+<script src="{{ STATIC_URL }}jquery/jquery-1.9.1.min.js"></script>
 <Script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></Script>
 {% compressed_js 'jquery_fix_clone_js' %}
 <script src="{{ STATIC_URL }}jquery-validation/dist/jquery.validate.min.js"></script>
@@ -137,7 +137,7 @@
 <script src="{{ STATIC_URL }}tablesorter/js/jquery.tablesorter.widgets.min.js"></script>
 <script src="{{ STATIC_URL }}tablesorter/addons/pager/jquery.tablesorter.pager.min.js"></script>
 <script src="{{ STATIC_URL }}chosen/chosen/chosen.jquery.min.js"></script>
-<script src="{{ STATIC_URL }}raty/js/jquery.raty.min.js"></script>
+{% compressed_js 'jquery_raty_js' %}
 {% compressed_js 'bootstrap_datepicker_js' %}
 {% compressed_js 'bootstrap_timepicker_js' %}
 <script type="text/javascript">  

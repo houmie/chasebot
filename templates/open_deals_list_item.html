@@ -3,7 +3,7 @@
 {% for deal in deals %}
 	<tr class="open_deal_tr">
 	    <td>	    	                        	
-	        <a class="btn btn-link-left negotiate_deal_btn hidden2" href="open_deals/negotiate/{{ deal.pk }}/" title="{% trans 'Negotiate' %}"> <i class="icon-phone icon-large"> </i></a>
+	        <a class="btn btn-link-left negotiate_deal_btn hidden2" href="open_deals/negotiate/{{ deal.pk }}/" title="{% trans 'Negotiate' %}"> <i class="icon-pencil icon-large"> </i></a>
 	        <a class="btn btn-link-left business_card_btn hidden2" href="contact/{{deal.contact.pk}}/" title="{% trans 'See Business Card' %}" data-toggle="modal"> <i class="icon-search icon-large"> </i></a>
 	       	<div id="open_deal_url" class="hidden">/open_deals/{{ deal.pk }}/calls</div>
 	       	<div id="open_deal_uuid" class="hidden">{{ deal.deal_id }}</div>
@@ -26,7 +26,7 @@
 	    		<span class="badge badge-important">{{ deal.status }}</span>
 	    	{% endif %}
 		</td>
-	    <td>{{ deal.total_value }}</td>
-	    <td>{{ deal.conversation.conversation_datetime|date:"DATE_FORMAT" }}</td>	    
+	    <td class="number">{{ deal.total_value }}</td>
+	    <td class="number">{{ deal.conversation.conversation_datetime|date:"DATE_FORMAT" }}</td>	    
 	</tr>
 {% endfor %}

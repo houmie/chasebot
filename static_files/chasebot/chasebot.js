@@ -930,7 +930,7 @@ function rebind_ratings(parent) {
             starOff   : 'star-off.png',
             starOn    : 'star-on.png',
             number    : 3,
-            path      : $.chasebot.STATIC_URL + 'raty/img/'
+            path      : $.chasebot.STATIC_URL + 'raty/lib/img'
         });
     });
 }
@@ -950,7 +950,7 @@ function bind_rating_form() {
         starOff   : 'star-off-big.png',
         starOn    : 'star-on-big.png',
         number    : 3,
-        path      : $.chasebot.STATIC_URL + 'raty/doc/img/',
+        path      : $.chasebot.STATIC_URL + 'raty/lib/img',
         click     : function (score, evt) {
             if (score) {
                 $('#id_important_client_' + score).attr('checked', true);
@@ -1201,7 +1201,7 @@ function negotiate_deal(event) {
         chosenify_field('#id_sales_item', '#deal_modal_body');
         calc_total_value();
         $('#deal_modal').find('#modal_h3').text(gettext('Negotiate Deal'));
-        $('#modal_icon').html('<i class="icon-phone"></i>');
+        $('#modal_icon').html('<i class="icon-pencil icon-large"></i>');
         $(this).submit({modal: '#deal_modal', form: $(this)}, negotiate_deal_submit);
         var validator = validation_rules('#deal_modal_form');
         $('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {validator: validator}, function () {

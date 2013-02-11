@@ -156,8 +156,8 @@ class SalesItem(models.Model):
     def __unicode__(self):
         return self.item_name
     class Meta:
-        verbose_name = _(u'Sales Item')
-        verbose_name_plural = _(u'Sales Items')
+        verbose_name = _(u'Product/Service')
+        verbose_name_plural = _(u'Products/Services')
 
 class SalesTerm(models.Model):    
     sales_term          = models.CharField(_(u'Sales Term'), max_length=40)
@@ -180,7 +180,7 @@ class DealTemplate(models.Model):
     company             = models.ForeignKey(Company)
     deal_name           = models.CharField(_(u'Deal Name'), max_length=40)
     deal_description    = models.TextField(_(u'Deal Description'),     blank=True)
-    sales_item          = models.ManyToManyField(SalesItem)    
+    sales_item          = models.ManyToManyField(SalesItem, verbose_name="Products / Services")
     currency            = models.ForeignKey(Currency)
     price               = models.DecimalField(_(u'Price'), decimal_places=2, max_digits=12, validators=[MinValueValidator(0.01)])
     sales_term          = models.ForeignKey(SalesTerm)
@@ -220,7 +220,7 @@ class Deal(models.Model):
     deal_instance_name  = models.CharField(_(u'Deal Name'), max_length=100)        
     deal_description    = models.TextField(_(u'Deal Description'),     blank=True)    
     price               = models.DecimalField(_(u'Price'), decimal_places=2, max_digits=12, validators=[MinValueValidator(0.01)])
-    sales_item          = models.ManyToManyField(SalesItem)
+    sales_item          = models.ManyToManyField(SalesItem, verbose_name="Products / Services")
     currency            = models.ForeignKey(Currency)
     sales_term          = models.ForeignKey(SalesTerm)
     quantity            = models.PositiveIntegerField(_(u'Quantity'))
