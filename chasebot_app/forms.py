@@ -317,9 +317,10 @@ class DealForm(ModelForm):
 class DealNegotiateForm(DealForm):
     call_notes = forms.CharField(widget = forms.Textarea(attrs={'placeholder': _(u'What did you discuss with the customer?'), 'class' : 'cb_notes_maxwidth textarea_mandatory'}))
     
+    
     def __init__(self, *args, **kwargs):
         super(DealNegotiateForm, self).__init__(*args, **kwargs)                       
-        #self.fields['call_notes'].widget.attrs['class'] = 'cb_deal_description'
+        self.fields['call_notes'].label = _(u'New Conversation')
     
         
 
