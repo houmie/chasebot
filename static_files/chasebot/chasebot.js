@@ -1246,7 +1246,7 @@ function rebind_open_deals(load_sorttable) {
     $('.business_card_modal_link').off('click').on('click', load_business_card);
     $(".negotiate_deal_btn").off('click').on('click', negotiate_deal);
     $('.event_calls_btn').off('click').on('click', function () {
-        var clicked_on_same_row, deal_row, tr, url, row;
+        var clicked_on_same_row, deal_row, tr, url, row, more_btn;
         clicked_on_same_row = false;
         deal_row = $(this).closest('tr');
         if (deal_row.next('#details').length === 1) {
@@ -1258,9 +1258,11 @@ function rebind_open_deals(load_sorttable) {
         });
 
         if (clicked_on_same_row) {
+            $(this).children('.icon-double-angle-up').addClass('icon-double-angle-down').removeClass('icon-double-angle-up');
+            $(this).children('.more_text').text(gettext('More'));
             return;
         }
-
+        more_btn = $(this);
         url = deal_row.find('#open_deal_url').text();
         row = $('<tr/>', {id: 'details'});
 
@@ -1269,6 +1271,8 @@ function rebind_open_deals(load_sorttable) {
             row.find('#new_event_button').off('click').on('click', edit_new_event);
             rebind_events();
             $(".collapse").collapse('toggle');
+            more_btn.children('.icon-double-angle-down').addClass('icon-double-angle-up').removeClass('icon-double-angle-down');
+            more_btn.children('.more_text').text(gettext('Less'));
         });
     });
 }
