@@ -79,7 +79,7 @@
 				        {% endfor %}
 					    </select>
 					</form>
-					<a class="hidden btn btn-small cb_inline_block icon timezone_help right-margin" href="#"><i class="icon-question-sign icon-large"></i></a>
+					<a class="btn btn-small cb_inline_block icon timezone_help right-margin" href="#"><i class="icon-question-sign icon-large"></i></a>
 				</div>
 			    <div class="dropdown cb_inline_block">
 			    	{% get_current_language as LANGUAGE_CODE %} 
@@ -119,15 +119,19 @@
     
 </div> <!-- /container -->
 
-<div class="mainfooter" id='footer'>		
-	<p>{% trans 'Chasebot&#8482; - Designed and built by Venus Cloud Ltd' %} (2013)</p>
+<div class="mainfooter" id='footer'>			
+	<p>{% trans 'Copyright &#169; 2011-2013 chasebot.com, Venus Cloud Ltd. All rights reserved.' %}</p>
 </div>
+
+<!-- &#8482; trademark -->
 
 <!-- Le javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 
 <script src="{{ STATIC_URL }}jquery/jquery-1.9.1.min.js"></script>
+<script src="{{ STATIC_URL }}jquery/jquery-ui-1.10.1.custom.min.js"></script>
+<script src="{{ STATIC_URL }}jquery/modernizr.custom.08848.js"></script>
 <Script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></Script>
 {% compressed_js 'jquery_fix_clone_js' %}
 <script src="{{ STATIC_URL }}jquery-validation/dist/jquery.validate.min.js"></script>
@@ -137,7 +141,7 @@
 <script src="{{ STATIC_URL }}tablesorter/js/jquery.tablesorter.widgets.min.js"></script>
 <script src="{{ STATIC_URL }}tablesorter/addons/pager/jquery.tablesorter.pager.min.js"></script>
 <script src="{{ STATIC_URL }}chosen/chosen/chosen.jquery.min.js"></script>
-{% compressed_js 'jquery_raty_js' %}
+<script src="{{ STATIC_URL }}raty/lib/jquery.raty.min.js"></script>
 {% compressed_js 'bootstrap_datepicker_js' %}
 {% compressed_js 'bootstrap_timepicker_js' %}
 <script type="text/javascript">  

@@ -1,5 +1,5 @@
 /*jslint plusplus: true, browser: true, devel: true */
-/*global $, jQuery, gettext, BigDecimal, BigInteger, RoundingMode, confirm, add_deal_to_formset, add_deal_to_formset, row_edit_ajax, reload_edit_save_cancel_buttons, rebind_conversations, rebind_sales_item, rebind_events, rebind_open_deals, rebind_deal_templates, bind_main_tabs, rebind_contacts*/
+/*global $, jQuery, gettext, Modernizr, BigDecimal, BigInteger, RoundingMode, confirm, add_deal_to_formset, add_deal_to_formset, row_edit_ajax, reload_edit_save_cancel_buttons, rebind_conversations, rebind_sales_item, rebind_events, rebind_open_deals, rebind_deal_templates, bind_main_tabs, rebind_contacts*/
 
 var isVisible = false;
 var clickedAway = false;
@@ -59,6 +59,12 @@ if (!String.prototype.trim) {
     };
 }
 
+function draggable_modal(modal_id) {
+    "use strict";
+    $(modal_id).draggable({
+        handle: ".modal-header"
+    });
+}
 
 $(function () {
     "use strict";
@@ -537,7 +543,8 @@ function sort_table(table, condition) {
             // disable it by setting the property sorter to false 
                 sorter: false
             },
-            4: { sorter: "text" }
+            1: { sorter: false },
+            5: { sorter: "text" }
         },
         widthFixed: true,
         // textExtraction : {
@@ -715,7 +722,12 @@ function datepicker_reload(source, isPast) {
         options.startDate = $('#user_date').text();
     }
 
-    $(source).find('.date_picker').datepicker(options);
+    if (Modernizr.touch && Modernizr.inputtypes.date) {
+        $(source).find('.date_picker').type = 'date';
+    } else {
+        $(source).find('.date_picker').datepicker(options);
+    }
+
     is_showMeridian = false;
     if ($('#locale').text() === 'mm/dd/yyyy') {
         is_showMeridian = true;
@@ -1210,6 +1222,7 @@ function negotiate_deal(event) {
                 form.submit();
             }
         });
+        draggable_modal('#deal_modal');
     });
 }
 
@@ -1222,6 +1235,7 @@ function load_business_card(event) {
         rebind_ratings($('#business_card_modal'));
         $(this).modal('show');
     });
+    draggable_modal('#business_card_modal');
 }
 
 function rebind_open_deals(load_sorttable) {
@@ -1229,36 +1243,31 @@ function rebind_open_deals(load_sorttable) {
     if (load_sorttable) {
         sort_table('#open_deal_table', '#open_deal_tabs');
     }
-
-    $('#tab_open_deals tbody tr').off('click').on('click', function () {
+    $('.business_card_modal_link').off('click').on('click', load_business_card);
+    $(".negotiate_deal_btn").off('click').on('click', negotiate_deal);
+    $('.event_calls_btn').off('click').on('click', function () {
         var clicked_on_same_row, deal_row, tr, url, row;
         clicked_on_same_row = false;
-        deal_row = $(this);
-        if ($(this).next('#details').length === 1) {
+        deal_row = $(this).closest('tr');
+        if (deal_row.next('#details').length === 1) {
             clicked_on_same_row = true;
         }
         $(".collapse").collapse('toggle');
-        $('.collapse').on('hidden', function () {
-            $(this).closest('tr').prev().find(".negotiate_deal_btn, .business_card_btn").hide();
-            $(this).closest('#details').remove();
+        $('.collapse').on('hidden', {deal_row: deal_row}, function () {
+            deal_row.siblings('#details').remove();
         });
 
         if (clicked_on_same_row) {
             return;
         }
 
-        tr = $(this);
-        url = $(this).find('#open_deal_url').text();
+        url = deal_row.find('#open_deal_url').text();
         row = $('<tr/>', {id: 'details'});
 
         row.load(url, function (result) {
-            row.insertAfter(tr);
+            row.insertAfter(deal_row);
             row.find('#new_event_button').off('click').on('click', edit_new_event);
             rebind_events();
-            tr.find(".negotiate_deal_btn").show();
-            tr.find('.business_card_btn').show();
-            tr.find(".negotiate_deal_btn").off('click').on('click', negotiate_deal);
-            tr.find('.business_card_btn').off('click').on('click', load_business_card);
             $(".collapse").collapse('toggle');
         });
     });
@@ -1402,6 +1411,7 @@ function rebind_conversations(source) {
     $('#new_conversation_button').off('click').on('click', new_conversation);
     rebind_filters($('#sidebar'), rebind_conversations);
     add_more_tag_to_all_notefields(src);
+    draggable_modal('#business_card_modal');
 }
 
 function rebind_sales_item(source) {

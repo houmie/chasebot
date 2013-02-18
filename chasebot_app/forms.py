@@ -132,8 +132,8 @@ class ContactsForm(ModelForm):
 
 
 class FilterConversationForm(Form):            
-    from_date   = forms.DateField(localize=True, widget=cb_DateInput(attrs={'placeholder': _(u'From Date...'), 'class': 'placeholder_fix_css date_picker input-small search-query'}))
-    to_date     = forms.DateField(localize=True, widget=cb_DateInput(attrs={'placeholder': _(u'To Date...'), 'class': 'placeholder_fix_css date_picker input-small search-query'}))
+    from_date   = forms.DateField(localize=True, widget=forms.DateInput(attrs={'placeholder': _(u'From Date...'), 'class': 'placeholder_fix_css date_picker input-small search-query'}))
+    to_date     = forms.DateField(localize=True, widget=forms.DateInput(attrs={'placeholder': _(u'To Date...'), 'class': 'placeholder_fix_css date_picker input-small search-query'}))
 
     
     

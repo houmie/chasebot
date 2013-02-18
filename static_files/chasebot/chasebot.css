@@ -370,7 +370,7 @@ input[type="checkbox"]{
 	margin-top: 1em;	
 }
 
-.open_deal_tr {
+.modal-header {
 	cursor: pointer;
 }
 
@@ -559,3 +559,4 @@ table.mini_contact td, table.mini_contact th {
 td.number {
   text-align: right;
 }
+
