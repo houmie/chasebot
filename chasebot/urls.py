@@ -64,8 +64,7 @@ urlpatterns = patterns('',
     (r'^open_deals/$', open_deals_display),
     (r'^open_deals/(?P<deal_id>\d+)/calls/$', open_deal_conversations_display),
     (r'^open_deals/negotiate/(?P<deal_pk>\d+)/$', negotiate_open_deal),
-    (r'^open_deals/add_new/$', add_new_deal),
-    (r'^open_deals/add_new_from_template/(?P<dealtemplate_id>\d+)/$', add_new_deal_from_template),        
+    (r'^open_deals/add_new/$', add_new_deal),         
     (r'^open_deals/add_new_from_template/$', add_new_deal_from_template),
     
     #Ajax

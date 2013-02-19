@@ -173,7 +173,7 @@ def open_deals_display(request):
     else:
         deals_query = all_open_deals(request, profile.company)
     
-    deals, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deals_query)
+    deals, paginator, page, page_number = makePaginator(request, 20, deals_query)
     source = '/open_deals'
     variables = {'deals': deals, 'source':source}
     variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
@@ -185,7 +185,7 @@ def open_deals_display(request):
 @login_required
 def load_open_deals_variables(request, profile):
     deals_query = all_open_deals(request, profile.company)
-    deals, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deals_query)  
+    deals, paginator, page, page_number = makePaginator(request, 20, deals_query)  
     variables = {'deals': deals}
     variables = merge_with_additional_variables(request, paginator, page, page_number, variables)     
     return variables
@@ -202,7 +202,7 @@ def open_deal_conversations_display(request, deal_id):
 
 
 @login_required
-def add_new_deal_from_template(request, dealtemplate_id=None):
+def add_new_deal_from_template(request):
     profile = request.user.get_profile()
     validation_error_ajax = False    
     
@@ -236,31 +236,9 @@ def add_new_deal_from_template(request, dealtemplate_id=None):
             deal.save();
             variables = load_open_deals_variables(request, profile)
             return render(request, 'open_deals.html', variables)
-    else:
-        if dealtemplate_id is None:
-            form = DealsAddFormLight(company = profile.company)
-            fs = AddNewDealForm(company = profile.company)
-        else:        
-            deal_template = profile.company.dealtemplate_set.get(pk=dealtemplate_id)
-            deal = Deal(                         
-                        status =        DealStatus.objects.get(pk=1),                        
-                        deal_template = deal_template,
-                        deal_template_name = deal_template.deal_name,                        
-                        deal_description = deal_template.deal_description,
-                        price =         deal_template.price,        
-                        currency =      deal_template.currency,                
-                        sales_term =    deal_template.sales_term,
-                        quantity =      deal_template.quantity,
-                        company =       profile.company,
-                        #sales_item =    SalesItem.objects.filter(pk__in=deal_template.sales_item.all())                                                                        
-                        )
-            #Saving M2M 
-            #for item in deal_template.sales_item.all():
-            #    deal.sales_item.add(item)
-            
-            form = AddNewDealForm(company = profile.company, instance=deal)
-            variables = {'fs':form, 'validation_error_ajax':validation_error_ajax }
-            return render(request, '_deal_edit_item.html', variables)        
+    else:        
+        form = DealsAddFormLight(company = profile.company)
+        fs = AddNewDealForm(company = profile.company)                
         
     variables = {'deals_add_form':form, 'fs': fs, 'validation_error_ajax':validation_error_ajax }
     return render(request, '_add_deals_from_template.html', variables)

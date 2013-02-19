@@ -1210,7 +1210,7 @@ function negotiate_deal(event) {
     $('#deal_modal_body').append(form);
     form.load(url, function (result) {
         show_modal('#deal_modal');
-        //$(this).get(0).setAttribute("action", url);
+        $(this).get(0).setAttribute("action", url);
         datepicker_reload('#deal_modal_body', false);
         chosenify_field('#id_sales_item', '#deal_modal_body');
         calc_total_value();
@@ -1224,7 +1224,13 @@ function negotiate_deal(event) {
         $('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {validator: validator}, function () {
             validator.form();
             if (validator.numberOfInvalids() === 0) {
-                form.submit();
+                $('#deal_modal').modal('hide');
+                $.post(url, form.serialize(), function (result) {
+                    $('#tab_open_deals').empty();
+                    $('#tab_open_deals').append(result);
+                    rebind_open_deals(true);
+                });
+                //form.submit();
             }
         });
         draggable_modal('#deal_modal');
