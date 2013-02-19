@@ -1241,7 +1241,7 @@ function load_business_card(event) {
     "use strict";
     event.preventDefault();
     event.stopPropagation();
-    var url = event.currentTarget.attr("href");
+    var url = $(event.currentTarget).attr("href");
     $('#business_card_modal').load(url, function (result) {
         rebind_ratings($('#business_card_modal'));
         $(this).modal('show');
@@ -1336,6 +1336,7 @@ function new_deal_from_template(event) {
         $('#deal_modal').find('#deal_modal_confirm_btn').hide();
         $('#deal_modal').find('#modal_h3').text(gettext('Add New Deal From Template'));
         show_modal('#deal_modal');
+        draggable_modal('#deal_modal');
     });
 }
 
@@ -1365,6 +1366,7 @@ function new_deal(event) {
         $('#deal_modal').find('#deal_modal_confirm_btn').show();
         $('#deal_modal').find('#modal_h3').text(gettext('Create Your Own Deal'));
         show_modal('#deal_modal');
+        draggable_modal('#deal_modal');
     });
 }
 
