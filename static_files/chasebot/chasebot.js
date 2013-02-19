@@ -650,6 +650,13 @@ function paginator_navigate(event) {
     url = $(event.currentTarget).attr('href');
     target_pane = event.data.target_pane;
     rebind_func = event.data.rebind_func;
+
+    //hack TODO
+    if ($('#details').length > 0) {
+        $('#details').remove();
+        target_pane = "#search_result";
+    }
+
     //If the page containing the paginator is a modal, then we need to know its type, to modify the url accordingly 
     //Otherwise the url would point to the page containing the modal.    
     $(target_pane).load(url, function (result) {
@@ -909,7 +916,7 @@ function typeahead_deals_quantity(query, process) {
 
 function rebind_paginator(source, target, rebind_func) {
     "use strict";
-    source.find(".paginator_nav_links").off('click').on('click', {target_pane: target, rebind_func: rebind_func}, paginator_navigate);
+    $(source).find(".paginator_nav_links").off('click').on('click', {target_pane: target, rebind_func: rebind_func}, paginator_navigate);
 }
 
 function rebind_task_edit_delete(parent) {
@@ -1170,15 +1177,10 @@ function rebind_events(source) {
     });
 }
 
-function negotiate_deal_submit(event) {
+function deal_submit(url, form, modal) {
     "use strict";
-    event.preventDefault();
-    var form, url, data, modal;
-    form = event.data.form;
-    url = $(form).attr('action');
+    var data;
     data = $(form).serialize();
-    modal = event.data.modal;
-
     $.post(url, data, function (result) {
         //If there are validation errors upon adding the field
         if ($('#validation_error_ajax', result).text() === 'True') {
@@ -1208,13 +1210,16 @@ function negotiate_deal(event) {
     $('#deal_modal_body').append(form);
     form.load(url, function (result) {
         show_modal('#deal_modal');
-        $(this).get(0).setAttribute("action", url);
+        //$(this).get(0).setAttribute("action", url);
         datepicker_reload('#deal_modal_body', false);
         chosenify_field('#id_sales_item', '#deal_modal_body');
         calc_total_value();
         $('#deal_modal').find('#modal_h3').text(gettext('Negotiate Deal'));
         $('#modal_icon').html('<i class="icon-pencil icon-large"></i>');
-        $(this).submit({modal: '#deal_modal', form: $(this)}, negotiate_deal_submit);
+        $(this).submit({modal: '#deal_modal', form: $(this), url: url}, function (event) {
+            event.preventDefault();
+            deal_submit(event.data.url, event.data.form, event.data.modal);
+        });
         var validator = validation_rules('#deal_modal_form');
         $('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {validator: validator}, function () {
             validator.form();
@@ -1230,12 +1235,131 @@ function load_business_card(event) {
     "use strict";
     event.preventDefault();
     event.stopPropagation();
-    var url = $(event.currentTarget).attr("href");
+    var url = event.currentTarget.attr("href");
     $('#business_card_modal').load(url, function (result) {
         rebind_ratings($('#business_card_modal'));
         $(this).modal('show');
     });
     draggable_modal('#business_card_modal');
+}
+
+function fill_new_deal_from_template_data(selected_id) {
+    "use strict";
+    var url, source;
+    source = $('#deal_modal_body');
+    url = 'deal_template/' + selected_id + '/';
+    //Here we make an ajax call to the server to get the data from the selected deal Template or get the data from the last open deal instance,
+    //In either case the user can then override these values  
+    $.ajax({
+        type: 'GET',
+        url: url,
+        contentType: "application/json; charset=utf-8",
+        dataType: 'json',
+        success: function (data) {
+            var template_name, deal_instance_name, vals, i, validator;
+            template_name = data[0].fields.deal_name;
+
+            // Set all the values from json into the cloned fields accordingly
+            //Attention, when setting ANY field to the value from json follow these rules: 
+            // Set the value for all inputs with .attr('value', foo)
+            // Set the value for all dropdowns with val() so that the primary key is used.
+            // for m2m you need to use val() on an array (see below)
+
+            source.find('#id_deal_instance_name').attr('value', '');
+            source.find('#id_deal_template_name').attr('value', template_name);
+            source.find('#id_deal_description').text(data[0].fields.deal_description);
+            source.find('#id_sales_term').val(data[0].fields.sales_term);
+            source.find('#id_price').attr('value', data[0].fields.price);
+            source.find('#id_currency').val(data[0].fields.currency);
+            source.find('#id_quantity').attr('value', data[0].fields.quantity);
+
+            if (data[0].fields.hasOwnProperty('status')) {
+                source.find('#id_status').val(data[0].fields.status);
+            } else {
+                source.find('#id_status>option:eq(1)').prop('selected', true);
+            }
+
+            if (data[0].fields.hasOwnProperty('deal_template')) {
+                source.find('#id_deal_template').val(data[0].fields.deal_template);
+            } else {
+                source.find('#id_deal_template').val(data[0].pk);
+            }
+
+            //m2m needs special treatment with arrays
+            source.find('#id_sales_item').val('');
+            vals = [];
+            for (i = 0; i <= data[0].fields.sales_item.length; i++) {
+                vals.push(data[0].fields.sales_item[i]);
+            }
+            source.find('#id_sales_item').val(vals);
+            source.find('#id_sales_item').chosen({no_results_text: gettext('No results match')});
+            calc_total_value();
+            calc_totals();
+            validator = validation_rules('#deal_from_template_form');
+            $('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {validator: validator}, function (event) {
+                validator = event.data.validator;
+                validator.form();
+                if (validator.invalidElements().length > 0) {
+                    return;
+                }
+                deal_submit('open_deals/add_new_from_template/', $('#deal_from_template_form'), '#deal_modal');
+            });
+            $('#deal_modal').find('#deal_modal_confirm_btn').show();
+        }
+    });
+}
+
+
+
+function new_deal_from_template(event) {
+    "use strict";
+    event.preventDefault();
+    var url = 'open_deals/add_new_from_template/';
+    $('#deal_modal_body').empty();
+    $.get(url, function (result) {
+        $('#deal_modal_body').append(result);
+        $('#deal_modal_body').find('#add_deals_button').off('click').on('click', function (event) {
+            event.preventDefault();
+            var selected_id;
+            selected_id = $('#deal_modal_body').find('.pre_defined_deal_dropdown option:selected').val();
+            $('#add_deals_dropdown').remove();
+            $('#deal_from_template_div').show();
+            fill_new_deal_from_template_data(selected_id, $('#deal_modal_body'));
+            $('#deal_modal').find('#deal_modal_confirm_btn').show();
+        });
+        $('#deal_modal').find('#deal_modal_confirm_btn').hide();
+        $('#deal_modal').find('#modal_h3').text(gettext('Add New Deal From Template'));
+        show_modal('#deal_modal');
+    });
+}
+
+
+function new_deal(event) {
+    "use strict";
+    event.preventDefault();
+    var url;
+    url = 'open_deals/add_new/';
+    $('#deal_modal_body').empty();
+    $.get(url, function (result) {
+        var form, validator;
+        //Form is only required for validation, but it doesn't submit
+        form = $('<form/>', {id: 'deal_modal_form', action: '.', method: 'get'}).append(result);
+        $('#deal_modal_body').append(form);
+        calc_total_value();
+        $('#deal_modal_body').find('.deal_status').val(1);
+        validator = validation_rules('#deal_modal_form');
+        $('#deal_modal').find('#deal_modal_confirm_btn').off('click').on('click', {validator: validator}, function (event) {
+            validator = event.data.validator;
+            validator.form();
+            if (validator.invalidElements().length > 0) {
+                return;
+            }
+            deal_submit(url, form, '#deal_modal');
+        });
+        $('#deal_modal').find('#deal_modal_confirm_btn').show();
+        $('#deal_modal').find('#modal_h3').text(gettext('Create Your Own Deal'));
+        show_modal('#deal_modal');
+    });
 }
 
 function rebind_open_deals(load_sorttable) {
@@ -1245,7 +1369,11 @@ function rebind_open_deals(load_sorttable) {
     }
     $('.business_card_modal_link').off('click').on('click', load_business_card);
     $(".negotiate_deal_btn").off('click').on('click', negotiate_deal);
-    $('.event_calls_btn').off('click').on('click', function () {
+    $("#new_deal").off('click').on('click', new_deal);
+    $("#add_deal_template").off('click').on('click', new_deal_from_template);
+    rebind_paginator('#open_deal_table', '#search_result', rebind_open_deals);
+    $('.event_calls_btn').off('click').on('click', function (event) {
+        event.preventDefault();
         var clicked_on_same_row, deal_row, tr, url, row, more_btn;
         clicked_on_same_row = false;
         deal_row = $(this).closest('tr');
@@ -1260,6 +1388,7 @@ function rebind_open_deals(load_sorttable) {
         if (clicked_on_same_row) {
             $(this).children('.icon-double-angle-up').addClass('icon-double-angle-down').removeClass('icon-double-angle-up');
             $(this).children('.more_text').text(gettext('More'));
+            rebind_paginator('#open_deal_table', '#search_result', rebind_open_deals);
             return;
         }
         more_btn = $(this);

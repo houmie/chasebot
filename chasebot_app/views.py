@@ -9,10 +9,11 @@ from django.shortcuts import get_object_or_404
 from chasebot_app.forms import RegistrationForm, ContactsForm, ConversationForm, SalesItemForm, DealTemplateForm,\
      DealForm, FilterContactsForm, FilterConversationForm, FilterDealTemplateForm, FilterSalesItemForm,\
     DealsAddForm, OpenDealsAddForm, ColleagueInviteForm, OpenDealTaskForm,\
-    EventForm, DealNegotiateForm, FilterOpenDealForm, FeedbackForm
+    EventForm, DealNegotiateForm, FilterOpenDealForm, FeedbackForm,\
+    AddNewDealForm, DealsAddFormLight
 from chasebot_app.models import Company, Contact, Conversation, SalesItem, DealTemplate, Deal, SalesTerm,\
     Invitation, LicenseTemplate, MaritalStatus, \
-    Currency, Event
+    Currency, Event, DealStatus
 from chasebot_app.models import UserProfile 
 from django.utils.translation import ugettext as _, ungettext
 from django.utils import timezone, simplejson
@@ -43,7 +44,7 @@ from django.core.mail import send_mail
 from chasebot import settings
 
 
-ITEMS_PER_PAGE = 10
+ITEMS_PER_PAGE = 9
 
 @login_required
 def set_timezone(request):
@@ -143,7 +144,7 @@ def index_display(request):
 
 @login_required
 def open_deals_display(request):
-    profile = request.user.get_profile()
+    profile = request.user.get_profile()    
     
     ajax = False    
     if 'ajax' in request.GET:
@@ -172,8 +173,9 @@ def open_deals_display(request):
     else:
         deals_query = all_open_deals(request, profile.company)
     
-    deals, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deals_query)  
-    variables = {'deals': deals}
+    deals, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deals_query)
+    source = '/open_deals'
+    variables = {'deals': deals, 'source':source}
     variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
     if ajax:
         return render(request, 'open_deals_list.html', variables)
@@ -197,7 +199,114 @@ def open_deal_conversations_display(request, deal_id):
     events = profile.company.event_set.filter(deal_id = deal.deal_id).order_by('due_date_time')
     variables = {'calls': calls, 'events' : events, 'deal_id':deal_id}
     return render(request, '_deal_conversations.html', variables)
+
+
+@login_required
+def add_new_deal_from_template(request, dealtemplate_id=None):
+    profile = request.user.get_profile()
+    validation_error_ajax = False    
     
+    if request.method == 'POST':
+        form = AddNewDealForm(request.POST, company = profile.company)        
+        if form.is_valid():
+            # Always localize the entered date by user into his timezone before saving it to database
+            current_tz = timezone.get_current_timezone() 
+            call = Conversation(contact=form.cleaned_data['addnewdeal_contact'], conversation_datetime = current_tz.normalize(timezone.now().astimezone(current_tz)), notes=form.cleaned_data['call_notes'])
+            call.save()
+            new_deal = form.save(commit=False)            
+            deal = Deal.objects.create(
+                                deal_id =       new_deal.deal_id,
+                                deal_datetime = call.conversation_datetime, 
+                                status =        new_deal.status, 
+                                contact =       call.contact, 
+                                deal_template = new_deal.deal_template,
+                                deal_template_name = new_deal.deal_template_name,  
+                                conversation =  call,                                            
+                                deal_instance_name = new_deal.deal_instance_name,
+                                deal_description = new_deal.deal_description,
+                                price =         new_deal.price,        
+                                currency =      new_deal.currency,                
+                                sales_term =    new_deal.sales_term,
+                                quantity =      new_deal.quantity,
+                                company =       profile.company                                            
+                                )
+            #Saving M2M 
+            for item in form.cleaned_data['sales_item']:
+                deal.sales_item.add(item)
+            deal.save();
+            variables = load_open_deals_variables(request, profile)
+            return render(request, 'open_deals.html', variables)
+    else:
+        if dealtemplate_id is None:
+            form = DealsAddFormLight(company = profile.company)
+            fs = AddNewDealForm(company = profile.company)
+        else:        
+            deal_template = profile.company.dealtemplate_set.get(pk=dealtemplate_id)
+            deal = Deal(                         
+                        status =        DealStatus.objects.get(pk=1),                        
+                        deal_template = deal_template,
+                        deal_template_name = deal_template.deal_name,                        
+                        deal_description = deal_template.deal_description,
+                        price =         deal_template.price,        
+                        currency =      deal_template.currency,                
+                        sales_term =    deal_template.sales_term,
+                        quantity =      deal_template.quantity,
+                        company =       profile.company,
+                        #sales_item =    SalesItem.objects.filter(pk__in=deal_template.sales_item.all())                                                                        
+                        )
+            #Saving M2M 
+            #for item in deal_template.sales_item.all():
+            #    deal.sales_item.add(item)
+            
+            form = AddNewDealForm(company = profile.company, instance=deal)
+            variables = {'fs':form, 'validation_error_ajax':validation_error_ajax }
+            return render(request, '_deal_edit_item.html', variables)        
+        
+    variables = {'deals_add_form':form, 'fs': fs, 'validation_error_ajax':validation_error_ajax }
+    return render(request, '_add_deals_from_template.html', variables)
+
+@login_required
+def add_new_deal(request):
+    profile = request.user.get_profile()
+    validation_error_ajax = False
+    if request.method == 'POST':
+        form = AddNewDealForm(request.POST, company = profile.company)        
+        if form.is_valid():
+            # Always localize the entered date by user into his timezone before saving it to database
+            current_tz = timezone.get_current_timezone() 
+            call = Conversation(contact=form.cleaned_data['addnewdeal_contact'], conversation_datetime = current_tz.normalize(timezone.now().astimezone(current_tz)), notes=form.cleaned_data['call_notes'])
+            call.save()
+            new_deal = form.save(commit=False)            
+            deal = Deal.objects.create(
+                                deal_id =       new_deal.deal_id,
+                                deal_datetime = call.conversation_datetime, 
+                                status =        new_deal.status, 
+                                contact =       call.contact, 
+                                deal_template = new_deal.deal_template,
+                                deal_template_name = new_deal.deal_template_name,  
+                                conversation =  call,                                            
+                                deal_instance_name = new_deal.deal_instance_name,
+                                deal_description = new_deal.deal_description,
+                                price =         new_deal.price,        
+                                currency =      new_deal.currency,                
+                                sales_term =    new_deal.sales_term,
+                                quantity =      new_deal.quantity,
+                                company =       profile.company                                            
+                                )
+            #Saving M2M 
+            for item in form.cleaned_data['sales_item']:
+                deal.sales_item.add(item)
+            deal.save();
+            variables = load_open_deals_variables(request, profile)
+            return render(request, 'open_deals.html', variables)
+        else:
+            validation_error_ajax = True    
+            
+    else:
+        form = AddNewDealForm(company = profile.company)
+        
+    variables = {'fs':form, 'validation_error_ajax':validation_error_ajax }
+    return render(request, '_deal_edit_item.html', variables)         
 
 @login_required
 def negotiate_open_deal(request, deal_pk):

@@ -3,7 +3,18 @@
 	<ul class="breadcrumb">
 		<li class="active">{% trans 'Open Deals'%}</li>	    	
 	</ul>    
-		
+	<!-- <a id="new_deal_btn" class="btn" title="{% trans 'Create a new deal' %}" href="#"><i class="icon-plus"></i>&nbsp;<i class="icon-tag"></i></a> -->	
+    <div class="btn-group">
+	    <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
+	    <i class="icon-plus"></i>&nbsp;<i class="icon-tag"></i>&nbsp;&nbsp;<span class="caret"></span>
+	    </a>
+	    <ul class="dropdown-menu">
+	    <!-- dropdown menu links -->
+	    	<li><a id="new_deal" href="#">{% trans 'Add new' %}</a></li>
+	    	<li><a id="add_deal_template" href="#">{% trans 'Add new from template' %}</a></li>
+	    </ul>
+    </div>
+    
 	<table id='open_deal_table' class="table cb_table-striped cb_table-hover tablesorter tablesorter-bootstrap cb_table_hover_glass">
 	    <thead>
 	        <tr>

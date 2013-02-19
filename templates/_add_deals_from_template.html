@@ -1,0 +1,19 @@
+{% load i18n %}
+<div id="add_deals_dropdown">
+	<div class="cb_inline_block">
+    	<div class="cb_inline_block">                        
+            {{deals_add_form.deal_template.label}}: 
+        </div>        	
+        <div class="cb_inline_block">   
+        	<div class="input-append">             
+        		{{deals_add_form.deal_template}}
+        		<button type="button" id="add_deals_button" class="btn btn-success"><icon class="icon-white">{% trans 'Add' %}</icon></button>
+    		</div>            	                        
+        </div>
+    </div>    
+</div>
+<form id="deal_from_template_form" action="." method="post">
+	<div id="deal_from_template_div" class="hide">
+		{% include '_deal_edit_item.html' %}
+	</div>
+</form>

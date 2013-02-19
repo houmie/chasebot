@@ -138,7 +138,7 @@
 		                				<th>{% trans 'First Name' %}:</th>
 		                				<th>{% trans 'Last Name' %}:</th>
 		                				<th>{% trans 'Preferred Name' %}:</th> 
-		                			</tt>                			
+		                			</tr>                			
 		                		</thead>
 		                		<tbody>
 		                			<tr>
@@ -161,6 +161,26 @@
 				            			<td><a href="mailto:{{contact.email}}">{{contact.email}}</a></td>
 		                			</tr>
 		                		</tbody>
+		                	</table>
+	                	</div>
+	                	{% elif fs.addnewdeal_contact %}
+	                	<div class="well well-grey well-small">
+		                	<table class="mini_contact">
+		                		<thead>
+		                			<tr>
+		                				<th>
+		                					{% if  fs.addnewdeal_contact.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.addnewdeal_contact.label}}: *</div>{%else%}{{fs.addnewdeal_contact.label}}:{% endif %}
+		                				</th>		                		 
+		                			</tr>                			
+		                		</thead>
+		                		<tbody>
+		                			<tr>
+			                			<td>
+			                				{{ fs.addnewdeal_contact }}
+			                				<div class="hide field field_error"></div>
+		                				</td>			                			
+		                			</tr>                			
+		                		</tbody>		                		
 		                	</table>
 	                	</div>
 	                	{% endif %}

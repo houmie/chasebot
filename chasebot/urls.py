@@ -14,7 +14,7 @@ from chasebot_app.views import logout_page, contact_delete, conversation_display
     negotiate_open_deal, sidebar_contacts, sidebar_deal_templates,\
     sidebar_open_deals, opendeal_autocomplete, sidebar_conversations,\
     events_display, event_tick, deal_template_sales_item_display, sidebar_todo,\
-    feedback
+    feedback, add_new_deal, add_new_deal_from_template
 from chasebot_app.demo_view import demo
 
 admin.autodiscover()
@@ -63,8 +63,10 @@ urlpatterns = patterns('',
     
     (r'^open_deals/$', open_deals_display),
     (r'^open_deals/(?P<deal_id>\d+)/calls/$', open_deal_conversations_display),
-    (r'^open_deals/negotiate/(?P<deal_pk>\d+)/$', negotiate_open_deal),        
-      
+    (r'^open_deals/negotiate/(?P<deal_pk>\d+)/$', negotiate_open_deal),
+    (r'^open_deals/add_new/$', add_new_deal),
+    (r'^open_deals/add_new_from_template/(?P<dealtemplate_id>\d+)/$', add_new_deal_from_template),        
+    (r'^open_deals/add_new_from_template/$', add_new_deal_from_template),
     
     #Ajax
     (r'^deal_template/(?P<deal_template_id>\d+)/$', get_deal_template),

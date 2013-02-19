@@ -201,7 +201,13 @@ class DealsAddForm(Form):
     deal_template       = forms.ModelChoiceField(queryset='', label=_(u'Add new from template'), widget = forms.Select(attrs={'class': 'pre_defined_deal_dropdown'}))
 
 
-
+class DealsAddFormLight(Form):
+    def __init__(self, company, *args, **kwargs):
+        super(DealsAddFormLight, self).__init__(*args, **kwargs)        
+        self.fields['deal_template'].queryset = company.dealtemplate_set.all()
+        self.fields['deal_template'].required = False
+ 
+    deal_template       = forms.ModelChoiceField(queryset='', label=_(u'Add new from template'), widget = forms.Select(attrs={'class': 'pre_defined_deal_dropdown'}))
 
 
 
@@ -322,11 +328,20 @@ class DealNegotiateForm(DealForm):
         super(DealNegotiateForm, self).__init__(*args, **kwargs)                       
         self.fields['call_notes'].label = _(u'New Conversation')
     
-        
+
+class AddNewDealForm(DealNegotiateForm):
+    addnewdeal_contact = forms.ModelChoiceField(queryset='', label=_(u'Attach Deal To'))    
+    
+    def __init__(self, *args, **kwargs):
+        company = kwargs.pop('company', None)
+        super(AddNewDealForm, self).__init__(*args, **kwargs)
+        self.fields['addnewdeal_contact'].queryset = company.contact_set.all() 
+        self.fields['addnewdeal_contact'].widget.attrs['class'] = 'mandatory'
+
 
 class FilterSalesItemForm(Form):
     def __init__(self, *args, **kwargs):
-        super(FilterSalesItemForm, self).__init__(*args, **kwargs)          
+        super(FilterSalesItemForm, self).__init__(*args, **kwargs)
     
     item_name    = forms.CharField(widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query filter_add_button typeahead_sales_items', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=40)
 
