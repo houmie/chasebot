@@ -80,7 +80,7 @@
 
 <div class="cb_invite_table4">
 <p>
-{% blocktrans %}Enter your colleague's name and email below to join your company on Chasebot.{% endblocktrans %}
+{% blocktrans %}Enter your colleague's name and email below to join your account.{% endblocktrans %}
 </p>
 
 <form id="form_invite" method="post" action=".">
@@ -115,8 +115,8 @@
 			</td>
 		</tr>
 	</table> 
-  
-  <input id="invite-button" autocomplete="off" type="submit" class="btn btn-primary" data-loading-text="{% trans 'Sending Email. Please wait...' %}" value="{% trans 'Send Invite' %}"/>
+    
+  <a id="invite-button" autocomplete="off" class="btn btn-primary btn-large">{% trans 'Send Invite' %}</a>
 </form>
 </div>
 {% endblock %}

@@ -13,27 +13,14 @@
 				    	<div class="well">				    		
 				    		{% show_row_div_below_error form.due_date %}				    		
 				    		{% show_row_icon form.due_time 'icon-time'%}
-				    		{% show_row_div form.reminder %}
+				    		{% show_row_div_below_error form.reminder %}
 				    	</div>				    	
 				    	
 				    	<div>
-				    		{% show_row_div form.notes %}
-				    		{% show_row_div form.type %}							    									    		
+				    		{% show_row_div_below_error form.notes %}
+				    		{% show_row_div_below_error form.type %}							    									    		
 				    		
 				    	</div>
-				    	<!-- <div class="accordion" id="accordion_event">
-							<div class="accordion-group">
-								<div class="accordion-heading">
-									<a id="collapse_event_head" class="accordion-toggle" data-toggle="collapse" data-parent="#accordion_event" href="#collapse_event_body">{% trans 'More Details' %}</a>
-								</div>
-								<div id="collapse_event_body" class="accordion-body collapse">
-									<div class="accordion-inner">								
-							    		{% show_row_div form.type %}							    									    		
-							    		{% show_row_div form.is_public %}				    						    		
-							    	</div>								
-								</div>
-							</div>
-			    		</div> -->
 		    		</div>			    	 
 		    	</form>	        
 		    </div>

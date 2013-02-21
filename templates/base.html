@@ -53,17 +53,17 @@
             <img class="release_logo" src="{{ STATIC_URL }}/img/beta.png" />
             <div class="nav-collapse">
                 <ul class="nav">
-                    <li class="active"><a href="/">{% trans 'Home' %}</a></li>
+                    <li id="home_menu" class="active"><a href="/">{% trans 'Home' %}</a></li>
                     <!-- <li><a href="#about">{% trans 'About' %}</a></li> -->
                     <!-- <li><a href="#contact">{% trans 'Contact' %}</a></li> -->
 
                     {% if user.is_authenticated %}
-                    	<!-- <li><a href="/colleague/invite/">{% trans 'Invite' %}</a></li> -->
+                    	<li id="invite_menu"><a href="/colleague/invite/">{% trans 'Invite' %}</a></li>
                     	<li><a href="/logout/">{% trans 'Logout' %}</a></li>
                     {% else %}
-                    	<li><a href="/login/">{% trans 'Login' %}</a></li>
+                    	<li id="login_menu"><a href="/login/">{% trans 'Login' %}</a></li>
                     	<!-- <li><a href="/register/">{% trans 'Register' %}</a></li> -->
-                    	<li><a class="cb_live_demo" href="/demo/">{% trans 'Live Demo' %}</a></li>
+                    	<li id="demo_menu"><a class="cb_live_demo" href="/demo/">{% trans 'Live Demo' %}</a></li>
                     {% endif %}
 
                 </ul>

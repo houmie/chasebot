@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block external %}{% endblock %}
+{% block title %}{% trans 'Invite Your Colleagues' %}{% endblock %}
+{% block head %}{% endblock %}
+{% block content %}
+<div class="well well large">
+	<h3>
+		{% trans 'Only the account holder can invite colleagues'  %}
+	</h3>
+	<h4>
+		{% trans 'Please get in touch with the account holder.'  %}
+	</h4>	
+</div>
+{% endblock %}

@@ -1661,7 +1661,7 @@ function tab_open_deals_clicked(deal_id) {
         if (deal_id) {
             $('#tab_open_deals tbody tr').each(function (index, value) {
                 if ($(this).find('#open_deal_uuid').text() === deal_id) {
-                    $(this).click();
+                    $(this).find('.event_calls_btn').click();
                 }
                 //Todo: Else go to server and see in which page it is
             });
@@ -1821,6 +1821,28 @@ function initialize_validator() {
     });
 }
 
+function spinning_btn(btn_id, form_id) {
+    "use strict";
+    $(btn_id).click(function (event) {
+        event.preventDefault();
+        $(this).off('click');
+        $(this).addClass('disabled');
+        $(this).html('<i class="icon-spinner icon-spin"></i> Please wait...');
+        $(form_id).submit();
+    });
+}
+
+function activate_menu(event) {
+    "use strict";
+    event.preventDefault();
+    var i, menu_id;
+    menu_id = event.data.menu_id;
+    for (i = 0; i < $(menu_id).parent().children().length; i++) {
+        $(menu_id).parent().children()[i].removeClass('active');
+    }
+    $(menu_id).addClass('active');
+}
+
 $(document).ready(function () {
     "use strict";
     initialize_validator();
@@ -1837,19 +1859,14 @@ $(document).ready(function () {
         isVisible = true;
     });
 
-    $('#invite-button').click(function (event) {
-        event.preventDefault();
-        $(this).button(gettext('Loading'));
-        $('#form_invite').submit();
-    });
+    spinning_btn('#demo-button', '#form_demo');
+    spinning_btn('#invite-button', '#form_invite');
+    spinning_btn('#registration-button', '#form_registration');
+    spinning_btn('#login-button', '#form_login');
+    spinning_btn('#reset-button', '#form_reset');
 
-    $('#demo-button').click(function (event) {
-        event.preventDefault();
-        $(this).off('click');
-        $(this).addClass('disabled');
-        $(this).html('<i class="icon-spinner icon-spin"></i> Please wait...');
-        $('#form_demo').submit();
-    });
+    $('#invite_menu').on('click').off('click', {menu_id: '#invite_menu'}, activate_menu);
+    $('#home_menu').on('click').off('click', {menu_id: '#home_menu'}, activate_menu);
 
 	$('#feedback_btn').off('click').on('click', function (event) {
         event.preventDefault();

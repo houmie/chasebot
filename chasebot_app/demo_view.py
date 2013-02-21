@@ -21,6 +21,7 @@ from django.core.mail import send_mail
 from chasebot import settings
 from django.template.loader import get_template
 from django.template.context import Context
+from chasebot_app.utils import get_user_location_details, get_user_browser
 
 def get_user_local_datetime():
     current_tz = timezone.get_current_timezone()
@@ -48,13 +49,7 @@ def generate_random_username(length=4, chars=ascii_lowercase+digits, split=4, de
     except User.DoesNotExist:
         return username;
 
-def get_client_ip(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[-1].strip()
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-    return ip
+
 
 
 def demo(request):
@@ -94,24 +89,10 @@ def demo_continue(request, username, password, email, time_zone, company):
                 company_email = email
             )
     
-    g = GeoIP()
-    ip=get_client_ip(request)
-    country = ''
-    city = ''
+    user_location = get_user_location_details(request)
+    browser_type = get_user_browser(request)
     
-    if ip:
-        try:
-            country = g.city(ip)['country_name']
-            city = g.city(ip)['city']
-            if not country: 
-                country = g.country(ip)['country_name']
-        except TypeError:
-            pass
-        
-    browser_type = ''
-    if 'HTTP_USER_AGENT' in request.META:
-        browser_type = request.META['HTTP_USER_AGENT']
-    userProfile = UserProfile(user=user, company = company, is_cb_superuser=True, license = LicenseTemplate.objects.get(pk=3), ip=ip, country=country, city=city, timezone=time_zone, browser=browser_type)
+    userProfile = UserProfile(user=user, company = company, is_cb_superuser=True, license = LicenseTemplate.objects.get(pk=6), ip=user_location.ip, country=user_location.country, city=user_location.city, timezone=time_zone, browser=browser_type)
     userProfile.save()
     
     user = authenticate(username=username, password=password)
@@ -1008,7 +989,7 @@ def demo_continue(request, username, password, email, time_zone, company):
     send_mail('Welcome to Chasebot', message, settings.DEFAULT_FROM_EMAIL, [email])
     
     template = get_template('registration/new_signup.txt')
-    context = Context({'username': username, 'time_zone':time_zone, 'company':company, 'country':country, 'city':city, 'browser':browser_type})
+    context = Context({'username': username, 'time_zone':time_zone, 'company':company, 'country':user_location.country, 'city':user_location.city, 'browser':browser_type})
     message = template.render(context)
     send_mail('New User Signup', message, settings.DEFAULT_FROM_EMAIL, [settings.DEFAULT_FROM_EMAIL])
     

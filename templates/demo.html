@@ -14,12 +14,12 @@
 		<form id="form_demo" class="cb_margin_top" method="post" action=".">
 			<div class="parent">	    	
 				<div class="well well-large">	
-					{% show_row_div form.username %}
-					{% show_row_div form.company %}	
-					{% show_row_div form.email %}
-					{% show_row_div form.password %}
-					{% show_row_div form.password2 %}
-					{% show_row_div form.timezone %}
+					{% show_row_div_below_error form.username %}
+					{% show_row_div_below_error form.company %}	
+					{% show_row_div_below_error form.email %}
+					{% show_row_div_below_error form.password %}
+					{% show_row_div_below_error form.password2 %}
+					{% show_row_div_below_error form.timezone %}
 						
 	    			<a id="demo-button" autocomplete="off" class="btn btn-primary btn-large cb-float-to-right">{% trans 'Start Free Demo' %}</a>    			
 				</div>

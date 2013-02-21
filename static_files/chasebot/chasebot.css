@@ -76,10 +76,26 @@ td.center_cb{
 }
 
 input.demo-input{
-	padding: 10px;
+	padding: 10px; 
 }
 
+input.login-input{
+	padding: 10px;	
+    position: relative;
+    left: -10px;
+}
 
+input.reset-input{
+	padding: 10px;	
+    position: relative;
+    left: -20px;
+}
+
+input.reset2-input{
+	padding: 10px;	
+    position: relative;
+    left: 2.5em;
+}
 
 .btn-success2, .btn-success2:hover {
     color: #333333;

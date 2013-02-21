@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block title %}{% trans 'Home' %}{% endblock %}
-{% block head %}{{ company_name }}{% endblock %}
+{% block head %}{{ company_name }} - ({{user_name}}) {% endblock %}
 {% block external %}{% endblock %}
 {% block content %}
 <div class="container-fluid">

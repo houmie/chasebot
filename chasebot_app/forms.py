@@ -379,6 +379,13 @@ class BaseDealFormSet(BaseModelFormSet):
             
             
 class ColleagueInviteForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ColleagueInviteForm, self).__init__(*args, **kwargs)
+        self.fields['name'].widget.attrs['class'] = 'demo-input'
+        self.fields['email'].widget.attrs['class'] = 'demo-input'
+        self.fields['name'].widget.attrs['autocomplete'] = 'off'
+        self.fields['email'].widget.attrs['autocomplete'] = 'off'
+    
     class Meta:
         model = Invitation
         fields = {'name', 'email'}

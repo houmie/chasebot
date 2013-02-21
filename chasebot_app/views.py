@@ -42,6 +42,7 @@ from django.utils.timezone import utc
 from django.utils.datetime_safe import date
 from django.core.mail import send_mail
 from chasebot import settings
+from chasebot_app.utils import get_user_location_details, get_user_browser
 
 
 ITEMS_PER_PAGE = 9
@@ -137,7 +138,7 @@ def index_display(request):
     if not 'django_timezone' in request.session: 
         request.session['django_timezone'] = pytz.timezone(profile.timezone)
     company_name = profile.company.company_name
-    variables = {'company_name': company_name}
+    variables = {'company_name': company_name, 'user_name' : request.user}
     variables = merge_with_localized_variables(request, variables)
     return render(request, 'index.html', variables)        
 
@@ -968,7 +969,9 @@ def register_page(request):
                 # Retrieve the invitation object.
                 invitation = Invitation.objects.get(id=request.session['invitation'])                
                 profile = invitation.sender.get_profile()                
-                userProfile = UserProfile(user=user, company = profile.company, is_cb_superuser=False, license = profile.license)
+                user_location = get_user_location_details(request)
+                browser_type = get_user_browser(request)
+                userProfile = UserProfile(user=user, company = profile.company, is_cb_superuser=False, license = profile.license, ip=user_location.ip, country=user_location.country, city=user_location.city, timezone=form.cleaned_data['timezone'], browser=browser_type)
                 userProfile.save()
                 # Delete the invitation from the database and session.
                 invitation.delete()
@@ -1126,8 +1129,8 @@ def prepare_json_for_autocomplete(fieldname, queryset):
 @login_required
 def colleague_invite(request):
     profile = request.user.get_profile()
-    if not profile.is_cb_superuser:
-        return HttpResponseForbidden()
+    if not profile.is_cb_superuser:        
+        return render(request, 'registration/invite_forbidden.html')
     
     if request.method == 'POST':
         form = ColleagueInviteForm(request.POST)
@@ -1141,7 +1144,7 @@ def colleague_invite(request):
             invitation.save()
             try:
                 invitation.send()                
-                messages.success(request, _(u'An invitation was sent to %(name)s.') % {'name' : invitation.email})
+                messages.warning(request, _(u'An invitation was sent to %(name)s.') % {'name' : invitation.email})
             except Exception:                
                 messages.error(request, _(u'An error happened when sending the invitation.'))            
             return HttpResponseRedirect('/colleague/invite/')

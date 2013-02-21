@@ -1,60 +1,38 @@
 {% extends "base.html" %}
+{% load widget_tweaks %}
 {% load i18n %}
 {% block title %}User Login{% endblock %}
-{% block head %}User Login{% endblock %}
+{% block head %}{% endblock %}
 {% block content %}
 
-<form action="." method="post">    
-    <table class="table no_border_table table-condensed">
-    	<tr>
-    		<td>
-    			{{ form.username.label }}:    			
-    		</td>
-    		<td>
-    			{% if form.username.errors %}
-					<div class="field field_error cb_inline">
-						{{ form.username }}	{{ form.username.errors }}	
-					</div>
-				{% else %}
-					{{form.username}}
-				{% endif %}
-    		</td>
-    	</tr>
-    	<tr>
-    		<td>
-    			{{ form.password.label }}:
-    		</td>
-    		<td>
-    			{% if form.password.errors %}
-				<div class="field field_error cb_inline">
-			    	{{form.password}} {{form.password.errors}}                   	
+<div class="row-fluid">
+	<div class="span6 offset3">
+		<h1>{% trans 'User Login' %}</h1>		
+	</div>
+    <div class="span6 offset3">    	
+		<form id="form_login" class="cb_margin_top" method="post" action=".">
+			<div class="parent">	    	
+				<div class="well well-large">	
+					{% show_row_div_below_error form.username|attr:"class:login-input"  %}					
+					{% show_row_div_below_error form.password|attr:"class:login-input"  %}	
+					<input type="hidden" name="next" value="/" />					
+	    			<a id="login-button" autocomplete="off" class="btn btn-primary btn-large cb-float-to-right">{% trans 'Login' %}</a>	    			    			
 				</div>
-				{% else %}
-					{{form.password}}
-				{% endif %}    			
-    		</td>
-    	</tr>
-    	<tr>
-    		<td></td>
-    		<td>
-    			<input type="hidden" name="next" value="/" />
-    			<input type="submit" value="{% trans 'Login' %}" class="btn btn-primary"/>
-    		</td>
-    	</tr>
-    </table>           
-    
-	{% if form.errors %}	
-		{% for key, err in form.errors.items %}
-			{% if key == 'username' or key == 'password' %}
-			{% else %}
-				<div class="field field_error">{{err}}</div>
-			{% endif%}
-		{% endfor %}
-	{% endif %}
-    
-    {% csrf_token %}
-    
-</form>
+				<a class="btn_link" href="/password_reset/">{% trans 'Forgot password?' %}</a>
+			</div>			    
+    		{% csrf_token %}
+    		{% if form.errors %}	
+				{% for key, err in form.errors.items %}
+					{% if key == 'username' or key == 'password' %}
+					{% else %}
+						<div class="field field_error">{{err}}</div>
+					{% endif%}
+				{% endfor %}
+			{% endif %}
+		</form>
+	</div>
+</div>
+
 {% endblock %}
 
 

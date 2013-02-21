@@ -1,97 +1,30 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block title %}{% trans 'User Registration' %}{% endblock %}
-{% block head %}{% trans 'User Registration' %}{% endblock %}
+{% block head %}{% endblock %}
 {% block content %}
-<form method="post" action=".">
-    <table class="table no_border_table table-condensed">
-    	<tr>
-    		<td>
-    			{{ form.username.label }}:    			
-    		</td>
-    		<td>
-    			{% if form.username.errors %}
-					<div class="field field_error cb_inline">
-						{{ form.username }}	{{ form.username.errors }}	
-					</div>
-				{% else %}
-					{{form.username}}
-				{% endif %}
-    		</td>
-    	</tr>
-    	<tr>
-    		<td>
-    			{{ form.company_name.label }}:
-    		</td>
-    		<td>
-    			{% if form.company_name.errors %}
-				<div class="field field_error cb_inline">
-			    	{{form.company_name}} {{form.company_name.errors}}                   	
+<div class="row-fluid">
+	<div class="span6 offset3">		
+		<h3>{% trans 'Sign up in 30 seconds. No credit card required.' %}</h3>
+	</div>
+    <div class="span6 offset3">    	
+		<form id="form_registration" class="cb_margin_top" method="post" action=".">
+			<div class="parent">	    	
+				<div class="well well-large">	
+					{% show_row_div_below_error form.username %}
+					{% show_row_div_below_error form.company_name %}
+					{% show_row_div_below_error form.company_email %}
+					{% show_row_div_below_error form.email %}
+					{% show_row_div_below_error form.password %}
+					{% show_row_div_below_error form.password2 %}
+					{% show_row_div_below_error form.timezone %}
+						
+	    			<a id="registration-button" autocomplete="off" class="btn btn-primary btn-large cb-float-to-right">{% trans 'Sign Up' %}</a>    			
 				</div>
-				{% else %}
-					{{form.company_name}}
-				{% endif %}    			
-    		</td>
-    	</tr>
-    	<tr>
-    		<td>
-    			{{ form.company_email.label }}:
-    		</td>
-    		<td>
-    			{% if form.company_email.errors %}
-				<div class="field field_error cb_inline">
-			    	{{form.company_email}} {{form.company_email.errors}}                   	
-				</div>
-				{% else %}
-					{{form.company_email}}
-				{% endif %}    			
-    		</td>
-    	</tr>
-    	<tr>
-    		<td>
-    			{{ form.email.label }}:
-    		</td>
-    		<td>
-    			{% if form.email.errors %}
-				<div class="field field_error cb_inline">
-			    	{{form.email}} {{form.email.errors}}                   	
-				</div>
-				{% else %}
-					{{form.email}}
-				{% endif %}    			
-    		</td>
-    	</tr>
-    	<tr>
-    		<td>
-    			{{ form.password.label }}:
-    		</td>
-    		<td>
-    			{% if form.password.errors %}
-				<div class="field field_error cb_inline">
-			    	{{form.password}} {{form.password.errors}}                   	
-				</div>
-				{% else %}
-					{{form.password}}
-				{% endif %}    			
-    		</td>
-    	</tr>
-    	<tr>
-    		<td>
-    			{{ form.password2.label }}:
-    		</td>
-    		<td>
-    			{% if form.password2.errors %}
-				<div class="field field_error cb_inline">
-			    	{{form.password2}} {{form.password2.errors}}                   	
-				</div>
-				{% else %}
-					{{form.password2}}
-				{% endif %}    			
-    		</td>
-    	</tr>
-    	
-    </table>  
-    <input type="submit" value="{% trans 'Register' %}" class="btn btn-primary"/>
-    {% csrf_token %}
-</form>
+			</div>    
+    		{% csrf_token %}
+		</form>
+	</div>
+</div>
+
 {% endblock %}
