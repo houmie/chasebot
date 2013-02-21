@@ -51,7 +51,7 @@ class DemoRegistrationForm(Form):
         email = self.cleaned_data['email']
         users = User.objects.filter(email=email)
         if users.count() > 0:
-            raise forms.ValidationError(_(u"The email is already taken, please select another."))
+            raise forms.ValidationError(_(u"This email is already taken, please select another."))
         return email
 
 class RegistrationForm(DemoRegistrationForm):
@@ -385,6 +385,13 @@ class ColleagueInviteForm(ModelForm):
         self.fields['email'].widget.attrs['class'] = 'demo-input'
         self.fields['name'].widget.attrs['autocomplete'] = 'off'
         self.fields['email'].widget.attrs['autocomplete'] = 'off'
+    
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        users = User.objects.filter(email=email)
+        if users.count() > 0:
+            raise forms.ValidationError(_(u"This email is already registered in the system, please select another."))
+        return email
     
     class Meta:
         model = Invitation
