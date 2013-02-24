@@ -566,7 +566,17 @@ function sort_table(table, condition) {
 
             // set the uitheme widget to use the bootstrap theme class names 
             // uitheme : "bootstrap" 
-        }
+        },
+
+        // called after each header cell is rendered, use index to target the column
+        // customize header HTML
+        onRenderHeader: function (index) {
+            // the span wrapper is added by default
+            $(this).find('div.tablesorter-header-inner').addClass('roundedCorners');
+        },
+        // prevent text selection in header
+        cancelSelection: true
+
     }).tablesorterPager({
         // target the pager markup - see the HTML block below 
         container: $(".pager"),
@@ -578,9 +588,55 @@ function sort_table(table, condition) {
         // setting this to false, only hides the non-visible rows; needed if you plan to add/remove rows with the pager enabled. 
         removeRows: false,
 
+        // if true, the table will remain the same height no matter how many
+        // records are displayed. The space is made up by an empty 
+        // table row set to a height to compensate; default is false 
+        fixedHeight: true,
+
         // output string - default is '{page}/{totalPages}'; 
         // possible variables: {page}, {totalPages}, {filteredPages}, {startRow}, {endRow}, {filteredRows} and {totalRows} 
-        output: '{startRow} - {endRow} / {filteredRows} ({totalRows})'
+        output: '{startRow} - {endRow} ({totalRows})',
+
+        //ajaxUrl : "/open_deals/?page={page}&size={size}",
+
+        page: 0,
+
+        size: 10,
+
+        // ajaxProcessing: function (data) {
+            // if (data) {
+                // var i, rows, totals, r, row, c, headers, rw;
+                // rows = [];
+                // totals = data.total_rows;
+                // headers = data.cols;
+                // for (r = 0; r < data.rows.length; r++) {
+                    // row = []; // new row array                    
+                    // // cells
+                    // for (i = 0; i < headers.length; i++) {
+                        // c = data.rows[r][headers[i]];
+                        // if (typeof (c) === "string") {
+                            // row.push(c); // add each table cell data to row array
+                        // }
+                    // }
+                    // rows.push(row); // add new row array to rows array
+                // }
+// 
+                // return [ totals, rows, headers ];
+            // }
+        // },
+
+        // css class names of pager arrows
+        cssNext        : '.next',  // next page arrow
+        cssPrev        : '.prev',  // previous page arrow
+        cssFirst       : '.first', // go to first page arrow
+        cssLast        : '.last',  // go to last page arrow
+        cssPageDisplay : '.pagedisplay', // location of where the "output" is displayed
+        cssPageSize    : '.pagesize', // page size selector - select dropdown that sets the "size" option
+        cssErrorRow    : 'tablesorter-errorRow', // error information row
+
+        // class added to arrows when at the extremes (i.e. prev/first arrows are "disabled" when on the first page)
+        cssDisabled    : 'disabled' // Note there is no period "." in front of this class name
+
     });
 }
 
@@ -1374,6 +1430,12 @@ function rebind_open_deals(load_sorttable) {
     "use strict";
     if (load_sorttable) {
         sort_table('#open_deal_table', '#open_deal_tabs');
+    } else {
+        // let the plugin know that we made a update
+        // the resort flag set to anything BUT false (no quotes) will trigger an automatic
+        // table resort using the current sort
+        var resort = true;
+        $("#open_deal_table").trigger("update", [resort]);
     }
     $('.business_card_modal_link').off('click').on('click', load_business_card);
     $(".negotiate_deal_btn").off('click').on('click', negotiate_deal);

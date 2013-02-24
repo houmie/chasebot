@@ -1,6 +1,6 @@
 /*!
  * tablesorter pager plugin
- * updated 1/4/2013
+ * updated 2/20/2013
  */
 /*jshint browser:true, jquery:true, unused:false */
 ;(function($) {
@@ -138,7 +138,7 @@
 				if (h) {
 					d = h - $b.height();
 					if ( d > 5 && $.data(table, 'pagerLastSize') === c.size && $b.children('tr:visible').length < c.size ) {
-						$b.append('<tr class="pagerSavedHeightSpacer ' + table.config.selectorRemove.replace('.','') + '" style="height:' + d + 'px;"></tr>');
+						$b.append('<tr class="pagerSavedHeightSpacer ' + table.config.selectorRemove.replace(/(tr)?\./g,'') + '" style="height:' + d + 'px;"></tr>');
 					}
 				}
 			}
@@ -188,9 +188,8 @@
 				var i, j, hsh, $f, $sh,
 				$t = $(table),
 				tc = table.config,
-				$b = c.$tbodies,
 				hl = $t.find('thead th').length, tds = '',
-				err = '<tr class="' + c.cssErrorRow + ' ' + tc.selectorRemove.replace('.','') + '"><td style="text-align: center;" colspan="' + hl + '">' +
+				err = '<tr class="' + c.cssErrorRow + ' ' + tc.selectorRemove.replace(/(tr)?\./g,'') + '"><td style="text-align: center;" colspan="' + hl + '">' +
 					(exception ? exception.message + ' (' + exception.name + ')' : 'No rows found') + '</td></tr>',
 				result = c.ajaxProcessing(data) || [ 0, [] ],
 				d = result[1] || [],
@@ -234,7 +233,7 @@
 					// add error row to thead instead of tbody, or clicking on the header will result in a parser error
 					$t.find('thead').append(err);
 				} else {
-					$b.html( tds ); // add tbody
+					$(table.tBodies[0]).html( tds ); // add rows to first tbody
 				}
 				if (tc.showProcessing) {
 					$.tablesorter.isProcessing(table); // remove loading icon
@@ -358,9 +357,8 @@
 		moveToPage = function(table, c) {
 			if ( c.isDisabled ) { return; }
 			var p = Math.min( c.totalPages, c.filteredPages );
-			if ( c.page < 0 || c.page > ( p - 1 ) ) {
-				c.page = 0;
-			}
+			if ( c.page < 0 ) { c.page = 0; }
+			if ( c.page > ( p - 1 ) && p !== 0 ) { c.page = p - 1; }
 			if (c.ajax) {
 				getAjax(table, c);
 			} else if (!c.ajax) {
@@ -453,7 +451,7 @@
 				config.appender = $this.appender;
 
 				$t
-					.unbind('filterStart.pager filterEnd.pager sortEnd.pager disable.pager enable.pager destroy.pager update.pager')
+					.unbind('filterStart.pager filterEnd.pager sortEnd.pager disable.pager enable.pager destroy.pager update.pager pageSize.pager')
 					.bind('filterStart.pager', function(e, filters) {
 						$.data(table, 'pagerUpdateTriggered', false);
 						c.currentFilters = filters;
@@ -466,8 +464,8 @@
 							return;
 						}
 						if (e.type === 'filterEnd') { c.page = 0; }
-						updatePageDisplay(table, c);
 						moveToPage(table, c);
+						updatePageDisplay(table, c);
 						fixHeight(table, c);
 					})
 					.bind('disable.pager', function(){
@@ -481,6 +479,16 @@
 					})
 					.bind('update.pager', function(){
 						hideRows(table, c);
+					})
+					.bind('pageSize.pager', function(e,v){
+						c.size = parseInt(v, 10) || 10;
+						hideRows(table, c);
+						updatePageDisplay(table, c);
+					})
+					.bind('pageSet.pager', function(e,v){
+						c.page = (parseInt(v, 10) || 1) - 1;
+						moveToPage(table, c);
+						updatePageDisplay(table, c);
 					});
 
 				// clicked controls

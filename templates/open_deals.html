@@ -31,6 +31,14 @@
 	        {% include 'open_deals_list.html' %}
 	    </tbody>
 	</table>
+	<!-- pager --> 
+	<div class="pager"> 
+        <li><a title="{% trans 'First' %}" class="btn-link first nav_padding"><i class="icon-double-angle-left large"></i></a></li>
+        <li><a title="{% trans 'Previous' %}" class="btn-link prev nav_padding"><i class="icon-angle-left large"></i></a></li>         
+        <span class="pagedisplay"></span> <!-- this can be any element, including an input --> 
+        <li><a title="{% trans 'Next' %}" class="btn-link next nav_padding"><i class="icon-angle-right large"></i></a></li> 
+        <li><a title="{% trans 'Last' %}" class="btn-link last nav_padding"><i class="icon-double-angle-right large"></i></a></li>                
+	</div>
 	<div class="modal hide fade" id="business_card_modal" tabindex="-1" role="dialog" aria-labelledby="businesscard_label" aria-hidden="true">
 		
 	</div>	

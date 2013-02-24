@@ -145,9 +145,29 @@ def index_display(request):
 
 @login_required
 def open_deals_display(request):
-    profile = request.user.get_profile()    
-    
+    profile = request.user.get_profile()
     ajax = False    
+#    if 'page' in request.GET:
+#        size = 10
+#        if 'size' in request.GET:
+#            size = request.GET['size']
+#                    
+#        queryset = all_open_deals(request, profile.company)
+#        paginator = Paginator(queryset, size)
+#        page_nr = int(request.GET['page']) + 1
+#        try:
+#            page = paginator.page(page_nr)
+#        except InvalidPage:
+#            raise Http404
+#        objects = page.object_list
+#        # Manual json creation
+#        to_json = {}
+#        to_json['total_rows'] = paginator.count
+#        to_json['cols'] = ["deal_instance_name",]
+#        to_json['rows'] = []           
+#        for item in objects:                        
+#            to_json['rows'].append({ 'deal_instance_name': str(getattr(item, 'deal_instance_name')) })
+#        return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')
     if 'ajax' in request.GET:
         ajax = True
         deals_query = all_open_deals(request, profile.company)
@@ -174,10 +194,10 @@ def open_deals_display(request):
     else:
         deals_query = all_open_deals(request, profile.company)
     
-    deals, paginator, page, page_number = makePaginator(request, 20, deals_query)
+    #deals, paginator, page, page_number = makePaginator(request, 20, deals_query)
     source = '/open_deals'
-    variables = {'deals': deals, 'source':source}
-    variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
+    variables = {'deals': deals_query, 'source':source}
+    #variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
     if ajax:
         return render(request, 'open_deals_list.html', variables)
     else:

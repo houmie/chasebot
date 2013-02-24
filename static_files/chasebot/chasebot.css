@@ -153,9 +153,9 @@ form.cb_timezone{
 	margin: 0 0 0 0;
 }
 
-a.btn-link{
+/*a.btn-link{
 	color: #333333;		
-}
+}*/
 
 a.btn-link-left{	
 	padding-right: 10px;	
@@ -576,3 +576,6 @@ td.number {
   text-align: right;
 }
 
+.nav_padding {
+	padding: 0px 10px;
+}
