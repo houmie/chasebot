@@ -6,14 +6,16 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from chasebot_app.forms import RegistrationForm, ContactsForm, ConversationForm, SalesItemForm, DealTemplateForm,\
-     DealForm, FilterContactsForm, FilterConversationForm, FilterDealTemplateForm, FilterSalesItemForm,\
+from chasebot_app.forms import RegistrationForm, ContactsForm, ConversationForm, ProductsForm, DealTemplateForm,\
+     DealForm, FilterContactsForm, FilterConversationForm, FilterDealTemplateForm, FilterProductsForm,\
     DealsAddForm, OpenDealsAddForm, ColleagueInviteForm, OpenDealTaskForm,\
     EventForm, DealNegotiateForm, FilterOpenDealForm, FeedbackForm,\
     AddNewDealForm, DealsAddFormLight
-from chasebot_app.models import Company, Contact, Conversation, SalesItem, DealTemplate, Deal, SalesTerm,\
+from chasebot_app.models import Company, Contact, Conversation, Products, DealTemplate, Deal, SalesTerm,\
     Invitation, LicenseTemplate, MaritalStatus, \
-    Currency, Event, DealStatus
+    Currency, Event, DealStatus, CBLogging, Conversation_history,\
+    Deal_history, Contact_history, Event_history, Products_history,\
+    DealTemplate_history
 from chasebot_app.models import UserProfile 
 from django.utils.translation import ugettext as _, ungettext
 from django.utils import timezone, simplejson
@@ -229,11 +231,14 @@ def add_new_deal_from_template(request):
     
     if request.method == 'POST':
         form = AddNewDealForm(request.POST, company = profile.company)        
-        if form.is_valid():
+        if form.is_valid():            
             # Always localize the entered date by user into his timezone before saving it to database
             current_tz = timezone.get_current_timezone() 
             call = Conversation(contact=form.cleaned_data['addnewdeal_contact'], conversation_datetime = current_tz.normalize(timezone.now().astimezone(current_tz)), notes=form.cleaned_data['call_notes'])
             call.save()
+            
+            log = log_call(request, call, 'add_new_deal_from_template', 'call saved', profile, False)
+            
             new_deal = form.save(commit=False)            
             deal = Deal.objects.create(
                                 deal_id =       new_deal.deal_id,
@@ -252,17 +257,199 @@ def add_new_deal_from_template(request):
                                 company =       profile.company                                            
                                 )
             #Saving M2M 
-            for item in form.cleaned_data['sales_item']:
-                deal.sales_item.add(item)
+            for item in form.cleaned_data['product']:
+                deal.product.add(item)
             deal.save();
+
+            log_deal(request, deal, form.cleaned_data['product'], 'add_new_deal_from_template', 'deal saved', profile, False, log)
+
             variables = load_open_deals_variables(request, profile)
             return render(request, 'open_deals.html', variables)
     else:        
         form = DealsAddFormLight(company = profile.company)
-        fs = AddNewDealForm(company = profile.company)                
+        fs = AddNewDealForm(company = profile.company)
         
     variables = {'deals_add_form':form, 'fs': fs, 'validation_error_ajax':validation_error_ajax }
     return render(request, '_add_deals_from_template.html', variables)
+
+def log_contact(request, contact, primary_action, secondary_action, profile, is_edit):
+    if profile.is_log_active == False:
+        return           
+    ch = Contact_history(    first_name=contact.first_name,
+                             last_name=contact.last_name,
+                             dear_name=contact.dear_name,
+                             address=contact.address,
+                             city=contact.city,
+                             state=contact.state,
+                             postcode=contact.postcode,
+                             country=contact.country,
+                             company_name=contact.company_name,
+                             position=contact.position,
+                             phone=contact.phone,    
+                             mobile_phone=contact.mobile_phone,
+                             fax_number=contact.fax_number,
+                             email=contact.email,
+                             birth_date=contact.birth_date,
+                             prev_meeting_places=contact.prev_meeting_places,
+                             referred_by=contact.referred_by,
+                             contact_notes=contact.contact_notes,
+                             marital_status=contact.marital_status,
+                             gender=contact.gender,
+                             contacts_interests=contact.contacts_interests,
+                             pet_names=contact.pet_names,
+                             spouse_first_name=contact.spouse_first_name,
+                             spouse_last_name=contact.spouse_last_name,
+                             spouses_interests=contact.spouses_interests,
+                             children_names=contact.children_names,
+                             home_town=contact.home_town,
+                             company=contact.company,
+                             important_client=contact.important_client,                             
+                         )
+    if is_edit:
+        ch.edit_id=contact.pk
+        
+    ch.save()
+    log = CBLogging(user = request.user, primary_action = primary_action)
+    log.save(request)
+    log.cbaction_set.create(secondary_action = secondary_action,  history_id = ch.pk, history_type = 'contact')    
+
+
+def log_dealtemplate(request, dealtemplate, primary_action, secondary_action, profile, is_edit):
+    if profile.is_log_active == False:
+        return
+    dh = DealTemplate_history(company             = dealtemplate.company,
+                              deal_name           = dealtemplate.deal_name,
+                              deal_description    = dealtemplate.deal_description,                              
+                              currency            = dealtemplate.currency,
+                              price               = dealtemplate.price,
+                              sales_term          = dealtemplate.sales_term,
+                              quantity            = dealtemplate.quantity
+                          )
+    if is_edit:
+        dh.edit_id=dealtemplate.pk
+    dh.save()
+    for item in dealtemplate.product.all():
+        dh.product.add(item)
+    dh.save()    
+    log = CBLogging(user = request.user, primary_action = primary_action)
+    log.cbaction_set.create(secondary_action = secondary_action,  history_id = dh.pk, history_type = 'deal_template')
+    log.save(request)
+
+def log_product(request, product, primary_action, secondary_action, profile, is_edit):
+    if profile.is_log_active == False:
+        return
+    ph = Products_history(item_name = product.item_name,
+                          company   = product.company
+                          )
+    if is_edit:
+        ph.edit_id=product.pk
+    ph.save()    
+    log = CBLogging(user = request.user, primary_action = primary_action)
+    log.save(request)
+    log.cbaction_set.create(secondary_action = secondary_action,  history_id = ph.pk, history_type = 'product')
+    
+
+def log_event(request, event, primary_action, secondary_action, profile, is_edit):
+    if profile.is_log_active == False:
+        return
+    eh = Event_history(type = event.type,
+                       due_date_time = event.due_date_time,
+                       reminder_date_time = event.reminder_date_time,
+                       reminder = event.reminder,
+                       is_public = event.is_public,
+                       contact = event.contact,
+                       deal_id = event.deal_id,
+                       company = event.company,
+                       user = event.user,
+                       notes = event.notes,
+                       is_reminder_sent = event.is_reminder_sent
+                       )
+    if is_edit:
+        eh.edit_id=event.pk
+    eh.save()
+    log = CBLogging(user = request.user, primary_action = primary_action)
+    log.save(request)
+    log.cbaction_set.create(secondary_action = secondary_action,  history_id = eh.pk, history_type = 'event')
+    
+
+def log_call(request, call, primary_action, secondary_action, profile, is_edit):
+    if profile.is_log_active == False:
+        return
+    ch = Conversation_history(contact=call.contact, 
+                              conversation_datetime = call.conversation_datetime, 
+                              notes=call.notes)
+    if is_edit:
+        ch.edit_id=call.pk
+    ch.save()
+    log = CBLogging(user = request.user, primary_action = primary_action)
+    log.save(request)
+    log.cbaction_set.create(secondary_action = secondary_action,  history_id = ch.pk, history_type = 'call')    
+    return log
+
+def log_deal(request, deal, products, primary_action, secondary_action, profile, is_edit, log=None):
+    if profile.is_log_active == False:
+        return
+    dh = Deal_history.objects.create(
+                                deal_id =       deal.deal_id,
+                                deal_datetime = deal.deal_datetime, 
+                                status =        deal.status, 
+                                contact =       deal.contact, 
+                                deal_template = deal.deal_template,
+                                deal_template_name = deal.deal_template_name,  
+                                conversation =  deal.conversation,                                            
+                                deal_instance_name = deal.deal_instance_name,
+                                deal_description = deal.deal_description,
+                                price =         deal.price,        
+                                currency =      deal.currency,                
+                                sales_term =    deal.sales_term,
+                                quantity =      deal.quantity,
+                                company =       deal.company                                            
+                                )     
+    if is_edit:
+        dh.edit_id=deal.pk
+    for item in products:
+        dh.product.add(item)
+    dh.save();   
+    
+    if log is None:
+        log = CBLogging(user = request.user, primary_action = primary_action)
+    log.save(request)
+    log.cbaction_set.create(secondary_action = secondary_action,  history_id = dh.pk, history_type = 'deal')
+    
+    
+#def log_negotiate_deal(request, deal, call, products, primary_action, secondary_action_deal, secondary_action_call, profile):
+#    if profile.is_log_active == False:
+#        return
+#    
+#    ch = Conversation_history(contact=call.contact, 
+#                              conversation_datetime = call.conversation_datetime, 
+#                              notes=call.notes)
+#    ch.save()
+#    log = CBLogging(user = request.user, primary_action = primary_action)
+#    log.cbaction_set.create(secondary_action = secondary_action_call,  history_id = ch.pk, history_type = 'call')
+#    
+#    dh = Deal_history.objects.create(
+#                                deal_id =       deal.deal_id,
+#                                deal_datetime = deal.deal_datetime, 
+#                                status =        deal.status, 
+#                                contact =       deal.contact, 
+#                                deal_template = deal.deal_template,
+#                                deal_template_name = deal.deal_template_name,  
+#                                conversation =  deal.conversation,                                            
+#                                deal_instance_name = deal.deal_instance_name,
+#                                deal_description = deal.deal_description,
+#                                price =         deal.price,        
+#                                currency =      deal.currency,                
+#                                sales_term =    deal.sales_term,
+#                                quantity =      deal.quantity,
+#                                company =       deal.company                                            
+#                                )
+#    for item in products:
+#        dh.product.add(item)
+#    dh.save();   
+#        
+#    log.cbaction_set.create(secondary_action = secondary_action_deal,  history_id = dh.pk, history_type = 'deal')
+#    log.save(request)
 
 @login_required
 def add_new_deal(request):
@@ -275,6 +462,9 @@ def add_new_deal(request):
             current_tz = timezone.get_current_timezone() 
             call = Conversation(contact=form.cleaned_data['addnewdeal_contact'], conversation_datetime = current_tz.normalize(timezone.now().astimezone(current_tz)), notes=form.cleaned_data['call_notes'])
             call.save()
+            
+            log = log_call(request, call, 'add_new_deal', 'call saved', profile, False)
+            
             new_deal = form.save(commit=False)            
             deal = Deal.objects.create(
                                 deal_id =       new_deal.deal_id,
@@ -293,9 +483,12 @@ def add_new_deal(request):
                                 company =       profile.company                                            
                                 )
             #Saving M2M 
-            for item in form.cleaned_data['sales_item']:
-                deal.sales_item.add(item)
+            for item in form.cleaned_data['product']:
+                deal.product.add(item)
             deal.save();
+            
+            log_deal(request, deal, form.cleaned_data['product'], 'add_new_deal', 'save deal', profile, False, log)
+            
             variables = load_open_deals_variables(request, profile)
             return render(request, 'open_deals.html', variables)
         else:
@@ -321,6 +514,9 @@ def negotiate_open_deal(request, deal_pk):
             current_tz = timezone.get_current_timezone() 
             call = Conversation(contact=actual_deal.contact, conversation_datetime = current_tz.normalize(timezone.now().astimezone(current_tz)), notes=form.cleaned_data['call_notes'])
             call.save()
+            
+            log = log_call(request, call, 'negotiate_open_deal', 'call saved', profile, False)
+            
             modified_deal = form.save(commit=False)            
             deal = Deal.objects.create(
                                 deal_id =       actual_deal.deal_id,
@@ -339,12 +535,14 @@ def negotiate_open_deal(request, deal_pk):
                                 company =       profile.company                                            
                                 )
             #Saving M2M 
-            for item in form.cleaned_data['sales_item']:
-                deal.sales_item.add(item)
+            for item in form.cleaned_data['product']:
+                deal.product.add(item)
             deal.save();
-                        
+            
+            log_deal(request, deal, form.cleaned_data['product'], 'negotiate_open_deal', 'deal saved', profile, False, log)
+            
             #In case the instance name was changed we change also all other instance names of the same set.
-            adjust_deal_names_of_same_dealset(deal.contact, deal)                                
+            adjust_deal_names_of_same_dealset(request, deal.contact, deal, profile)                                
             
             variables = load_open_deals_variables(request, profile)
             return render(request, 'open_deals.html', variables)
@@ -410,16 +608,23 @@ def contacts_display(request, contact_id=None):
 @login_required
 def contact_add_edit(request, contact_id=None):    
     profile = request.user.get_profile()
+    secondary = ''    
+    is_edit = False
     if contact_id is None:
         contact = Contact(company=profile.company)
         template_title = _(u'Add New Contact')
+        secondary = 'Add New Contact'
     else:
+        is_edit = True
         contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
         template_title = _(u'Edit Contact')
+        secondary = 'Edit Contact'
     if request.method == 'POST':
         form = ContactsForm(request.POST, instance=contact)
         if form.is_valid():
             contact = form.save()
+            log_contact(request, contact, 'contact_add_edit', secondary, profile, is_edit)
+
             contacts_queryset = profile.company.contact_set.all().order_by('last_name')
             contacts, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, contacts_queryset)  
             source = '/contacts'
@@ -428,10 +633,10 @@ def contact_add_edit(request, contact_id=None):
                          'company_name': company_name, 'contacts' : contacts, 'source' : source
                          }
             variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
-            return render(request, 'contacts.html', variables)            
+            return render(request, 'contacts.html', variables)
     else:
-        form = ContactsForm(instance=contact)    
-    variables = {'form':form, 'template_title': template_title, 'contact_id' : contact_id, }    
+        form = ContactsForm(instance=contact)
+    variables = {'form':form, 'template_title': template_title, 'contact_id' : contact_id, }
     return render(request, 'contact.html', variables)
 
 @login_required
@@ -441,7 +646,8 @@ def contact_delete(request, contact_id):
     else:
         profile = request.user.get_profile()
         contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
-        contact.delete()        
+        log_contact(request, contact, 'contact_delete', '', profile, False)
+        contact.delete()
         contacts_queryset = profile.company.contact_set.order_by('last_name')
         contacts, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, contacts_queryset)
         source = '/contacts'    
@@ -524,28 +730,33 @@ def remove_redundant_future_deals(contact, deal):
         for bad_deal in later_deals_to_be_removed:
             bad_deal.delete()    
 
-
-def adjust_deal_names_of_same_dealset(contact, deal):
+@login_required
+def adjust_deal_names_of_same_dealset(request, contact, deal, profile):
     set_of_same_deal = contact.deal_set.filter(deal_id=deal.deal_id)
     for sdeal in set_of_same_deal:
         if sdeal.pk != deal.pk:
             if sdeal.deal_instance_name != deal.deal_instance_name:
                 sdeal.deal_instance_name = deal.deal_instance_name
                 sdeal.save()
+                log_deal(request, sdeal, sdeal.product.all(), 'adjust_deal_names_of_same_dealset', 'deal saved', profile, True)
 
 
 @login_required
 def conversation_add_edit(request, contact_id, call_id=None):
     profile = request.user.get_profile()
     contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
-    
+    secondary = '' 
+    is_edit = False
     if call_id is None:
         current_tz = timezone.get_current_timezone()
         call = Conversation(contact=contact, conversation_datetime = current_tz.normalize(timezone.now().astimezone(current_tz))) 
         template_title = _(u'Add New Conversation')
+        secondary = 'Add New Conversation'
     else:
+        is_edit = True
         call = get_object_or_404(contact.conversation_set.all(), pk=call_id)
         template_title = _(u'Edit Conversation')
+        secondary = 'Edit Conversation'
     
     #All kind of deals attached (open or new) will be defined here
     deals_formset_factory = modelformset_factory(Deal, form=DealForm, extra=0, can_delete=True, max_num=5)
@@ -567,7 +778,8 @@ def conversation_add_edit(request, contact_id, call_id=None):
             time = form.cleaned_data['conversation_time']            
             date_time = current_tz.localize(datetime(date.year, date.month, date.day, time.hour, time.minute))                        
             call.conversation_datetime = date_time
-            call.save()
+            call.save()            
+            log = log_call(request, call, 'conversation_add_edit', secondary, profile, is_edit)
             
             for fm in attached_deals_formset:
                 to_delete = fm.cleaned_data['DELETE']
@@ -599,12 +811,14 @@ def conversation_add_edit(request, contact_id, call_id=None):
                                             company = profile.company                                            
                                             )
                         #Saving M2M 
-                        for item in fm.cleaned_data['sales_item']:
-                            deal.sales_item.add(item)
+                        for item in fm.cleaned_data['product']:
+                            deal.product.add(item)
                         deal.save();
                         
+                        log_deal(request, deal, fm.cleaned_data['product'], 'conversation_add_edit', 'continue with open deal', profile, False, log)
+                        
                         #In case the instance name was changed we change also all other instance names of the same set.
-                        adjust_deal_names_of_same_dealset(contact, deal)
+                        adjust_deal_names_of_same_dealset(contact, deal, request, profile)
                         
                         #If the open deal instance is closed, we need to remove all later entries of this instance on later conversations.
                         remove_redundant_future_deals(contact, deal)
@@ -616,11 +830,20 @@ def conversation_add_edit(request, contact_id, call_id=None):
                         deal.conversation = call
                         deal.company = profile.company
                         deal.deal_datetime=call.conversation_datetime
+                        secondary = ''
+                        is_edit = False
                         if deal.pk:                        
                             #In case the instance name was changed we change also all other instance names of the same set.
-                            adjust_deal_names_of_same_dealset(contact, deal)                     
+                            adjust_deal_names_of_same_dealset(contact, deal, request, profile)
+                            secondary = 'deal edited'
+                            is_edit = True
+                        else:
+                            secondary = 'new deal added'
                         deal.save()
                         fm.save_m2m()
+                        
+                        log_deal(request, deal, fm.cleaned_data['product'], 'conversation_add_edit', secondary, profile, is_edit, log)
+                        
                         #If the attached or even new deal are closed, we need to remove all later entries of this instance on later conversations.
                         remove_redundant_future_deals(contact, deal)            
             return render(request, 'conversation_list_item.html', {'calls':[call], 'contact':contact})
@@ -653,6 +876,7 @@ def conversation_delete(request, contact_id, call_id):
         profile = request.user.get_profile()
         contact = get_object_or_404(profile.company.contact_set.all(), pk=contact_id)
         call = get_object_or_404(contact.conversation_set.all(), pk=call_id)
+        log_call(request, call, 'call_delete', '', profile, False)
         call.delete()
         call_queryset = contact.conversation_set.order_by('-conversation_datetime')   
         calls, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, call_queryset)
@@ -677,12 +901,13 @@ def event_display(request):
 @login_required
 def event_add_edit(request, open_deal_id=None, event_id=None):
     profile = request.user.get_profile()
-        
+    is_edit = False    
     if event_id is None and open_deal_id:
         deal = get_object_or_404(profile.company.deal_set.all(), pk=open_deal_id)
         event = Event(company=profile.company, user=request.user, deal_id=deal.deal_id) 
         template_title = _(u'Add New Event')
     elif event_id and open_deal_id is None:
+        is_edit = True
         event = get_object_or_404(profile.company.event_set.all(), pk=event_id)
         template_title = _(u'Edit Event')
     
@@ -691,7 +916,8 @@ def event_add_edit(request, open_deal_id=None, event_id=None):
     if request.method == 'POST':        
         form = EventForm(request.POST, instance=event, prefix='form')
         if form.is_valid():                        
-            event = form.save()            
+            event = form.save()   
+            log_event(request, event, 'event_add_edit', 'event saved', profile, is_edit)
             events = profile.company.event_set.filter(deal_id = event.deal_id).order_by('due_date_time')[:3]
             #tasks, paginator_t, page_t, page_number_t = makePaginator(request, 3, event_queryset) 
             variables = {'events':events}
@@ -699,7 +925,7 @@ def event_add_edit(request, open_deal_id=None, event_id=None):
             return render(request, 'event_list.html', variables)
         else:
             validation_error_ajax = True
-    else:        
+    else:
         form = EventForm(instance=event, prefix='form')
     current_tz = timezone.get_current_timezone();
     user_date = current_tz.normalize(timezone.now().astimezone(current_tz))
@@ -725,6 +951,7 @@ def event_delete(request, event_id):
         profile = request.user.get_profile()
         event = get_object_or_404(profile.company.event_set.all(), pk=event_id)        
         deal_id = event.deal_id
+        log_event(request, event, 'event_delete', '', profile, False)
         event.delete()           
         events = profile.company.event_set.filter(deal_id = deal_id).order_by('due_date_time')[:3]
         #tasks, paginator, page, page_number = makePaginator(request, 3, event_queryset)        
@@ -770,9 +997,9 @@ def get_event_variables(profile):
     return variables
 
 @login_required
-def sales_item_display(request):
+def product_display(request):
     profile = request.user.get_profile()
-    sales_items_queryset = profile.company.salesitem_set.order_by('item_name')    
+    products_queryset = profile.company.products_set.order_by('item_name')    
     ajax = False
     
         
@@ -780,101 +1007,109 @@ def sales_item_display(request):
         ajax = True        
         if 'item_name' in request.GET:    
             item_name = request.GET['item_name']
-            sales_items_queryset = sales_items_queryset.filter(item_name__icontains=item_name).order_by('item_name')
+            products_queryset = products_queryset.filter(item_name__icontains=item_name).order_by('item_name')
 
     
-    filter_form = FilterSalesItemForm(request.GET)    
-    sales_items, paginator, page, page_number = makePaginator(request, 7, sales_items_queryset)    
-    #New SalesItem form for adding a possible new one on UI
-    sales_item = SalesItem(company=profile.company)
-    form = SalesItemForm(instance=sales_item)
-    source = 'sales_items/'          
+    filter_form = FilterProductsForm(request.GET)    
+    products, paginator, page, page_number = makePaginator(request, 7, products_queryset)    
+    #New Products form for adding a possible new one on UI
+    product = Products(company=profile.company)
+    form = ProductsForm(instance=product)
+    source = 'products/'          
     variables = {
-                 'sales_items': sales_items, 'form':form, 'filter_form' : filter_form, 'get_request':get_request_parameters(request), 'source':source
+                 'products': products, 'form':form, 'filter_form' : filter_form, 'get_request':get_request_parameters(request), 'source':source
                 }   
     variables = merge_with_additional_variables(request, paginator, page, page_number, variables) 
     if ajax:    
-        return render(request, 'sales_item_list.html', variables)
+        return render(request, 'product_list.html', variables)
     else:        
-        return render(request, '_sales_items_table.html', variables)
+        return render(request, '_products_table.html', variables)
 #        else:
-#            return render(request, 'sales_items.html', variables)  
+#            return render(request, 'products.html', variables)  
 
 @login_required
-def single_sales_item_display(request, sales_item_id):
+def single_product_display(request, product_id):
     profile = request.user.get_profile()    
-    sales_item = get_object_or_404(profile.company.salesitem_set.all(), pk=sales_item_id)
-    variables = {'sales_items' : [sales_item]}
-    return render(request, '_sales_item_rows.html', variables)
+    product = get_object_or_404(profile.company.products_set.all(), pk=product_id)
+    variables = {'products' : [product]}
+    return render(request, '_product_rows.html', variables)
 
 @login_required
-def deal_template_sales_item_display(request):
+def deal_template_product_display(request):
     profile = request.user.get_profile()        
     deal = DealTemplate(company=profile.company)
     form = DealTemplateForm(instance=deal)    
     variables = {'form':form }
-    return render(request, 'deal_template_sales_item.html', variables)
+    return render(request, 'deal_template_product.html', variables)
    
 
 @login_required
-def sales_item_add_edit(request, sales_item_id=None):    
+def product_add_edit(request, product_id=None):    
     profile = request.user.get_profile()    
     validation_error_ajax = False;
-    source = 'sales_items/'  
-    if sales_item_id is None:
-        sales_item = SalesItem(company=profile.company)        
+    source = 'products/'  
+    secondary = ''
+    is_edit = False
+    if product_id is None:
+        product = Products(company=profile.company)       
+        secondary = 'add new product' 
     else:
-        sales_item = get_object_or_404(profile.company.salesitem_set.all(), pk=sales_item_id)        
-    if request.method == 'POST':                
-        form = SalesItemForm(request.POST, instance=sales_item)
+        product = get_object_or_404(profile.company.products_set.all(), pk=product_id)
+        secondary = 'edit product'
+        is_edit = True
+    if request.method == 'POST':
+        form = ProductsForm(request.POST, instance=product)
         if form.is_valid():
-            sales_item = form.save()
-            if sales_item_id is not None:
+            product = form.save()
+            log_product(request, product, 'product_add_edit', secondary, profile, is_edit)
+            
+            if product_id is not None:
                 # Only successful Edit (POST) --> rendering only the changed row
-                variables = {'sales_items' : [sales_item]}
-                return render(request, '_sales_item_rows.html', variables)        
+                variables = {'products' : [product]}
+                return render(request, '_product_rows.html', variables)        
         else:
             validation_error_ajax = True;
-            if sales_item_id is None:
+            if product_id is None:
                 # Only unsuccessful Add (POST) --> rendering only the invalid Add row
                 variables = {'form' : form, 'validation_error_ajax' : validation_error_ajax}
-                return render(request, 'sales_item_add_save_form.html', variables)
+                return render(request, 'product_add_save_form.html', variables)
     else:
-        form = SalesItemForm(instance=sales_item)
-    if sales_item_id is None:
+        form = ProductsForm(instance=product)
+    if product_id is None:
         # Only first-time GET Add or Successful Add (POST) --> The List incl. paginators will get updated
-        sales_items_queryset = profile.company.salesitem_set.all().order_by('item_name')
-        sales_items, paginator, page, page_number = makePaginator(request, 7, sales_items_queryset)        
+        products_queryset = profile.company.products_set.all().order_by('item_name')
+        products, paginator, page, page_number = makePaginator(request, 7, products_queryset)        
         variables = {
-                     'sales_items': sales_items, 'form':form, 'source':source,
-                     'salesitem_id' : sales_item_id, 'validation_error_ajax' : validation_error_ajax, 'get_request':get_request_parameters(request)
+                     'products': products, 'form':form, 'source':source,
+                     'Product_id' : product_id, 'validation_error_ajax' : validation_error_ajax, 'get_request':get_request_parameters(request)
                      }
         variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
-        return render(request, 'sales_item_list.html', variables)
+        return render(request, 'product_list.html', variables)
     else:
         # Only first-time GET Edit or invalid POST Edit --> Edit Save row will be rendered
         variables = {
-                     'form':form, 'salesitem_id' : sales_item_id, 'validation_error_ajax' : validation_error_ajax, 'source':source 
+                     'form':form, 'Product_id' : product_id, 'validation_error_ajax' : validation_error_ajax, 'source':source 
                     }        
-        return render(request, 'sales_item_edit_save_form.html', variables)
+        return render(request, 'product_edit_save_form.html', variables)
 
 @login_required
-def sales_item_delete(request, sales_item_id=None):
-    source = 'sales_items/'  
-    if sales_item_id is None:
+def product_delete(request, product_id=None):
+    source = 'products/'  
+    if product_id is None:
         raise Http404(_(u'Product/Service not found'))
     else:
         profile = request.user.get_profile()
-        sales_item = get_object_or_404(profile.company.salesitem_set.all(), pk=sales_item_id)
-        sales_item.delete()                
-        sales_items_queryset = profile.company.salesitem_set.all().order_by('item_name')   
-        sales_items, paginator, page, page_number = makePaginator(request, 7, sales_items_queryset)    
-        #New SalesItem form for adding a possible new one on UI
-        sales_item = SalesItem(company=profile.company)
-        form = SalesItemForm(instance=sales_item)        
-        variables = { 'sales_items': sales_items, 'form':form, 'source':source}
+        product = get_object_or_404(profile.company.products_set.all(), pk=product_id)
+        log_product(request, product, 'product_delete', '', profile, False)
+        product.delete()                
+        products_queryset = profile.company.products_set.all().order_by('item_name')   
+        products, paginator, page, page_number = makePaginator(request, 7, products_queryset)    
+        #New Products form for adding a possible new one on UI
+        product = Products(company=profile.company)
+        form = ProductsForm(instance=product)        
+        variables = { 'products': products, 'form':form, 'source':source}
         variables = merge_with_additional_variables(request, paginator, page, page_number, variables)
-    return render(request, 'sales_item_list.html', variables)
+    return render(request, 'product_list.html', variables)
 
 
 
@@ -889,12 +1124,12 @@ def deal_template_display(request):
         if 'deal_name' in request.GET:    
             deal_name = request.GET['deal_name']
             deal_templates_queryset = deal_templates_queryset.filter(deal_name__icontains=deal_name).order_by('deal_name')
-        if 'sales_item' in request.GET:            
-            sales_item_keywords = request.GET.getlist('sales_item')
+        if 'product' in request.GET:            
+            product_keywords = request.GET.getlist('product')
             # Q are queries that can be stacked with Or operators. If none of the Qs contains any value, `reduce` minimizes them to no queryset,             
-            q_filters = reduce(operator.or_, (Q(item_name__icontains=item.strip()) for item in sales_item_keywords))
-            sales_items = profile.company.salesitem_set.filter(q_filters)       
-            deal_templates_queryset = deal_templates_queryset.filter(sales_item__in=sales_items)
+            q_filters = reduce(operator.or_, (Q(item_name__icontains=item.strip()) for item in product_keywords))
+            products = profile.company.products_set.filter(q_filters)       
+            deal_templates_queryset = deal_templates_queryset.filter(product__in=products)
         if 'price' in request.GET:    
             price = request.GET['price']
             deal_templates_queryset = deal_templates_queryset.filter(price__icontains=price).order_by('price')
@@ -923,17 +1158,22 @@ def deal_template_display(request):
 def deal_template_add_edit(request, deal_id=None):
     profile = request.user.get_profile()
     source = 'deal_templates/'    
+    secondary = ''
+    is_edit = False
     if deal_id is None:
         deal = DealTemplate(company=profile.company)        
         template_title = _(u'Add New Deal Template')
+        secondary = 'Add New Deal Template'
     else:
+        is_edit = True
         deal = get_object_or_404(profile.company.dealtemplate_set.all(), pk=deal_id)
         template_title = _(u'Edit Deal Template')
+        secondary = 'Edit Deal Template'
     if request.method == 'POST':
         form = DealTemplateForm(request.POST, instance=deal)
         if form.is_valid():
             deal = form.save()
-            
+            log_dealtemplate(request, deal, 'deal_template_add_edit', secondary, profile, is_edit)
             deal_templates_queryset = profile.company.dealtemplate_set.order_by('deal_name')                        
             deal_templates, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deal_templates_queryset)    
             variables = {
@@ -954,6 +1194,7 @@ def deal_template_delete(request, deal_id=None):
     else:
         profile = request.user.get_profile()
         deal_template = get_object_or_404(profile.company.dealtemplate_set.all(), pk=deal_id)
+        log_dealtemplate(request, deal_template, 'deal_template_delete', '', profile, False)
         deal_template.delete()
         deal_templates_queryset = profile.company.dealtemplate_set.order_by('deal_name')   
         deal_templates, paginator, page, page_number = makePaginator(request, ITEMS_PER_PAGE, deal_templates_queryset)
@@ -1047,12 +1288,12 @@ def charts_display(request, contact_id):
 
 
 
-def sales_item_autocomplete(request):
+def product_autocomplete(request):
     if 'query' in request.GET:
         #Get the prerequisite fields for autocomplete
         profile, kwargs, fieldname = get_fields_for_autocomplete(request)
         #filter the related queryset with the prereq fields
-        queryset = profile.company.salesitem_set.filter(**kwargs)[:10]
+        queryset = profile.company.products_set.filter(**kwargs)[:10]
         #prepare the json convertion from the search items we found  
         to_json = prepare_json_for_autocomplete(fieldname, queryset)
         return HttpResponse(simplejson.dumps(to_json), mimetype='application/json')        
@@ -1101,21 +1342,21 @@ def deal_autocomplete(request):
                     queryset[deal.sales_term]=deal.sales_term
             
             # Many-to-Many relationship fields must follow this pattern                
-            elif fieldname == 'sales_item':
+            elif fieldname == 'product':
                 #First see which of the company wide generated sales items the user tried to search against
-                sales_item = profile.company.salesitem_set.filter(item_name__istartswith=request.GET['query'])
-                #Now that we know, let see which of the existing deal_templates have such sales_item(s) we were searching for previously
-                deal_templates = profile.company.dealtemplate_set.filter(sales_item__in=sales_item)
+                product = profile.company.products_set.filter(item_name__istartswith=request.GET['query'])
+                #Now that we know, let see which of the existing deal_templates have such product(s) we were searching for previously
+                deal_templates = profile.company.dealtemplate_set.filter(product__in=product)
                 #Create a queryset dictionary to eliminate the double entries
                 queryset = {}
                 for deal in deal_templates:
-                    #Since its M2M, each DealTemplate's sales_item could point to several items itself, hence another loop is required
-                    for si in deal.sales_item.select_related():
+                    #Since its M2M, each DealTemplate's product could point to several items itself, hence another loop is required
+                    for si in deal.product.select_related():
                         if queryset.has_key(si):
                             continue                        
                         queryset[si]=si
-                #Now that we captured all possible sales_items that are used in DealTemplate instances
-                #We need to change the fieldname we search against to the name of sales_item's field instead so that the json method after here works. 
+                #Now that we captured all possible products that are used in DealTemplate instances
+                #We need to change the fieldname we search against to the name of product's field instead so that the json method after here works. 
                 fieldname = 'item_name'
                 
         to_json = prepare_json_for_autocomplete(fieldname, queryset)

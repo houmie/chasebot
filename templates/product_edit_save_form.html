@@ -1,13 +1,13 @@
 {% load i18n %}
 <td colspan="2">
-	<form id="save_edit_form" method="post" action="/sales_item/edit/{{ salesitem_id }}">
+	<form id="save_edit_form" method="post" action="/product/edit/{{ product_id }}">
 	    {% csrf_token %}    
 	        <table class="table no_border_table table-condensed">
 	            <tbody>
 	                <tr>
 	                	<td>
 	                		<a id="save_edit_button" value="{% trans 'Save' %}" class="btn btn-primary"><i class="icon-ok icon-large"></i></a>
-	            			<a id="cancel_edit_button" href="/sales_item/{{ salesitem_id }}" value="{% trans 'Cancel' %}" class="btn"><i class="icon-remove icon-large"></i></a>
+	            			<a id="cancel_edit_button" href="/product/{{ product_id }}" value="{% trans 'Cancel' %}" class="btn"><i class="icon-remove icon-large"></i></a>
 	                	</td>
                         {% if form.item_name.errors %}
                         <td class="input-append">

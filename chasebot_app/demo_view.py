@@ -114,53 +114,53 @@ def demo_continue(request, username, password, email, time_zone, company):
     c12=profile.company.contact_set.create(first_name = 'Kaylee', last_name = 'Ashton', gender = 'f', dear_name = '', address = '22 Short Street', city='Florida', postcode='32004', country=Country(code='NZ'), company_name='Grey Train co.', position='Director', phone='(954) 555-3295', email='kaylee@grey-train.com', birth_date='1988-05-25', contact_notes=_(u'Kaylee is very relaxed and keen in getting discounts. With some discount any deal might turn to be successful.'), marital_status=MaritalStatus.objects.get(pk=2), contacts_interests=_(u'Shopping'), spouse_first_name='Adam', spouses_interests=_(u'Hunting'), children_names='Eve', home_town='Sparta', important_client=2)
     c13=profile.company.contact_set.create(first_name = 'Tamara', last_name = 'Sierra', gender = 'f', dear_name = '', address = 'Calle fontanella 7', city='Madrid', postcode='28 950', country=Country(code='NZ'), company_name='Corrida co.', position='Sales Manager', phone='0625 555 9965', email='tamara@corrida.com', birth_date='1980-07-20', contact_notes=_(u'Tamara loves flaminco dancing. Asking about her progress in the class could open up opportunities.'), marital_status=MaritalStatus.objects.get(pk=2), contacts_interests=_(u'flamenco dancing, playing guitar'), spouse_first_name='Fernando', spouses_interests=_(u'Theater, Music events'), children_names='Luca, Roberto, Maria', home_town='Barcelona', important_client=3)
 
-    profile.company.salesitem_set.create(item_name = 'Hotel 3 Star')
-    hotel4 = profile.company.salesitem_set.create(item_name = 'Hotel 4 Star')
-    ticket = profile.company.salesitem_set.create(item_name = 'Flight Ticket')
-    car = profile.company.salesitem_set.create(item_name = 'Car Hire')
+    profile.company.products_set.create(item_name = 'Hotel 3 Star')
+    hotel4 = profile.company.products_set.create(item_name = 'Hotel 4 Star')
+    ticket = profile.company.products_set.create(item_name = 'Flight Ticket')
+    car = profile.company.products_set.create(item_name = 'Car Hire')
     
-    sandwitch = profile.company.salesitem_set.create(item_name = 'Sandwich')
-    juice = profile.company.salesitem_set.create(item_name = 'Orange juice')
-    cake = profile.company.salesitem_set.create(item_name = 'Cake')
+    sandwitch = profile.company.products_set.create(item_name = 'Sandwich')
+    juice = profile.company.products_set.create(item_name = 'Orange juice')
+    cake = profile.company.products_set.create(item_name = 'Cake')
     
-    shirts = profile.company.salesitem_set.create(item_name = '2 x Shirts')
-    ties = profile.company.salesitem_set.create(item_name = '2 x Ties')
+    shirts = profile.company.products_set.create(item_name = '2 x Shirts')
+    ties = profile.company.products_set.create(item_name = '2 x Ties')
     
-    co1 = profile.company.salesitem_set.create(item_name = '10 x Cotton Saw')
-    co2 = profile.company.salesitem_set.create(item_name = '120mm Cotton Mill')
-    co3 = profile.company.salesitem_set.create(item_name = 'Free Installation')
+    co1 = profile.company.products_set.create(item_name = '10 x Cotton Saw')
+    co2 = profile.company.products_set.create(item_name = '120mm Cotton Mill')
+    co3 = profile.company.products_set.create(item_name = 'Free Installation')
     
-    w1 = profile.company.salesitem_set.create(item_name = 'Web Site Development')
-    w2 = profile.company.salesitem_set.create(item_name = '24/7 Support')
-    w3 = profile.company.salesitem_set.create(item_name = 'Website Hosting')
+    w1 = profile.company.products_set.create(item_name = 'Web Site Development')
+    w2 = profile.company.products_set.create(item_name = '24/7 Support')
+    w3 = profile.company.products_set.create(item_name = 'Website Hosting')
     
     holiday = profile.company.dealtemplate_set.create(deal_name = _(u'Holiday package'), deal_description = _(u'This is a romantic holiday package for two weeks at the coast.'), currency = Currency.objects.get(pk=3), price = 1499, sales_term = SalesTerm.objects.get(pk=1), quantity = 1)
-    holiday.sales_item.add(hotel4)
-    holiday.sales_item.add(ticket)
-    holiday.sales_item.add(car)
+    holiday.product.add(hotel4)
+    holiday.product.add(ticket)
+    holiday.product.add(car)
     holiday.save()
     
     lunch = profile.company.dealtemplate_set.create(deal_name = _(u'Lunch Deal'), deal_description = _(u'This is a lunch deal template for interested food chains. We aim to sell 10 deal packages per customer.'), currency = Currency.objects.get(pk=1), price = 3.99, sales_term = SalesTerm.objects.get(pk=1), quantity = 10)
-    lunch.sales_item.add(sandwitch)
-    lunch.sales_item.add(juice)
-    lunch.sales_item.add(cake)
+    lunch.product.add(sandwitch)
+    lunch.product.add(juice)
+    lunch.product.add(cake)
     lunch.save()
     
     shirt = profile.company.dealtemplate_set.create(deal_name = _(u'Shirt Deal'), deal_description = _(u'A shirt/tie deal for the fall collection. We aim to sell two deal template per customer.'), currency = Currency.objects.get(pk=1), price = 39.99, sales_term = SalesTerm.objects.get(pk=1), quantity = 2)
-    shirt.sales_item.add(shirts)
-    shirt.sales_item.add(ties)    
+    shirt.product.add(shirts)
+    shirt.product.add(ties)    
     shirt.save()
     
     cotton = profile.company.dealtemplate_set.create(deal_name = _(u'Cotton Industrial Deal'), deal_description = _(u'Providing the basic cotton mill machinery for cotton farmers.'), currency = Currency.objects.get(pk=1), price = 4499.99, sales_term = SalesTerm.objects.get(pk=1), quantity = 1)
-    cotton.sales_item.add(co1)
-    cotton.sales_item.add(co2)
-    cotton.sales_item.add(co3)    
+    cotton.product.add(co1)
+    cotton.product.add(co2)
+    cotton.product.add(co3)    
     cotton.save()
     
     web = profile.company.dealtemplate_set.create(deal_name = _(u'Website Starter Deal'), deal_description = _(u'Developing a website, hosting the website and providing support in one deal.'), currency = Currency.objects.get(pk=2), price = 19.99, sales_term = SalesTerm.objects.get(pk=3), quantity = 1)
-    web.sales_item.add(w1)
-    web.sales_item.add(w2)
-    web.sales_item.add(w3)    
+    web.product.add(w1)
+    web.product.add(w2)
+    web.product.add(w3)    
     web.save()
     
     call1 = c1.conversation_set.create(conversation_datetime=get_user_local_datetime() - timedelta(days=7, hours=4), notes=_(u'%(name)s doesn\'t seem too keen on the new offer. Maybe a discount would be helpful.') % {'name' : 'John'})
@@ -179,8 +179,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = holiday.sales_term,
                         quantity = holiday.quantity                                                                    
                         )    
-    for item in holiday.sales_item.all():
-        deal1.sales_item.add(item)
+    for item in holiday.product.all():
+        deal1.product.add(item)
     deal1.save()
     
     call2 = c1.conversation_set.create(conversation_datetime=call1.conversation_datetime + timedelta(days=4, hours=3), notes=_(u'%(name)s would commit if there is a discount of 5%% on the deal.') % {'name' : 'John'})
@@ -199,8 +199,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = deal1.sales_term,
                         quantity = deal1.quantity                                                                    
                         )    
-    for item in deal1.sales_item.all():
-        deal2.sales_item.add(item)
+    for item in deal1.product.all():
+        deal2.product.add(item)
     deal2.save()
     
     call3 = c1.conversation_set.create(conversation_datetime=get_user_local_datetime(), notes=_(u"After another conversation, %(name)s has accepted the offer. It's a win.") % {'name' : 'John'})
@@ -219,8 +219,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = deal2.sales_term,
                         quantity = deal2.quantity                                                                    
                         )    
-    for item in deal2.sales_item.all():
-        deal3.sales_item.add(item)
+    for item in deal2.product.all():
+        deal3.product.add(item)
     deal3.save()
 
     call1 = c2.conversation_set.create(conversation_datetime=get_user_local_datetime() - timedelta(days=5, hours=3), notes=_(u'%(name)s looks for a cloud solution for her B2B business. I will try to see if our Website package might interest her.') % {'name' : 'Ashley' })
@@ -239,8 +239,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = web.sales_term,
                         quantity = web.quantity                                                                    
                         )    
-    for item in web.sales_item.all():
-        deal1.sales_item.add(item)
+    for item in web.product.all():
+        deal1.product.add(item)
     deal1.save()
     
     call2 = c2.conversation_set.create(conversation_datetime=call1.conversation_datetime + timedelta(days=2, hours=1), notes=_(u'%(name)s will consider the offer and needs some time to think about it.') % {'name' : 'Ashley'})
@@ -259,8 +259,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = deal1.sales_term,
                         quantity = deal1.quantity                                                                    
                         )
-    for item in deal1.sales_item.all():
-        deal2.sales_item.add(item)
+    for item in deal1.product.all():
+        deal2.product.add(item)
     deal2.save()
 
     call3 = c2.conversation_set.create(conversation_datetime=get_user_local_datetime(), notes=_(u'After another conversation, %(name)s doesn\'t seem to be interested any longer. Its a loss.') % {'name' : 'Ashley'})
@@ -279,8 +279,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = deal2.sales_term,
                         quantity = deal2.quantity                                                                    
                         )    
-    for item in deal2.sales_item.all():
-        deal3.sales_item.add(item)
+    for item in deal2.product.all():
+        deal3.product.add(item)
     deal3.save()
 
     call1 = c3.conversation_set.create(conversation_datetime=get_user_local_datetime() - timedelta(days=2, hours=1), notes=_(u'%(name)s is interested in purchasing 25 lunch deals for her food store.') % {'name' : 'Silvia'})
@@ -299,8 +299,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = lunch.sales_term,
                         quantity = lunch.quantity                                                                    
                         )    
-    for item in lunch.sales_item.all():
-        deal1.sales_item.add(item)
+    for item in lunch.product.all():
+        deal1.product.add(item)
     deal1.save()
     
     call2 = c3.conversation_set.create(conversation_datetime=get_user_local_datetime(), notes=_(u'Made some progress with the deal. Trying to convince %(name)s of the lunch deal quality. Deal still in progress...') % {'name' : 'Silvia'})
@@ -319,8 +319,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = deal1.sales_term,
                         quantity = deal1.quantity                                                                    
                         )
-    for item in deal1.sales_item.all():
-        deal2.sales_item.add(item)
+    for item in deal1.product.all():
+        deal2.product.add(item)
     deal2.save()
     
     event = c3.event_set.create(
@@ -350,8 +350,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = shirt.sales_term,
                         quantity = shirt.quantity                                                                    
                         )    
-    for item in shirt.sales_item.all():
-        deal1.sales_item.add(item)
+    for item in shirt.product.all():
+        deal1.product.add(item)
     deal1.save()
     
     call2 = c4.conversation_set.create(conversation_datetime=call1.conversation_datetime + timedelta(days=4, hours=1), notes=_(u'I offered him a discount of 5%%. %(name)s will consider the offer and needs some time to think about it.') % {'name' : 'Michael'})
@@ -370,8 +370,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = deal1.sales_term,
                         quantity = deal1.quantity                                                                    
                         )
-    for item in deal1.sales_item.all():
-        deal2.sales_item.add(item)
+    for item in deal1.product.all():
+        deal2.product.add(item)
     deal2.save()
 
     call3 = c4.conversation_set.create(conversation_datetime=get_user_local_datetime(), notes=_(u'%(name)s is happy with discount and would like to purchase ten packages.') % {'name' : 'Michael'})
@@ -390,8 +390,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = deal2.sales_term,
                         quantity = deal2.quantity                                                                    
                         )    
-    for item in deal2.sales_item.all():
-        deal3.sales_item.add(item)
+    for item in deal2.product.all():
+        deal3.product.add(item)
     deal3.save() 
 
 
@@ -411,8 +411,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = cotton.sales_term,
                         quantity = cotton.quantity                                                                    
                         )    
-    for item in cotton.sales_item.all():
-        deal1.sales_item.add(item)
+    for item in cotton.product.all():
+        deal1.product.add(item)
     deal1.save()
     
     event = c5.event_set.create(
@@ -442,8 +442,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = deal1.sales_term,
                         quantity = deal1.quantity                                                                    
                         )
-    deal2.sales_item.add(co2)
-    deal2.sales_item.add(co3)    
+    deal2.product.add(co2)
+    deal2.product.add(co3)    
     deal2.save()
 
 #    call3 = c5.conversation_set.create(conversation_datetime=call2.conversation_datetime + timedelta(days=3, hours=2), notes=_(u"%(name)s is happy with the new deal and price. It's a win.") % {'name' : 'Harry'})
@@ -462,8 +462,8 @@ def demo_continue(request, username, password, email, time_zone, company):
 #                        sales_term = deal2.sales_term,
 #                        quantity = deal2.quantity                                                                    
 #                        )    
-#    for item in deal2.sales_item.all():
-#        deal3.sales_item.add(item)
+#    for item in deal2.product.all():
+#        deal3.product.add(item)
 #    deal3.save()
     
     call1 = c6.conversation_set.create(conversation_datetime=get_user_local_datetime() - timedelta(days=5, hours=3), notes=_(u'%(name)s looks for a cloud solution for her B2B business. I will try to see if our Website package might interest her.') % {'name' : 'Rosa' })
@@ -482,8 +482,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = web.sales_term,
                         quantity = web.quantity
                         )    
-    for item in web.sales_item.all():
-        deal1.sales_item.add(item)
+    for item in web.product.all():
+        deal1.product.add(item)
     deal1.save()
     
     call2 = c6.conversation_set.create(conversation_datetime=call1.conversation_datetime + timedelta(days=2, hours=1), notes=_(u'%(name)s will consider the offer and needs some time to think about it. ') % {'name' : 'Rosa'})
@@ -502,8 +502,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = deal1.sales_term,
                         quantity = deal1.quantity                                                                    
                         )
-    for item in deal1.sales_item.all():
-        deal2.sales_item.add(item)
+    for item in deal1.product.all():
+        deal2.product.add(item)
     deal2.save()
 
     call3 = c6.conversation_set.create(conversation_datetime=get_user_local_datetime(), notes=_(u"After another conversation, %(name)s seems to be interested. It's a win") % {'name' : 'Rosa'})
@@ -522,8 +522,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = deal2.sales_term,
                         quantity = deal2.quantity                                                                    
                         )    
-    for item in deal2.sales_item.all():
-        deal3.sales_item.add(item)
+    for item in deal2.product.all():
+        deal3.product.add(item)
     deal3.save()
 
     call1 = c7.conversation_set.create(conversation_datetime=get_user_local_datetime() - timedelta(days=7, hours=4), notes=_(u'%(name)s doesn\'t seem too keen on the new offer. Maybe a discount would be helpful.') % {'name' : 'Hugo'})
@@ -542,8 +542,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = holiday.sales_term,
                         quantity = holiday.quantity                                                                    
                         )    
-    for item in holiday.sales_item.all():
-        deal1.sales_item.add(item)
+    for item in holiday.product.all():
+        deal1.product.add(item)
     deal1.save()
     
     call2 = c7.conversation_set.create(conversation_datetime=call1.conversation_datetime + timedelta(days=4, hours=3), notes=_(u'%(name)s would commit if there is a discount of 5%% on the deal.') % {'name' : 'Hugo'})
@@ -562,8 +562,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = deal1.sales_term,
                         quantity = deal1.quantity                                                                    
                         )    
-    for item in deal1.sales_item.all():
-        deal2.sales_item.add(item)
+    for item in deal1.product.all():
+        deal2.product.add(item)
     deal2.save()
     
     call3 = c7.conversation_set.create(conversation_datetime=get_user_local_datetime(), notes=_(u"After another conversation, %(name)s has accepted the offer. It's a win.") % {'name' : 'Hugo'})
@@ -582,8 +582,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = deal2.sales_term,
                         quantity = deal2.quantity                                                                    
                         )    
-    for item in deal2.sales_item.all():
-        deal3.sales_item.add(item)
+    for item in deal2.product.all():
+        deal3.product.add(item)
     deal3.save()
 
     call1 = c8.conversation_set.create(conversation_datetime=get_user_local_datetime() - timedelta(days=2, hours=1), notes=_(u'%(name)s is interested in purchasing 25 lunch deals for her food store.') % {'name' : 'Homer'})
@@ -602,8 +602,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = lunch.sales_term,
                         quantity = lunch.quantity                                                                    
                         )    
-    for item in lunch.sales_item.all():
-        deal1.sales_item.add(item)
+    for item in lunch.product.all():
+        deal1.product.add(item)
     deal1.save()
     
     call2 = c8.conversation_set.create(conversation_datetime=call1.conversation_datetime + timedelta(days=1, hours=1), notes=_(u'Made some progress with the deal. Trying to convince %(name)s of the lunch deal quality. Deal still in progress...') % {'name' : 'Homer'})
@@ -622,8 +622,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = deal1.sales_term,
                         quantity = deal1.quantity                                                                    
                         )
-    for item in deal1.sales_item.all():
-        deal2.sales_item.add(item)
+    for item in deal1.product.all():
+        deal2.product.add(item)
     deal2.save()
     
     call3 = c8.conversation_set.create(conversation_datetime=get_user_local_datetime(), notes=_(u"%(name)s is happy with the price. It's a win.") % {'name' : 'Homer'})
@@ -642,8 +642,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = deal2.sales_term,
                         quantity = deal2.quantity                                                                    
                         )
-    for item in deal2.sales_item.all():
-        deal3.sales_item.add(item)
+    for item in deal2.product.all():
+        deal3.product.add(item)
     deal3.save()
     
     call1 = c9.conversation_set.create(conversation_datetime=get_user_local_datetime() - timedelta(days=3, hours=2), notes=_(u'%(name)s is investing into a cotton mill factory and might be a potential client.') % {'name' : 'William'})
@@ -662,8 +662,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = cotton.sales_term,
                         quantity = cotton.quantity                                                                    
                         )    
-    for item in cotton.sales_item.all():
-        deal1.sales_item.add(item)
+    for item in cotton.product.all():
+        deal1.product.add(item)
     deal1.save()
     
     event = c9.event_set.create(
@@ -693,8 +693,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = deal1.sales_term,
                         quantity = deal1.quantity                                                                    
                         )
-    deal2.sales_item.add(co2)
-    deal2.sales_item.add(co3)    
+    deal2.product.add(co2)
+    deal2.product.add(co3)    
     deal2.save()
 
 #    call3 = c9.conversation_set.create(conversation_datetime=call2.conversation_datetime + timedelta(days=3, hours=2), notes=_(u"%(name)s is happy with the new deal and price. It's a win.") % {'name' : 'William'})
@@ -713,8 +713,8 @@ def demo_continue(request, username, password, email, time_zone, company):
 #                        sales_term = deal2.sales_term,
 #                        quantity = deal2.quantity                                                                    
 #                        )    
-#    for item in deal2.sales_item.all():
-#        deal3.sales_item.add(item)
+#    for item in deal2.product.all():
+#        deal3.product.add(item)
 #    deal3.save()
     
     call1 = c10.conversation_set.create(conversation_datetime=get_user_local_datetime() - timedelta(days=5, hours=3), notes=_(u'%(name)s looks for a cloud solution for her B2B business. I will try to see if our Website package might interest her.') % {'name' : 'Matthew' })
@@ -733,8 +733,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = web.sales_term,
                         quantity = web.quantity                                                                    
                         )    
-    for item in web.sales_item.all():
-        deal1.sales_item.add(item)
+    for item in web.product.all():
+        deal1.product.add(item)
     deal1.save()
     
     call2 = c10.conversation_set.create(conversation_datetime=call1.conversation_datetime + timedelta(days=2, hours=1), notes=_(u'%(name)s will consider the offer and needs some time to think about it.') % {'name' : 'Matthew'})
@@ -753,8 +753,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = deal1.sales_term,
                         quantity = deal1.quantity                                                                    
                         )
-    for item in deal1.sales_item.all():
-        deal2.sales_item.add(item)
+    for item in deal1.product.all():
+        deal2.product.add(item)
     deal2.save()
 
     call3 = c10.conversation_set.create(conversation_datetime=get_user_local_datetime(), notes=_(u'After another conversation, %(name)s doesn\'t seem to be interested any longer. Its a loss.') % {'name' : 'Matthew'})
@@ -773,8 +773,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = deal2.sales_term,
                         quantity = deal2.quantity                                                                    
                         )    
-    for item in deal2.sales_item.all():
-        deal3.sales_item.add(item)
+    for item in deal2.product.all():
+        deal3.product.add(item)
     deal3.save()
     
     call1 = c11.conversation_set.create(conversation_datetime=get_user_local_datetime() - timedelta(days=8, hours=3), notes=_(u'%(name)s has a new fashion shop and might be interested in our quality shirts and ties as a package.') % {'name' : 'Jonas'})
@@ -793,8 +793,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = shirt.sales_term,
                         quantity = shirt.quantity                                                                    
                         )    
-    for item in shirt.sales_item.all():
-        deal1.sales_item.add(item)
+    for item in shirt.product.all():
+        deal1.product.add(item)
     deal1.save()
     
     call2 = c11.conversation_set.create(conversation_datetime=call1.conversation_datetime + timedelta(days=4, hours=1), notes=_(u'I offered him a discount of 5%%. %(name)s will consider the offer and needs some time to think about it.') % {'name' : 'Michael'})
@@ -813,8 +813,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = deal1.sales_term,
                         quantity = deal1.quantity                                                                    
                         )
-    for item in deal1.sales_item.all():
-        deal2.sales_item.add(item)
+    for item in deal1.product.all():
+        deal2.product.add(item)
     deal2.save()
 
     call3 = c11.conversation_set.create(conversation_datetime=get_user_local_datetime(), notes=_(u'%(name)s is happy with discount and would like to purchase ten packages.') % {'name' : 'Michael'})
@@ -833,8 +833,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = deal2.sales_term,
                         quantity = deal2.quantity                                                                    
                         )    
-    for item in deal2.sales_item.all():
-        deal3.sales_item.add(item)
+    for item in deal2.product.all():
+        deal3.product.add(item)
     deal3.save()
     
     call1 = c12.conversation_set.create(conversation_datetime=get_user_local_datetime() - timedelta(days=7, hours=4), notes=_(u'%(name)s doesn\'t seem too keen on the new offer. Maybe a discount would be helpful.') % {'name' : 'Kaylee'})
@@ -853,8 +853,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = holiday.sales_term,
                         quantity = holiday.quantity                                                                    
                         )    
-    for item in holiday.sales_item.all():
-        deal1.sales_item.add(item)
+    for item in holiday.product.all():
+        deal1.product.add(item)
     deal1.save()
     
     event = c12.event_set.create(
@@ -884,8 +884,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = deal1.sales_term,
                         quantity = deal1.quantity                                                                    
                         )    
-    for item in deal1.sales_item.all():
-        deal2.sales_item.add(item)
+    for item in deal1.product.all():
+        deal2.product.add(item)
     deal2.save()
     
 #    call3 = c12.conversation_set.create(conversation_datetime=call2.get_user_local_datetime(), notes=_(u"After another conversation, %(name)s has accepted the offer. It's a win.") % {'name' : 'Kaylee'})
@@ -904,8 +904,8 @@ def demo_continue(request, username, password, email, time_zone, company):
 #                        sales_term = deal2.sales_term,
 #                        quantity = deal2.quantity                                                                    
 #                        )    
-#    for item in deal2.sales_item.all():
-#        deal3.sales_item.add(item)
+#    for item in deal2.product.all():
+#        deal3.product.add(item)
 #    deal3.save()
     
     call1 = c13.conversation_set.create(conversation_datetime=get_user_local_datetime() - timedelta(days=8, hours=3), notes=_(u'%(name)s has a new fashion shop and might be interested in our quality shirts and ties as a package.') % {'name' : 'Tamara'})
@@ -924,8 +924,8 @@ def demo_continue(request, username, password, email, time_zone, company):
                         sales_term = shirt.sales_term,
                         quantity = shirt.quantity                                                                    
                         )    
-    for item in shirt.sales_item.all():
-        deal1.sales_item.add(item)
+    for item in shirt.product.all():
+        deal1.product.add(item)
     deal1.save()
     
     event = c13.event_set.create(
@@ -955,8 +955,8 @@ def demo_continue(request, username, password, email, time_zone, company):
 #                        sales_term = deal1.sales_term,
 #                        quantity = deal1.quantity                                                                    
 #                        )
-#    for item in deal1.sales_item.all():
-#        deal2.sales_item.add(item)
+#    for item in deal1.product.all():
+#        deal2.product.add(item)
 #    deal2.save()
 
 #    call3 = c13.conversation_set.create(conversation_datetime=get_user_local_datetime(), notes=_(u'%(name)s is happy with discount and would like to purchase ten packages.') % {'name' : 'Tamara'})
@@ -975,8 +975,8 @@ def demo_continue(request, username, password, email, time_zone, company):
 #                        sales_term = deal2.sales_term,
 #                        quantity = deal2.quantity                                                                    
 #                        )    
-#    for item in deal2.sales_item.all():
-#        deal3.sales_item.add(item)
+#    for item in deal2.product.all():
+#        deal3.product.add(item)
 #    deal3.save()
 
     #messages.success(request, _(u'Username') + ': ' + username + ' - ' + _(u'Password') + ': ' + password + ' ' + _(u'please write down your username and password.'))

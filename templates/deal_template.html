@@ -37,10 +37,10 @@
 			            <tbody>
 			            	<tr>
 			                    <td>          
-			                    	{% if  form.sales_item.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.sales_item.label}}: *</div>{%else%}{{form.sales_item.label}}:{% endif %}              
+			                    	{% if  form.product.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{form.product.label}}: *</div>{%else%}{{form.product.label}}:{% endif %}              
 			                    </td>
-			                    <td id="deal_template_sales_item">
-			                    	{% include 'deal_template_sales_item.html' %}
+			                    <td id="deal_template_product">
+			                    	{% include 'deal_template_product.html' %}
 			                    </td>
 			                </tr>		                
 			                <tr>
@@ -89,7 +89,7 @@
      	</div>
 	</div>    
 </form>
-<div class="modal hide fade" id="salesitems_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">				
-	{% include 'sales_items_modal.html' %}
+<div class="modal hide fade" id="products_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">				
+	{% include 'products_modal.html' %}
 </div>		
 

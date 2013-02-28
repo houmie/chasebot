@@ -26,7 +26,7 @@
 						{% if  fs.deal_description.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.deal_description.label}}: *</div>{%else%}{{fs.deal_description.label}}:{% endif %}              
 	                </th>
 	                <th>
-	                	{% if  fs.sales_item.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.sales_item.label}}: *</div>{%else%}{{fs.sales_item.label}}:{% endif %}
+	                	{% if  fs.product.field.required %}<div class="cb_inline_block" rel="tooltip" title="Required Field">{{fs.product.label}}: *</div>{%else%}{{fs.product.label}}:{% endif %}
 	                </th>
 	            </tr>					                                      
 			</thead>									
@@ -45,7 +45,7 @@
 	                	{{fs.deal_description}}				                					                    	
 	                </td>	
 	                <td>
-	                	{{fs.sales_item}}
+	                	{{fs.product}}
 	                	<div class="hide field field_error"></div>	
 	                </td>					                    					                    
 	            </tr>					                    

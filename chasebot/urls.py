@@ -3,17 +3,17 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib import admin
 from django.views.generic.simple import direct_to_template
 from chasebot_app.views import logout_page, contact_delete, conversation_display, \
-     conversation_delete, sales_item_add_edit, sales_item_display, sales_item_delete, deal_template_display, deal_template_add_edit, deal_template_delete,\
-     charts_display, conversation_add_edit, single_sales_item_display, set_timezone,\
+     conversation_delete, product_add_edit, product_display, product_delete, deal_template_display, deal_template_add_edit, deal_template_delete,\
+     charts_display, conversation_add_edit, single_product_display, set_timezone,\
      contacts_display, register_page, contact_add_edit,\
-    sales_item_autocomplete, contacts_autocomplete, conversations_autocomplete,\
+    product_autocomplete, contacts_autocomplete, conversations_autocomplete,\
     deal_autocomplete, get_deal_template, get_opendeal, colleague_invite,\
     colleague_accept, single_conversation_display, \
     index_display, open_deals_display,\
     open_deal_conversations_display, event_add_edit, event_delete,\
     negotiate_open_deal, sidebar_contacts, sidebar_deal_templates,\
     sidebar_open_deals, opendeal_autocomplete, sidebar_conversations,\
-    events_display, event_tick, deal_template_sales_item_display, sidebar_todo,\
+    events_display, event_tick, deal_template_product_display, sidebar_todo,\
     feedback, add_new_deal, add_new_deal_from_template
 from chasebot_app.demo_view import demo
 
@@ -71,12 +71,12 @@ urlpatterns = patterns('',
     (r'^deal_template/(?P<deal_template_id>\d+)/$', get_deal_template),
     (r'^open_deal/(?P<deal_id>\d+)/(?P<contact_id>\d+)/$', get_opendeal),
         
-    (r'^sales_item/add/$', sales_item_add_edit),    
-    (r'^sales_item/edit/(?P<sales_item_id>\d+)/$', sales_item_add_edit),
-    (r'^sales_item/(?P<sales_item_id>\d+)/$', single_sales_item_display),
-    (r'^sales_items/deal_template/$', deal_template_sales_item_display),    
-    (r'^sales_items/$', sales_item_display),
-    (r'^sales_item/delete/(?P<sales_item_id>\d+)/$', sales_item_delete),
+    (r'^product/add/$', product_add_edit),    
+    (r'^product/edit/(?P<product_id>\d+)/$', product_add_edit),
+    (r'^product/(?P<product_id>\d+)/$', single_product_display),
+    (r'^products/deal_template/$', deal_template_product_display),    
+    (r'^products/$', product_display),
+    (r'^product/delete/(?P<product_id>\d+)/$', product_delete),
     
     (r'^deal_template/add/$', deal_template_add_edit),    
     (r'^deal_template/edit/(?P<deal_id>\d+)/$', deal_template_add_edit),
@@ -86,7 +86,7 @@ urlpatterns = patterns('',
     
     (r'^charts/contact/(?P<contact_id>\d+)/$', charts_display),
 
-    (r'^autocomplete/sales_items/$', sales_item_autocomplete),
+    (r'^autocomplete/products/$', product_autocomplete),
     (r'^autocomplete/contacts/$', contacts_autocomplete),
     (r'^autocomplete/conversations/(?P<contact_id>\d+)/$', conversations_autocomplete),   
     (r'^autocomplete/deal_template/$', deal_autocomplete),

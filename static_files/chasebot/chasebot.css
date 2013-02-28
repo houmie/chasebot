@@ -15,7 +15,7 @@ body {
 	width: 1em;
 }
 
-.sales_item_add_save_tr th, .sales_item_add_save_tr td {
+.product_add_save_tr th, .product_add_save_tr td {
 	border-top: 0;
 }
 

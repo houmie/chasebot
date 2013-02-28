@@ -8,7 +8,7 @@ from django import forms
 import re
 from django.contrib.auth.models import User
 from django.forms import ModelForm
-from chasebot_app.models import Contact, MaritalStatus, Conversation, SalesItem, DealTemplate, SalesTerm, Deal,\
+from chasebot_app.models import Contact, MaritalStatus, Conversation, Products, DealTemplate, SalesTerm, Deal,\
     Invitation, Event, DealStatus
 from django.forms.models import BaseModelFormSet
 from django.utils.translation import ugettext_lazy as _
@@ -258,10 +258,10 @@ class FilterOpenDealForm(Form):
 class FilterDealTemplateForm(Form):
     def __init__(self, company, *args, **kwargs):
         super(FilterDealTemplateForm, self).__init__(*args, **kwargs)
-        self.fields['sales_item'].queryset = SalesItem.objects.filter(company=company)
+        self.fields['product'].queryset = Products.objects.filter(company=company)
             
     deal_name           = forms.CharField(widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_deals_deal_name', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=40)    
-    sales_item          = forms.ModelMultipleChoiceField(queryset='', widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_deals_sales_item', 'autocomplete': 'off', 'data-provide': 'typeahead'}))    
+    product          = forms.ModelMultipleChoiceField(queryset='', widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_deals_product', 'autocomplete': 'off', 'data-provide': 'typeahead'}))    
     price               = forms.DecimalField(widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_deals_price', 'autocomplete': 'off', 'data-provide': 'typeahead'}))
     sales_term          = forms.ModelChoiceField(queryset=SalesTerm.objects.all(), widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_deals_sales_term', 'autocomplete': 'off', 'data-provide': 'typeahead'}))
     quantity            = forms.IntegerField(widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_deals_quantity', 'autocomplete': 'off', 'data-provide': 'typeahead'})) 
@@ -271,7 +271,7 @@ class FilterDealTemplateForm(Form):
 class DealTemplateForm(ModelForm):    
     def __init__(self, *args, **kwargs):
         super(DealTemplateForm, self).__init__(*args, **kwargs)
-        self.fields['sales_item'].queryset = SalesItem.objects.filter(company=self.instance.company)                
+        self.fields['product'].queryset = Products.objects.filter(company=self.instance.company)                
         self.fields['sales_term'].widget.attrs['class'] = 'mandatory'        
         self.fields['currency'].widget.attrs['class'] = 'mandatory'
     
@@ -289,7 +289,7 @@ class DealTemplateForm(ModelForm):
         widgets = {
                     'deal_name': forms.TextInput(attrs={'placeholder': _(u'Name the deal'), 'class': 'placeholder_fix_css input_mandatory', 'autocomplete': 'off'}),
                     'deal_description': forms.Textarea(attrs={'placeholder': _(u'Describe the deal')}),
-                    'sales_item': forms.SelectMultiple(attrs={'data-placeholder': _(u'What are you selling?'), 'class': 'sales_item multi_select_mandatory'}),                    
+                    'product': forms.SelectMultiple(attrs={'data-placeholder': _(u'What are you selling?'), 'class': 'product multi_select_mandatory'}),                    
                     'price': forms.TextInput(attrs={'placeholder': _(u'How much is proposed?'), 'class': 'placeholder_fix_css price', 'autocomplete': 'off'}),                   
                     'quantity': forms.TextInput(attrs={'placeholder': _(u'How many items?'), 'class': 'placeholder_fix_css quantity', 'autocomplete': 'off'}),                                                  
                    }
@@ -303,7 +303,7 @@ class DealForm(ModelForm):
         self.fields['price'].widget.attrs['class'] = 'boxes_7em price'
         self.fields['quantity'].widget.attrs['class'] = 'boxes_7em quantity'
         self.fields['sales_term'].widget.attrs['class'] = 'boxes_8em mandatory'
-        self.fields['sales_item'].widget.attrs['class'] = 'multi_select_mandatory'
+        self.fields['product'].widget.attrs['class'] = 'multi_select_mandatory'
         self.fields['currency'].widget.attrs['class'] = 'boxes_8em mandatory'
 
         self.fields['deal_instance_name'].widget.attrs['placeholder'] = _(u'Define an deal name')
@@ -318,7 +318,7 @@ class DealForm(ModelForm):
     class Meta:
         model = Deal
         fields = {'deal_template', 'deal_template_name', 'deal_instance_name', 'status', 
-                  'deal_description', 'sales_item', 'price', 'currency', 'sales_term', 'quantity', 'total_value'}
+                  'deal_description', 'product', 'price', 'currency', 'sales_term', 'quantity', 'total_value'}
         
 class DealNegotiateForm(DealForm):
     call_notes = forms.CharField(widget = forms.Textarea(attrs={'placeholder': _(u'What did you discuss with the customer?'), 'class' : 'cb_notes_maxwidth textarea_mandatory'}))
@@ -339,15 +339,15 @@ class AddNewDealForm(DealNegotiateForm):
         self.fields['addnewdeal_contact'].widget.attrs['class'] = 'mandatory'
 
 
-class FilterSalesItemForm(Form):
+class FilterProductsForm(Form):
     def __init__(self, *args, **kwargs):
-        super(FilterSalesItemForm, self).__init__(*args, **kwargs)
+        super(FilterProductsForm, self).__init__(*args, **kwargs)
     
-    item_name    = forms.CharField(widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query filter_add_button typeahead_sales_items', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=40)
+    item_name    = forms.CharField(widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query filter_add_button typeahead_products', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=40)
 
-class SalesItemForm(ModelForm):
+class ProductsForm(ModelForm):
     class Meta:
-        model = SalesItem
+        model = Products
         exclude = ('company')
         widgets = {
                    'item_name': forms.TextInput(attrs={'autocomplete': 'off', 'class':'item_name'}),

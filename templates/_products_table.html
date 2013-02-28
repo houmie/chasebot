@@ -4,9 +4,9 @@
         <tr class="well cb_well-small">
             <th class="first_th_minwidth">
             </th>            
-            <th id="sales_item_filter">
+            <th id="product_filter">
             	
-            	<form action="sales_items/" method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
+            	<form action="products/" method="get" class="form-search cb_zero_margin form-filter-ajax">	    				
     				<div class="input-append filter-container">
     				{{filter_form.item_name}}<div class="close filter-close">&times;</div><button type="submit" class="btn"><i class='icon-filter'> </i></button>
     				</div>	   <br> 
@@ -16,6 +16,6 @@
         </tr>
     </thead>
     <tbody id="search_result">
-    	{% include 'sales_item_list.html' %}        	
+    	{% include 'product_list.html' %}        	
     </tbody>
 </table>

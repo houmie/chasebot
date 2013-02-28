@@ -8,7 +8,7 @@ Replace this with more appropriate tests for your application.
 from django.test import TestCase
 from django.contrib.auth.models import User
 from chasebot_app.models import Company, UserProfile, Contact, \
-    SalesItem, SalesTerm, Conversation, DealTemplate, Deal, DealStatus
+    Products, SalesTerm, Conversation, DealTemplate, Deal, DealStatus
 import datetime
 import uuid
 from django.utils.timezone import utc
@@ -29,14 +29,14 @@ def setup_contacts(self):
         self.contact2  = Contact.objects.create(last_name='last_name2', company=self.company2)        
 
 #Fixture for creating a sales item per user 
-def setup_sales_items(self):
-        self.sales_item1 = SalesItem.objects.create(item_name = 'item_1',  company = self.company1)
-        self.sales_item2 = SalesItem.objects.create(item_name = 'item_2',  company = self.company2)        
+def setup_products(self):
+        self.product1 = Products.objects.create(item_name = 'item_1',  company = self.company1)
+        self.product2 = Products.objects.create(item_name = 'item_2',  company = self.company2)        
 
 #Fixture for creating a deal_template item per company 
 def setup_DealTemplate(self):
-        self.deal_template1 = DealTemplate.objects.create(company=self.company1, deal_name='deal_name_1', sales_item=self.sales_item1, price=1, sales_term=self.sales_term, quantity=1)
-        self.deal_template2 = DealTemplate.objects.create(company=self.company2, deal_name='deal_name_2', sales_item=self.sales_item2, price=2, sales_term=self.sales_term, quantity=2)
+        self.deal_template1 = DealTemplate.objects.create(company=self.company1, deal_name='deal_name_1', product=self.product1, price=1, sales_term=self.sales_term, quantity=1)
+        self.deal_template2 = DealTemplate.objects.create(company=self.company2, deal_name='deal_name_2', product=self.product2, price=2, sales_term=self.sales_term, quantity=2)
 
 #Fixture for creating a deal item per company 
 def setup_deal(self):
@@ -70,16 +70,16 @@ class ContactModelTest(TestCase):
         self.assertEqual(lst[1].last_name, 'last_name1b', 'Expected lastname1b, but got %s' % lst[1].last_name)
         
 #Testing the ownership of the sales items belonging to a company
-class SalesItemModelTest(TestCase):
+class ProductsModelTest(TestCase):
     def setUp(self):
         setup_contacts(self)
-        setup_sales_items(self)
+        setup_products(self)
         
-    def test_get_sales_item_for_company(self):        
+    def test_get_product_for_company(self):        
         user1 = User.objects.get(username='username1')
         profile1 = user1.get_profile()
-        sales_items = profile1.company.salesitem_set.all()   
-        lst = list(sales_items)     
+        products = profile1.company.Products_set.all()   
+        lst = list(products)     
         self.assertEqual(len(lst), 1, 'Expected one sales item for this company, but got %s' % len(lst))
         self.assertEqual(lst[0].item_name, 'item_1', 'Expected item_1, but got %s' % lst[0].item_name)
         
@@ -89,7 +89,7 @@ class SalesItemModelTest(TestCase):
 class DealTemplateModelTest(TestCase):
     def setUp(self):
         setup_contacts(self)
-        setup_sales_items(self)        
+        setup_products(self)        
         setup_sales_term(self)        
         setup_DealTemplate(self)
         
@@ -122,7 +122,7 @@ class DealModelTest(TestCase):
     def setUp(self):
         setup_contacts(self)
         setup_calls(self)
-        setup_sales_items(self)        
+        setup_products(self)        
         setup_sales_term(self)        
         setup_DealTemplate(self)
         setup_deal(self)

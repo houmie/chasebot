@@ -1,5 +1,5 @@
 /*jslint plusplus: true, browser: true, devel: true */
-/*global $, jQuery, gettext, Modernizr, BigDecimal, BigInteger, RoundingMode, confirm, add_deal_to_formset, add_deal_to_formset, row_edit_ajax, reload_edit_save_cancel_buttons, rebind_conversations, rebind_sales_item, rebind_events, rebind_open_deals, rebind_deal_templates, bind_main_tabs, rebind_contacts*/
+/*global $, jQuery, gettext, Modernizr, BigDecimal, BigInteger, RoundingMode, confirm, add_deal_to_formset, add_deal_to_formset, row_edit_ajax, reload_edit_save_cancel_buttons, rebind_conversations, rebind_product, rebind_events, rebind_open_deals, rebind_deal_templates, bind_main_tabs, rebind_contacts*/
 
 var isVisible = false;
 var clickedAway = false;
@@ -135,7 +135,7 @@ function rebind_attach_deals(parent, row) {
     // Attention: Do NOT chosenify the extra-deal form, or it would break.  
     total = $(row).find('#id_deals-TOTAL_FORMS').val();
     for (i = 0; i <= total; i++) {
-        $(parent).find('#id_deals-' + i + '-sales_item').chosen({no_results_text: gettext('No results match')});
+        $(parent).find('#id_deals-' + i + '-product').chosen({no_results_text: gettext('No results match')});
         a = $(parent).find('#id_deals-' + i +  '-price').val();
         b = $(parent).find('#id_deals-' + i +  '-quantity').val();
         if (a && b) {
@@ -358,10 +358,10 @@ function fill_emptyX_with_predefined_or_existing_data(selected_id, type, empty_X
 
             //m2m needs special treatment with arrays
             vals = [];
-            for (i = 0; i <= data[0].fields.sales_item.length; i++) {
-                vals.push(data[0].fields.sales_item[i]);
+            for (i = 0; i <= data[0].fields.product.length; i++) {
+                vals.push(data[0].fields.product[i]);
             }
-            empty_X.find('#id_deals-' + total + '-sales_item').val(vals);
+            empty_X.find('#id_deals-' + total + '-product').val(vals);
 
             if (contact_id) {
                 //Open deal                
@@ -684,7 +684,7 @@ function filter_rows(event) {
                 values = value.split(',');
                 $(values).each(function (i, v) {
                     if (v.trim() !== '') {
-                        //Put each paramater in its own keyword .e.g. ?ajax&sales_item=t3&sales_item=t1
+                        //Put each paramater in its own keyword .e.g. ?ajax&product=t3&product=t1
                         url = url + '&' + keyword + '=' + v.trim();
                     }
                 });
@@ -760,10 +760,10 @@ function row_edit_save_ajax(event) {
             row.remove();
             rebind_edit_delete('#search_result', function () {
                 rebind_conversations();
-                rebind_sales_item(source);
+                rebind_product(source);
             });
             rebind_conversations();
-            rebind_sales_item(source);
+            rebind_product(source);
             if (isNewConversation) {
                 $('#new_conversation_button').button('toggle');
             }
@@ -838,7 +838,7 @@ function row_edit_ajax(event) {
     var source, url, row, ths;
     ths = event.currentTarget;
     source = event.data.source;
-    // e.g. url = '/sales_item/edit/8' 
+    // e.g. url = '/product/edit/8' 
     url = $(ths).attr("href") + "/";
     //e.g. get whole row to be replaced with editing fields
     row = $(ths).closest('tr');
@@ -849,7 +849,7 @@ function row_edit_ajax(event) {
     });
 }
 
-function row_add_save_sales_item(event) {
+function row_add_save_product(event) {
     "use strict";
     event.preventDefault();
     var source, url, row, data;
@@ -864,12 +864,12 @@ function row_add_save_sales_item(event) {
         if ($('#validation_error_ajax', result).text() === 'True') {
             row.empty();
             row.append(result);
-            rebind_sales_item(source);
+            rebind_product(source);
         } else {
             //if there is no error then insert the added row before the current add-button row. (last row)          
             $(source).find('#search_result').empty();
             $(source).find('#search_result').append(result);
-            rebind_sales_item(source);
+            rebind_product(source);
             $(".item_name").val('');
         }
     });
@@ -904,9 +904,9 @@ function autocomplete(query, process, path, fieldname, contact_id) {
 
 //The average typeahead function passes in two parameters. First one is the category (which defines the related queryset) 
 //and the second is the actual field to filter.
-function typeahead_sales_items(query, process) {
+function typeahead_products(query, process) {
     "use strict";
-    autocomplete(query, process, 'sales_items', 'item_name', '');
+    autocomplete(query, process, 'products', 'item_name', '');
 }
 
 function typeahead_contacts_last_name(query, process) {
@@ -950,9 +950,9 @@ function typeahead_deals_deal_name(query, process) {
     autocomplete(query, process, 'deal_template', 'deal_name', '');
 }
 
-function typeahead_deals_sales_item(query, process) {
+function typeahead_deals_product(query, process) {
     "use strict";
-    autocomplete(query, process, 'deal_template', 'sales_item', '');
+    autocomplete(query, process, 'deal_template', 'product', '');
 }
 
 function typeahead_deals_price(query, process) {
@@ -1242,7 +1242,7 @@ function deal_submit(url, form, modal) {
         if ($('#validation_error_ajax', result).text() === 'True') {
             form.empty();
             form.append(result);
-            chosenify_field('#id_sales_item', '#deal_modal_body');
+            chosenify_field('#id_product', '#deal_modal_body');
             datepicker_reload('#deal_modal_body', false);
             calc_total_value();
         } else {
@@ -1268,7 +1268,7 @@ function negotiate_deal(event) {
         show_modal('#deal_modal');
         $(this).get(0).setAttribute("action", url);
         datepicker_reload('#deal_modal_body', false);
-        chosenify_field('#id_sales_item', '#deal_modal_body');
+        chosenify_field('#id_product', '#deal_modal_body');
         calc_total_value();
         $('#deal_modal').find('#modal_h3').text(gettext('Negotiate Deal'));
         $('#modal_icon').html('<i class="icon-pencil icon-large"></i>');
@@ -1348,13 +1348,13 @@ function fill_new_deal_from_template_data(selected_id) {
             }
 
             //m2m needs special treatment with arrays
-            source.find('#id_sales_item').val('');
+            source.find('#id_product').val('');
             vals = [];
-            for (i = 0; i <= data[0].fields.sales_item.length; i++) {
-                vals.push(data[0].fields.sales_item[i]);
+            for (i = 0; i <= data[0].fields.product.length; i++) {
+                vals.push(data[0].fields.product[i]);
             }
-            source.find('#id_sales_item').val(vals);
-            source.find('#id_sales_item').chosen({no_results_text: gettext('No results match')});
+            source.find('#id_product').val(vals);
+            source.find('#id_product').chosen({no_results_text: gettext('No results match')});
             calc_total_value();
             calc_totals();
             validator = validation_rules('#deal_from_template_form');
@@ -1493,7 +1493,7 @@ function rebind_business_card_modal_link() {
 
 function tab_deal_templates_clicked() {
     "use strict";
-    $('#tab_sales_items').empty();
+    $('#tab_products').empty();
     $('#tab_contacts').empty();
     $('#tab_open_deals').empty();
     $('#deal_modal_body').empty();
@@ -1505,7 +1505,7 @@ function tab_deal_templates_clicked() {
     bind_main_tabs('tab_deal_templates');
     $('#sidebar').load('sidebar/deal_templates/', function (result) {
         $('#sidebar').find(".typeahead_deals_deal_name").typeahead({ source: typeahead_deals_deal_name });
-        $('#sidebar').find(".typeahead_deals_sales_item").typeahead({ source: typeahead_deals_sales_item });
+        $('#sidebar').find(".typeahead_deals_product").typeahead({ source: typeahead_deals_product });
         $('#sidebar').find(".typeahead_deals_price").typeahead({ source: typeahead_deals_price });
         $('#sidebar').find(".typeahead_deals_sales_term").typeahead({ source: typeahead_deals_sales_term });
         $('#sidebar').find(".typeahead_deals_quantity").typeahead({ source: typeahead_deals_quantity });
@@ -1513,20 +1513,20 @@ function tab_deal_templates_clicked() {
     });
 }
 
-function bind_sales_item_btn() {
+function bind_product_btn() {
     "use strict";
-    $("#modal_sales_items_btn").off('click').on('click', function (event) {
+    $("#modal_products_btn").off('click').on('click', function (event) {
         event.preventDefault();
         var url = $(this).attr("href") + "/";
-        $("#sales_items_modal_body").load(url, function (result) {
-            $('#salesitems_modal').on('hide', function () {
-                $('#deal_template_sales_item').load('sales_items/deal_template/', function (result) {
-                    chosenify_field('#id_sales_item', '#deal_template_sales_item');
-                    bind_sales_item_btn();
+        $("#products_modal_body").load(url, function (result) {
+            $('#products_modal').on('hide', function () {
+                $('#deal_template_product').load('products/deal_template/', function (result) {
+                    chosenify_field('#id_product', '#deal_template_product');
+                    bind_product_btn();
                 });
             });
-            $('#salesitems_modal').modal('show'); // display the modal on url load            
-            rebind_sales_item('#tab_deal_templates');
+            $('#products_modal').modal('show'); // display the modal on url load            
+            rebind_product('#tab_deal_templates');
         });
     });
 }
@@ -1538,7 +1538,7 @@ function deal_template_add_edit(event) {
     url = $(event.currentTarget).attr('href');
     $('#tab_deal_templates').load(url, function (result) {
         validator = validation_rules('#deal_template_form_id');
-        chosenify_field('#id_sales_item', $(this));
+        chosenify_field('#id_product', $(this));
 
         $(this).find('#back2deal_templates').off('click').on('click', function (event) {
             event.preventDefault();
@@ -1570,13 +1570,13 @@ function deal_template_add_edit(event) {
             tab_deal_templates_clicked();
         });
 
-        bind_sales_item_btn();
+        bind_product_btn();
     });
 }
 
 function tab_contacts_clicked() {
     "use strict";
-    $('#tab_sales_items').empty();
+    $('#tab_products').empty();
     $('#tab_open_deals').empty();
     $('#tab_deal_templates').empty();
     $('#deal_modal_body').empty();
@@ -1617,17 +1617,17 @@ function rebind_conversations(source) {
     draggable_modal('#business_card_modal');
 }
 
-function rebind_sales_item(source) {
+function rebind_product(source) {
     "use strict";
     var target = '#search_result';
-    rebind_delete_paginator(source, target, partial(rebind_sales_item, source));
+    rebind_delete_paginator(source, target, partial(rebind_product, source));
     $(source).find(".row_edit_ajax").off('click').on('click', {source: source}, row_edit_ajax);
     //save_add_form currently only used for sales item
-    $('#save_add_form').off('submit').on('submit', {source: source}, row_add_save_sales_item);
-    $('#sales_item_filter').find(".form-filter-ajax").off('submit').on('submit', {rebind_func: partial(rebind_sales_item, source)}, filter_rows);
-    $('#sales_item_filter').find(".typeahead_sales_items").typeahead({ source: typeahead_sales_items });
-    $('#sales_item_filter').find(".filter-close").off('click').on('click', clear_filter);
-    $('#sidebar').find(".typeahead_sales_items").typeahead({ source: typeahead_sales_items });
+    $('#save_add_form').off('submit').on('submit', {source: source}, row_add_save_product);
+    $('#product_filter').find(".form-filter-ajax").off('submit').on('submit', {rebind_func: partial(rebind_product, source)}, filter_rows);
+    $('#product_filter').find(".typeahead_products").typeahead({ source: typeahead_products });
+    $('#product_filter').find(".filter-close").off('click').on('click', clear_filter);
+    $('#sidebar').find(".typeahead_products").typeahead({ source: typeahead_products });
 }
 
 function conversation_clicked(event) {
@@ -1713,7 +1713,7 @@ function rebind_deal_templates() {
 
 function tab_open_deals_clicked(deal_id) {
     "use strict";
-    $('#tab_sales_items').empty();
+    $('#tab_products').empty();
     $('#tab_contacts').empty();
     $('#tab_deal_templates').empty();
     $('#deal_modal_body').empty();
@@ -1770,7 +1770,7 @@ function rebind_event_tick() {
 
 function tab_todo_clicked() {
     "use strict";
-    $('#tab_sales_items').empty();
+    $('#tab_products').empty();
     $('#tab_contacts').empty();
     $('#tab_open_deals').empty();
     $('#tab_deal_templates').empty();
@@ -1787,7 +1787,7 @@ function tab_todo_clicked() {
 
 function tab_contacts_clicked() {
     "use strict";
-    $('#tab_sales_items').empty();
+    $('#tab_products').empty();
     $('#tab_open_deals').empty();
     $('#tab_deal_templates').empty();
     $('#deal_modal_body').empty();
@@ -1806,7 +1806,7 @@ function tab_contacts_clicked() {
     });
 }
 
-function tab_sales_items_clicked() {
+function tab_products_clicked() {
     "use strict";
     $('#sidebar').empty();
     $('#tab_contacts').empty();
@@ -1814,11 +1814,11 @@ function tab_sales_items_clicked() {
     $('#tab_deal_templates').empty();
     $('#deal_modal_body').empty();
     $('#tab_todo').empty();
-    $('#tab_sales_items').load('sales_items/', function (result) {
-        rebind_sales_item('#tab_sales_items');
+    $('#tab_products').load('products/', function (result) {
+        rebind_product('#tab_products');
     });
-    $('#main_tabs a[href="#tab_sales_items"]').off('click');
-    bind_main_tabs('tab_sales_items');
+    $('#main_tabs a[href="#tab_products"]').off('click');
+    bind_main_tabs('tab_products');
 }
 
 function bind_main_tabs(optionalArg) {
@@ -1838,8 +1838,8 @@ function bind_main_tabs(optionalArg) {
     if (optionalArg !== 'tab_todo') {
         $('#main_tabs a[href="#tab_todo"]').off('click').on('click', tab_todo_clicked);
     }
-    if (optionalArg !== 'tab_sales_items') {
-        $('#main_tabs a[href="#tab_sales_items"]').off('click').on('click', tab_sales_items_clicked);
+    if (optionalArg !== 'tab_products') {
+        $('#main_tabs a[href="#tab_products"]').off('click').on('click', tab_products_clicked);
     }
 }
 

@@ -1,0 +1,14 @@
+{% load i18n %}
+{% if products %}	
+	{% include '_product_rows.html' %}
+	{% include '_paginator.html' %}
+{% else %}
+	<tr>		
+		<td colspan="2">{% trans 'No product or service found.' %}</td>
+	</tr>
+{% endif %}
+	<tr class="product_add_save_tr">		
+		{% include 'product_add_save_form.html' %}                        
+	</tr>    
+
+	

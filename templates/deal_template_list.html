@@ -9,7 +9,7 @@
 	        <td>{{ item.deal_name }}</td>
 	        <td><div class="cb_notes">{{ item.deal_description }}</div></td>             
 	        <td>
-	        	{% for item in item.sales_item.all %}
+	        	{% for item in item.product.all %}
 	        		<span class="badge">{{item}}</span> 
 	        	{% endfor %}
 	    	</td>

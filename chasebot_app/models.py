@@ -11,7 +11,10 @@ from django.contrib.gis.db import models
 from datetime import timedelta
 from django_countries.fields import CountryField
 from django_countries.countries import COUNTRIES
-
+from chasebot_app.utils import get_user_location_details
+from datetime import datetime
+from django.utils import timezone
+from django.utils.timezone import utc
 
 class Company(models.Model):
     company_name        = models.CharField(max_length=50)
@@ -56,6 +59,7 @@ class UserProfile(models.Model):
     city                = models.CharField(max_length=100, blank=True, null=True)
     timezone            = models.CharField(max_length=100)
     browser             = models.CharField(max_length=100, blank=True, null=True)
+    is_log_active       = models.BooleanField(default=True)
     
     def __unicode__(self):
         return u'%s, %s' % (self.user.username, self.company.company_name)
@@ -73,7 +77,7 @@ class MaritalStatus(models.Model):
         verbose_name_plural = _(u'Marital Statuses')
 
 
-class Contact(models.Model):
+class ContactBase(models.Model):
     RATING_CHOICES = (               
                    (1, _(u'Less Important')),
                    (2, _(u'Important')),
@@ -119,6 +123,7 @@ class Contact(models.Model):
         return self.last_name
     
     class Meta:
+        abstract = True
         verbose_name = _(u'Contact')
         verbose_name_plural = _(u'Contacts')
     
@@ -149,15 +154,28 @@ class Contact(models.Model):
         opendeals_query = self.deal_set.filter(id__in=[item.id for item in raw])
         return opendeals_query
 
+class Contact(ContactBase):
+    pass
 
-class SalesItem(models.Model):        
+class Contact_history(ContactBase):
+    edit_id = models.IntegerField(null=True, blank=True)
+
+class ProductsBase(models.Model):        
     item_name    = models.CharField(_(u'Item Name'), max_length=40)
     company             = models.ForeignKey(Company)
     def __unicode__(self):
         return self.item_name
     class Meta:
+        abstract = True
         verbose_name = _(u'Product/Service')
         verbose_name_plural = _(u'Products/Services')
+
+class Products(ProductsBase):
+    pass
+
+class Products_history(ProductsBase):
+    edit_id = models.IntegerField(null=True, blank=True)
+
 
 class SalesTerm(models.Model):    
     sales_term          = models.CharField(_(u'Sales Term'), max_length=40)
@@ -176,11 +194,11 @@ class DealStatus(models.Model):
         verbose_name_plural = _(u'Deal Statuses')
 
 
-class DealTemplate(models.Model):    
+class DealTemplateBase(models.Model):    
     company             = models.ForeignKey(Company)
     deal_name           = models.CharField(_(u'Deal Name'), max_length=40)
     deal_description    = models.TextField(_(u'Deal Description'),     blank=True)
-    sales_item          = models.ManyToManyField(SalesItem, verbose_name="Products / Services")
+    product             = models.ManyToManyField(Products, verbose_name="Products / Services")
     currency            = models.ForeignKey(Currency)
     price               = models.DecimalField(_(u'Price'), decimal_places=2, max_digits=12, validators=[MinValueValidator(0.01)])
     sales_term          = models.ForeignKey(SalesTerm)
@@ -189,26 +207,41 @@ class DealTemplate(models.Model):
     def __unicode__(self):
         return self.deal_name 
     class Meta:
+        abstract = True
         verbose_name = _(u'Deal Type')
         verbose_name_plural = _(u'Deal Types')
 
+class DealTemplate(DealTemplateBase):
+    pass
 
-class Conversation(models.Model):
+class DealTemplate_history(DealTemplateBase):
+    edit_id = models.IntegerField(null=True, blank=True)
+
+
+class ConversationBase(models.Model):
     contact             = models.ForeignKey(Contact)
     conversation_datetime = models.DateTimeField()    
     notes               = models.TextField(_(u'Notes'),        blank=True)
     
     class Meta:
-        #get_latest_by   = 'conversation_datetime'            
+        #get_latest_by   = 'conversation_datetime'  
+        abstract = True          
         verbose_name = _(u'Conversation')
         verbose_name_plural = _(u'Conversations')    
     def __unicode__(self):
         return self.conversation_datetime
 
+class Conversation_history(ConversationBase):
+    edit_id = models.IntegerField(null=True, blank=True)
 
-class Deal(models.Model):    
+
+class Conversation(ConversationBase):
+    pass        
+        
+
+class DealBase(models.Model):    
     def __init__(self, *args, **kwargs):
-        super(Deal, self).__init__(*args, **kwargs)
+        super(DealBase, self).__init__(*args, **kwargs)
 
     deal_id             = UUIDField()
     status              = models.ForeignKey(DealStatus, null=True, blank=True)    
@@ -220,7 +253,7 @@ class Deal(models.Model):
     deal_instance_name  = models.CharField(_(u'Deal Name'), max_length=100)        
     deal_description    = models.TextField(_(u'Deal Description'),     blank=True)    
     price               = models.DecimalField(_(u'Price'), decimal_places=2, max_digits=12, validators=[MinValueValidator(0.01)])
-    sales_item          = models.ManyToManyField(SalesItem, verbose_name="Products / Services")
+    product             = models.ManyToManyField(Products, verbose_name="Products / Services")
     currency            = models.ForeignKey(Currency)
     sales_term          = models.ForeignKey(SalesTerm)
     quantity            = models.PositiveIntegerField(_(u'Quantity'))
@@ -235,12 +268,18 @@ class Deal(models.Model):
         if self.deal_template:
             self.deal_template_name = self.deal_template.deal_name
         self.total_value = self.quantity * self.price
-        super(Deal, self).save(*args, **kwargs) # Call the "real" save() method.
+        super(DealBase, self).save(*args, **kwargs) # Call the "real" save() method.
     
     class Meta:
+        abstract = True
         verbose_name = _(u'Deal')
         verbose_name_plural = _(u'Deals')
-    
+
+class Deal(DealBase):
+    pass
+
+class Deal_history(DealBase):
+    edit_id = models.IntegerField(null=True, blank=True)
     
 
 class Invitation(models.Model):
@@ -261,7 +300,7 @@ class Invitation(models.Model):
         send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [self.email])    
 
 
-class Event(models.Model):
+class EventBase(models.Model):
     #The functions below help to deduct the date_time by the selected reminder to determine the real reminder date for the task
     def subtractMinutes(self, mnt):        
         return self.due_date_time - timedelta(minutes=mnt)
@@ -332,7 +371,7 @@ class Event(models.Model):
     def save(self, *args, **kwargs):
         self.reminder_date_time = self.calc_reminder(self.reminder)
         self.contact = Deal.objects.filter(deal_id = self.deal_id)[0].contact
-        super(Event, self).save(*args, **kwargs) # Call the "real" save() method.
+        super(EventBase, self).save(*args, **kwargs) # Call the "real" save() method.
     
     def sendMail(self):
         subject = 'Event Reminder'
@@ -350,9 +389,16 @@ class Event(models.Model):
         send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [self.user.email])    
     
     class Meta:
+        abstract = True
         verbose_name = _(u'Event')
         verbose_name_plural = _(u'Events')
     
+
+class Event(EventBase):
+    pass
+
+class Event_history(EventBase):
+    edit_id = models.IntegerField(null=True, blank=True)
 
 class WorldBorder(models.Model):
     # Regular Django fields corresponding to the attributes in the
@@ -377,3 +423,39 @@ class WorldBorder(models.Model):
     # Returns the string representation of the model.
     def __unicode__(self):
         return self.name    
+    
+    
+class CBLogging(models.Model):    
+    user    = models.ForeignKey(User)
+    ip      = models.CharField(max_length=45, blank=True, null=True)
+    country = models.CharField(max_length=100, blank=True, null=True)
+    city    = models.CharField(max_length=100, blank=True, null=True)    
+    primary_action  = models.CharField(max_length=50)        
+    log_date_time_utc = models.DateTimeField()
+    log_date_time_local = models.DateTimeField()    
+
+    def save(self, request, *args, **kwargs):
+        location = get_user_location_details(request)
+        self.ip = location.ip
+        self.country = location.country
+        self.city = location.city
+        self.log_date_time_utc = datetime.utcnow().replace(tzinfo=utc)
+        current_tz = timezone.get_current_timezone() 
+        self.log_date_time_local = current_tz.normalize(self.log_date_time_utc.astimezone(current_tz)) 
+        super(CBLogging, self).save(*args, **kwargs) # Call the "real" save() method.
+    
+    
+class CBAction(models.Model):
+    Type = (
+        ('call',     _(u'call')),
+        ('deal',    _(u'deal')),
+        ('contact',      _(u'contact')),
+        ('product',    _(u'product')),
+        ('deal_template',  _(u'deal_template')),
+        ('event',     _(u'event')),        
+    )    
+    secondary_action = models.CharField(max_length=50)
+    history_type = models.CharField(max_length=20, choices=Type)
+    history_id = models.IntegerField()
+    cblogging = models.ForeignKey(CBLogging)
+        
