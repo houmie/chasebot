@@ -35,7 +35,7 @@
 
 <body> 
 <div id="locale" class="hidden">{{locale}}</div>
-<a class="btn cb-float-to-right btn-success btn-large hidden" id="feedback_btn" href="feedback/">{% trans 'Please send us your feedback' %}</a>   
+<a class="btn cb-float-to-right btn-success btn-large hidden" id="feedback_btn" href="feedback/">{% trans 'Contact Support' %}</a>   
 <div class="modal hide fade" id="feedback_modal" tabindex="-1" role="dialog" aria-labelledby="feedback_label" aria-hidden="true">
 	{% include 'feedback_modal.html' %}
 </div>
@@ -50,7 +50,7 @@
                 <span class="icon-bar"></span>
             </a>            
             <a class="brand" href="http://www.chasebot.com">Chasebot</a>
-            <img class="release_logo" src="{{ STATIC_URL }}/img/beta.png" />
+            <!-- <img class="release_logo" src="{{ STATIC_URL }}/img/beta.png" /> -->
             <div class="nav-collapse">
                 <ul class="nav">
                     <li id="home_menu" class="active"><a href="/">{% trans 'Home' %}</a></li>
@@ -62,7 +62,7 @@
                     	<li><a href="/logout/">{% trans 'Logout' %}</a></li>
                     {% else %}
                     	<li id="login_menu"><a href="/login/">{% trans 'Login' %}</a></li>
-                    	<!-- <li><a href="/register/">{% trans 'Register' %}</a></li> -->
+                    	<li><a href="/register/">{% trans 'Sign Up' %}</a></li>
                     	<li id="demo_menu"><a class="cb_live_demo" href="/demo/">{% trans 'Live Demo' %}</a></li>
                     {% endif %}
 

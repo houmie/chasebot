@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from chasebot_app.forms import RegistrationForm, ContactsForm, ConversationForm, ProductsForm, DealTemplateForm,\
      DealForm, FilterContactsForm, FilterConversationForm, FilterDealTemplateForm, FilterProductsForm,\
-    DealsAddForm, OpenDealsAddForm, ColleagueInviteForm, OpenDealTaskForm,\
+    DealsAddForm, OpenDealsAddForm, ColleagueInviteForm, \
     EventForm, DealNegotiateForm, FilterOpenDealForm, FeedbackForm,\
     AddNewDealForm, DealsAddFormLight
 from chasebot_app.models import Company, Contact, Conversation, Products, DealTemplate, Deal, SalesTerm,\
@@ -133,8 +133,8 @@ def conversations_with_open_deals(request, contact):
 @login_required
 def index_display(request):
     if 'demo' in request.GET:
-        messages.success(request, _(u'Congratulations. Your live demo account is now ready.'))
-        messages.warning(request, _(u'This temporary account is only for testing purposes.'))
+        messages.success(request, _(u'Congratulations. Your free account is now ready.'))
+        messages.warning(request, _(u'Once happy with the testing, You may delete all the demo data and start entering your own data.'))
 
     profile = request.user.get_profile()
     if not 'django_timezone' in request.session: 
@@ -234,7 +234,7 @@ def add_new_deal_from_template(request):
         if form.is_valid():            
             # Always localize the entered date by user into his timezone before saving it to database
             current_tz = timezone.get_current_timezone() 
-            call = Conversation(contact=form.cleaned_data['addnewdeal_contact'], conversation_datetime = current_tz.normalize(timezone.now().astimezone(current_tz)), notes=form.cleaned_data['call_notes'])
+            call = Conversation(contact=form.cleaned_data['addnewdeal_contact'], conversation_datetime = current_tz.normalize(timezone.now().astimezone(current_tz)), notes=form.cleaned_data['call_notes'], user=request.user)
             call.save()
             
             log = log_call(request, call, 'add_new_deal_from_template', 'call saved', profile, False)
@@ -254,7 +254,8 @@ def add_new_deal_from_template(request):
                                 currency =      new_deal.currency,                
                                 sales_term =    new_deal.sales_term,
                                 quantity =      new_deal.quantity,
-                                company =       profile.company                                            
+                                company =       profile.company,
+                                user = request.user                                            
                                 )
             #Saving M2M 
             for item in form.cleaned_data['product']:
@@ -303,7 +304,8 @@ def log_contact(request, contact, primary_action, secondary_action, profile, is_
                              children_names=contact.children_names,
                              home_town=contact.home_town,
                              company=contact.company,
-                             important_client=contact.important_client,                             
+                             important_client=contact.important_client, 
+                             user = contact.user                            
                          )
     if is_edit:
         ch.edit_id=contact.pk
@@ -323,7 +325,8 @@ def log_dealtemplate(request, dealtemplate, primary_action, secondary_action, pr
                               currency            = dealtemplate.currency,
                               price               = dealtemplate.price,
                               sales_term          = dealtemplate.sales_term,
-                              quantity            = dealtemplate.quantity
+                              quantity            = dealtemplate.quantity,
+                              user                = dealtemplate.user
                           )
     if is_edit:
         dh.edit_id=dealtemplate.pk
@@ -332,14 +335,16 @@ def log_dealtemplate(request, dealtemplate, primary_action, secondary_action, pr
         dh.product.add(item)
     dh.save()    
     log = CBLogging(user = request.user, primary_action = primary_action)
-    log.cbaction_set.create(secondary_action = secondary_action,  history_id = dh.pk, history_type = 'deal_template')
     log.save(request)
+    log.cbaction_set.create(secondary_action = secondary_action,  history_id = dh.pk, history_type = 'deal_template')
+    
 
 def log_product(request, product, primary_action, secondary_action, profile, is_edit):
     if profile.is_log_active == False:
         return
     ph = Products_history(item_name = product.item_name,
-                          company   = product.company
+                          company   = product.company,
+                          user      = product.user
                           )
     if is_edit:
         ph.edit_id=product.pk
@@ -377,7 +382,9 @@ def log_call(request, call, primary_action, secondary_action, profile, is_edit):
         return
     ch = Conversation_history(contact=call.contact, 
                               conversation_datetime = call.conversation_datetime, 
-                              notes=call.notes)
+                              notes=call.notes,
+                              user   = call.user
+                              )
     if is_edit:
         ch.edit_id=call.pk
     ch.save()
@@ -403,7 +410,8 @@ def log_deal(request, deal, products, primary_action, secondary_action, profile,
                                 currency =      deal.currency,                
                                 sales_term =    deal.sales_term,
                                 quantity =      deal.quantity,
-                                company =       deal.company                                            
+                                company =       deal.company,
+                                user =          deal.user                                         
                                 )     
     if is_edit:
         dh.edit_id=deal.pk
@@ -416,40 +424,7 @@ def log_deal(request, deal, products, primary_action, secondary_action, profile,
     log.save(request)
     log.cbaction_set.create(secondary_action = secondary_action,  history_id = dh.pk, history_type = 'deal')
     
-    
-#def log_negotiate_deal(request, deal, call, products, primary_action, secondary_action_deal, secondary_action_call, profile):
-#    if profile.is_log_active == False:
-#        return
-#    
-#    ch = Conversation_history(contact=call.contact, 
-#                              conversation_datetime = call.conversation_datetime, 
-#                              notes=call.notes)
-#    ch.save()
-#    log = CBLogging(user = request.user, primary_action = primary_action)
-#    log.cbaction_set.create(secondary_action = secondary_action_call,  history_id = ch.pk, history_type = 'call')
-#    
-#    dh = Deal_history.objects.create(
-#                                deal_id =       deal.deal_id,
-#                                deal_datetime = deal.deal_datetime, 
-#                                status =        deal.status, 
-#                                contact =       deal.contact, 
-#                                deal_template = deal.deal_template,
-#                                deal_template_name = deal.deal_template_name,  
-#                                conversation =  deal.conversation,                                            
-#                                deal_instance_name = deal.deal_instance_name,
-#                                deal_description = deal.deal_description,
-#                                price =         deal.price,        
-#                                currency =      deal.currency,                
-#                                sales_term =    deal.sales_term,
-#                                quantity =      deal.quantity,
-#                                company =       deal.company                                            
-#                                )
-#    for item in products:
-#        dh.product.add(item)
-#    dh.save();   
-#        
-#    log.cbaction_set.create(secondary_action = secondary_action_deal,  history_id = dh.pk, history_type = 'deal')
-#    log.save(request)
+
 
 @login_required
 def add_new_deal(request):
@@ -460,7 +435,7 @@ def add_new_deal(request):
         if form.is_valid():
             # Always localize the entered date by user into his timezone before saving it to database
             current_tz = timezone.get_current_timezone() 
-            call = Conversation(contact=form.cleaned_data['addnewdeal_contact'], conversation_datetime = current_tz.normalize(timezone.now().astimezone(current_tz)), notes=form.cleaned_data['call_notes'])
+            call = Conversation(contact=form.cleaned_data['addnewdeal_contact'], conversation_datetime = current_tz.normalize(timezone.now().astimezone(current_tz)), notes=form.cleaned_data['call_notes'], user=request.user)
             call.save()
             
             log = log_call(request, call, 'add_new_deal', 'call saved', profile, False)
@@ -512,7 +487,7 @@ def negotiate_open_deal(request, deal_pk):
         if form.is_valid():
             # Always localize the entered date by user into his timezone before saving it to database
             current_tz = timezone.get_current_timezone() 
-            call = Conversation(contact=actual_deal.contact, conversation_datetime = current_tz.normalize(timezone.now().astimezone(current_tz)), notes=form.cleaned_data['call_notes'])
+            call = Conversation(contact=actual_deal.contact, conversation_datetime = current_tz.normalize(timezone.now().astimezone(current_tz)), notes=form.cleaned_data['call_notes'], user=request.user)
             call.save()
             
             log = log_call(request, call, 'negotiate_open_deal', 'call saved', profile, False)
@@ -611,7 +586,7 @@ def contact_add_edit(request, contact_id=None):
     secondary = ''    
     is_edit = False
     if contact_id is None:
-        contact = Contact(company=profile.company)
+        contact = Contact(company=profile.company, user=request.user)
         template_title = _(u'Add New Contact')
         secondary = 'Add New Contact'
     else:
@@ -749,7 +724,7 @@ def conversation_add_edit(request, contact_id, call_id=None):
     is_edit = False
     if call_id is None:
         current_tz = timezone.get_current_timezone()
-        call = Conversation(contact=contact, conversation_datetime = current_tz.normalize(timezone.now().astimezone(current_tz))) 
+        call = Conversation(contact=contact, conversation_datetime = current_tz.normalize(timezone.now().astimezone(current_tz)), user=request.user) 
         template_title = _(u'Add New Conversation')
         secondary = 'Add New Conversation'
     else:
@@ -818,7 +793,7 @@ def conversation_add_edit(request, contact_id, call_id=None):
                         log_deal(request, deal, fm.cleaned_data['product'], 'conversation_add_edit', 'continue with open deal', profile, False, log)
                         
                         #In case the instance name was changed we change also all other instance names of the same set.
-                        adjust_deal_names_of_same_dealset(contact, deal, request, profile)
+                        adjust_deal_names_of_same_dealset(request, contact, deal, profile)
                         
                         #If the open deal instance is closed, we need to remove all later entries of this instance on later conversations.
                         remove_redundant_future_deals(contact, deal)
@@ -834,7 +809,7 @@ def conversation_add_edit(request, contact_id, call_id=None):
                         is_edit = False
                         if deal.pk:                        
                             #In case the instance name was changed we change also all other instance names of the same set.
-                            adjust_deal_names_of_same_dealset(contact, deal, request, profile)
+                            adjust_deal_names_of_same_dealset(request, contact, deal, profile)
                             secondary = 'deal edited'
                             is_edit = True
                         else:
@@ -1051,7 +1026,7 @@ def product_add_edit(request, product_id=None):
     secondary = ''
     is_edit = False
     if product_id is None:
-        product = Products(company=profile.company)       
+        product = Products(company=profile.company, user=request.user)       
         secondary = 'add new product' 
     else:
         product = get_object_or_404(profile.company.products_set.all(), pk=product_id)
@@ -1161,7 +1136,7 @@ def deal_template_add_edit(request, deal_id=None):
     secondary = ''
     is_edit = False
     if deal_id is None:
-        deal = DealTemplate(company=profile.company)        
+        deal = DealTemplate(company=profile.company, user=request.user)
         template_title = _(u'Add New Deal Template')
         secondary = 'Add New Deal Template'
     else:

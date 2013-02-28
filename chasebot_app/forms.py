@@ -18,13 +18,13 @@ from datetime import timedelta
 
 
 class FeedbackForm(Form):
-    feedback        = forms.CharField(widget=forms.Textarea(attrs={'class': 'textarea_mandatory', 'placeholder': _(u"Please tell us what you think about Chasebot.          How could we improve it for your day-to-day work?     What is important to you that is missing?   What do you like about Chasebot?")}))
+    feedback        = forms.CharField(widget=forms.Textarea(attrs={'class': 'textarea_mandatory', 'placeholder': _(u"Please tell us about the problem you are experiencing and we get back to you asap.")}))
     
     
 class DemoRegistrationForm(Form):
     username        = forms.CharField(widget=forms.TextInput(attrs={'autocomplete': 'off', 'class':'demo-input', 'placeholder': _(u'Choose a memorable username...')}), label = _(u'Username'), max_length=30)
     company         = forms.CharField(required = False, widget=forms.TextInput(attrs={'autocomplete': 'off', 'class':'demo-input', 'placeholder': _(u'(Optional) Your company name...')}), label = _(u'Company'), max_length=75)
-    email           = forms.EmailField(widget=forms.TextInput(attrs={'autocomplete': 'off', 'class':'demo-input', 'placeholder': _(u"What's your email address?")}), label= _(u'Email'))
+    email           = forms.EmailField(widget=forms.TextInput(attrs={'autocomplete': 'off', 'class':'demo-input', 'placeholder': _(u"What's your email address?")}), label= _(u'Your Email'))
     password        = forms.CharField(label = _(u'Password'), widget=forms.PasswordInput(render_value=False,attrs={'autocomplete': 'off', 'class':'demo-input', 'placeholder': _(u'Choose a memorable password')}))
     password2       = forms.CharField(label = _(u'Password (retype)'), widget=forms.PasswordInput(render_value=False, attrs={'autocomplete': 'off', 'class':'demo-input', 'placeholder': _(u'Retype the same password')}))    
     timezone        = forms.ChoiceField(choices=[(x, x) for x in pytz.common_timezones], initial='US/Eastern')
@@ -96,7 +96,7 @@ class ContactsForm(ModelForm):
       
     class Meta:
         model = Contact
-        exclude = ('company')
+        exclude = ('company', 'user')
         widgets = {
                 'first_name': forms.TextInput(  attrs={'placeholder': _(u'Enter first name here'),      'class': 'placeholder_fix_css', 'autocomplete': 'off'}),
                 'last_name': forms.TextInput(   attrs={'placeholder': _(u'Enter last name here'),       'class': 'placeholder_fix_css fillone', 'autocomplete': 'off'}),
@@ -230,23 +230,6 @@ class OpenDealsAddForm(Form):
     open_deal_template = forms.ModelChoiceField(queryset='', label=_(u'Continue with a deal in progress'))
 
 
-class OpenDealTaskForm(Form):
-    def __init__(self, contact, dealid, *args, **kwargs):
-        super(OpenDealTaskForm, self).__init__(*args, **kwargs)        
-        if contact:
-            self.fields['open_deal_task'].queryset = contact.get_open_deals_query()
-            if dealid:
-                try:
-                    self.fields['open_deal_task'].initial = self.fields['open_deal_task'].queryset.get(deal_id = dealid)
-                except Deal.DoesNotExist:
-                    pass
-        else:
-            self.fields['open_deal_task'].widget.attrs['disabled'] = True
-        self.fields['open_deal_task'].required = False        
- 
-    open_deal_task = forms.ModelChoiceField(queryset='', label=_(u'Task about an existing deal?'))    
-
-
 class FilterOpenDealForm(Form):            
     deal_instance_name = forms.CharField(widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_opendeal_deal_name', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=40)    
     status          = forms.ModelChoiceField(queryset=DealStatus.objects.all(), widget = forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_opendeal_status', 'autocomplete': 'off', 'data-provide': 'typeahead'}))    
@@ -284,7 +267,7 @@ class DealTemplateForm(ModelForm):
     
     class Meta:
         model = DealTemplate
-        exclude = ('company')
+        exclude = ('company', 'user')
         
         widgets = {
                     'deal_name': forms.TextInput(attrs={'placeholder': _(u'Name the deal'), 'class': 'placeholder_fix_css input_mandatory', 'autocomplete': 'off'}),
@@ -348,7 +331,7 @@ class FilterProductsForm(Form):
 class ProductsForm(ModelForm):
     class Meta:
         model = Products
-        exclude = ('company')
+        exclude = ('company', 'user')
         widgets = {
                    'item_name': forms.TextInput(attrs={'autocomplete': 'off', 'class':'item_name'}),
                    }

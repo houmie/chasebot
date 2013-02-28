@@ -118,6 +118,7 @@ class ContactBase(models.Model):
     home_town           = models.CharField(_(u'Home Town'),              max_length=30, blank=True)
     company             = models.ForeignKey(Company)
     important_client    = models.PositiveSmallIntegerField(_(u'Important Client'), blank=True, null=True, choices=RATING_CHOICES)
+    user                = models.ForeignKey(User)
 
     def __unicode__(self):
         return self.last_name
@@ -162,9 +163,12 @@ class Contact_history(ContactBase):
 
 class ProductsBase(models.Model):        
     item_name    = models.CharField(_(u'Item Name'), max_length=40)
-    company             = models.ForeignKey(Company)
+    company      = models.ForeignKey(Company)
+    user                = models.ForeignKey(User)
+    
     def __unicode__(self):
         return self.item_name
+    
     class Meta:
         abstract = True
         verbose_name = _(u'Product/Service')
@@ -202,7 +206,8 @@ class DealTemplateBase(models.Model):
     currency            = models.ForeignKey(Currency)
     price               = models.DecimalField(_(u'Price'), decimal_places=2, max_digits=12, validators=[MinValueValidator(0.01)])
     sales_term          = models.ForeignKey(SalesTerm)
-    quantity            = models.PositiveIntegerField(_(u'Quantity'))   
+    quantity            = models.PositiveIntegerField(_(u'Quantity'))
+    user                = models.ForeignKey(User)   
     
     def __unicode__(self):
         return self.deal_name 
@@ -218,30 +223,33 @@ class DealTemplate_history(DealTemplateBase):
     edit_id = models.IntegerField(null=True, blank=True)
 
 
-class ConversationBase(models.Model):
+class Conversation(models.Model):
     contact             = models.ForeignKey(Contact)
     conversation_datetime = models.DateTimeField()    
     notes               = models.TextField(_(u'Notes'),        blank=True)
+    user                = models.ForeignKey(User)
     
     class Meta:
-        #get_latest_by   = 'conversation_datetime'  
-        abstract = True          
+        #get_latest_by   = 'conversation_datetime'          
         verbose_name = _(u'Conversation')
         verbose_name_plural = _(u'Conversations')    
+        
     def __unicode__(self):
-        return self.conversation_datetime
+        return self.conversation_datetime.strftime('%Y/%m/%d')
 
-class Conversation_history(ConversationBase):
-    edit_id = models.IntegerField(null=True, blank=True)
+class Conversation_history(models.Model):
+    edit_id             = models.IntegerField(null=True, blank=True)
+    contact             = models.CharField(max_length="100")
+    conversation_datetime = models.DateTimeField()    
+    notes               = models.TextField(_(u'Notes'),        blank=True)
+    user                = models.ForeignKey(User)
+    
 
-
-class Conversation(ConversationBase):
-    pass        
         
 
-class DealBase(models.Model):    
+class Deal(models.Model):    
     def __init__(self, *args, **kwargs):
-        super(DealBase, self).__init__(*args, **kwargs)
+        super(Deal, self).__init__(*args, **kwargs)
 
     deal_id             = UUIDField()
     status              = models.ForeignKey(DealStatus, null=True, blank=True)    
@@ -259,6 +267,7 @@ class DealBase(models.Model):
     quantity            = models.PositiveIntegerField(_(u'Quantity'))
     total_value         = models.DecimalField(_(u'Total'), decimal_places=2, max_digits=12, validators=[MinValueValidator(0.01)], blank=True, null=True)
     company             = models.ForeignKey(Company)
+    user                = models.ForeignKey(User)
     
     def __unicode__(self):
         return self.deal_instance_name 
@@ -268,18 +277,33 @@ class DealBase(models.Model):
         if self.deal_template:
             self.deal_template_name = self.deal_template.deal_name
         self.total_value = self.quantity * self.price
-        super(DealBase, self).save(*args, **kwargs) # Call the "real" save() method.
+        super(Deal, self).save(*args, **kwargs) # Call the "real" save() method.
     
-    class Meta:
-        abstract = True
+    class Meta:        
         verbose_name = _(u'Deal')
         verbose_name_plural = _(u'Deals')
 
-class Deal(DealBase):
-    pass
 
-class Deal_history(DealBase):
+
+class Deal_history(models.Model):
     edit_id = models.IntegerField(null=True, blank=True)
+    deal_id             = UUIDField()
+    status              = models.ForeignKey(DealStatus, null=True, blank=True)    
+    contact             = models.CharField(max_length="100")
+    deal_template       = models.CharField(max_length="100", null=True, blank=True)    
+    deal_template_name  = models.CharField(_(u'Deal Template Name'), max_length=100, blank=True)
+    deal_datetime       = models.DateTimeField()
+    conversation        = models.CharField(max_length="100")        
+    deal_instance_name  = models.CharField(_(u'Deal Name'), max_length=100)        
+    deal_description    = models.TextField(_(u'Deal Description'),     blank=True)    
+    price               = models.DecimalField(_(u'Price'), decimal_places=2, max_digits=12, validators=[MinValueValidator(0.01)])
+    product             = models.ManyToManyField(Products, verbose_name="Products / Services")
+    currency            = models.ForeignKey(Currency)
+    sales_term          = models.ForeignKey(SalesTerm)
+    quantity            = models.PositiveIntegerField(_(u'Quantity'))
+    total_value         = models.DecimalField(_(u'Total'), decimal_places=2, max_digits=12, validators=[MinValueValidator(0.01)], blank=True, null=True)
+    company             = models.ForeignKey(Company)
+    user                = models.ForeignKey(User)
     
 
 class Invitation(models.Model):
@@ -300,7 +324,34 @@ class Invitation(models.Model):
         send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [self.email])    
 
 
-class EventBase(models.Model):
+REMINDER = (
+    ('none',   _(u'No Reminder Email')),
+#        ('0m',     _(u'0 minutes before')),
+#        ('5m',     _(u'5 minutes before')),
+    ('15m',    _(u'15 minutes before')),
+    ('30m',    _(u'30 minutes before')),
+    ('1h',     _(u'1 hour before')),
+    ('2h',     _(u'2 hours before')),
+    ('12h',    _(u'12 hours before')),
+    ('1d',     _(u'1 day before')),
+    ('2d',     _(u'2 days before')),
+    ('1w',     _(u'1 week before')),
+    ('2w',     _(u'2 weeks before')),
+)
+
+# Todo: This needs to be a proper table
+Type = (
+    ('call',     _(u'Call')),
+    ('email',    _(u'Email')),
+    ('fax',      _(u'Fax')),
+    ('lunch',    _(u'Lunch')),
+    ('meeting',  _(u'Meeting')),
+    ('ship',     _(u'Ship')),
+    ('demo',     _(u'Demo')),
+)
+
+
+class Event(models.Model):
     #The functions below help to deduct the date_time by the selected reminder to determine the real reminder date for the task
     def subtractMinutes(self, mnt):        
         return self.due_date_time - timedelta(minutes=mnt)
@@ -326,44 +377,18 @@ class EventBase(models.Model):
             '1w':   self.subtractDays(7),
             '2w':   self.subtractDays(14),
             }.get(x, self.subtractMinutes(15))
-    
-    REMINDER = (
-        ('none',   _(u'No Reminder Email')),
-#        ('0m',     _(u'0 minutes before')),
-#        ('5m',     _(u'5 minutes before')),
-        ('15m',    _(u'15 minutes before')),
-        ('30m',    _(u'30 minutes before')),
-        ('1h',     _(u'1 hour before')),
-        ('2h',     _(u'2 hours before')),
-        ('12h',    _(u'12 hours before')),
-        ('1d',     _(u'1 day before')),
-        ('2d',     _(u'2 days before')),
-        ('1w',     _(u'1 week before')),
-        ('2w',     _(u'2 weeks before')),
-    )
-    
-    # Todo: This needs to be a proper table
-    Type = (
-        ('call',     _(u'Call')),
-        ('email',    _(u'Email')),
-        ('fax',      _(u'Fax')),
-        ('lunch',    _(u'Lunch')),
-        ('meeting',  _(u'Meeting')),
-        ('ship',     _(u'Ship')),
-        ('demo',     _(u'Demo')),
-    )
 
-    type = models.CharField(max_length=7, choices=Type, default='call', blank=True, null=True)
-    due_date_time = models.DateTimeField()
-    reminder_date_time = models.DateTimeField(blank=True, null=True)
-    reminder = models.CharField(max_length=4, choices=REMINDER, default='15m', blank=True, null=True)    
-    is_public = models.BooleanField(verbose_name=_(u'Visible to your team?'))
-    contact = models.ForeignKey(Contact)
-    deal_id = UUIDField()
-    company = models.ForeignKey(Company)
-    user = models.ForeignKey(User)
-    notes = models.TextField(_(u'Notes'),        blank=True)
-    is_reminder_sent = models.BooleanField()
+    type                = models.CharField(max_length=7, choices=Type, default='call', blank=True, null=True)
+    due_date_time       = models.DateTimeField()
+    reminder_date_time  = models.DateTimeField(blank=True, null=True)
+    reminder            = models.CharField(max_length=4, choices=REMINDER, default='15m', blank=True, null=True)    
+    is_public           = models.BooleanField(verbose_name=_(u'Visible to your team?'))
+    contact             = models.ForeignKey(Contact)
+    deal_id             = UUIDField()
+    company             = models.ForeignKey(Company)
+    user                = models.ForeignKey(User)
+    notes               = models.TextField(_(u'Notes'),        blank=True)
+    is_reminder_sent    = models.BooleanField()
 
     def __unicode__(self):
         return self.deal_id
@@ -371,14 +396,13 @@ class EventBase(models.Model):
     def save(self, *args, **kwargs):
         self.reminder_date_time = self.calc_reminder(self.reminder)
         self.contact = Deal.objects.filter(deal_id = self.deal_id)[0].contact
-        super(EventBase, self).save(*args, **kwargs) # Call the "real" save() method.
+        super(Event, self).save(*args, **kwargs) # Call the "real" save() method.
     
     def sendMail(self):
         subject = 'Event Reminder'
         link = None
 #        if self.contact:
 #            link = 'http://%s/contact/%s/calls' % (settings.SITE_HOST, self.contact.pk)
-
         
         deal = Deal.objects.filter(deal_id = self.deal_id)[0]
         contact_name = u'{0} {1}'.format(deal.contact.first_name, deal.contact.last_name)        
@@ -388,17 +412,25 @@ class EventBase(models.Model):
         message = template.render(context)
         send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [self.user.email])    
     
-    class Meta:
-        abstract = True
+    class Meta:        
         verbose_name = _(u'Event')
         verbose_name_plural = _(u'Events')
     
 
-class Event(EventBase):
-    pass
-
-class Event_history(EventBase):
-    edit_id = models.IntegerField(null=True, blank=True)
+class Event_history(models.Model):
+    edit_id             = models.IntegerField(null=True, blank=True)
+    type                = models.CharField(max_length=7, choices=Type, default='call', blank=True, null=True)
+    due_date_time       = models.DateTimeField()
+    reminder_date_time  = models.DateTimeField(blank=True, null=True)
+    reminder            = models.CharField(max_length=4, choices=REMINDER, default='15m', blank=True, null=True)    
+    is_public           = models.BooleanField(verbose_name=_(u'Visible to your team?'))
+    contact             = models.CharField(max_length=100)
+    deal_id             = UUIDField()
+    company             = models.ForeignKey(Company)
+    user                = models.ForeignKey(User)
+    notes               = models.TextField(_(u'Notes'),        blank=True)
+    is_reminder_sent    = models.BooleanField()
+    
 
 class WorldBorder(models.Model):
     # Regular Django fields corresponding to the attributes in the

@@ -17,6 +17,6 @@ source ~/venuscloud/chasebot-env/bin/activate
 #~/venuscloud/chasebot-env/site/manage.py migrate chasebot_app
 #~/venuscloud/chasebot-env/site/manage.py schemamigration chasebot_app --auto
 #~/venuscloud/chasebot-env/site/manage.py migrate chasebot_app
-~/venuscloud/chasebot-env/bin/python database/mysql_startup_data.py 
+~/venuscloud/chasebot-env/bin/python mysql_startup_data.py 
 
 
