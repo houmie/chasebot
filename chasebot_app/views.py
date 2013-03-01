@@ -46,6 +46,8 @@ from django.utils.datetime_safe import date
 from django.core.mail import send_mail
 from chasebot import settings
 from chasebot_app.utils import get_user_location_details, get_user_browser
+from django.template.loader import get_template
+from django.template.context import Context
 
 
 ITEMS_PER_PAGE = 9
@@ -103,7 +105,7 @@ def feedback(request):
         form = FeedbackForm(request.POST)
         if form.is_valid():
             send_mail('Feedback', form.cleaned_data['feedback'] + ' username: ' + request.user.username, settings.DEFAULT_FROM_EMAIL, [settings.DEFAULT_FROM_EMAIL])
-            messages.info(request, _(u'Thank you for your feedback.'))
+            messages.info(request, _(u'Thank you for contacting support. We will get back to you asap.'))
             return render(request, 'messages.html')
     else:
         form = FeedbackForm()
@@ -135,7 +137,7 @@ def conversations_with_open_deals(request, contact):
 def index_display(request):
     if 'demo' in request.GET:
         messages.success(request, _(u'Congratulations. Your demo account is now ready.'))
-        messages.warning(request, _(u'Once happy with the testing, please sign up for your free account.'))
+        messages.warning(request, _(u'Once happy with the testing, please upgrade to your free account.'))
         messages.error(request, _(u'The demo account is limited to 30 days.'))
 
     profile = request.user.get_profile()
@@ -904,7 +906,7 @@ def event_add_edit(request, open_deal_id=None, event_id=None):
             validation_error_ajax = True
     else:
         form = EventForm(instance=event, prefix='form')
-    current_tz = timezone.get_current_timezone();
+    current_tz = timezone.get_current_timezone()
     user_date = current_tz.normalize(timezone.now().astimezone(current_tz))
     variables = {'form':form, 'template_title':template_title, 'validation_error_ajax':validation_error_ajax, 'user_date':user_date }       
     return render(request, 'event.html', variables)
@@ -1190,8 +1192,10 @@ def logout_page(request):
 def upgrade(request):
     validation_error_ajax = False
     profile = request.user.get_profile()   
-    if profile.is_cb_superuser == False:
-        return HttpResponseForbidden()
+    if profile.license != LicenseTemplate.objects.get(pk=2):
+        return HttpResponseRedirect('/')
+    elif profile.is_cb_superuser == False: 
+        return HttpResponseRedirect('/')
     if request.method == 'POST':        
         form = UpgradeForm(request.POST, _company_email=request.user.email)        
         if form.is_valid():            
@@ -1205,7 +1209,7 @@ def upgrade(request):
             profile.country=user_location.country 
             profile.city=user_location.city
             profile.browser=browser_type
-            profile.is_demo_account=False
+            profile.license = LicenseTemplate.objects.get(pk=1)
             profile.save()
             
             profile.company.contact_set.all().delete()
@@ -1215,8 +1219,18 @@ def upgrade(request):
             profile.company.event_set.all().delete()
             
             for prof in profile.company.userprofile_set.all():
-                prof.is_demo_account=False
+                prof.license = LicenseTemplate.objects.get(pk=1)
                 prof.save()                
+            
+            template = get_template('registration/welcome_upgrade.txt')
+            context = Context({'username': request.user})
+            message = template.render(context)    
+            send_mail('Welcome to Chasebot', message, settings.DEFAULT_FROM_EMAIL, [request.user.email])
+            
+            template = get_template('registration/new_signup.txt')            
+            context = Context({'username': request.user, 'time_zone':profile.timezone, 'company':profile.company, 'country':user_location.country, 'city':user_location.city, 'browser':browser_type})
+            message = template.render(context)
+            send_mail('User Upgrade Account', message, settings.DEFAULT_FROM_EMAIL, [settings.DEFAULT_FROM_EMAIL])            
                 
             messages.success(request, _(u'Congratulations. Your free account is now ready.'))
             messages.warning(request, _(u'All the demo data has been removed.'))
@@ -1253,11 +1267,11 @@ def register_page(request):
                 # Retrieve the invitation object.
                 invitation = Invitation.objects.get(id=request.session['invitation'])                
                 profile = invitation.sender.get_profile()                                
-                userProfile = UserProfile(user=user, company = profile.company, is_cb_superuser=False, license = profile.license, ip=user_location.ip, country=user_location.country, city=user_location.city, timezone=form.cleaned_data['timezone'], browser=browser_type, is_demo_account=profile.is_demo_account)
+                userProfile = UserProfile(user=user, company = profile.company, is_cb_superuser=False, license = profile.license, ip=user_location.ip, country=user_location.country, city=user_location.city, timezone=form.cleaned_data['timezone'], browser=browser_type)
                 userProfile.save()
                 # Delete the invitation from the database and session.
                 invitation.delete()
-                del request.session['invitation']
+                del request.session['invitation']                
             else:            
                 company = Company.objects.create(
                     company_name = form.cleaned_data['company_name'],
@@ -1265,7 +1279,19 @@ def register_page(request):
                 )
                 userProfile = UserProfile(user=user, company = company, is_cb_superuser=True, license = LicenseTemplate.objects.get(pk=1), ip=user_location.ip, country=user_location.country, city=user_location.city, timezone=form.cleaned_data['timezone'], browser=browser_type)
                 userProfile.save()
+                
+            user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password2'])
+            login(request, user)
 
+            template = get_template('registration/welcome.txt')
+            context = Context({'username': user})
+            message = template.render(context)    
+            send_mail('Welcome to Chasebot', message, settings.DEFAULT_FROM_EMAIL, [user.email])
+            
+            template = get_template('registration/new_signup.txt')            
+            context = Context({'username': user, 'time_zone':form.cleaned_data['timezone'], 'company':userProfile.company, 'country':user_location.country, 'city':user_location.city, 'browser':browser_type})
+            message = template.render(context)
+            send_mail('New User Registration', message, settings.DEFAULT_FROM_EMAIL, [settings.DEFAULT_FROM_EMAIL])
             return HttpResponseRedirect('/register/success/')
     else:
         if 'invitation' in request.session:
@@ -1554,7 +1580,7 @@ def get_localized_variables(request):
     timezone = request.session['django_timezone'].zone
     profile = request.user.get_profile()
     show_upgrade = ''
-    if profile.is_demo_account and profile.is_cb_superuser:
+    if profile.license == LicenseTemplate.objects.get(pk=2) and profile.is_cb_superuser:
         show_upgrade = 'show_upgrade' 
     return { 'locale' : get_datepicker_format(request), 'timezones': pytz.common_timezones, 'timezone':timezone, 'show_upgrade':show_upgrade}  
 

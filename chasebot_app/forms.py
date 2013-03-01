@@ -104,8 +104,7 @@ class ContactsForm(ModelForm):
             self._errors["company_name"] = self.error_class([msg])
             self._errors["last_name"] = self.error_class([msg])
             del cleaned_data['company_name']
-            del cleaned_data['last_name']
-        
+            del cleaned_data['last_name']        
         return cleaned_data
       
     class Meta:

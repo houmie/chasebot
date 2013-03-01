@@ -1,6 +1,8 @@
 Welcome to Chasebot,
 
 
+Congratulations,
+Your demo account has been now been upgraded to a free account.
 
 Your username is {{username}}
 

@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% load widget_tweaks %}
 {% load i18n %}
-{% block title %}User Login{% endblock %}
+{% block title %}Log in{% endblock %}
 {% block head %}{% endblock %}
 {% block content %}
 
 <div class="row-fluid">
 	<div class="span6 offset3">
-		<h1>{% trans 'User Login' %}</h1>		
+		<h1>{% trans 'Welcome to Chasebot' %}</h1>		
 	</div>
     <div class="span6 offset3">    	
 		<form id="form_login" class="cb_margin_top" method="post" action=".">
@@ -16,9 +16,12 @@
 					{% show_row_div_below_error form.username|attr:"class:login-input"  %}					
 					{% show_row_div_below_error form.password|attr:"class:login-input"  %}	
 					<input type="hidden" name="next" value="/" />					
-	    			<a id="login-button" autocomplete="off" class="btn btn-primary btn-large cb-float-to-right">{% trans 'Login' %}</a>	    			    			
+	    			<a id="login-button" autocomplete="off" class="btn btn-primary btn-large cb-float-to-right">{% trans 'Log in' %}</a>	    			    			
 				</div>
 				<a class="btn_link" href="/password_reset/">{% trans 'Forgot password?' %}</a>
+				<div>
+				<a class="btn_link" href="/register/">{% trans 'Sign up' %}</a>
+				</div>
 			</div>			    
     		{% csrf_token %}
     		{% if form.errors %}	

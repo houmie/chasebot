@@ -60,7 +60,14 @@ class UserProfile(models.Model):
     timezone            = models.CharField(max_length=100)
     browser             = models.CharField(max_length=100, blank=True, null=True)
     is_log_active       = models.BooleanField(default=True)
-    is_demo_account     = models.BooleanField(default=False)
+    expiration_datetime = models.DateTimeField(blank=True, null=True)    
+
+    def save(self, *args, **kwargs):    
+        if self.license == LicenseTemplate.objects.get(pk=2):
+            self.expiration_datetime = datetime.utcnow().replace(tzinfo=utc, hour=00, minute=00,second=00, microsecond=00) + timedelta(days=30)
+        else:
+            self.expiration_datetime = None
+        super(UserProfile, self).save(*args, **kwargs) # Call the "real" save() method.
     
     def __unicode__(self):
         return u'%s, %s' % (self.user.username, self.company.company_name)

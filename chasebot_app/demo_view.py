@@ -89,7 +89,7 @@ def demo_continue(request, username, password, email, time_zone):
     user_location = get_user_location_details(request)
     browser_type = get_user_browser(request)
     
-    userProfile = UserProfile(user=user, company = company, is_cb_superuser=True, license = LicenseTemplate.objects.get(pk=2), ip=user_location.ip, country=user_location.country, city=user_location.city, timezone=time_zone, browser=browser_type, is_demo_account=True)
+    userProfile = UserProfile(user=user, company = company, is_cb_superuser=True, license = LicenseTemplate.objects.get(pk=2), ip=user_location.ip, country=user_location.country, city=user_location.city, timezone=time_zone, browser=browser_type)
     userProfile.save()
     
     user = authenticate(username=username, password=password)
@@ -1013,7 +1013,7 @@ def demo_continue(request, username, password, email, time_zone):
   
     
 
-    template = get_template('registration/welcome.txt')
+    template = get_template('registration/welcome_demo.txt')
     context = Context({'username': username})
     message = template.render(context)    
     send_mail('Welcome to Chasebot', message, settings.DEFAULT_FROM_EMAIL, [email])

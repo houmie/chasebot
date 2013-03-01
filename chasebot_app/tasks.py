@@ -3,7 +3,7 @@ from datetime import datetime
 from datetime import timedelta
 import celery
 from django.utils.timezone import utc
-from chasebot_app.models import Event, Deal
+from chasebot_app.models import Event, Deal, LicenseTemplate, UserProfile
 from django.template.loader import get_template
 from django.template.context import Context
 from chasebot import settings
@@ -30,8 +30,6 @@ def check_for_events():
         sendEmail.delay(event.pk, event.deal_id, event.user.first_name, event.user.email, event.type, json.dumps(loc_dt, default=dthandler), event.notes)    
 
     
-
-
 @celery.task(name='tasks.sendEmail')
 def sendEmail(event_id, deal_id, first_name, email, event_type, due_date_time, notes):       
     duedatetime_clean = dateutil.parser.parse(json.loads(due_date_time))
@@ -48,3 +46,37 @@ def sendEmail(event_id, deal_id, first_name, email, event_type, due_date_time, n
     event = Event.objects.get(pk = event_id)
     event.is_reminder_sent = True
     event.save()
+
+
+
+#@celery.task(name='tasks.check_for_demo_expiry')
+#@periodic_task(run_every=timedelta(minutes=1))
+#def check_for_demo_expiry():
+#    msgs = []
+#    now_date = datetime.utcnow().replace(tzinfo=utc,hour=00, minute=00,second=00, microsecond=00)
+#    profiles = UserProfile.objects.filter(license = LicenseTemplate.objects.get(pk=2)).filter(expiration_datetime=now_date)    
+#    for profile in profiles:
+#        if profile.expiration_datetime :
+#            if profile.expiration_datetime == profile.expiration_datetime:
+#                msgs.append({'username': profile.user, 'time_zone':profile.timezone, 'country':profile.country, 'city':profile.city })
+#                sendexpiryEmail.delay(profile.user.email)
+#                profile.delete()
+#    
+#    template = get_template('registration/expired_demo.txt')
+#    message = ''    
+#    if msgs:
+#        for item in msgs:
+#            context = Context(item)
+#            message = message + " " + template.render(context)
+#        send_mail("Demo Clean Up", message, settings.DEFAULT_FROM_EMAIL, [settings.DEFAULT_FROM_EMAIL])
+#                
+#                
+#@celery.task(name='tasks.sendexpiryEmail')
+#def sendexpiryEmail(email):    
+#    subject = 'Your Demo has expired'        
+#    template = get_template('registration/expire.txt')
+#    context = Context()
+#    message = template.render(context)    
+#    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [email])
+
+    

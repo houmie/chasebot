@@ -52,9 +52,7 @@
 <table class="table cb_invite_table2 table-striped">
 	<caption><strong>{% trans 'The following users in your company are currently registered with Chasebot:' %}</strong></caption>
 	<thead>
-		<tr>
-			<th>{% trans 'First Name' %}</th>
-			<th>{% trans 'Last Name' %}</th>
+		<tr>			
 			<th>{% trans 'Username' %}</th>
 			<th>{% trans 'Email' %}</th>
 			<th>{% trans 'Superuser' %}</th>
@@ -62,9 +60,7 @@
 	</thead>
 	<tbody>
 		{% for up in user_profiles %}
-		<tr>
-			<td>{{up.user.first_name}}</td>
-			<td>{{up.user.last_name}}</td>
+		<tr>			
 			<td>{{up.user.username}}</td>
 			<td>{{up.user.email}}</td>
 			<td>{% if up.is_cb_superuser %}{% trans 'Yes' %}{% else %}{% trans 'No' %}{% endif %}</td>

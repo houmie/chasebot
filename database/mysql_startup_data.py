@@ -16,9 +16,9 @@ cur.execute("INSERT INTO chasebot_app_currency (currency) VALUES ('USD - $'),('E
 #cur.execute("INSERT INTO chasebot_app_licensetemplate (name, max_users, description, currency_id, price) VALUES ('Premium', '15', 'For mid-sized teams (15 users, 15 GB file storage, 15,000 contacts)', 1,  '39');")
 #cur.execute("INSERT INTO chasebot_app_licensetemplate (name, max_users, description, currency_id, price) VALUES ('Coorporate', '42', 'For large teams (40 users, 40 GB file storage, 40,0000 contacts)', 1, '89');")
 cur.execute("INSERT INTO chasebot_app_licensetemplate (name, max_users, description, currency_id, price) VALUES ('Free', '5', 'Free plan (5 users, 1 GB file storage, unlimited deals, max 1000 contacts)', 1, '0');")
-cur.execute("INSERT INTO chasebot_app_licensetemplate (name, max_users, description, currency_id, price) VALUES ('Free', '5', '30 Days Demo Plan (5 users, 1 GB file storage, unlimited deals, max 1000 contacts)', 1, '0');")
+cur.execute("INSERT INTO chasebot_app_licensetemplate (name, max_users, description, currency_id, price) VALUES ('Demo', '5', '30 Days Demo Plan (5 users, 1 GB file storage, unlimited deals, max 1000 contacts)', 1, '0');")
 
-cur.execute("INSERT INTO chasebot_app_userprofile (user_id, company_id, is_cb_superuser, license_id, timezone, browser, is_log_active, is_demo_account) VALUES (1, 1, TRUE, 6, 'Europe/London', 'x', TRUE, FALSE);")
+cur.execute("INSERT INTO chasebot_app_userprofile (user_id, company_id, is_cb_superuser, license_id, timezone, browser, is_log_active) VALUES (1, 1, TRUE, 1, 'Europe/London', 'x', TRUE);")
 
 #cur.execute("INSERT INTO chasebot_app_gender (gender) VALUES ('Female'),('Male');")
 

@@ -11,6 +11,8 @@ If you would like to login, please follow this link:
 https://login.chasebot.com/
 
 
+This is a demo account limited to 30 days. You may upgrade your account at any time to a free account.
+In order to achieve this you have to log in and press the green upgrade button.
 
 
 Kind Regards,
