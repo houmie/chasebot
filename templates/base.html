@@ -35,9 +35,13 @@
 
 <body> 
 <div id="locale" class="hidden">{{locale}}</div>
-<a class="btn cb-float-to-right btn-success btn-large hidden" id="feedback_btn" href="feedback/">{% trans 'Contact Support' %}</a>   
+<a class="btn cb-float-to-right btn-success btn-large hidden" id="feedback_btn" href="feedback/">{% trans 'Contact Support' %}</a>
+<a class="btn cb-float-to-right btn-success btn-large hidden {{show_upgrade}}" id="upgrade_btn" href="upgrade/">{% trans 'Upgrade to Free Account' %}</a>   
 <div class="modal hide fade" id="feedback_modal" tabindex="-1" role="dialog" aria-labelledby="feedback_label" aria-hidden="true">
 	{% include 'feedback_modal.html' %}
+</div>
+<div class="modal hide fade" id="upgrade_modal" tabindex="-1" role="dialog" aria-labelledby="feedback_label" aria-hidden="true">
+	{% include 'registration/upgrade_modal.html' %}
 </div>
 
 <div class="navbar navbar-fixed-top">

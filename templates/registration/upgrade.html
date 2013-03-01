@@ -1,0 +1,26 @@
+{% load i18n %}
+<div class="row-fluid">
+	<div class="span6 offset3">
+		<h1>{% trans 'Upgrade to a Free Account' %}</h1>		
+		<h3>{% trans 'Life time free account. No credit card required.' %}</h3>
+	</div>
+    <div class="span6 offset3">    	
+		<form id="form_upgrade" class="cb_margin_top" method="post" action=".">
+			<div class="parent">	    	
+				<div class="well well-large">					
+					{% show_row_div_below_error form.company_name %}			
+					<div class="row">	
+						<div class="block_inline">
+							{% if form.company_email.field.required %}<label for="{{ form.company_email.auto_id }}" class="cb_inline_block" rel="tooltip" title="Required Field">{{form.company_email.label}}: *</label>{%else%}<label for="{{ form.company_email.auto_id }}">{{form.company_email.label}}:</label>{% endif %}                       
+						</div>              	
+						<div class="block_inline">							
+							{{form.company_email}}							
+						</div>                     
+					</div>
+				</div>
+			</div>    
+    		{% csrf_token %}
+		</form>
+	</div>
+</div>
+

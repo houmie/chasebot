@@ -23,7 +23,7 @@ class FeedbackForm(Form):
     
 class DemoRegistrationForm(Form):
     username        = forms.CharField(widget=forms.TextInput(attrs={'autocomplete': 'off', 'class':'demo-input', 'placeholder': _(u'Choose a memorable username...')}), label = _(u'Username'), max_length=30)
-    company         = forms.CharField(required = False, widget=forms.TextInput(attrs={'autocomplete': 'off', 'class':'demo-input', 'placeholder': _(u'(Optional) Your company name...')}), label = _(u'Company'), max_length=75)
+    #company         = forms.CharField(required = False, widget=forms.TextInput(attrs={'autocomplete': 'off', 'class':'demo-input', 'placeholder': _(u'(Optional) Your company name...')}), label = _(u'Company'), max_length=75)
     email           = forms.EmailField(widget=forms.TextInput(attrs={'autocomplete': 'off', 'class':'demo-input', 'placeholder': _(u"What's your email address?")}), label= _(u'Your Email'))
     password        = forms.CharField(label = _(u'Password'), widget=forms.PasswordInput(render_value=False,attrs={'autocomplete': 'off', 'class':'demo-input', 'placeholder': _(u'Choose a memorable password')}))
     password2       = forms.CharField(label = _(u'Password (retype)'), widget=forms.PasswordInput(render_value=False, attrs={'autocomplete': 'off', 'class':'demo-input', 'placeholder': _(u'Retype the same password')}))    
@@ -62,8 +62,8 @@ class RegistrationForm(DemoRegistrationForm):
         is_accept_invite = kwargs.pop('is_accept_invite', None)
         super(RegistrationForm, self).__init__(*args, **kwargs)
         if is_accept_invite:                        
-            self.fields['company_name'].required = False;
-            self.fields['company_email'].required = False;
+            self.fields['company_name'].required = False
+            self.fields['company_email'].required = False
             self.fields['company_name'].widget.attrs['readonly'] = True
             self.fields['company_email'].widget.attrs['readonly'] = True
             self.fields['company_name'].initial = company_name
@@ -72,6 +72,20 @@ class RegistrationForm(DemoRegistrationForm):
         
     company_name    = forms.CharField(label = _(u'Company'), max_length=50)
     company_email   = forms.EmailField(label= _(u'Company Email'))    
+
+class UpgradeForm(Form):
+    def __init__(self, *args, **kwargs):
+        company_email = kwargs.pop('_company_email', None)
+        super(UpgradeForm, self).__init__(*args, **kwargs)
+        self.fields['company_name'].widget.attrs['class'] = 'input_mandatory'
+        self.fields['company_name'].required = True
+        self.fields['company_email'].widget.attrs['readonly'] = True
+        self.fields['company_email'].required = False
+        self.fields['company_email'].initial = company_email
+        
+    company_name    = forms.CharField(label = _(u'Company'), max_length=50)
+    company_email   = forms.EmailField(label= _(u'Company Email'))    
+    
 
 class FilterContactsForm(Form):
     last_name     = forms.CharField(widget= forms.TextInput(attrs={'placeholder': _(u'Filter here...'), 'class': 'placeholder_fix_css input-small search-query typeahead_contacts_last_name', 'autocomplete': 'off', 'data-provide': 'typeahead'}), max_length=50)

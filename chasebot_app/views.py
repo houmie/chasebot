@@ -1,6 +1,7 @@
 from datetime import datetime
 from datetime import timedelta
-from django.http import Http404, HttpResponse, HttpResponseForbidden
+from django.http import Http404, HttpResponse, HttpResponseForbidden,\
+    HttpResponseNotAllowed
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -10,7 +11,7 @@ from chasebot_app.forms import RegistrationForm, ContactsForm, ConversationForm,
      DealForm, FilterContactsForm, FilterConversationForm, FilterDealTemplateForm, FilterProductsForm,\
     DealsAddForm, OpenDealsAddForm, ColleagueInviteForm, \
     EventForm, DealNegotiateForm, FilterOpenDealForm, FeedbackForm,\
-    AddNewDealForm, DealsAddFormLight
+    AddNewDealForm, DealsAddFormLight, UpgradeForm
 from chasebot_app.models import Company, Contact, Conversation, Products, DealTemplate, Deal, SalesTerm,\
     Invitation, LicenseTemplate, MaritalStatus, \
     Currency, Event, DealStatus, CBLogging, Conversation_history,\
@@ -133,8 +134,9 @@ def conversations_with_open_deals(request, contact):
 @login_required
 def index_display(request):
     if 'demo' in request.GET:
-        messages.success(request, _(u'Congratulations. Your free account is now ready.'))
-        messages.warning(request, _(u'Once happy with the testing, You may delete all the demo data and start entering your own data.'))
+        messages.success(request, _(u'Congratulations. Your demo account is now ready.'))
+        messages.warning(request, _(u'Once happy with the testing, please sign up for your free account.'))
+        messages.error(request, _(u'The demo account is limited to 30 days.'))
 
     profile = request.user.get_profile()
     if not 'django_timezone' in request.session: 
@@ -1184,6 +1186,49 @@ def logout_page(request):
     logout(request)
     return HttpResponseRedirect('/')
 
+@login_required
+def upgrade(request):
+    validation_error_ajax = False
+    profile = request.user.get_profile()   
+    if profile.is_cb_superuser == False:
+        return HttpResponseForbidden()
+    if request.method == 'POST':        
+        form = UpgradeForm(request.POST, _company_email=request.user.email)        
+        if form.is_valid():            
+            user_location = get_user_location_details(request)
+            browser_type = get_user_browser(request)
+                     
+            profile.company.company_name = form.cleaned_data['company_name']
+            profile.company.company_email = request.user.email 
+            profile.company.save() 
+            profile.ip=user_location.ip 
+            profile.country=user_location.country 
+            profile.city=user_location.city
+            profile.browser=browser_type
+            profile.is_demo_account=False
+            profile.save()
+            
+            profile.company.contact_set.all().delete()
+            profile.company.products_set.all().delete()
+            profile.company.deal_set.all().delete()
+            profile.company.dealtemplate_set.all().delete()
+            profile.company.event_set.all().delete()
+            
+            for prof in profile.company.userprofile_set.all():
+                prof.is_demo_account=False
+                prof.save()                
+                
+            messages.success(request, _(u'Congratulations. Your free account is now ready.'))
+            messages.warning(request, _(u'All the demo data has been removed.'))
+            return HttpResponse()
+        else:
+            validation_error_ajax = True
+    else:
+        form = UpgradeForm(_company_email=request.user.email)
+    variables = {'form':form, 'validation_error_ajax':validation_error_ajax}    
+    return render(request, 'registration/upgrade.html', variables)
+
+
 def register_page(request):    
     if request.user.is_authenticated():
         return HttpResponseRedirect('/')    
@@ -1201,13 +1246,14 @@ def register_page(request):
                 email=form.cleaned_data['email']                
             )
             
+            user_location = get_user_location_details(request)
+            browser_type = get_user_browser(request)
+            
             if 'invitation' in request.session:
                 # Retrieve the invitation object.
                 invitation = Invitation.objects.get(id=request.session['invitation'])                
-                profile = invitation.sender.get_profile()                
-                user_location = get_user_location_details(request)
-                browser_type = get_user_browser(request)
-                userProfile = UserProfile(user=user, company = profile.company, is_cb_superuser=False, license = profile.license, ip=user_location.ip, country=user_location.country, city=user_location.city, timezone=form.cleaned_data['timezone'], browser=browser_type)
+                profile = invitation.sender.get_profile()                                
+                userProfile = UserProfile(user=user, company = profile.company, is_cb_superuser=False, license = profile.license, ip=user_location.ip, country=user_location.country, city=user_location.city, timezone=form.cleaned_data['timezone'], browser=browser_type, is_demo_account=profile.is_demo_account)
                 userProfile.save()
                 # Delete the invitation from the database and session.
                 invitation.delete()
@@ -1217,7 +1263,7 @@ def register_page(request):
                     company_name = form.cleaned_data['company_name'],
                     company_email = form.cleaned_data['company_email']
                 )
-                userProfile = UserProfile(user=user, company = company, is_cb_superuser=True, license = LicenseTemplate.objects.get(pk=2))
+                userProfile = UserProfile(user=user, company = company, is_cb_superuser=True, license = LicenseTemplate.objects.get(pk=1), ip=user_location.ip, country=user_location.country, city=user_location.city, timezone=form.cleaned_data['timezone'], browser=browser_type)
                 userProfile.save()
 
             return HttpResponseRedirect('/register/success/')
@@ -1506,7 +1552,11 @@ def get_paginator_variables(paginator, page, page_number, custom_prefix):
 
 def get_localized_variables(request):
     timezone = request.session['django_timezone'].zone
-    return { 'locale' : get_datepicker_format(request), 'timezones': pytz.common_timezones, 'timezone':timezone}  
+    profile = request.user.get_profile()
+    show_upgrade = ''
+    if profile.is_demo_account and profile.is_cb_superuser:
+        show_upgrade = 'show_upgrade' 
+    return { 'locale' : get_datepicker_format(request), 'timezones': pytz.common_timezones, 'timezone':timezone, 'show_upgrade':show_upgrade}  
 
 def merge_with_additional_variables(request, paginator, page, page_number, variables):
     variables = dict(variables.items() + get_paginator_variables(paginator, page, page_number, None).items() + get_localized_variables(request).items())

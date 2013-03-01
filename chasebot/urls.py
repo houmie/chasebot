@@ -14,7 +14,7 @@ from chasebot_app.views import logout_page, contact_delete, conversation_display
     negotiate_open_deal, sidebar_contacts, sidebar_deal_templates,\
     sidebar_open_deals, opendeal_autocomplete, sidebar_conversations,\
     events_display, event_tick, deal_template_product_display, sidebar_todo,\
-    feedback, add_new_deal, add_new_deal_from_template
+    feedback, add_new_deal, add_new_deal_from_template, upgrade
 from chasebot_app.demo_view import demo
 
 admin.autodiscover()
@@ -40,6 +40,8 @@ urlpatterns = patterns('',
     (r'^colleague/accept/(\w+)/$', colleague_accept),
     (r'^demo/$', demo),
     (r'^feedback/$', feedback),
+    (r'^upgrade/$', upgrade),
+    
     
     #Browsing
     (r'^$', index_display),

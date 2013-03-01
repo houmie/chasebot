@@ -60,6 +60,7 @@ class UserProfile(models.Model):
     timezone            = models.CharField(max_length=100)
     browser             = models.CharField(max_length=100, blank=True, null=True)
     is_log_active       = models.BooleanField(default=True)
+    is_demo_account     = models.BooleanField(default=False)
     
     def __unicode__(self):
         return u'%s, %s' % (self.user.username, self.company.company_name)

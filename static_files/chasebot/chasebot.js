@@ -190,7 +190,12 @@ function validation_rules(form) {
                     error.appendTo(field_error);
                 } else {
                     field_error = $(form).find('#id_' + element.attr('name')).closest('td').children('.field_error');
-                    error.appendTo(field_error);
+                    if (field_error.length > 0) {
+                        error.appendTo(field_error);
+                    } else {
+                        field_error = $(form).find('#id_' + element.attr('name')).closest('.well').children('.field_error');
+                        error.appendTo(field_error);
+                    }
                 }
                 $(field_error).show();
             },
@@ -1782,6 +1787,9 @@ function tab_todo_clicked() {
     bind_main_tabs('tab_todo');
     $('#sidebar').load('sidebar/todo/', function (result) {
         $('#feedback_btn').removeClass('hidden');
+        if ($('#upgrade_btn').hasClass('show_upgrade')) {
+            $('#upgrade_btn').removeClass('hidden');
+        }
     });
 }
 
@@ -1950,8 +1958,36 @@ $(document).ready(function () {
                 }
             });
             show_modal('#feedback_modal');
+            draggable_modal('#feedback_modal');
         });
 	});
+
+	$('#upgrade_btn').off('click').on('click', function (event) {
+        event.preventDefault();
+        var url = $(this).attr('href');
+        $('#upgrade_modal_body').load(url, function (result) {
+            var validator = validation_rules('#form_upgrade');
+            $('#upgrade_send_btn').off('click').on('click', {validator: validator}, function (event) {
+                var data, validator;
+                validator = event.data.validator;
+                validator.form();
+                if (validator.numberOfInvalids() === 0) {
+                    data = $('#form_upgrade').serialize();
+                    $.post(url, data, function (result) {
+                        if ($('#upgrade_validation_error_ajax', result).text() === 'True') {
+                            $('#upgrade_modal_body').empty();
+                            $('#upgrade_modal_body').append(result);
+                        } else {
+                            window.location.replace("/");
+                        }
+                    });
+                    $('#upgrade_modal').modal('hide');
+                }
+            });
+            show_modal('#upgrade_modal');
+            draggable_modal('#upgrade_modal');
+        });
+    });
 
     tab_todo_clicked();
 });

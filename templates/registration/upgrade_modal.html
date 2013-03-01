@@ -1,0 +1,16 @@
+{% load i18n %}
+<div class="modal-header">
+	<button type="button" class="close close_link" data-dismiss="modal" aria-hidden="true">&times;</button>	
+	<h3>
+		<div id="upgrade_modal_icon" class="cb_inline_block"><i class="icon-cloud-upload"></i></div>
+		<!-- <div id="upgrade_modal_h3" class="cb_inline_block">{% trans 'Upgrade to Free Account' %}</div> -->
+	</h3>
+</div>
+<div id="upgrade_validation_error_ajax" class="hidden">{{validation_error_ajax}}</div>
+<div id="upgrade_modal_body" class="modal-body form-inline">
+	
+</div>
+<div class="modal-footer">
+	<a id="upgrade_send_btn" href="#" class="btn btn-primary" >{% trans 'Upgrade' %}</a>
+	<a href="#" class="btn close_link" data-dismiss="modal">{% trans 'Cancel' %}</a>		
+</div>

@@ -59,14 +59,14 @@ def demo(request):
     if request.method == 'POST':        
         form = DemoRegistrationForm(request.POST)
         if form.is_valid():
-            demo_continue(request, form.cleaned_data['username'], form.cleaned_data['password'], form.cleaned_data['email'], form.cleaned_data['timezone'], form.cleaned_data['company'])
+            demo_continue(request, form.cleaned_data['username'], form.cleaned_data['password'], form.cleaned_data['email'], form.cleaned_data['timezone'])
             return render(request, 'demo_success.html')
     else:
         form = DemoRegistrationForm()
     variables = {'form': form}
     return render(request, 'demo.html', variables)
 
-def demo_continue(request, username, password, email, time_zone, company):
+def demo_continue(request, username, password, email, time_zone):
     
     #username = generate_random_username()
     #password = User.objects.make_random_password(7)
@@ -78,11 +78,8 @@ def demo_continue(request, username, password, email, time_zone, company):
     user.first_name = _(u'Testuser')
     user.last_name = _(u'Testuser')
     user.save()    
-    
-    if company:
-        company_name = company
-    else:
-        company_name = _(u'Your Company Ltd')
+        
+    company_name = _(u'Your Company Ltd')
     
     company = Company.objects.create(
                 company_name = company_name,
@@ -92,7 +89,7 @@ def demo_continue(request, username, password, email, time_zone, company):
     user_location = get_user_location_details(request)
     browser_type = get_user_browser(request)
     
-    userProfile = UserProfile(user=user, company = company, is_cb_superuser=True, license = LicenseTemplate.objects.get(pk=6), ip=user_location.ip, country=user_location.country, city=user_location.city, timezone=time_zone, browser=browser_type)
+    userProfile = UserProfile(user=user, company = company, is_cb_superuser=True, license = LicenseTemplate.objects.get(pk=2), ip=user_location.ip, country=user_location.country, city=user_location.city, timezone=time_zone, browser=browser_type, is_demo_account=True)
     userProfile.save()
     
     user = authenticate(username=username, password=password)
