@@ -459,7 +459,8 @@ def add_new_deal(request):
                                 currency =      new_deal.currency,                
                                 sales_term =    new_deal.sales_term,
                                 quantity =      new_deal.quantity,
-                                company =       profile.company                                            
+                                company =       profile.company,
+                                user =          request.user                                            
                                 )
             #Saving M2M 
             for item in form.cleaned_data['product']:
