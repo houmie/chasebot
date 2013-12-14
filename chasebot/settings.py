@@ -12,9 +12,9 @@ DEFAULT_FROM_EMAIL = 'Chasebot <info@chasebot.com>'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = '587'
 EMAIL_HOST_USER = 'info@chasebot.com'
-EMAIL_HOST_PASSWORD = 'Rahil2503'
+EMAIL_HOST_PASSWORD = 'expired'
 EMAIL_USE_TLS = True
-SERVER_EMAIL = 'houmie@gmail.com'
+SERVER_EMAIL = 'info@chasebot.com'
 EMAIL_SUBJECT_PREFIX = '[Chasebot]'
 
 AUTH_PROFILE_MODULE = 'chasebot_app.UserProfile'
@@ -23,7 +23,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
-     ('Houman', 'houman@venuscloud.com'),
+     ('Hooman', 'info@chasebot.com'),
 )
 
 TEST_NAME = 'testdb_'
@@ -36,7 +36,7 @@ GEOIP_PATH = '/home/hooman/venuscloud/chasebot-env/site/database/'
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.mysql',
-        'NAME': 'Ch4seb0tDB',                      # Or path to database file if using sqlite3.
+        'NAME': 'chasebotDB',                      # Or path to database file if using sqlite3.
         'USER': 'django_user',                      # Not used with sqlite3.
         'PASSWORD': 'houmie123',                  # Not used with sqlite3.
         'HOST': 'localhost',                      # Set to empty string for localhost. Not used with sqlite3.
@@ -214,7 +214,7 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'lfbmf#q3vgr%!#o%@31ta%=c6u2&amp;c)35f*ar0i#d6f@s4v&amp;@1z'
+SECRET_KEY = 'lfbsf#q3vgr%!#o%@31ta%=c6u2&amp;c)35f*ar0i#d6f@s4v&amp;@1z'
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -269,7 +269,7 @@ INSTALLED_APPS = (
 )
 
 BROKER_BACKEND = "SQS"
-BROKER_URL = 'sqs://AKIAILRT74QLK3ER2GNA:FIYfsjJ8gD8ldg+zKPHo+0CZebwTo1CP7izbe2q3@'
+BROKER_URL = 'sqs://xxxx@'
 BROKER_TRANSPORT_OPTIONS = {'queue_name_prefix': '-sqs', 'visibility_timeout': 300}
 CELERY_RESULT_BACKEND="database"
 CELERY_TASK_SERIALIZER = 'json'
